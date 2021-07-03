@@ -290,7 +290,7 @@ public class SVGLoader {
       }
    }
 
-   public SVGImage walk(XMLRoot xmlRoot) {
+   private SVGImage walk(XMLRoot xmlRoot) {
       buildNode(xmlRoot, root);
       return root;
    }
