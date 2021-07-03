@@ -77,6 +77,11 @@ import org.girod.javafx.svgimage.xml.XMLRoot;
 import org.girod.javafx.svgimage.xml.XMLTreeHandler;
 import org.xml.sax.SAXException;
 
+/**
+ * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
+ *
+ * @since 0.1
+ */
 public class SVGLoader {
    private static final Pattern TRANSFORM = Pattern.compile("\\w+\\((.*)\\)");
    private final URL url;
@@ -90,22 +95,52 @@ public class SVGLoader {
       this.root = new SVGImage();
    }
 
+   /**
+    * Load a svg File.
+    *
+    * @param file the file
+    * @return the SVGImage
+    * @throws IOException
+    */
    public static SVGImage load(File file) throws IOException {
       URL url = file.toURI().toURL();
       return load(url);
    }
 
+   /**
+    * Load a svg URL.
+    *
+    * @param url the URL
+    * @return the SVGImage
+    * @throws IOException
+    */
    public static SVGImage load(URL url) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       return img;
    }
 
+   /**
+    * Load a svg File, and set the styleSheets of the associated JavaFX Node.
+    *
+    * @param file the file
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
    public static SVGImage load(File file, String styleSheets) throws IOException {
       URL url = file.toURI().toURL();
       return load(url, styleSheets);
    }
 
+   /**
+    * Load a svg URL, and set the styleSheets of the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
    public static SVGImage load(URL url, String styleSheets) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
@@ -113,30 +148,64 @@ public class SVGLoader {
       return img;
    }
 
-   public static SVGImage load(File file, double zoom) throws IOException {
+   /**
+    * Load a svg File, and scale of the associated JavaFX Node.
+    *
+    * @param file the file
+    * @param scale the scale
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(File file, double scale) throws IOException {
       URL url = file.toURI().toURL();
-      return load(url, zoom);
+      return load(url, scale);
    }
 
-   public static SVGImage load(URL url, double zoom) throws IOException {
+   /**
+    * Load a svg URL, and scale of the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param scale the scale
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(URL url, double scale) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
-      img.setScaleX(zoom);
-      img.setScaleY(zoom);
+      img.setScaleX(scale);
+      img.setScaleY(scale);
       return img;
    }
 
-   public static SVGImage load(File file, double zoom, String styleSheets) throws IOException {
+   /**
+    * Load a svg File, set the styleSheets and scale of the associated JavaFX Node.
+    *
+    * @param file the File
+    * @param scale the scale
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(File file, double scale, String styleSheets) throws IOException {
       URL url = file.toURI().toURL();
-      return load(url, zoom, styleSheets);
+      return load(url, scale, styleSheets);
    }
 
-   public static SVGImage load(URL url, double zoom, String styleSheets) throws IOException {
+   /**
+    * Load a svg URL, set the styleSheets and scale of the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param scale the scale
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(URL url, double scale, String styleSheets) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       img.getStylesheets().add(styleSheets);
-      img.setScaleX(zoom);
-      img.setScaleY(zoom);
+      img.setScaleX(scale);
+      img.setScaleY(scale);
       return img;
    }
 
