@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="fxsvgImage" default="default" basedir=".">
+    <description>Builds, tests, and runs the project fxsvgImage.</description>
+    <import file="nbproject/build-impl.xml"/>
+   <!-- =================================================================== -->
+   <!-- post NB init                                                          -->
+   <!-- =================================================================== -->
+
+   <target name="-post-init">
+      <!-- general properties definition -->
+      <property name="archiveName" value="fxsvgImage"/>
+      <property name="src.dir" value="${src.core.dir}/.." />
+      <condition property="javadoc.exists">
+         <available file="${dist.javadoc.dir}" type="dir"/>
+      </condition>
+      <condition property="distrib.notexists">
+         <not>
+            <available file="distrib" type="dir"/>
+         </not>
+      </condition> 
+      <condition property="distrib.notexists">
+         <not>
+            <available file="distrib" type="dir"/>
+         </not>
+      </condition>
+      <property name="j2seapi" value="http://docs.oracle.com/javase/7/docs/api/"/>        
+      <!-- To set with your location of Java 8 JDK -->
+      <property name="javadocDir" value="${jdk.home}/docs/api"/>
+      <property name="javadocEXE" value="${jdk.home}/bin/javadoc.exe"/>        
+   </target>
+
+   <!-- =================================================================== -->
+   <!-- Non NB targets                                                          -->
+   <!-- =================================================================== -->
+
+   <target description="fetch version" depends="-init-project" name="version">
+      <loadproperties srcFile="${src.core.dir}/org/girod/javafx/svgimage/fxsvgimage.properties">
+         <filterchain>
+            <linecontains>
+               <contains value="version"/>
+            </linecontains>
+         </filterchain>
+      </loadproperties>
+   </target>
+
+   <!-- =================================================================== -->
+   <!-- zip files                                                          -->
+   <!-- =================================================================== -->
+
+   <!-- zip javadocs -->
+   <target depends="version, -post-init"
+           description="create javadoc zip files" name="zipjavadoc" if="javadoc.exists">
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-docs-${version}.zip">
+         <fileset description="documentation" dir="${dist.javadoc.dir}">
+            <include name="**/*"/>
+         </fileset>
+      </zip>
+   </target>
+
+   <target depends="version, -post-init, zipjavadoc" description="create zip files" name="zip">
+      <!-- zip binary files -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-bin-${version}.zip">
+         <fileset description="docs" dir=".">
+            <include name="LICENSE"/>
+            <include name="README.md"/>
+            <include name="CHANGES.txt"/>
+         </fileset>    
+         <fileset description="binaries" dir="${dist.dir}">
+            <include name="fxsvgImage.jar"/>
+         </fileset>
+      </zip>
+      <!-- zip source files  -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-src-${version}.zip">
+         <fileset description="core source directory" dir="${src.dir}/..">
+            <include name="src/**/*.java"/>
+            <include name="src/**/*.properties"/>
+            <include name="src/**/*.html"/>
+            <include name="src/**/*.xml"/>            
+            <include name="src/manifest*.mf"/>
+         </fileset>
+         <fileset description="binaries" dir="${dist.dir}">
+            <include name="fxsvgImage.jar"/>
+         </fileset>
+         <fileset description="project" dir="${dist.dir}/..">
+            <include name="nbproject/**/*.*"/>
+         </fileset>         
+         <fileset description="samples" dir=".">
+            <include name="samples/*"/>
+         </fileset>                                   
+         <fileset description="misc" dir=".">
+            <include name="LICENSE"/>
+            <include name="README.md"/>
+            <include name="CHANGES.txt"/>            
+            <include name="build.xml"/>
+         </fileset>
+      </zip>
+      <!-- zip test source files  -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-tests-${version}.zip">
+         <fileset description="tests directory" dir="${test.src.dir}/..">
+            <include name="test/**/*.*"/>
+         </fileset>
+      </zip>      
+   </target>
+     
+    
+   <!-- =================================================================== -->
+   <!-- NB overwrite targets : javadocs                                     -->
+   <!-- =================================================================== -->
+
+   <target depends="-javadoc-core" name="-javadoc-build" />
+
+   <target depends="init, -init-project, -post-init" name="-javadoc-core">
+      <!-- Javadoc -->
+      <javadoc author="${javadoc.author}" charset="UTF-8" destdir="${dist.javadoc.dir}"
+               docencoding="UTF-8" encoding="${javadoc.encoding.used}" failonerror="true"
+               noindex="${javadoc.noindex}" nonavbar="${javadoc.nonavbar}"
+               notree="${javadoc.notree}" private="${javadoc.private}"
+               source="${javac.source}" splitindex="${javadoc.splitindex}"
+               use="${javadoc.use}" useexternalfile="true" version="${javadoc.version}"
+               windowtitle="${javadoc.windowtitle}" executable="${javadocEXE}" >         
+         <link href="${j2seapi}" />
+         <!-- the Xdoclint argument avoid to get javadoc errors when the documentation format is not compliant for HTML 4, which was the case before
+         Java 8. It would also not be a good idea, because empty tags like br are very useful -->
+         <arg line="-Xdoclint:none"/> 
+         <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
+            <filename name="**/*.java"/>
+         </fileset>
+         <classpath>
+            <path path="${javac.classpath}"/>
+         </classpath>                     
+         <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
+         <bottom>
+            <![CDATA[<i>Copyright &#169; 2021 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
+         </bottom>         
+      </javadoc>
+   </target>                     
+
+   <!-- =================================================================== -->
+   <!-- NB overwrite targets : jar                                     -->
+   <!-- =================================================================== -->
+
+   <target depends="init,compile,-pre-jar,-do-jar-without-manifest,-post-jar" description="Build JAR." name="jar"/>
+   
+   <target name="-do-jar-without-manifest" depends="-jarlib" />
+   
+   <target name="-jarlib" depends="init,compile,-pre-pre-jar,-pre-jar" >
+      <!-- Core Jar construction -->
+      <jar description="core jar binary file" compress="true" jarfile="${dist.dir}/fxsvgImage.jar" 
+           manifest="${src.dir}/manifest.mf" >
+         <fileset defaultexcludes="yes" dir="${build.classes.dir}">
+            <include name="org/girod/**/*.class"/>
+            <include name="org/girod/**/*.xml"/>                   
+            <include name="org/girod/**/*.properties"/>  
+            <exclude name="org/girod/javafx/svgimage/samples/**/*.*"/>         
+         </fileset>
+      </jar>
+   </target>   
+</project>
