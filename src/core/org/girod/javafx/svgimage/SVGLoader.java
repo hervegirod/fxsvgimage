@@ -83,6 +83,7 @@ public class SVGLoader {
    private final SVGImage root;
    private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
    private final Map<String, Paint> gradients = new HashMap<>();
+   private final Map<String, Shape> clips = new HashMap<>();
 
    private SVGLoader(URL url) {
       this.url = url;
@@ -157,6 +158,10 @@ public class SVGLoader {
    }
 
    private void buildNode(XMLNode xmlNode, Group group) {
+      buildNode(xmlNode, group, false);
+   }
+
+   private void buildNode(XMLNode xmlNode, Group group, boolean acceptDefs) {
       if (group == null) {
          group = new Group();
       }
@@ -201,14 +206,25 @@ public class SVGLoader {
                node = buildGroup(childNode);
                break;
             case "defs":
-               buildDefs(childNode);
-               break;
+               if (!acceptDefs) {
+                  buildDefs(childNode);
+                  break;
+               }
+            case "clipPath":
+               if (acceptDefs) {
+                  buildClipPath(childNode);
+                  break;
+               }
             case "linearGradient":
-               buildLinearGradient(childNode);
-               break;
+               if (acceptDefs) {
+                  buildLinearGradient(childNode);
+                  break;
+               }
             case "radialGradient":
-               buildRadialGradient(childNode);
-               break;
+               if (acceptDefs) {
+                  buildRadialGradient(childNode);
+                  break;
+               }
          }
          if (node != null) {
             if (node instanceof Shape) {
@@ -224,7 +240,7 @@ public class SVGLoader {
    }
 
    private void buildDefs(XMLNode xmlNode) {
-      buildNode(xmlNode, null);
+      buildNode(xmlNode, null, true);
    }
 
    private Group buildTSpanGroup(XMLNode xmlNode) {
@@ -582,6 +598,41 @@ public class SVGLoader {
       return polyline;
    }
 
+   private void buildClipPath(XMLNode xmlNode) {
+      if (xmlNode.hasAttribute("id")) {
+         String id = xmlNode.getAttributeValue("id");
+         Shape theShape = null;
+         Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+         while (it.hasNext()) {
+            XMLNode childNode = it.next();
+            Shape shape = null;
+            String name = childNode.getName();
+            switch (name) {
+               case "circle":
+                  shape = buildCircle(childNode);
+                  break;
+               case "path":
+                  shape = buildPath(childNode);
+                  break;
+               case "ellipse":
+                  shape = buildEllipse(childNode);
+                  break;
+               case "rect":
+                  shape = buildRect(childNode);
+                  break;
+            }
+            if (theShape == null) {
+               theShape = shape;
+            } else {
+               theShape = Shape.union(theShape, shape);
+            }
+         }
+         if (theShape != null) {
+            clips.put(id, theShape);
+         }
+      }
+   }
+
    private Text buildText(XMLNode xmlNode) {
       Font font = null;
       if (xmlNode.hasAttribute("font-family") && xmlNode.hasAttribute("font-size")) {
@@ -761,10 +812,24 @@ public class SVGLoader {
             String style = tokenizer.nextToken();
 
             StringTokenizer tokenizer2 = new StringTokenizer(style, ":");
-            String styleName = tokenizer2.nextToken();
-            String styleValue = tokenizer2.nextToken();
+            String styleName = tokenizer2.nextToken().trim();
+            String styleValue = null;
+            if (tokenizer.hasMoreTokens()) {
+               styleValue = tokenizer2.nextToken().trim();
+            }
+            if (styleValue == null) {
+               continue;
+            }
 
             switch (styleName) {
+               case "clip-path":
+                  if (styleValue.startsWith("url(#")) {
+                     String clipID = styleValue.substring(5, styleValue.length() - 1);
+                     if (clips.containsKey(clipID)) {
+                        shape.setClip(clips.get(clipID));
+                     }
+                  }
+                  break;
                case "fill":
                   shape.setFill(expressPaint(styleValue));
                   break;
