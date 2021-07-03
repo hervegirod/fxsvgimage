@@ -86,8 +86,8 @@ public class SVGImage extends Group {
     * @param scale the scale
     * @return the Image
     */
-   public Image toImage(double scale) {
-      return toImage(scale, scale);
+   public Image toImageScaled(double scale) {
+      return toImageScaled(scale, scale);
    }
 
    /**
@@ -97,7 +97,24 @@ public class SVGImage extends Group {
     * @param scaleY the Y scale
     * @return the Image
     */
-   public Image toImage(double scaleX, double scaleY) {
+   public Image toImageScaled(double scaleX, double scaleY) {
+      this.setScaleX(scaleX);
+      this.setScaleY(scaleY);
+      WritableImage image = this.snapshot(new SnapshotParameters(), null);
+      return image;
+   }
+
+   /**
+    * Convert the Node tree to an image, specifying the resulting width and preserving the image ratio.
+    *
+    * @param width the resulting width
+    * @return the Image
+    */
+   public Image toImage(double width) {
+      double initialWidth = this.getLayoutBounds().getWidth();
+      double initialHeight = this.getLayoutBounds().getHeight();
+      double scaleX = width / initialWidth;
+      double scaleY = initialHeight * scaleX;
       this.setScaleX(scaleX);
       this.setScaleY(scaleY);
       WritableImage image = this.snapshot(new SnapshotParameters(), null);

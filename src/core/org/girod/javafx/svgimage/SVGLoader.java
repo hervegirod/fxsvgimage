@@ -149,31 +149,100 @@ public class SVGLoader {
    }
 
    /**
-    * Load a svg File, and scale of the associated JavaFX Node.
+    * Load a svg File, and scale the associated JavaFX Node.
     *
     * @param file the file
     * @param scale the scale
     * @return the SVGImage
     * @throws IOException
     */
-   public static SVGImage load(File file, double scale) throws IOException {
+   public static SVGImage loadScaled(File file, double scale) throws IOException {
       URL url = file.toURI().toURL();
-      return load(url, scale);
+      return loadScaled(url, scale);
    }
 
    /**
-    * Load a svg URL, and scale of the associated JavaFX Node.
+    * Load a svg URL, and scale the associated JavaFX Node.
     *
     * @param url the URL
     * @param scale the scale
     * @return the SVGImage
     * @throws IOException
     */
-   public static SVGImage load(URL url, double scale) throws IOException {
+   public static SVGImage loadScaled(URL url, double scale) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       img.setScaleX(scale);
       img.setScaleY(scale);
+      return img;
+   }
+
+   /**
+    * Load a svg File, and scale the associated JavaFX Node.
+    *
+    * @param file the file
+    * @param width the resulting width
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(File file, double width) throws IOException {
+      URL url = file.toURI().toURL();
+      return load(url, width);
+   }
+
+   /**
+    * Load a svg URL, and set the resulting width the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param width the resulting width
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(URL url, double width) throws IOException {
+      SVGLoader loader = new SVGLoader(url);
+      SVGImage img = loader.loadImpl();
+      double initialWidth = img.getLayoutBounds().getWidth();
+      double initialHeight = img.getLayoutBounds().getHeight();
+      double scaleX = width / initialWidth;
+      double scaleY = initialHeight * scaleX;
+      img.setScaleX(scaleX);
+      img.setScaleY(scaleY);
+      return img;
+   }
+
+   /**
+    * Load a svg File, set the styleSheets and set the resulting width of the associated JavaFX Node.
+    *
+    * @param file the File
+    * @param width the resulting width
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(File file, double width, String styleSheets) throws IOException {
+      URL url = file.toURI().toURL();
+      return load(url, width, styleSheets);
+   }
+
+   /**
+    * Load a svg URL, set the styleSheets and set the resulting width of the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param width the resulting width
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(URL url, double width, String styleSheets) throws IOException {
+      SVGLoader loader = new SVGLoader(url);
+      SVGImage img = loader.loadImpl();
+      img.getStylesheets().add(styleSheets);
+      double initialWidth = img.getLayoutBounds().getWidth();
+      double initialHeight = img.getLayoutBounds().getHeight();
+      double scaleX = width / initialWidth;
+      double scaleY = initialHeight * scaleX;
+      img.setScaleX(scaleX);
+      img.setScaleY(scaleY);
       return img;
    }
 
@@ -186,9 +255,9 @@ public class SVGLoader {
     * @return the SVGImage
     * @throws IOException
     */
-   public static SVGImage load(File file, double scale, String styleSheets) throws IOException {
+   public static SVGImage loadScaled(File file, double scale, String styleSheets) throws IOException {
       URL url = file.toURI().toURL();
-      return load(url, scale, styleSheets);
+      return loadScaled(url, scale, styleSheets);
    }
 
    /**
@@ -200,7 +269,7 @@ public class SVGLoader {
     * @return the SVGImage
     * @throws IOException
     */
-   public static SVGImage load(URL url, double scale, String styleSheets) throws IOException {
+   public static SVGImage loadScaled(URL url, double scale, String styleSheets) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       img.getStylesheets().add(styleSheets);
