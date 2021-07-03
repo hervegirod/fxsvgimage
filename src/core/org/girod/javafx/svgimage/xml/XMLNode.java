@@ -111,6 +111,7 @@ public class XMLNode {
          String key = it.next();
          switch (key) {
             case "fill":
+            case "stroke":
             case "style":
                String value = nodeParent.getAttributeValue(key);
                attributes.put(key, value);
