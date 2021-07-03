@@ -17,3 +17,12 @@ This library support:
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
 - fill, stroke, style, class, transform attributes
 
+# Limitations
+The radial gradients do not work correctly for the moment
+
+# Other libraries
+The following libraries also convert a SVG file to a JavaFX Node tree:
+- https://github.com/afester/FranzXaver converts a SVG file but uses Batik internally
+- https://github.com/codecentric/javafxsvg converts a SVG file but uses Batik internally
+
+You can also use 
