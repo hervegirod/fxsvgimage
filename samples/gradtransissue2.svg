@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+
+<svg
+   id="svg602"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   height="689.724"
+   space="preserve"
+   width="324.02335"
+   version="1.0">
+
+  <defs id="defs604">
+    <linearGradient id="linearGradient3258">
+      <stop id="stop3259"
+            offset="0"
+            style="stop-color:#ff0000;stop-opacity:1;" />
+      <stop id="stop3260"
+            offset="1"
+            style="stop-color:#0000ff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient3258"
+       id="linearGradient3472"
+       x1="36"
+       y1="80"
+       x2="7"
+       y2="77"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       xlink:href="#linearGradient3258"
+       id="linearGradient34722"
+       x1="36"
+       y1="80"
+       x2="7"
+       y2="77"
+       gradientTransform="matrix(3, 0, 0, 1, 0, 0)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+
+  <rect id="path2775" 
+        x="0" y="0" width="66" height="200"
+        transform="matrix(3, 0, 0, 1, 0, 0)"
+        style="fill:url(#linearGradient3472)" />
+
+  <rect id="path27751" 
+        x="0" y="210" width="200" height="200"
+        style="fill:url(#linearGradient34722)" />
+</svg>
