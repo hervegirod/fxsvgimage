@@ -8,8 +8,8 @@
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
 <project name="fxsvgImage" default="default" basedir=".">
-    <description>Builds, tests, and runs the project fxsvgImage.</description>
-    <import file="nbproject/build-impl.xml"/>
+   <description>Builds, tests, and runs the project fxsvgImage.</description>
+   <import file="nbproject/build-impl.xml"/>
    <!-- =================================================================== -->
    <!-- post NB init                                                          -->
    <!-- =================================================================== -->
@@ -130,9 +130,9 @@
          <!-- the Xdoclint argument avoid to get javadoc errors when the documentation format is not compliant for HTML 4, which was the case before
          Java 8. It would also not be a good idea, because empty tags like br are very useful -->
          <arg line="-Xdoclint:none"/> 
-         <fileset dir="${src.dir}" excludes="${excludes}" includes="${includes}">
-            <filename name="**/*.java"/>
-         </fileset>
+         <fileset dir="${src.core.dir}" defaultexcludes="yes">
+            <include name="org/girod/javafx/svgimage/**/*.java"/>
+         </fileset>         
          <classpath>
             <path path="${javac.classpath}"/>
          </classpath>                     
