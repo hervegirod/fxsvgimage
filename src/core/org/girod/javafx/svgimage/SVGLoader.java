@@ -667,9 +667,12 @@ public class SVGLoader {
          } catch (MalformedURLException ex1) {
          }
       }
-      Image image = new Image(imageUrl.toString(), width, height, true, true);
+      if (imageUrl != null) {
+         Image image = new Image(imageUrl.toString(), width, height, true, true);
+         return new ImageView(image);
+      }
 
-      return new ImageView(image);
+      return null;
    }
 
    private void setTransform(Node node, XMLNode xmlNode) {
