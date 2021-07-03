@@ -73,6 +73,9 @@
             <include name="README.md"/>
             <include name="CHANGES.txt"/>
          </fileset>    
+         <fileset description="samples" dir=".">
+            <include name="samples/**/*.*"/>
+         </fileset>         
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
          </fileset>
@@ -86,6 +89,9 @@
             <include name="src/**/*.xml"/>            
             <include name="src/manifest*.mf"/>
          </fileset>
+         <fileset description="samples" dir=".">
+            <include name="samples/**/*.*"/>
+         </fileset>          
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
          </fileset>
