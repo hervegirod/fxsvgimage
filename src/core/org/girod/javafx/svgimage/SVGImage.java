@@ -43,10 +43,30 @@ import javafx.scene.image.WritableImage;
 /**
  * The resulting SVG image.It is a JavaFX Nodes tree.
  *
- * @since 0.1
+ * @version 0.2
  */
 public class SVGImage extends Group {
+   private static SnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
+
+   /**
+    * Set the default SnapshotParameters to use when creating a snapshot. The default is null, which means that a
+    * default SnapshotParameters will be created when creating a snapshot.
+    *
+    * @param params the default SnapshotParameters
+    */
+   public static void setDefaultSnapshotParameters(SnapshotParameters params) {
+      SNAPSHOT_PARAMS = params;
+   }
+
+   /**
+    * Return the default SnapshotParameters used when creating a snapshot.
+    *
+    * @return the default SnapshotParameters
+    */
+   public static SnapshotParameters getDefaultSnapshotParameters() {
+      return SNAPSHOT_PARAMS;
+   }
 
    void putNode(String id, Node node) {
       nodes.put(id, node);
@@ -100,7 +120,11 @@ public class SVGImage extends Group {
    public Image toImageScaled(double scaleX, double scaleY) {
       this.setScaleX(scaleX);
       this.setScaleY(scaleY);
-      WritableImage image = this.snapshot(new SnapshotParameters(), null);
+      SnapshotParameters params = SNAPSHOT_PARAMS;
+      if (params == null) {
+         params = new SnapshotParameters();
+      }
+      WritableImage image = this.snapshot(params, null);
       return image;
    }
 
@@ -117,7 +141,11 @@ public class SVGImage extends Group {
       double scaleY = initialHeight * scaleX;
       this.setScaleX(scaleX);
       this.setScaleY(scaleY);
-      WritableImage image = this.snapshot(new SnapshotParameters(), null);
+      SnapshotParameters params = SNAPSHOT_PARAMS;
+      if (params == null) {
+         params = new SnapshotParameters();
+      }
+      WritableImage image = this.snapshot(params, null);
       return image;
    }
 
@@ -127,7 +155,11 @@ public class SVGImage extends Group {
     * @return the Image
     */
    public Image toImage() {
-      WritableImage image = this.snapshot(new SnapshotParameters(), null);
+      SnapshotParameters params = SNAPSHOT_PARAMS;
+      if (params == null) {
+         params = new SnapshotParameters();
+      }
+      WritableImage image = this.snapshot(params, null);
       return image;
    }
 

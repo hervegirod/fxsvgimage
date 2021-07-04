@@ -71,6 +71,7 @@ import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.girod.javafx.svgimage.xml.PercentParser;
 import org.girod.javafx.svgimage.xml.LengthParser;
 import org.girod.javafx.svgimage.xml.XMLNode;
 import org.girod.javafx.svgimage.xml.XMLRoot;
@@ -80,7 +81,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @since 0.1
+ * @version 0.2
  */
 public class SVGLoader {
    private static final Pattern TRANSFORM = Pattern.compile("\\w+\\((.*)\\)");
@@ -142,10 +143,9 @@ public class SVGLoader {
     * @throws IOException
     */
    public static SVGImage load(URL url, String styleSheets) throws IOException {
-      SVGLoader loader = new SVGLoader(url);
-      SVGImage img = loader.loadImpl();
-      img.getStylesheets().add(styleSheets);
-      return img;
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      return load(url, params);
    }
 
    /**
@@ -170,11 +170,9 @@ public class SVGLoader {
     * @throws IOException
     */
    public static SVGImage loadScaled(URL url, double scale) throws IOException {
-      SVGLoader loader = new SVGLoader(url);
-      SVGImage img = loader.loadImpl();
-      img.setScaleX(scale);
-      img.setScaleY(scale);
-      return img;
+      LoaderParameters params = new LoaderParameters();
+      params.scale = scale;
+      return load(url, params);
    }
 
    /**
@@ -199,15 +197,9 @@ public class SVGLoader {
     * @throws IOException
     */
    public static SVGImage load(URL url, double width) throws IOException {
-      SVGLoader loader = new SVGLoader(url);
-      SVGImage img = loader.loadImpl();
-      double initialWidth = img.getLayoutBounds().getWidth();
-      double initialHeight = img.getLayoutBounds().getHeight();
-      double scaleX = width / initialWidth;
-      double scaleY = initialHeight * scaleX;
-      img.setScaleX(scaleX);
-      img.setScaleY(scaleY);
-      return img;
+      LoaderParameters params = new LoaderParameters();
+      params.width = width;
+      return load(url, params);
    }
 
    /**
@@ -234,16 +226,10 @@ public class SVGLoader {
     * @throws IOException
     */
    public static SVGImage load(URL url, double width, String styleSheets) throws IOException {
-      SVGLoader loader = new SVGLoader(url);
-      SVGImage img = loader.loadImpl();
-      img.getStylesheets().add(styleSheets);
-      double initialWidth = img.getLayoutBounds().getWidth();
-      double initialHeight = img.getLayoutBounds().getHeight();
-      double scaleX = width / initialWidth;
-      double scaleY = initialHeight * scaleX;
-      img.setScaleX(scaleX);
-      img.setScaleY(scaleY);
-      return img;
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      params.width = width;
+      return load(url, params);
    }
 
    /**
@@ -270,11 +256,36 @@ public class SVGLoader {
     * @throws IOException
     */
    public static SVGImage loadScaled(URL url, double scale, String styleSheets) throws IOException {
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      params.scale = scale;
+      return load(url, params);
+   }
+
+   /**
+    * Load a svg URL, and set the parameters of the associated JavaFX Node.
+    *
+    * @param url the URL
+    * @param params the parameters
+    * @return the SVGImage
+    * @throws IOException
+    */
+   public static SVGImage load(URL url, LoaderParameters params) throws IOException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
-      img.getStylesheets().add(styleSheets);
-      img.setScaleX(scale);
-      img.setScaleY(scale);
+      if (params.styleSheets != null) {
+         img.getStylesheets().add(params.styleSheets);
+      }
+      if (params.scale > 0) {
+         img.setScaleX(params.scale);
+         img.setScaleY(params.scale);
+      } else if (params.width > 0) {
+         double initialWidth = img.getLayoutBounds().getWidth();
+         double scaleX = params.width / initialWidth;
+         img.setScaleX(scaleX);
+         img.setScaleY(scaleX);
+      }
+
       return img;
    }
 
@@ -439,19 +450,19 @@ public class SVGLoader {
                }
                break;
             case "fx":
-               fx = xmlNode.getAttributeValueAsDouble(attrname);
+               fx = PercentParser.parseValue(xmlNode, attrname);
                break;
             case "fy":
-               fy = xmlNode.getAttributeValueAsDouble(attrname);
+               fy = PercentParser.parseValue(xmlNode, attrname);
                break;
             case "cx":
-               cx = xmlNode.getAttributeValueAsDouble(attrname);
+               cx = PercentParser.parseValue(xmlNode, attrname);
                break;
             case "cy":
-               cy = xmlNode.getAttributeValueAsDouble(attrname);
+               cy = PercentParser.parseValue(xmlNode, attrname);
                break;
             case "r":
-               r = xmlNode.getAttributeValueAsDouble(attrname);
+               r = PercentParser.parseValue(xmlNode, attrname);
                break;
             case "gradientTransform":
                transform = extractTransform(xmlNode.getAttributeValue(attrname));
@@ -502,7 +513,7 @@ public class SVGLoader {
             fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
          }
 
-         RadialGradient gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, false, CycleMethod.NO_CYCLE, stops);
+         RadialGradient gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, true, CycleMethod.NO_CYCLE, stops);
          gradients.put(id, gradient);
       }
    }
@@ -621,7 +632,7 @@ public class SVGLoader {
             String attrname = it2.next();
             switch (attrname) {
                case "offset":
-                  offset = childNode.getAttributeValueAsDouble(attrname);
+                  offset = PercentParser.parseValue(childNode, attrname);
                   break;
                case "style":
                   String style = childNode.getAttributeValue(attrname);

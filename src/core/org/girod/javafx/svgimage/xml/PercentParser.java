@@ -36,49 +36,53 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This utility class parse a length value.
+ * This utility class parse a percent value.
  *
- * @since 0.1
+ * @since 0.2
  */
-public class LengthParser {
+public class PercentParser {
    private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");
-   private static final Pattern NUMBER_UNIT = Pattern.compile("(\\d+)(\\.\\d+)?([\\w+])");
-   private static final double INCH = 1 / 96d;
+   private static final Pattern PERCENT_UNIT = Pattern.compile("(\\d+)(\\.\\d+)?%");
 
-   private LengthParser() {
+   private PercentParser() {
    }
 
    /**
-    * Parse a node attribute as a length value.
+    * Parse a node attribute as a percent value.
     *
     * @param node the node
     * @param attrName the attribute name
-    * @return the value
+    * @return the value clamped between and 1
     */
-   public static double parseLength(XMLNode node, String attrName) {
+   public static double parseValue(XMLNode node, String attrName) {
       String valueAsString = node.getAttributeValue(attrName);
       if (valueAsString != null) {
-         return parseLength(valueAsString);
+         return parseValue(valueAsString);
       } else {
          return 0;
       }
    }
 
    /**
-    * Parse a length value.
+    * Parse a percent value.
     *
-    * @param lengthValue the value
-    * @return the value
+    * @param value the value
+    * @return the value clamped between and 1
     */
-   public static double parseLength(String lengthValue) {
-      lengthValue = lengthValue.trim();
-      Matcher m = NUMBER.matcher(lengthValue);
+   public static double parseValue(String value) {
+      value = value.trim();
+      Matcher m = NUMBER.matcher(value);
       if (m.matches()) {
-         return Double.parseDouble(lengthValue);
+         double parsedValue = Double.parseDouble(value);
+         if (parsedValue < 0) {
+            parsedValue = 0;
+         } else if (parsedValue > 1) {
+            parsedValue = 1;
+         }
+         return parsedValue;
       }
-      m = NUMBER_UNIT.matcher(lengthValue);
+      m = PERCENT_UNIT.matcher(value);
       if (m.matches()) {
-         String unitS = m.group(m.groupCount());
          String startDigits = m.group(1);
          String endDigit = null;
          if (m.groupCount() > 1) {
@@ -90,16 +94,13 @@ public class LengthParser {
          } else {
             parsedValue = Double.parseDouble(startDigits + "." + endDigit);
          }
-         switch (unitS) {
-            case "px":
-               return parsedValue;
-            case "pt":
-               return parsedValue / INCH * 72d / 96d;
-            case "in":
-               return parsedValue / INCH;
-            default:
-               return parsedValue;
+         parsedValue = parsedValue / 100;
+         if (parsedValue < 0) {
+            parsedValue = 0;
+         } else if (parsedValue > 1) {
+            parsedValue = 1;
          }
+         return parsedValue;
       }
       return 0d;
    }
