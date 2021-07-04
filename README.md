@@ -3,6 +3,16 @@ This library allows to convert a SVG file to a JavaFX Node tree or an Image.
 
 Note that contrary to other existing libraries, this library has no external dependencies (including Batik)
 
+# History
+## 0.1
+- Initial release of the library
+
+## 0.2
+- Support percentages when appropriate (for example for GradientStop definitions)
+- Support some RadialGradient definitions
+- Allow to specify default SnapshotParameters in the SVGImage
+- Use a class to specify the parameters for the SVG loading
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
@@ -14,11 +24,12 @@ The `SVGImage` class is a `Group`.
 This library support:
 - clip paths
 - linear gradients
+- radial gradients
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
 - fill, stroke, style, class, transform attributes
 
 # Limitations
-The radial gradients do not work correctly for the moment
+- Radial gradients which use absolute values for their definitions do not work correctly for the moment
 
 # Other libraries
 The following libraries also convert a SVG file to a JavaFX Node tree:
