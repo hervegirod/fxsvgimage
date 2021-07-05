@@ -92,12 +92,30 @@ public class SVGImage extends Group {
    }
 
    /**
+    * Return the width of the image, taking into account the scaling of the svg image.
+    *
+    * @return the width
+    */
+   public double getScaledWidth() {
+      return this.getBoundsInParent().getWidth();
+   }
+
+   /**
     * Return the height of the image.
     *
     * @return the height
     */
    public double getHeight() {
       return this.getLayoutBounds().getHeight();
+   }
+
+   /**
+    * Return the height of the image, taking into account the scaling of the svg image.
+    *
+    * @return the height
+    */
+   public double getScaledHeight() {
+      return this.getBoundsInParent().getHeight();
    }
 
    /**
@@ -111,7 +129,7 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Convert the Node tree to an image.
+    * Convert the Node tree to a scaled image.
     *
     * @param scaleX the X scale
     * @param scaleY the Y scale

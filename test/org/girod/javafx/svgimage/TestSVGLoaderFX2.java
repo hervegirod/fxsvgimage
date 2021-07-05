@@ -46,14 +46,14 @@ import javafx.stage.WindowEvent;
  *
  * @author scdsahv
  */
-public class TestSVGLoaderFX extends Application {
+public class TestSVGLoaderFX2 extends Application {
    public static void main(String[] args) {
       launch(args);
    }
 
    @Override
    public void start(Stage stage) {
-      stage.setTitle("TestSVGLoaderFX");
+      stage.setTitle("TestSVGLoaderFX2");
 
       stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
          @Override
@@ -67,7 +67,8 @@ public class TestSVGLoaderFX extends Application {
       File file = fileChooser.showOpenDialog(stage);
       if (file != null) {
          try {
-            SVGImage svgImg = SVGLoader.load(file);
+            SVGImage svgImg = SVGLoader.load(file, 20);
+            System.out.println(svgImg.getBoundsInParent().getWidth());
             stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
 
             StackPane root = new StackPane();

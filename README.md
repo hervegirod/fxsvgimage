@@ -12,6 +12,8 @@ Note that contrary to other existing libraries, this library has no external dep
 - Support some RadialGradient definitions
 - Allow to specify default SnapshotParameters in the SVGImage
 - Use a class to specify the parameters for the SVG loading
+- Fix the layout position of scaled images
+- Fix an exception which could appear after a rotation
 
 # Usage
 Just calls one of the static `load` methods, for example:
@@ -35,5 +37,3 @@ This library support:
 The following libraries also convert a SVG file to a JavaFX Node tree:
 - https://github.com/afester/FranzXaver converts a SVG file but uses Batik internally
 - https://github.com/codecentric/javafxsvg converts a SVG file but uses Batik internally
-
-You can also use 

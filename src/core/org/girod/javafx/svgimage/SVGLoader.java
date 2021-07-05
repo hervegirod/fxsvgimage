@@ -277,13 +277,20 @@ public class SVGLoader {
          img.getStylesheets().add(params.styleSheets);
       }
       if (params.scale > 0) {
+         double initialWidth = img.getLayoutBounds().getWidth();
+         double initialHeight = img.getLayoutBounds().getHeight();         
          img.setScaleX(params.scale);
          img.setScaleY(params.scale);
+         img.setTranslateX(-initialWidth / 2 + initialWidth * params.scale / 2);
+         img.setTranslateY(-initialHeight / 2);         
       } else if (params.width > 0) {
          double initialWidth = img.getLayoutBounds().getWidth();
+         double initialHeight = img.getLayoutBounds().getHeight();
          double scaleX = params.width / initialWidth;
          img.setScaleX(scaleX);
          img.setScaleY(scaleX);
+         img.setTranslateX(-initialWidth / 2 + initialWidth * scaleX / 2);
+         img.setTranslateY(-initialHeight / 2);
       }
 
       return img;
@@ -684,9 +691,9 @@ public class SVGLoader {
 
    private Shape buildEllipse(XMLNode xmlNode) {
       Ellipse ellipse = new Ellipse(xmlNode.getAttributeValueAsDouble("cx", 0),
-         xmlNode.getAttributeValueAsDouble("cy", 0),
-         xmlNode.getAttributeValueAsDouble("rx", 0),
-         xmlNode.getAttributeValueAsDouble("ry", 0));
+              xmlNode.getAttributeValueAsDouble("cy", 0),
+              xmlNode.getAttributeValueAsDouble("rx", 0),
+              xmlNode.getAttributeValueAsDouble("ry", 0));
 
       return ellipse;
    }
@@ -786,7 +793,7 @@ public class SVGLoader {
       Font font = null;
       if (xmlNode.hasAttribute("font-family") && xmlNode.hasAttribute("font-size")) {
          font = Font.font(xmlNode.getAttributeValue("font-family").replace("'", ""),
-            xmlNode.getAttributeValueAsDouble("font-size"));
+                 xmlNode.getAttributeValueAsDouble("font-size"));
       }
 
       String cdata = xmlNode.getCDATA();
@@ -886,7 +893,7 @@ public class SVGLoader {
          } else if (transformTxt.startsWith("rotate(")) {
             List<Double> args = getArguments(transformTxt);
             if (args.size() == 3) {
-               transform = Transform.rotate(args.get(0), args.get(1), args.get(3));
+               transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
             }
          } else if (transformTxt.startsWith("skewX(")) {
             List<Double> args = getArguments(transformTxt);
