@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="504" height="504" text-rendering="auto" shape-rendering="auto">
+   <defs>
+      <clipPath id="_1195738149651500clip-0">
+         <path d="M 45 45 L 482 45 L 482 449 L 45 449 L 45 45 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-1">
+         <path d="M 0 0 L 505 0 L 505 505 L 0 505 L 0 0 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-2">
+         <path d="M 453.57 −33 L 453.57 472 L −51.43 472 L −51.43 −33 L 453.57 −33 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-3">
+         <path d="M 360.31 −33 L 360.31 472 L −144.69 472 L −144.69 −33 L 360.31 −33 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-4">
+         <path d="M 255.05 −33 L 255.05 472 L −249.95 472 L −249.95 −33 L 255.05 −33 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-5">
+         <path d="M 161.78 −33 L 161.78 472 L −343.22 472 L −343.22 −33 L 161.78 −33 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-6">
+         <path d="M 68.52 −33 L 68.52 472 L −436.48 472 L −436.48 −33 L 68.52 −33 Z "/>
+      </clipPath>
+      <clipPath id="_1195738149651500clip-7">
+         <path d="M 254 −11 L 254 494 L −251 494 L −251 −11 L 254 −11 Z "/>
+      </clipPath>
+   </defs>
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" transform="matrix(1,0,0,1,0,0)" />
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" transform="matrix(1,0,0,1,0,0)" />
+   <g style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;; fill: none" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-0)">
+      <path d="M 61 247 L 65 264 L 69 281 L 73 299 L 77 315 L 81 331 L 85 346 L 89 361 L 94 374 L 98 386 L 102 397 L 106 407 L 110 415 L 114 422 L 118 427 L 122 431 L 126 433 L 130 433 L 134 432 L 138 429 L 142 424 L 146 418 L 150 410 L 154 401 L 158 390 L 162 378 L 166 365 L 170 351 L 174 336 L 178 321 L 182 304 L 186 287 L 190 270 L 194 252 L 198 235 L 202 217 L 207 200 L 211 183 L 215 167 L 219 152 L 223 137 L 227 123 L 231 111 L 235 99 L 239 89 L 243 80 L 247 73 L 251 67 L 255 63 L 259 61 L 263 60 L 267 61 L 271 63 L 275 67 L 279 73 L 283 80 L 287 89 L 291 99 L 295 111 L 299 123 L 303 137 L 307 152 L 311 167 L 315 183 L 319 200 L 324 217 L 328 235 L 332 252 L 336 270 L 340 287 L 344 304 L 348 321 L 352 336 L 356 351 L 360 365 L 364 378 L 368 390 L 372 401 L 376 410 L 380 418 L 384 424 L 388 429 L 392 432 L 396 433 L 400 433 L 404 431 L 408 427 L 412 422 L 416 415 L 420 407 L 424 397 L 428 386 L 432 374 L 437 361 L 441 346 L 445 331 L 449 315 L 453 299 L 457 281 L 461 264 L 465 247"/>
+   </g>
+   <line x1="110" y1="448" x2="453" y2="448" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="110" y1="448" x2="110" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="196" y1="448" x2="196" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="281" y1="448" x2="281" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="367" y1="448" x2="367" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="453" y1="448" x2="453" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="95" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">￢ﾈﾒ2</text>
+   </g>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="192" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">0</text>
+   </g>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="278" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">2</text>
+   </g>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="364" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">4</text>
+   </g>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="449" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">6</text>
+   </g>
+   <line x1="45" y1="433" x2="45" y2="60" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="45" y1="433" x2="40" y2="433" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="45" y1="340" x2="40" y2="340" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="45" y1="247" x2="40" y2="247" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="45" y1="153" x2="40" y2="153" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <line x1="45" y1="60" x2="40" y2="60" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)"/>
+   <g transform="matrix(−0,−1,1,0,33,453.573522)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-2)">￢ﾈﾒ1,0</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,360.309771)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-3)">￢ﾈﾒ0,5</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,255.04602)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-4)">0,0</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,161.782269)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-5)">0,5</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,68.518519)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-6)">1,0</text>
+   </g>
+   <g style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;; fill: none" transform="matrix(1,0,0,1,0,0)" clip-path="url(#_1195738149651500clip-1)">
+      <path d="M 45 448 L 481 448 L 481 45 L 45 45 L 45 448"/>
+   </g>
+   <g transform="matrix(1,0,0,1,0,0)">
+      <text x="260" y="491" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-1)">x</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,11,254)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-7)">sin</text>
+   </g>
+</svg>

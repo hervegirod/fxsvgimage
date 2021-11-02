@@ -1,0 +1,9 @@
+<svg viewBox="0 0 875 337" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <filter id="blurry">
+    <feGaussianBlur stdDeviation="7 5" />
+    <feDropShadow dx="0" dy="25" flood-color="blue" flood-opacity="0.25" stdDeviation="5"/>
+  </filter>
+
+  <circle fill="blue" cx="265" cy="169" r="88"></circle>
+  <circle filter="url(#blurry)" fill="blue" cx="611" cy="169" r="88"></circle>
+</svg>

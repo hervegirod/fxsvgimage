@@ -1,0 +1,14 @@
+<svg width="512" height="512" viewBox="0 0 512 512"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+   <defs>
+      <filter id="barrel">
+         <feImage id="filter-image" xlink:href="circle.png" result="barrel" x="16" y="16" width="256" height="256" />
+         <feDisplacementMap in2="barrel" in="SourceGraphic" xChannelSelector="R" yChannelSelector="G" scale="64"></feDisplacementMap> 
+         <feComposite operator="in" in2="barrel"/>
+      </filter>
+   </defs>
+    
+   <image xlink:href="mountain-mirror.jpg" x="-16" y="-16" height="512" width="512" filter="url(#barrel)"/>
+</svg>

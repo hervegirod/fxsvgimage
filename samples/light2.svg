@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox = "0 0 1100 400" version = "1.1">
+    <desc>
+        Filter example
+    </desc>
+    <filter id = "i1">
+        <feGaussianBlur in = "SourceAlpha" stdDeviation = "8" result = "blur1"/>
+        <feSpecularLighting result = "specOut" in = "blur1" specularConstant = "1.2" specularExponent = "12" lighting-color = "#bbbbbb">
+            <feDistantLight azimuth = "45" elevation = "45"/>
+        </feSpecularLighting>
+        <feComposite in = "SourceGraphic" in2 = "specOut" operator = "arithmetic" k1 = "0" k2 = "1" k3 = "1" k4 = "0"/>
+    </filter>
+    <g stroke = "tomato" fill = "peru" filter = "url(#i1)">
+        <rect x = "10%" y = "10%" width = "40%" height = "40%"/>
+        <rect x = "55%" y = "10%" width = "40%" height = "40%"/>
+        <rect x = "10%" y = "55%" width = "40%" height = "40%"/>
+        <rect x = "55%" y = "55%" width = "40%" height = "40%"/>
+    </g>
+</svg>

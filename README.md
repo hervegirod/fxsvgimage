@@ -15,6 +15,15 @@ Note that contrary to other existing libraries, this library has no external dep
 - Fix the layout position of scaled images
 - Fix an exception which could appear after a rotation
 
+## 0.3
+ - Protect against unparsable transforms
+ - Accept the "-" character for the minus sign
+ - Fix the library not allowing to use several times the same clip 
+ - Fix the library not parsing direct "clip-path" elements (only parsed those defined within style values)
+ - Fix some style values not properly parsed
+ - Fix the stroke of shapes which was incorrectly assigned as a fill
+ - Allow to call the loader outside of the JavaFX Platform Thread
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~

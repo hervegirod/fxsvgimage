@@ -42,8 +42,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -54,13 +59,6 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -71,8 +69,13 @@ import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.girod.javafx.svgimage.xml.PercentParser;
+import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.LengthParser;
+import org.girod.javafx.svgimage.xml.ParserUtils;
+import org.girod.javafx.svgimage.xml.PercentParser;
+import org.girod.javafx.svgimage.xml.SVGParsingException;
+import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
+import org.girod.javafx.svgimage.xml.SVGTags;
 import org.girod.javafx.svgimage.xml.XMLNode;
 import org.girod.javafx.svgimage.xml.XMLRoot;
 import org.girod.javafx.svgimage.xml.XMLTreeHandler;
@@ -81,15 +84,15 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.2
+ * @version 0.3
  */
-public class SVGLoader {
-   private static final Pattern TRANSFORM = Pattern.compile("\\w+\\((.*)\\)");
+public class SVGLoader implements SVGTags {
+   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
    private final URL url;
    private final SVGImage root;
+   private final ClippingFactory clippingFactory = new ClippingFactory();
    private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
    private final Map<String, Paint> gradients = new HashMap<>();
-   private final Map<String, Shape> clips = new HashMap<>();
 
    private SVGLoader(URL url) {
       this.url = url;
@@ -101,11 +104,15 @@ public class SVGLoader {
     *
     * @param file the file
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(File file) throws IOException {
-      URL url = file.toURI().toURL();
-      return load(url);
+   public static SVGImage load(File file) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return load(url);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
    }
 
    /**
@@ -113,9 +120,9 @@ public class SVGLoader {
     *
     * @param url the URL
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(URL url) throws IOException {
+   public static SVGImage load(URL url) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       return img;
@@ -127,11 +134,15 @@ public class SVGLoader {
     * @param file the file
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(File file, String styleSheets) throws IOException {
-      URL url = file.toURI().toURL();
-      return load(url, styleSheets);
+   public static SVGImage load(File file, String styleSheets) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return load(url, styleSheets);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
    }
 
    /**
@@ -140,9 +151,9 @@ public class SVGLoader {
     * @param url the URL
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(URL url, String styleSheets) throws IOException {
+   public static SVGImage load(URL url, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
       params.styleSheets = styleSheets;
       return load(url, params);
@@ -154,11 +165,15 @@ public class SVGLoader {
     * @param file the file
     * @param scale the scale
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage loadScaled(File file, double scale) throws IOException {
-      URL url = file.toURI().toURL();
-      return loadScaled(url, scale);
+   public static SVGImage loadScaled(File file, double scale) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return loadScaled(url, scale);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
    }
 
    /**
@@ -167,9 +182,9 @@ public class SVGLoader {
     * @param url the URL
     * @param scale the scale
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage loadScaled(URL url, double scale) throws IOException {
+   public static SVGImage loadScaled(URL url, double scale) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
       params.scale = scale;
       return load(url, params);
@@ -181,11 +196,15 @@ public class SVGLoader {
     * @param file the file
     * @param width the resulting width
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(File file, double width) throws IOException {
-      URL url = file.toURI().toURL();
-      return load(url, width);
+   public static SVGImage load(File file, double width) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return load(url, width);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
    }
 
    /**
@@ -194,9 +213,9 @@ public class SVGLoader {
     * @param url the URL
     * @param width the resulting width
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(URL url, double width) throws IOException {
+   public static SVGImage load(URL url, double width) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
       params.width = width;
       return load(url, params);
@@ -209,11 +228,15 @@ public class SVGLoader {
     * @param width the resulting width
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(File file, double width, String styleSheets) throws IOException {
-      URL url = file.toURI().toURL();
-      return load(url, width, styleSheets);
+   public static SVGImage load(File file, double width, String styleSheets) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return load(url, width, styleSheets);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
    }
 
    /**
@@ -223,9 +246,9 @@ public class SVGLoader {
     * @param width the resulting width
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(URL url, double width, String styleSheets) throws IOException {
+   public static SVGImage load(URL url, double width, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
       params.styleSheets = styleSheets;
       params.width = width;
@@ -239,11 +262,16 @@ public class SVGLoader {
     * @param scale the scale
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage loadScaled(File file, double scale, String styleSheets) throws IOException {
-      URL url = file.toURI().toURL();
-      return loadScaled(url, scale, styleSheets);
+   public static SVGImage loadScaled(File file, double scale, String styleSheets) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return loadScaled(url, scale, styleSheets);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
+
    }
 
    /**
@@ -253,9 +281,9 @@ public class SVGLoader {
     * @param scale the scale
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage loadScaled(URL url, double scale, String styleSheets) throws IOException {
+   public static SVGImage loadScaled(URL url, double scale, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
       params.styleSheets = styleSheets;
       params.scale = scale;
@@ -268,9 +296,9 @@ public class SVGLoader {
     * @param url the URL
     * @param params the parameters
     * @return the SVGImage
-    * @throws IOException
+    * @throws SVGParsingException
     */
-   public static SVGImage load(URL url, LoaderParameters params) throws IOException {
+   public static SVGImage load(URL url, LoaderParameters params) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url);
       SVGImage img = loader.loadImpl();
       if (params.styleSheets != null) {
@@ -278,11 +306,11 @@ public class SVGLoader {
       }
       if (params.scale > 0) {
          double initialWidth = img.getLayoutBounds().getWidth();
-         double initialHeight = img.getLayoutBounds().getHeight();         
+         double initialHeight = img.getLayoutBounds().getHeight();
          img.setScaleX(params.scale);
          img.setScaleY(params.scale);
          img.setTranslateX(-initialWidth / 2 + initialWidth * params.scale / 2);
-         img.setTranslateY(-initialHeight / 2);         
+         img.setTranslateY(-initialHeight / 2);
       } else if (params.width > 0) {
          double initialWidth = img.getLayoutBounds().getWidth();
          double initialHeight = img.getLayoutBounds().getHeight();
@@ -292,11 +320,38 @@ public class SVGLoader {
          img.setTranslateX(-initialWidth / 2 + initialWidth * scaleX / 2);
          img.setTranslateY(-initialHeight / 2);
       }
-
       return img;
    }
 
-   private SVGImage loadImpl() throws IOException {
+   private SVGImage loadImpl() throws SVGParsingException {
+      if (Platform.isFxApplicationThread()) {
+         try {
+            return loadImplInJFX();
+         } catch (IOException ex) {
+            throw new SVGParsingException(ex);
+         }
+      } else {
+         // the next instruction is only there to initialize the JavaFX platform
+         new JFXPanel();
+         FutureTask<SVGImage> future = new FutureTask<>(new Callable<SVGImage>() {
+            @Override
+            public SVGImage call() throws Exception {
+               SVGImage img = loadImplInJFX();
+               return img;
+            }
+         });
+         Platform.runLater(future);
+         try {
+            return future.get();
+         } catch (InterruptedException ex) {
+            return null;
+         } catch (ExecutionException ex) {
+            throw new SVGParsingException(ex.getCause());
+         }
+      }
+   }
+
+   private SVGImage loadImplInJFX() throws IOException {
       SAXParserFactory saxfactory = SAXParserFactory.newInstance();
       try {
          SAXParser parser = saxfactory.newSAXParser();
@@ -327,56 +382,56 @@ public class SVGLoader {
          Node node = null;
          String name = childNode.getName();
          switch (name) {
-            case "rect":
-               node = buildRect(childNode);
+            case RECT:
+               node = SVGShapeBuilder.buildRect(childNode);
                break;
-            case "circle":
-               node = buildCircle(childNode);
+            case CIRCLE:
+               node = SVGShapeBuilder.buildCircle(childNode);
                break;
-            case "ellipse":
-               node = buildEllipse(childNode);
+            case ELLIPSE:
+               node = SVGShapeBuilder.buildEllipse(childNode);
                break;
-            case "path":
-               node = buildPath(childNode);
+            case PATH:
+               node = SVGShapeBuilder.buildPath(childNode);
                break;
-            case "polygon":
-               node = buildPolygon(childNode);
+            case POLYGON:
+               node = SVGShapeBuilder.buildPolygon(childNode);
                break;
-            case "line":
-               node = buildLine(childNode);
+            case LINE:
+               node = SVGShapeBuilder.buildLine(childNode);
                break;
-            case "polyline":
-               node = buildPolyline(childNode);
+            case POLYLINE:
+               node = SVGShapeBuilder.buildPolyline(childNode);
                break;
-            case "text":
+            case TEXT:
                node = buildText(childNode);
                if (node == null) {
                   node = buildTSpanGroup(childNode);
                }
                break;
-            case "image":
+            case IMAGE:
                node = buildImage(childNode);
                break;
-            case "svg":
-            case "g":
+            case SVG:
+            case G:
                node = buildGroup(childNode);
                break;
-            case "defs":
+            case DEFS:
                if (!acceptDefs) {
                   buildDefs(childNode);
                   break;
                }
-            case "clipPath":
+            case CLIP_PATH:
                if (acceptDefs) {
                   buildClipPath(childNode);
                   break;
                }
-            case "linearGradient":
+            case LINEAR_GRADIENT:
                if (acceptDefs) {
                   buildLinearGradient(childNode);
                   break;
                }
-            case "radialGradient":
+            case RADIAL_GRADIENT:
                if (acceptDefs) {
                   buildRadialGradient(childNode);
                   break;
@@ -407,7 +462,7 @@ public class SVGLoader {
          Node node = null;
          String name = childNode.getName();
          switch (name) {
-            case "tspan":
+            case TSPAN:
                node = buildText(childNode);
                break;
          }
@@ -440,38 +495,38 @@ public class SVGLoader {
       while (it.hasNext()) {
          String attrname = it.next();
          switch (attrname) {
-            case "id":
+            case ID:
                id = xmlNode.getAttributeValue(attrname);
                break;
-            case "xlink:href":
+            case XLINK_HREF:
                href = xmlNode.getAttributeValue(attrname);
                if (href.startsWith("#")) {
                   href = href.substring(1);
                } else {
                   href = null;
                }
-            case "gradientUnits":
+            case GRADIENT_UNITS:
                String gradientUnits = xmlNode.getAttributeValue(attrname);
                if (!gradientUnits.equals("userSpaceOnUse")) {
                   return;
                }
                break;
-            case "fx":
+            case FX:
                fx = PercentParser.parseValue(xmlNode, attrname);
                break;
-            case "fy":
+            case FY:
                fy = PercentParser.parseValue(xmlNode, attrname);
                break;
-            case "cx":
+            case CX:
                cx = PercentParser.parseValue(xmlNode, attrname);
                break;
-            case "cy":
+            case CY:
                cy = PercentParser.parseValue(xmlNode, attrname);
                break;
-            case "r":
+            case R:
                r = PercentParser.parseValue(xmlNode, attrname);
                break;
-            case "gradientTransform":
+            case GRADIENT_TRANSFORM:
                transform = extractTransform(xmlNode.getAttributeValue(attrname));
                break;
             default:
@@ -483,7 +538,7 @@ public class SVGLoader {
       if (id != null) {
          gradientSpecs.put(id, spec);
       }
-      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, "radialGradient");
+      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, RADIAL_GRADIENT);
       if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
          specstops = gradientSpecs.get(href).getStops();
       }
@@ -538,10 +593,10 @@ public class SVGLoader {
       while (it.hasNext()) {
          String attrname = it.next();
          switch (attrname) {
-            case "id":
+            case ID:
                id = xmlNode.getAttributeValue(attrname);
                break;
-            case "xlink:href":
+            case XLINK_HREF:
                href = xmlNode.getAttributeValue(attrname);
                if (href.startsWith("#")) {
                   href = href.substring(1);
@@ -549,25 +604,25 @@ public class SVGLoader {
                   href = null;
                }
                break;
-            case "gradientUnits":
+            case GRADIENT_UNITS:
                String gradientUnits = xmlNode.getAttributeValue(attrname);
                if (!gradientUnits.equals("userSpaceOnUse")) {
                   return;
                }
                break;
-            case "x1":
+            case X1:
                x1 = xmlNode.getAttributeValueAsDouble(attrname);
                break;
-            case "y1":
+            case Y1:
                y1 = xmlNode.getAttributeValueAsDouble(attrname);
                break;
-            case "x2":
+            case X2:
                x2 = xmlNode.getAttributeValueAsDouble(attrname);
                break;
-            case "y2":
+            case Y2:
                y2 = xmlNode.getAttributeValueAsDouble(attrname);
                break;
-            case "gradientTransform":
+            case GRADIENT_TRANSFORM:
                transform = extractTransform(xmlNode.getAttributeValue(attrname));
                break;
             default:
@@ -579,7 +634,7 @@ public class SVGLoader {
       if (id != null) {
          gradientSpecs.put(id, spec);
       }
-      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, "linearGradient");
+      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, LINEAR_GRADIENT);
       if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
          specstops = gradientSpecs.get(href).getStops();
       }
@@ -614,14 +669,6 @@ public class SVGLoader {
       return stops;
    }
 
-   private double parseDoubleProtected(String valueS) {
-      try {
-         return Double.parseDouble(valueS);
-      } catch (NumberFormatException e) {
-         return 0;
-      }
-   }
-
    private List<GradientSpec.Stop> buildStops(GradientSpec spec, XMLNode xmlNode, String kindOfGradient) {
       List<GradientSpec.Stop> stops = new ArrayList<>();
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
@@ -638,10 +685,10 @@ public class SVGLoader {
          while (it2.hasNext()) {
             String attrname = it2.next();
             switch (attrname) {
-               case "offset":
+               case OFFSET:
                   offset = PercentParser.parseValue(childNode, attrname);
                   break;
-               case "style":
+               case STYLE:
                   String style = childNode.getAttributeValue(attrname);
                   StringTokenizer tokenizer = new StringTokenizer(style, ";");
                   while (tokenizer.hasMoreTokens()) {
@@ -649,7 +696,7 @@ public class SVGLoader {
                      if (item.startsWith("stop-color")) {
                         color = item.substring(11);
                      } else if (item.startsWith("stop-opacity")) {
-                        opacity = parseDoubleProtected(item.substring(13));
+                        opacity = ParserUtils.parseDoubleProtected(item.substring(13));
                      } else {
                      }
                   }
@@ -669,131 +716,18 @@ public class SVGLoader {
       return stops;
    }
 
-   private Shape buildRect(XMLNode xmlNode) {
-      double x = 0.0;
-      double y = 0.0;
-
-      if (xmlNode.hasAttribute("x")) {
-         x = xmlNode.getAttributeValueAsDouble("x");
-      }
-      if (xmlNode.hasAttribute("y")) {
-         y = xmlNode.getAttributeValueAsDouble("y");
-      }
-      Rectangle rect = new Rectangle(x, y, xmlNode.getAttributeValueAsDouble("width", 0), xmlNode.getAttributeValueAsDouble("height", 0));
-      return rect;
-   }
-
-   private Shape buildCircle(XMLNode xmlNode) {
-      Circle circle = new Circle(xmlNode.getAttributeValueAsDouble("cx", 0), xmlNode.getAttributeValueAsDouble("cy", 0), xmlNode.getAttributeValueAsDouble("r", 0));
-
-      return circle;
-   }
-
-   private Shape buildEllipse(XMLNode xmlNode) {
-      Ellipse ellipse = new Ellipse(xmlNode.getAttributeValueAsDouble("cx", 0),
-              xmlNode.getAttributeValueAsDouble("cy", 0),
-              xmlNode.getAttributeValueAsDouble("rx", 0),
-              xmlNode.getAttributeValueAsDouble("ry", 0));
-
-      return ellipse;
-   }
-
-   private Shape buildPath(XMLNode xmlNode) {
-      SVGPath path = new SVGPath();
-      path.setContent(xmlNode.getAttributeValue("d"));
-
-      return path;
-   }
-
-   private Shape buildPolygon(XMLNode node) {
-      String pointsAttribute = node.getAttributeValue("points");
-      Polygon polygon = new Polygon();
-
-      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
-      while (tokenizer.hasMoreTokens()) {
-         String point = tokenizer.nextToken();
-
-         StringTokenizer tokenizer2 = new StringTokenizer(point, ",");
-         Double x = Double.valueOf(tokenizer2.nextToken());
-         Double y = Double.valueOf(tokenizer2.nextToken());
-
-         polygon.getPoints().add(x);
-         polygon.getPoints().add(y);
-      }
-
-      return polygon;
-   }
-
-   private Shape buildLine(XMLNode xmlNode) {
-      if (xmlNode.hasAttribute("x1") && xmlNode.hasAttribute("y1") && xmlNode.hasAttribute("x2") && xmlNode.hasAttribute("y2")) {
-         double x1 = xmlNode.getAttributeValueAsDouble("x1");
-         double y1 = xmlNode.getAttributeValueAsDouble("y1");
-         double x2 = xmlNode.getAttributeValueAsDouble("x2");
-         double y2 = xmlNode.getAttributeValueAsDouble("y2");
-
-         return new Line(x1, y1, x2, y2);
-      } else {
-         return null;
-      }
-   }
-
-   private Shape buildPolyline(XMLNode xmlNode) {
-      Polyline polyline = new Polyline();
-      String pointsAttribute = xmlNode.getAttributeValue("points");
-
-      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
-      while (tokenizer.hasMoreTokens()) {
-         String points = tokenizer.nextToken();
-         StringTokenizer tokenizer2 = new StringTokenizer(points, ",");
-         double x = parseDoubleProtected(tokenizer2.nextToken());
-         double y = parseDoubleProtected(tokenizer2.nextToken());
-         polyline.getPoints().add(x);
-         polyline.getPoints().add(y);
-      }
-
-      return polyline;
-   }
-
    private void buildClipPath(XMLNode xmlNode) {
-      if (xmlNode.hasAttribute("id")) {
-         String id = xmlNode.getAttributeValue("id");
-         Shape theShape = null;
-         Iterator<XMLNode> it = xmlNode.getChildren().iterator();
-         while (it.hasNext()) {
-            XMLNode childNode = it.next();
-            Shape shape = null;
-            String name = childNode.getName();
-            switch (name) {
-               case "circle":
-                  shape = buildCircle(childNode);
-                  break;
-               case "path":
-                  shape = buildPath(childNode);
-                  break;
-               case "ellipse":
-                  shape = buildEllipse(childNode);
-                  break;
-               case "rect":
-                  shape = buildRect(childNode);
-                  break;
-            }
-            if (theShape == null) {
-               theShape = shape;
-            } else {
-               theShape = Shape.union(theShape, shape);
-            }
-         }
-         if (theShape != null) {
-            clips.put(id, theShape);
-         }
+      if (xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         clippingFactory.addClipSpec(id, xmlNode);
       }
    }
 
    private Text buildText(XMLNode xmlNode) {
       Font font = null;
-      if (xmlNode.hasAttribute("font-family") && xmlNode.hasAttribute("font-size")) {
-         font = Font.font(xmlNode.getAttributeValue("font-family").replace("'", ""),
-                 xmlNode.getAttributeValueAsDouble("font-size"));
+      if (xmlNode.hasAttribute(FONT_FAMILY) && xmlNode.hasAttribute(FONT_SIZE)) {
+         font = Font.font(xmlNode.getAttributeValue(FONT_FAMILY).replace("'", ""),
+            xmlNode.getAttributeValueAsDouble(FONT_SIZE));
       }
 
       String cdata = xmlNode.getCDATA();
@@ -810,9 +744,9 @@ public class SVGLoader {
    }
 
    private ImageView buildImage(XMLNode xmlNode) {
-      double width = xmlNode.getAttributeValueAsDouble("width", 0);
-      double height = xmlNode.getAttributeValueAsDouble("height", 0);
-      String hrefAttribute = xmlNode.getAttributeValue("href");
+      double width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
+      double height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+      String hrefAttribute = xmlNode.getAttributeValue(HREF);
 
       URL imageUrl = null;
       try {
@@ -832,16 +766,18 @@ public class SVGLoader {
    }
 
    private void setTransform(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute("transform")) {
-         String transforms = xmlNode.getAttributeValue("transform");
+      if (xmlNode.hasAttribute(TRANSFORM)) {
+         String transforms = xmlNode.getAttributeValue(TRANSFORM);
          Transform transform = extractTransform(transforms);
-         node.getTransforms().add(transform);
+         if (transform != null) {
+            node.getTransforms().add(transform);
+         }
       }
    }
 
    private List<Double> getArguments(String transformTxt) {
       List<Double> args = new ArrayList<>();
-      Matcher m = TRANSFORM.matcher(transformTxt);
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
       if (m.matches()) {
          String content = m.group(1);
          String remaining = content;
@@ -851,19 +787,11 @@ public class SVGLoader {
                index = remaining.indexOf(',');
             }
             if (index == -1) {
-               try {
-                  double value = Double.parseDouble(remaining);
-                  args.add(value);
-               } catch (NumberFormatException e) {
-               }
+               ParserUtils.parseDoubleArgument(args, remaining);
                break;
             } else {
-               try {
-                  String beginning = remaining.substring(0, index);
-                  double value = Double.parseDouble(beginning);
-                  args.add(value);
-               } catch (NumberFormatException e) {
-               }
+               String beginning = remaining.substring(0, index);
+               ParserUtils.parseDoubleArgument(args, beginning);
                remaining = remaining.substring(index + 1);
             }
          }
@@ -917,8 +845,8 @@ public class SVGLoader {
    }
 
    private void setOpacity(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute("opacity")) {
-         double opacity = xmlNode.getAttributeValueAsDouble("opacity");
+      if (xmlNode.hasAttribute(OPACITY)) {
+         double opacity = xmlNode.getAttributeValueAsDouble(OPACITY);
          node.setOpacity(opacity);
       }
    }
@@ -945,27 +873,44 @@ public class SVGLoader {
       }
    }
 
+   private void setClipPath(Shape shape, String spec) {
+      if (spec.startsWith("url(#")) {
+         String clipID = spec.substring(5, spec.length() - 1);
+         if (clippingFactory.hasClip(clipID)) {
+            Shape clipShape = clippingFactory.createClip(clipID);
+            if (clipShape != null) {
+               shape.setClip(clipShape);
+            }
+         }
+      }
+   }
+
    private void setShapeStyle(Shape shape, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute("fill")) {
-         shape.setFill(expressPaint(xmlNode.getAttributeValue("fill")));
+      if (xmlNode.hasAttribute(FILL)) {
+         shape.setFill(expressPaint(xmlNode.getAttributeValue(FILL)));
       }
 
-      if (xmlNode.hasAttribute("stroke")) {
-         shape.setFill(expressPaint(xmlNode.getAttributeValue("stroke")));
+      if (xmlNode.hasAttribute(STROKE)) {
+         shape.setStroke(expressPaint(xmlNode.getAttributeValue(STROKE)));
       }
 
-      if (xmlNode.hasAttribute("stroke-width")) {
-         double strokeWidth = xmlNode.getAttributeValueAsDouble("stroke-width", 1);
+      if (xmlNode.hasAttribute(STROKE_WIDTH)) {
+         double strokeWidth = xmlNode.getAttributeValueAsDouble(STROKE_WIDTH, 1);
          shape.setStrokeWidth(strokeWidth);
       }
 
-      if (xmlNode.hasAttribute("class")) {
-         String styleClasses = xmlNode.getAttributeValue("class");
+      if (xmlNode.hasAttribute(CLASS)) {
+         String styleClasses = xmlNode.getAttributeValue(CLASS);
          setStyleClass(shape, styleClasses);
       }
 
-      if (xmlNode.hasAttribute("style")) {
-         String styles = xmlNode.getAttributeValue("style");
+      if (xmlNode.hasAttribute(CLIP_PATH)) {
+         String content = xmlNode.getAttributeValue(CLIP_PATH);
+         setClipPath(shape, content);
+      }
+
+      if (xmlNode.hasAttribute(STYLE)) {
+         String styles = xmlNode.getAttributeValue(STYLE);
          StringTokenizer tokenizer = new StringTokenizer(styles, ";");
          while (tokenizer.hasMoreTokens()) {
             String style = tokenizer.nextToken();
@@ -973,7 +918,7 @@ public class SVGLoader {
             StringTokenizer tokenizer2 = new StringTokenizer(style, ":");
             String styleName = tokenizer2.nextToken().trim();
             String styleValue = null;
-            if (tokenizer.hasMoreTokens()) {
+            if (tokenizer2.hasMoreTokens()) {
                styleValue = tokenizer2.nextToken().trim();
             }
             if (styleValue == null) {
@@ -981,25 +926,20 @@ public class SVGLoader {
             }
 
             switch (styleName) {
-               case "clip-path":
-                  if (styleValue.startsWith("url(#")) {
-                     String clipID = styleValue.substring(5, styleValue.length() - 1);
-                     if (clips.containsKey(clipID)) {
-                        shape.setClip(clips.get(clipID));
-                     }
-                  }
+               case CLIP_PATH:
+                  setClipPath(shape, styleValue);
                   break;
-               case "fill":
+               case FILL:
                   shape.setFill(expressPaint(styleValue));
                   break;
-               case "stroke":
+               case STROKE:
                   shape.setStroke(expressPaint(styleValue));
                   break;
-               case "stroke-width":
+               case STROKE_WIDTH:
                   double strokeWidth = LengthParser.parseLength(styleValue);
                   shape.setStrokeWidth(strokeWidth);
                   break;
-               case "stroke-linecap":
+               case STROKE_LINECAP:
                   StrokeLineCap linecap = StrokeLineCap.BUTT;
                   if (styleValue.equals("round")) {
                      linecap = StrokeLineCap.ROUND;
@@ -1010,14 +950,14 @@ public class SVGLoader {
 
                   shape.setStrokeLineCap(linecap);
                   break;
-               case "stroke-miterlimit":
+               case STROKE_MITERLIMIT:
                   try {
                      double miterLimit = Double.parseDouble(styleValue);
                      shape.setStrokeMiterLimit(miterLimit);
                   } catch (NumberFormatException e) {
                   }
                   break;
-               case "stroke-linejoin":
+               case STROKE_LINEJOIN:
                   StrokeLineJoin linejoin = StrokeLineJoin.MITER;
                   if (styleValue.equals("bevel")) {
                      linejoin = StrokeLineJoin.BEVEL;
@@ -1028,7 +968,7 @@ public class SVGLoader {
 
                   shape.setStrokeLineJoin(linejoin);
                   break;
-               case "opacity":
+               case OPACITY:
                   try {
                      double opacity = Double.parseDouble(styleValue);
                      shape.setOpacity(opacity);

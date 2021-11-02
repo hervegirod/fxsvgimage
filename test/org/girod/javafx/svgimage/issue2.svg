@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="504" height="504" text-rendering="auto" shape-rendering="auto">
+   <defs>
+      <clipPath id="_1195738149651500clip-0">
+         <path d="M 45 45 L 482 45 L 482 449 L 45 449 L 45 45 Z "/>
+      </clipPath>
+   </defs>
+   <g transform="matrix(−0,−1,1,0,33,360.309771)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-0)">￢ﾈﾒ0,5</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,255.04602)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_1195738149651500clip-0)">0,0</text>
+   </g>   
+</svg>

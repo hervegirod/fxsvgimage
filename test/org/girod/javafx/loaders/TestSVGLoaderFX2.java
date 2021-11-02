@@ -30,32 +30,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.loaders;
 
 import java.io.File;
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
+import org.girod.javafx.svgimage.xml.SVGParsingException;
 
 /**
  *
- * @author scdsahv
+ * @since 0.3
  */
-public class TestSVGLoaderImage extends Application {
+public class TestSVGLoaderFX2 extends Application {
    public static void main(String[] args) {
       launch(args);
    }
 
    @Override
    public void start(Stage stage) {
-      stage.setTitle("TestSVGLoader");
+      stage.setTitle("TestSVGLoaderFX2");
 
       stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
          @Override
@@ -69,16 +69,15 @@ public class TestSVGLoaderImage extends Application {
       File file = fileChooser.showOpenDialog(stage);
       if (file != null) {
          try {
-            SVGImage svgImg = SVGLoader.load(file);
+            SVGImage svgImg = SVGLoader.load(file, 20);
+            System.out.println(svgImg.getBoundsInParent().getWidth());
             stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
 
             StackPane root = new StackPane();
-            Image img = svgImg.toImage();
-            ImageView view = new ImageView(img);
-            root.getChildren().add(view);
+            root.getChildren().add(svgImg);
             stage.setScene(new Scene(root, 300, 250));
             stage.show();
-         } catch (IOException e) {
+         } catch (SVGParsingException e) {
             e.printStackTrace();
          }
       } else {

@@ -42,7 +42,7 @@ import java.util.TreeMap;
 /**
  * A Node in an XML File.
  *
- * @since 0.1
+ * @version 0.3
  */
 public class XMLNode {
    /**
@@ -197,9 +197,9 @@ public class XMLNode {
          if (siblings.size() < 2) {
             return null;
          } else {
-            int index = siblings.indexOf(this);
-            if (siblings.size() > index + 1) {
-               return siblings.get(index + 1);
+            int theIndex = siblings.indexOf(this);
+            if (siblings.size() > theIndex + 1) {
+               return siblings.get(theIndex + 1);
             } else {
                return null;
             }
@@ -220,9 +220,9 @@ public class XMLNode {
          if (siblings.size() < 2) {
             return null;
          } else {
-            int index = siblings.indexOf(this);
-            if (index > 0) {
-               return siblings.get(index - 1);
+            int _index = siblings.indexOf(this);
+            if (_index > 0) {
+               return siblings.get(_index - 1);
             } else {
                return null;
             }
@@ -336,6 +336,7 @@ public class XMLNode {
    public float getAttributeValueAsFloat(String attrName, float defaultValue) {
       if (attributes.containsKey(attrName)) {
          String attrvalue = attributes.get(attrName);
+         attrvalue = attrvalue.replace('−', '-');
          try {
             float f = Float.parseFloat(attrvalue);
             return f;
@@ -367,6 +368,7 @@ public class XMLNode {
    public double getAttributeValueAsDouble(String attrName, double defaultValue) {
       if (attributes.containsKey(attrName)) {
          String attrvalue = attributes.get(attrName);
+         attrvalue = attrvalue.replace('−', '-');
          try {
             double d = LengthParser.parseLength(attrvalue);
             return d;

@@ -34,6 +34,10 @@ package org.girod.javafx.svgimage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -41,9 +45,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
 /**
- * The resulting SVG image.It is a JavaFX Nodes tree.
+ * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.2
+ * @version 0.3
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -142,7 +146,7 @@ public class SVGImage extends Group {
       if (params == null) {
          params = new SnapshotParameters();
       }
-      WritableImage image = this.snapshot(params, null);
+      WritableImage image = snapshotImpl(params);
       return image;
    }
 
@@ -163,7 +167,7 @@ public class SVGImage extends Group {
       if (params == null) {
          params = new SnapshotParameters();
       }
-      WritableImage image = this.snapshot(params, null);
+      WritableImage image = snapshotImpl(params);
       return image;
    }
 
@@ -177,7 +181,7 @@ public class SVGImage extends Group {
       if (params == null) {
          params = new SnapshotParameters();
       }
-      WritableImage image = this.snapshot(params, null);
+      WritableImage image = snapshotImpl(params);
       return image;
    }
 
@@ -188,7 +192,34 @@ public class SVGImage extends Group {
     * @return the Image
     */
    public Image toImage(SnapshotParameters params) {
+      WritableImage image = snapshotImpl(params);
+      return image;
+   }
+
+   private WritableImage snapshotImplInJFX(SnapshotParameters params) {
       WritableImage image = this.snapshot(params, null);
       return image;
+   }
+
+   private WritableImage snapshotImpl(SnapshotParameters params) {
+      if (Platform.isFxApplicationThread()) {
+         return snapshotImplInJFX(params);
+      } else {
+         // the next instruction is only there to initialize the JavaFX platform
+         new JFXPanel();
+         FutureTask<WritableImage> future = new FutureTask<>(new Callable<WritableImage>() {
+            @Override
+            public WritableImage call() throws Exception {
+               WritableImage img = snapshotImplInJFX(params);
+               return img;
+            }
+         });
+         Platform.runLater(future);
+         try {
+            return future.get();
+         } catch (Exception ex) {
+            return null;
+         }
+      }
    }
 }

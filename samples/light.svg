@@ -1,0 +1,17 @@
+<svg viewBox = "0 0 1100 400" version = "1.1">
+    <desc>
+        Filter example
+    </desc>
+    <filter id = "i1">
+        <feDiffuseLighting result = "diffOut" in = "SourceGraphic" diffuseConstant = "1.2" lighting-color = "white">
+            <fePointLight x = "400" y = "400" z = "150" pointsAtX = "0" pointsAtY = "0" pointsAtZ = "0"/>
+        </feDiffuseLighting>
+        <feComposite in = "SourceGraphic" in2 = "diffOut" operator = "arithmetic" k1 = "1" k2 = "0" k3 = "0" k4 = "0"/>
+    </filter>
+    <g stroke = "tomato" fill = "peru" filter = "url(#i1)">
+        <rect x = "10%" y = "10%" width = "40%" height = "40%"/>
+        <rect x = "55%" y = "10%" width = "40%" height = "40%"/>
+        <rect x = "10%" y = "55%" width = "40%" height = "40%"/>
+        <rect x = "55%" y = "55%" width = "40%" height = "40%"/>
+    </g>
+</svg>
