@@ -29,6 +29,13 @@ Note that contrary to other existing libraries, this library has no external dep
  - Add Unit Tests
  - Support the cm length unit
 
+## 0.3.2
+ - Fix the position of text and image elements
+ - Support the mm and % length unit
+ - Parse the SVG viewport width and height
+ - Fix some cases where lengths where incorrectly parsed
+ - Add a maven pom
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
