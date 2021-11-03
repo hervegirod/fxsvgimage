@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * This utility class parse a length value.
  *
- * @since 0.1
+ * @version 0.3.1
  */
 public class LengthParser {
    private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");
@@ -97,6 +97,8 @@ public class LengthParser {
                return parsedValue / INCH * 72d / 96d;
             case "in":
                return parsedValue / INCH;
+            case "cm":
+               return parsedValue / INCH * 72d / (96d * 2.54d);
             default:
                return parsedValue;
          }

@@ -24,6 +24,11 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix the stroke of shapes which was incorrectly assigned as a fill
  - Allow to call the loader outside of the JavaFX Platform Thread
 
+## 0.3.1
+ - Correctly wrap all exceptions during parsing by a SVGParsingException
+ - Add Unit Tests
+ - Support the cm length unit
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~

@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.3
+ * @version 0.3.1
  */
 public class SVGLoader implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
@@ -327,7 +327,9 @@ public class SVGLoader implements SVGTags {
       if (Platform.isFxApplicationThread()) {
          try {
             return loadImplInJFX();
-         } catch (IOException ex) {
+         } catch (SVGParsingException ex) {
+            throw ex;
+         } catch (Exception ex) {
             throw new SVGParsingException(ex);
          }
       } else {
@@ -346,7 +348,12 @@ public class SVGLoader implements SVGTags {
          } catch (InterruptedException ex) {
             return null;
          } catch (ExecutionException ex) {
-            throw new SVGParsingException(ex.getCause());
+            Throwable th = ex.getCause();
+            if (th instanceof SVGParsingException) {
+               throw (SVGParsingException) th;
+            } else {
+               throw new SVGParsingException(ex.getCause());
+            }
          }
       }
    }

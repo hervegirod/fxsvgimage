@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
+import static org.junit.Assert.assertNotNull;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,8 +41,9 @@ import org.junit.Test;
 import java.net.URL;
 
 /**
+ * Unit tests for the issue1 on github.
  *
- * @since 0.3
+ * @version 0.3.1
  */
 public class SVGLoaderTest {
 
@@ -65,22 +67,35 @@ public class SVGLoaderTest {
    }
 
    /**
-    * Test of load method, of class SVGLoader.
+    * Test of load method, of class SVGLoader. Test with a minus sign which is not the "-" character.
     */
    @Test
    public void testLoadURL() throws Exception {
       System.out.println("SVGLoaderTest : testLoadURL");
       URL url = this.getClass().getResource("issue1.svg");
       SVGImage result = SVGLoader.load(url);
+      assertNotNull("SVGImage should not be null", result);
    }
 
    /**
-    * Test of load method, of class SVGLoader.
+    * Test of load method, of class SVGLoader. Test with several nodes using the same clip.
     */
    @Test
    public void testLoadURL2() throws Exception {
       System.out.println("SVGLoaderTest : testLoadURL2");
-      URL url = this.getClass().getResource("issue2.svg");
+      URL url = this.getClass().getResource("issue1_2.svg");
       SVGImage result = SVGLoader.load(url);
+      assertNotNull("SVGImage should not be null", result);
+   }
+
+   /**
+    * Test of load method, of class SVGLoader. Test with the DOCTYPE declaration.
+    */
+   @Test
+   public void testLoadURL3() throws Exception {
+      System.out.println("SVGLoaderTest : testLoadURL3");
+      URL url = this.getClass().getResource("issue1_3.svg");
+      SVGImage result = SVGLoader.load(url);
+      assertNotNull("SVGImage should not be null", result);
    }
 }

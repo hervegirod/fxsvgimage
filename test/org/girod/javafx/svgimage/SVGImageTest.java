@@ -42,8 +42,9 @@ import java.net.URL;
 import javafx.scene.image.Image;
 
 /**
+ * Unit tests for generating images.
  *
- * @since 0.3
+ * @version 0.3.1
  */
 public class SVGImageTest {
 
@@ -66,10 +67,10 @@ public class SVGImageTest {
    public void tearDown() {
    }
    /**
-    * Test of setDefaultSnapshotParameters method, of class SVGImage.
+    * Test of generating an image.
     */
    @Test
-   public void testSetDefaultSnapshotParameters() {
+   public void testToImage() {
       System.out.println("SVGImageTest : testToImage");
       URL url = this.getClass().getResource("circle.svg");
       SVGImage result = SVGLoader.load(url);
