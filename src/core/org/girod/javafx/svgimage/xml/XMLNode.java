@@ -349,7 +349,7 @@ public class XMLNode {
    }
 
    /**
-    * Return the value of an attribute of a specified name as a float.
+    * Return the value of an attribute of a specified name as a double.
     *
     * @param attrName the attribute name
     * @return the value of the attribute
@@ -359,18 +359,43 @@ public class XMLNode {
    }
 
    /**
-    * Return the value of an attribute of a specified name as a float.
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param isWidth true for a width length
+    * @param viewport the viewport
+    * @return the value of the attribute
+    */
+   public double getAttributeValueAsDouble(String attrName, boolean isWidth, Viewport viewport) {
+      return getAttributeValueAsDouble(attrName, isWidth, viewport, 0f);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
     *
     * @param attrName the attribute name
     * @param defaultValue the default value
     * @return the value of the attribute
     */
    public double getAttributeValueAsDouble(String attrName, double defaultValue) {
+      return getAttributeValueAsDouble(attrName, true, null, defaultValue);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param isWidth true for a width length
+    * @param viewport the viewport
+    * @param defaultValue the default value
+    * @return the value of the attribute
+    */
+   public double getAttributeValueAsDouble(String attrName, boolean isWidth, Viewport viewport, double defaultValue) {
       if (attributes.containsKey(attrName)) {
          String attrvalue = attributes.get(attrName);
          attrvalue = attrvalue.replace('−', '-');
          try {
-            double d = LengthParser.parseLength(attrvalue);
+            double d = LengthParser.parseLength(attrvalue, isWidth, viewport);
             return d;
          } catch (NumberFormatException e) {
             return defaultValue;

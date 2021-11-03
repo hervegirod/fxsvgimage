@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 /**
  * Several utilitiers for shape parsing.
  *
- * @since 0.3
+ * @version 0.3.2
  */
 public class ParserUtils {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -59,6 +59,16 @@ public class ParserUtils {
          } catch (NumberFormatException e) {
             return 0d;
          }
+      }
+   }
+
+   public static double parseDoubleProtected(String valueS, boolean isWidth, Viewport viewport) {
+      valueS = valueS.replace('−', '-');
+      Matcher m = ZERO.matcher(valueS);
+      if (m.matches()) {
+         return 0d;
+      } else {
+         return LengthParser.parseLength(valueS, isWidth, viewport);
       }
    }
 

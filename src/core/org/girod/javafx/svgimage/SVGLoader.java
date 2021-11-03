@@ -51,8 +51,6 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -62,8 +60,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
@@ -76,6 +72,7 @@ import org.girod.javafx.svgimage.xml.PercentParser;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
+import org.girod.javafx.svgimage.xml.Viewport;
 import org.girod.javafx.svgimage.xml.XMLNode;
 import org.girod.javafx.svgimage.xml.XMLRoot;
 import org.girod.javafx.svgimage.xml.XMLTreeHandler;
@@ -84,12 +81,13 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.3.1
+ * @version 0.3.2
  */
 public class SVGLoader implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
    private final URL url;
    private final SVGImage root;
+   private Viewport viewport = null;
    private final ClippingFactory clippingFactory = new ClippingFactory();
    private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
    private final Map<String, Paint> gradients = new HashMap<>();
@@ -371,6 +369,10 @@ public class SVGLoader implements SVGTags {
    }
 
    private SVGImage walk(XMLRoot xmlRoot) {
+      String name = xmlRoot.getName();
+      if (name.equals(SVG)) {
+         parseViewport(xmlRoot);
+      }
       buildNode(xmlRoot, root);
       return root;
    }
@@ -390,36 +392,39 @@ public class SVGLoader implements SVGTags {
          String name = childNode.getName();
          switch (name) {
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode);
+               node = SVGShapeBuilder.buildRect(childNode, viewport);
                break;
             case CIRCLE:
-               node = SVGShapeBuilder.buildCircle(childNode);
+               node = SVGShapeBuilder.buildCircle(childNode, viewport);
                break;
             case ELLIPSE:
-               node = SVGShapeBuilder.buildEllipse(childNode);
+               node = SVGShapeBuilder.buildEllipse(childNode, viewport);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode);
+               node = SVGShapeBuilder.buildPath(childNode, viewport);
                break;
             case POLYGON:
-               node = SVGShapeBuilder.buildPolygon(childNode);
+               node = SVGShapeBuilder.buildPolygon(childNode, viewport);
                break;
             case LINE:
-               node = SVGShapeBuilder.buildLine(childNode);
+               node = SVGShapeBuilder.buildLine(childNode, viewport);
                break;
             case POLYLINE:
-               node = SVGShapeBuilder.buildPolyline(childNode);
+               node = SVGShapeBuilder.buildPolyline(childNode, viewport);
                break;
             case TEXT:
-               node = buildText(childNode);
+               node = SVGShapeBuilder.buildText(childNode, viewport);
                if (node == null) {
                   node = buildTSpanGroup(childNode);
                }
                break;
             case IMAGE:
-               node = buildImage(childNode);
+               node = SVGShapeBuilder.buildImage(childNode, url, viewport);
                break;
             case SVG:
+               parseViewport(childNode);
+               node = buildGroup(childNode);
+               break;
             case G:
                node = buildGroup(childNode);
                break;
@@ -457,6 +462,14 @@ public class SVGLoader implements SVGTags {
       }
    }
 
+   private void parseViewport(XMLNode xmlNode) {
+      if (viewport == null) {
+         double width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
+         double height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+         viewport = new Viewport(width, height);
+      }
+   }
+
    private void buildDefs(XMLNode xmlNode) {
       buildNode(xmlNode, null, true);
    }
@@ -470,7 +483,7 @@ public class SVGLoader implements SVGTags {
          String name = childNode.getName();
          switch (name) {
             case TSPAN:
-               node = buildText(childNode);
+               node = SVGShapeBuilder.buildText(childNode, viewport);
                break;
          }
          if (node != null) {
@@ -730,48 +743,6 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private Text buildText(XMLNode xmlNode) {
-      Font font = null;
-      if (xmlNode.hasAttribute(FONT_FAMILY) && xmlNode.hasAttribute(FONT_SIZE)) {
-         font = Font.font(xmlNode.getAttributeValue(FONT_FAMILY).replace("'", ""),
-            xmlNode.getAttributeValueAsDouble(FONT_SIZE));
-      }
-
-      String cdata = xmlNode.getCDATA();
-      if (cdata != null) {
-         Text text = new Text(cdata);
-         if (font != null) {
-            text.setFont(font);
-         }
-
-         return text;
-      } else {
-         return null;
-      }
-   }
-
-   private ImageView buildImage(XMLNode xmlNode) {
-      double width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
-      double height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
-      String hrefAttribute = xmlNode.getAttributeValue(HREF);
-
-      URL imageUrl = null;
-      try {
-         imageUrl = new URL(hrefAttribute);
-      } catch (MalformedURLException ex) {
-         try {
-            imageUrl = new URL(url, hrefAttribute);
-         } catch (MalformedURLException ex1) {
-         }
-      }
-      if (imageUrl != null) {
-         Image image = new Image(imageUrl.toString(), width, height, true, true);
-         return new ImageView(image);
-      }
-
-      return null;
-   }
-
    private void setTransform(Node node, XMLNode xmlNode) {
       if (xmlNode.hasAttribute(TRANSFORM)) {
          String transforms = xmlNode.getAttributeValue(TRANSFORM);
@@ -884,7 +855,7 @@ public class SVGLoader implements SVGTags {
       if (spec.startsWith("url(#")) {
          String clipID = spec.substring(5, spec.length() - 1);
          if (clippingFactory.hasClip(clipID)) {
-            Shape clipShape = clippingFactory.createClip(clipID);
+            Shape clipShape = clippingFactory.createClip(clipID, viewport);
             if (clipShape != null) {
                shape.setClip(clipShape);
             }

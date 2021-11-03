@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags.
  *
- * @since 0.3
+ * @version 0.3.2
  */
 public interface SVGTags {
    public static String FILL = "fill";
@@ -49,38 +49,43 @@ public interface SVGTags {
    public static String POLYLINE = "polyline";
    public static String TEXT = "text";
    public static String IMAGE = "image";
+   public static String D = "d";
    public static String SVG = "svg";
    public static String G = "g";
    public static String DEFS = "defs";
    public static String CLIP_PATH = "clipPath";
    public static String LINEAR_GRADIENT = "linearGradient";
    public static String RADIAL_GRADIENT = "radialGradient";
-   public static String GRADIENT_UNITS = "gradientUnits";  
-   public static String GRADIENT_TRANSFORM = "gradientTransform";     
+   public static String GRADIENT_UNITS = "gradientUnits";
+   public static String GRADIENT_TRANSFORM = "gradientTransform";
    public static String TSPAN = "tspan";
    public static String ID = "id";
-   public static String XLINK_HREF = "xlink:href";   
-   public static String HREF = "href"; 
-   public static String FX = "fx";   
-   public static String FY = "fy"; 
-   public static String CX = "cx";   
-   public static String CY = "cy";    
-   public static String R = "r";    
+   public static String XLINK_HREF = "xlink:href";
+   public static String HREF = "href";
+   public static String FX = "fx";
+   public static String FY = "fy";
+   public static String CX = "cx";
+   public static String CY = "cy";
+   public static String RX = "rx";
+   public static String RY = "ry";
+   public static String R = "r";
+   public static String X = "x";
+   public static String Y = "y";
    public static String X1 = "x1";
    public static String Y1 = "y1";
    public static String X2 = "x2";
    public static String Y2 = "y2";
-   public static String OFFSET = "offset";    
-   public static String STYLE = "style"; 
-   public static String FONT_FAMILY = "font-family"; 
-   public static String FONT_SIZE = "font-size"; 
-   public static String WIDTH = "width"; 
-   public static String HEIGHT = "height"; 
+   public static String OFFSET = "offset";
+   public static String STYLE = "style";
+   public static String FONT_FAMILY = "font-family";
+   public static String FONT_SIZE = "font-size";
+   public static String WIDTH = "width";
+   public static String HEIGHT = "height";
    public static String TRANSFORM = "transform";
    public static String OPACITY = "opacity";
    public static String STROKE_WIDTH = "stroke-width";
    public static String STROKE_LINECAP = "stroke-linecap";
    public static String STROKE_MITERLIMIT = "stroke-miterlimit";
-   public static String STROKE_LINEJOIN = "stroke-linejoin";   
-   public static String CLASS = "class";   
+   public static String STROKE_LINEJOIN = "stroke-linejoin";
+   public static String CLASS = "class";
 }

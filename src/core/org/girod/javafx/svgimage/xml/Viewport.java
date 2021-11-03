@@ -32,61 +32,35 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import javafx.scene.shape.Shape;
-
 /**
+ * Represents the viewport.
  *
- * @version 0.3.2
+ * @since 0.3.2
  */
-public class ClippingFactory {
-   private final Map<String, XMLNode> clipSpecs = new HashMap<>();
+public class Viewport {
+   private double width = 0;
+   private double height = 0;
 
-   public ClippingFactory() {
+   public Viewport(double width, double height) {
+      this.width = width;
+      this.height = height;
    }
 
-   public void addClipSpec(String id, XMLNode node) {
-      clipSpecs.put(id, node);
+   /**
+    * Return the width.
+    *
+    * @return the width
+    */
+   public double getWidth() {
+      return width;
    }
 
-   public boolean hasClip(String id) {
-      return clipSpecs.containsKey(id);
-   }
-
-   public Shape createClip(String id, Viewport viewport) {
-      XMLNode xmlNode = clipSpecs.get(id);
-      if (clipSpecs.containsKey(id)) {
-         Shape theShape = null;
-         Iterator<XMLNode> it = xmlNode.getChildren().iterator();
-         while (it.hasNext()) {
-            XMLNode childNode = it.next();
-            Shape shape = null;
-            String name = childNode.getName();
-            switch (name) {
-               case "circle":
-                  shape = SVGShapeBuilder.buildCircle(childNode, viewport);
-                  break;
-               case "path":
-                  shape = SVGShapeBuilder.buildPath(childNode, viewport);
-                  break;
-               case "ellipse":
-                  shape = SVGShapeBuilder.buildEllipse(childNode, viewport);
-                  break;
-               case "rect":
-                  shape = SVGShapeBuilder.buildRect(childNode, viewport);
-                  break;
-            }
-            if (theShape == null) {
-               theShape = shape;
-            } else {
-               theShape = Shape.union(theShape, shape);
-            }
-         }
-         return theShape;
-      } else {
-         return null;
-      }
+   /**
+    * Return the height.
+    *
+    * @return the height
+    */
+   public double getHeight() {
+      return height;
    }
 }

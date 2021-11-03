@@ -38,11 +38,11 @@ import java.util.regex.Pattern;
 /**
  * This utility class parse a length value.
  *
- * @version 0.3.1
+ * @version 0.3.2
  */
 public class LengthParser {
    private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");
-   private static final Pattern NUMBER_UNIT = Pattern.compile("(\\d+)(\\.\\d+)?([\\w+])");
+   private static final Pattern NUMBER_UNIT = Pattern.compile("(\\d+)(\\.\\d*)?([a-z%A-Z]+)");
    private static final double INCH = 1 / 96d;
 
    private LengthParser() {
@@ -56,9 +56,22 @@ public class LengthParser {
     * @return the value
     */
    public static double parseLength(XMLNode node, String attrName) {
+      return parseLength(node, true, null, attrName);
+   }
+
+   /**
+    * Parse a node attribute as a length value.
+    *
+    * @param node the node
+    * @param isWidth for a width unit
+    * @param viewport the viewport
+    * @param attrName the attribute name
+    * @return the value
+    */
+   public static double parseLength(XMLNode node, boolean isWidth, Viewport viewport, String attrName) {
       String valueAsString = node.getAttributeValue(attrName);
       if (valueAsString != null) {
-         return parseLength(valueAsString);
+         return parseLength(valueAsString, isWidth, viewport);
       } else {
          return 0;
       }
@@ -71,7 +84,20 @@ public class LengthParser {
     * @return the value
     */
    public static double parseLength(String lengthValue) {
+      return parseLength(lengthValue, true, null);
+   }
+
+   /**
+    * Parse a length value.
+    *
+    * @param lengthValue the value
+    * @param isWidth true for a width length
+    * @param viewport the viewport
+    * @return the value
+    */
+   public static double parseLength(String lengthValue, boolean isWidth, Viewport viewport) {
       lengthValue = lengthValue.trim();
+      lengthValue = lengthValue.replace('−', '-');
       Matcher m = NUMBER.matcher(lengthValue);
       if (m.matches()) {
          return Double.parseDouble(lengthValue);
@@ -99,6 +125,16 @@ public class LengthParser {
                return parsedValue / INCH;
             case "cm":
                return parsedValue / INCH * 72d / (96d * 2.54d);
+            case "mm":
+               return parsedValue / INCH * 72d / (96d * 2.54d * 10);
+            case "%":
+               if (viewport == null) {
+                  return 0;
+               } else if (isWidth) {
+                  return parsedValue * viewport.getWidth() / 100;
+               } else {
+                  return parsedValue * viewport.getHeight() / 100;
+               }
             default:
                return parsedValue;
          }
