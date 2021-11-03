@@ -32,21 +32,20 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
-import org.girod.javafx.JavaFxThreadingRule;
-import org.girod.javafx.JfxTestRunner;
-import org.junit.*;
-
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import static org.junit.Assert.*;
 import java.net.URL;
 import javafx.scene.image.Image;
-import org.junit.runner.RunWith;
 
 /**
  * Unit tests for generating images.
  *
  * @version 0.3.1
  */
-@RunWith( JfxTestRunner.class )
 public class SVGImageTest {
 
    public SVGImageTest() {
