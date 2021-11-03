@@ -181,8 +181,7 @@ public class SVGImage extends Group {
       if (params == null) {
          params = new SnapshotParameters();
       }
-      WritableImage image = snapshotImpl(params);
-      return image;
+      return snapshotImpl(params);
    }
 
    /**
@@ -192,16 +191,14 @@ public class SVGImage extends Group {
     * @return the Image
     */
    public Image toImage(SnapshotParameters params) {
-      WritableImage image = snapshotImpl(params);
-      return image;
+      return snapshotImpl(params);
    }
 
    private WritableImage snapshotImplInJFX(SnapshotParameters params) {
-      WritableImage image = this.snapshot(params, null);
-      return image;
+      return this.snapshot(params, null);
    }
 
-   private WritableImage snapshotImpl(SnapshotParameters params) {
+   private WritableImage snapshotImpl(final SnapshotParameters params) {
       if (Platform.isFxApplicationThread()) {
          return snapshotImplInJFX(params);
       } else {
@@ -210,8 +207,7 @@ public class SVGImage extends Group {
          FutureTask<WritableImage> future = new FutureTask<>(new Callable<WritableImage>() {
             @Override
             public WritableImage call() throws Exception {
-               WritableImage img = snapshotImplInJFX(params);
-               return img;
+               return snapshotImplInJFX(params);
             }
          });
          Platform.runLater(future);
