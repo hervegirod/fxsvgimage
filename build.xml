@@ -106,6 +106,7 @@
             <include name="README.md"/>
             <include name="CHANGES.txt"/>            
             <include name="build.xml"/>
+            <include name="pom.xml"/>            
          </fileset>
       </zip>
       <!-- zip test source files  -->
