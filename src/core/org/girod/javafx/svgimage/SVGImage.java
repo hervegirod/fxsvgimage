@@ -201,7 +201,7 @@ public class SVGImage extends Group {
       return image;
    }
 
-   private WritableImage snapshotImpl(SnapshotParameters params) {
+   private WritableImage snapshotImpl(final SnapshotParameters params) {
       if (Platform.isFxApplicationThread()) {
          return snapshotImplInJFX(params);
       } else {
