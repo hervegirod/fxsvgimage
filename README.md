@@ -37,6 +37,7 @@ Note that contrary to other existing libraries, this library has no external dep
  - Add a maven pom
 
 ## 0.4
+ - Parse the viewBox element
  - Support stroke-dasharray and stroke-dashoffset
  - Support the style node
  - Avoid throwing an exception if the svg document contains a DTD with reference to an external http source, on a platform which has no internet access
