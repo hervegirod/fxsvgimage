@@ -32,6 +32,8 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -40,9 +42,9 @@ import org.xml.sax.ext.DefaultHandler2;
 /**
  * Parse an XML File and return the associated tree of Nodes.
  *
- * @since 0.1
+ * @version 0.4
  */
-public class XMLTreeHandler extends DefaultHandler2 {
+public class XMLTreeHandler extends DefaultHandler2 implements SVGTags {
    private XMLNode node = null;
    private final Stack<XMLNode> nodes = new Stack<>();
    private XMLRoot root = null;
@@ -139,7 +141,28 @@ public class XMLTreeHandler extends DefaultHandler2 {
          String attrvalue = attr.getValue(i);
          childNode.addAttribute(attrname, attrvalue);
       }
+      if (node != null) {
+         // Propagate style attributes from parent nodes to child nodes
+         propagateStyleAttributes(childNode);
+      }
       nodes.push(childNode);
       node = childNode;
+   }
+
+   private void propagateStyleAttributes(XMLNode childNode) {
+      Iterator<Entry<String, String>> it = node.attributes.entrySet().iterator();
+      while (it.hasNext()) {
+         Entry<String, String> entry = it.next();
+         switch (entry.getKey()) {
+            case STYLE:
+            case STROKE:
+            case FILL:
+            case STROKE_WIDTH:
+            case CLASS:
+               if (!childNode.hasAttribute(entry.getKey())) {
+                  childNode.addAttribute(entry.getKey(), entry.getValue());
+               }
+         }
+      }
    }
 }
