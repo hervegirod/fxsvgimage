@@ -47,18 +47,11 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_FAMILY;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_SIZE;
-import static org.girod.javafx.svgimage.xml.SVGTags.HEIGHT;
-import static org.girod.javafx.svgimage.xml.SVGTags.HREF;
-import static org.girod.javafx.svgimage.xml.SVGTags.WIDTH;
-import static org.girod.javafx.svgimage.xml.SVGTags.X;
-import static org.girod.javafx.svgimage.xml.SVGTags.Y;
 
 /**
  * The shape builder.
  *
- * @version 0.3.2
+ * @version 0.4
  */
 public class SVGShapeBuilder implements SVGTags {
    private SVGShapeBuilder() {
@@ -268,5 +261,4 @@ public class SVGShapeBuilder implements SVGTags {
 
       return polyline;
    }
-
 }

@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.svgimage.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,30 +39,30 @@ import javafx.scene.paint.Color;
 /**
  * Contains the specification for a radial or linear gradient.
  *
- * @since 0.1
+ * @version 0.4
  */
-class GradientSpec {
+public class GradientSpec {
    private final List<Stop> stops = new ArrayList<>();
 
-   GradientSpec() {
+   public GradientSpec() {
    }
 
-   Stop addStop(double offset, double opacity, Color color) {
+   public Stop addStop(double offset, double opacity, Color color) {
       Stop stop = new Stop(offset, opacity, color);
       stops.add(stop);
       return stop;
    }
 
-   List<Stop> getStops() {
+   public List<Stop> getStops() {
       return stops;
    }
 
-   class Stop {
-      double offset;
-      double opacity;
-      Color color;
+   public static class Stop {
+      public double offset;
+      public double opacity;
+      public Color color;
 
-      private Stop(double offset, double opacity, Color color) {
+      public Stop(double offset, double opacity, Color color) {
          this.offset = offset;
          this.opacity = opacity;
          this.color = color;

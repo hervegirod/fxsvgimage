@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags.
  *
- * @version 0.3.2
+ * @version 0.4
  */
 public interface SVGTags {
    public static String FILL = "fill";
@@ -54,18 +54,28 @@ public interface SVGTags {
    public static String G = "g";
    public static String DEFS = "defs";
    public static String CLIP_PATH = "clipPath";
+   public static String USERSPACE_ON_USE = "userSpaceOnUse";
    public static String LINEAR_GRADIENT = "linearGradient";
    public static String RADIAL_GRADIENT = "radialGradient";
    public static String GRADIENT_UNITS = "gradientUnits";
+   public static String STOP = "stop";
    public static String GRADIENT_TRANSFORM = "gradientTransform";
    public static String TSPAN = "tspan";
    public static String ID = "id";
    public static String XLINK_HREF = "xlink:href";
    public static String HREF = "href";
+   public static String FILTER = "filter";
+   public static String FE_GAUSSIAN_BLUR = "feGaussianBlur";
+   public static String FE_DROP_SHADOW = "feDropShadow";
+   public static String FLOOD_COLOR = "flood-color";
+   public static String FLOOD_OPACITY = "flood-opacity";
+   public static String STD_DEVIATION = "stdDeviation";
    public static String FX = "fx";
    public static String FY = "fy";
    public static String CX = "cx";
    public static String CY = "cy";
+   public static String DX = "dx";
+   public static String DY = "dy";   
    public static String RX = "rx";
    public static String RY = "ry";
    public static String R = "r";
@@ -87,5 +97,7 @@ public interface SVGTags {
    public static String STROKE_LINECAP = "stroke-linecap";
    public static String STROKE_MITERLIMIT = "stroke-miterlimit";
    public static String STROKE_LINEJOIN = "stroke-linejoin";
+   public static String STROKE_DASHARRAY = "stroke-dasharray";
+   public static String STROKE_DASHOFFSET = "stroke-dashoffset";
    public static String CLASS = "class";
 }

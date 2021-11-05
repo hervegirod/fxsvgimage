@@ -33,19 +33,34 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage.xml;
 
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.scene.paint.Color;
 
 /**
  * Several utilitiers for shape parsing.
  *
- * @version 0.3.2
+ * @version 0.4
  */
 public class ParserUtils {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
 
    private ParserUtils() {
    }
+   
+   public static Color getColor(String value) {
+      return Color.web(value);
+   }
+   
+   public static Color getColor(String value, double opacity) {
+      return Color.web(value, opacity);
+   }  
+   
+   public static String parseFirstArgument(String value) {
+      StringTokenizer tok = new StringTokenizer(value, " ");
+      return tok.nextToken().trim();
+   }   
 
    public static double parseDoubleProtected(String valueS) {
       valueS = valueS.replace('−', '-');
