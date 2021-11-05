@@ -475,6 +475,7 @@ public class SVGLoader implements SVGTags {
             }
 
             setOpacity(node, childNode);
+            setFilter(node, childNode);
             setTransform(node, childNode);
 
             group.getChildren().add(node);
@@ -910,6 +911,15 @@ public class SVGLoader implements SVGTags {
       return transform;
    }
 
+   private void setFilter(Node node, XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(FILTER)) {
+         Effect effect = expressFilter(xmlNode.getAttributeValue(FILTER));
+         if (effect != null) {
+            node.setEffect(effect);
+         }
+      }
+   }
+
    private void setOpacity(Node node, XMLNode xmlNode) {
       if (xmlNode.hasAttribute(OPACITY)) {
          double opacity = xmlNode.getAttributeValueAsDouble(OPACITY);
@@ -988,13 +998,6 @@ public class SVGLoader implements SVGTags {
          shape.setStrokeWidth(strokeWidth);
       }
 
-      if (xmlNode.hasAttribute(FILTER)) {
-         Effect effect = expressFilter(xmlNode.getAttributeValue(FILTER));
-         if (effect != null) {
-            shape.setEffect(effect);
-         }
-      }
-
       if (xmlNode.hasAttribute(CLASS)) {
          String styleClasses = xmlNode.getAttributeValue(CLASS);
          setStyleClass(shape, styleClasses);
@@ -1041,7 +1044,7 @@ public class SVGLoader implements SVGTags {
                case STROKE_DASHOFFSET:
                   double offset = LengthParser.parseLength(styleValue);
                   shape.setStrokeDashOffset(offset);
-                  break;                  
+                  break;
                case STROKE_LINECAP:
                   StrokeLineCap linecap = StrokeLineCap.BUTT;
                   if (styleValue.equals("round")) {
