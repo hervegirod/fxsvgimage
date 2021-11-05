@@ -38,6 +38,7 @@ package org.girod.javafx.svgimage.xml;
  * @version 0.4
  */
 public interface SVGTags {
+   public static String VIEWBOX = "viewBox";
    public static String FILL = "fill";
    public static String STROKE = "stroke";
    public static String RECT = "rect";
@@ -75,7 +76,7 @@ public interface SVGTags {
    public static String CX = "cx";
    public static String CY = "cy";
    public static String DX = "dx";
-   public static String DY = "dy";   
+   public static String DY = "dy";
    public static String RX = "rx";
    public static String RY = "ry";
    public static String R = "r";

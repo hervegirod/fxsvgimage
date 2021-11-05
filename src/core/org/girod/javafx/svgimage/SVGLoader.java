@@ -485,8 +485,21 @@ public class SVGLoader implements SVGTags {
 
    private void parseViewport(XMLNode xmlNode) {
       if (viewport == null) {
-         double width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
-         double height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+         double width = 0;
+         double height = 0;
+         if (xmlNode.hasAttribute(VIEWBOX)) {
+            String box = xmlNode.getAttributeValue(VIEWBOX);
+            StringTokenizer tok = new StringTokenizer(box, " ,");
+            if (tok.countTokens() >= 4) {
+               tok.nextToken();
+               tok.nextToken();
+               width = xmlNode.getAttributeValueAsDouble(tok.nextToken(), 0);
+               height = xmlNode.getAttributeValueAsDouble(tok.nextToken(), 0);
+            }
+         } else {
+            width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
+            height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+         }
          viewport = new Viewport(width, height);
       }
    }
