@@ -487,7 +487,10 @@ public class SVGLoader implements SVGTags {
       if (viewport == null) {
          double width = 0;
          double height = 0;
-         if (xmlNode.hasAttribute(VIEWBOX)) {
+         if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
+            width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
+            height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+         } else if (xmlNode.hasAttribute(VIEWBOX)) {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");
             if (tok.countTokens() >= 4) {
@@ -496,9 +499,6 @@ public class SVGLoader implements SVGTags {
                width = xmlNode.getAttributeValueAsDouble(tok.nextToken(), 0);
                height = xmlNode.getAttributeValueAsDouble(tok.nextToken(), 0);
             }
-         } else {
-            width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
-            height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
          }
          viewport = new Viewport(width, height);
       }
