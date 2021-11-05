@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="504" height="504" text-rendering="auto" shape-rendering="auto">
+   <style>.st0{stroke-dasharray: 7.0 3.0;}</style>
+   <defs>
+      <clipPath id="_8098823727161clip-0">
+         <path d="M 45 45 L 482 45 L 482 449 L 45 449 L 45 45 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-1">
+         <path d="M 0 0 L 505 0 L 505 505 L 0 505 L 0 0 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-2">
+         <path d="M 436.98 -33 L 436.98 472 L -68.02 472 L -68.02 -33 L 436.98 -33 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-3">
+         <path d="M 343.74 -33 L 343.74 472 L -161.26 472 L -161.26 -33 L 343.74 -33 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-4">
+         <path d="M 250.5 -33 L 250.5 472 L -254.5 472 L -254.5 -33 L 250.5 -33 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-5">
+         <path d="M 157.26 -33 L 157.26 472 L -347.74 472 L -347.74 -33 L 157.26 -33 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-6">
+         <path d="M 67.52 -33 L 67.52 472 L -437.48 472 L -437.48 -33 L 67.52 -33 Z "/>
+      </clipPath>
+      <clipPath id="_8098823727161clip-7">
+         <path d="M 250 -11 L 250 494 L -255 494 L -255 -11 L 250 -11 Z "/>
+      </clipPath>
+   </defs>
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" />
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" />
+   <g class="st0" style="stroke-width: 1.0;stroke: rgb(0,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3; fill: none">
+      <g clip-path="url(#_8098823727161clip-0)">
+         <path d="M 61 433 L 162 340 L 263 247 L 364 153 L 465 60" />
+      </g>
+   </g>
+   <line x1="61" y1="448" x2="465" y2="448" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="61" y1="448" x2="61" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="162" y1="448" x2="162" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="263" y1="448" x2="263" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="364" y1="448" x2="364" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="465" y1="448" x2="465" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <g >
+      <text x="57" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">1</text>
+   </g>
+   <g >
+      <text x="158" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">2</text>
+   </g>
+   <g >
+      <text x="259" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">3</text>
+   </g>
+   <g >
+      <text x="360" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">4</text>
+   </g>
+   <g >
+      <text x="461" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">5</text>
+   </g>
+   <line x1="45" y1="433" x2="45" y2="60" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="45" y1="433" x2="40" y2="433" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="45" y1="340" x2="40" y2="340" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="45" y1="247" x2="40" y2="247" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="45" y1="153" x2="40" y2="153" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <line x1="45" y1="60" x2="40" y2="60" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_8098823727161clip-1)"/>
+   <g transform="matrix(-0,-1,1,0,33,436.981481)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-2)">2</text>
+   </g>
+   <g transform="matrix(-0,-1,1,0,33,343.740741)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-3)">4</text>
+   </g>
+   <g transform="matrix(-0,-1,1,0,33,250.5)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-4)">6</text>
+   </g>
+   <g transform="matrix(-0,-1,1,0,33,157.259259)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-5)">8</text>
+   </g>
+   <g transform="matrix(-0,-1,1,0,33,67.518519)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-6)">10</text>
+   </g>
+   <g style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;; fill: none" clip-path="url(#_8098823727161clip-1)">
+      <path d="M 45 448 L 481 448 L 481 45 L 45 45 L 45 448"/>
+   </g>
+   <g >
+      <text x="260" y="491" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-1)">x</text>
+   </g>
+   <g transform="matrix(-0,-1,1,0,11,250)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_8098823727161clip-7)">y</text>
+   </g>
+</svg>
