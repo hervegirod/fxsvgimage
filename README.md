@@ -36,6 +36,13 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix some cases where lengths where incorrectly parsed
  - Add a maven pom
 
+## 0.4
+ - Support stroke-dasharray and stroke-dashoffset
+ - Support the style node
+ - Avoid throwing an exception if the svg document contains a DTD with reference to an external http source, on a platform which has no internet access
+ - Support the filter element
+ - Propagate style attributes from parent nodes to child nodes
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
