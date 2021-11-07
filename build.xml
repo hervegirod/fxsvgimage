@@ -85,7 +85,8 @@
            description="create wiki zip files" name="zipwiki" if="wiki.exists">
       <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-wiki-${version}.zip">
          <fileset description="documentation" dir="${wikiDir}">
-            <include name="**/wiki"/>
+            <include name="**/wiki/**/*"/>
+            <exclude name="**/wiki/INTENTIONALLY_EMPTY"/>
          </fileset>
       </zip>
    </target>   
