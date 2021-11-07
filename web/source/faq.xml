@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="FAQ" >
+   <meta desc="Frequently Asked Questions" />
+
+   <title title="What is fxsvgImage?"/>
+   The fxsvgImage allows to convert a SVG file to a JavaFX Node tree or an Image.
+
+   Note that contrary to other existing libraries, this library has no external dependencies (including Batik)
+
+   <title title="Which version of Java should I use?"/>
+   The latest version of the project require Java 8.
+
+   <cat id="general" />
+</article>

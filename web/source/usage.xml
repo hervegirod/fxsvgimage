@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Usage">
+   <altTitle desc="Library usage" />
+   <meta desc="This article presents the usage of the library" />
+   The most simple way to use the library is just by calling the <code>SVGLoader.load</code> static method:
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+   </pre>
+
+   The <code>SVGImage</code> class is a JavaFX Group. 
+   
+   <title title="parameters"/>
+   By default the result has the same size as the input SVG image. However several parameters allow to 
+   configure the result:
+   <ul>
+      <li>It is possible to specify the width of the result (the resulting JavaFX result will have the same
+         form factor as the SVG input</li>
+      <li>It is possible to specify the scale of the result</li>
+      <li>It is possible to specify a stylesheet to use for the result</li>
+   </ul>
+   
+   This can be achieved through one of the <code>load</code> static methods, or by using the
+   <code>LoaderParameters class</code>.
+   
+   <title title="Converting to an image"/>
+   The <code>SVGImage</code> result can be converted to a JavaFX Image. The simplest way to perform the
+   conversion is by using the <code>toImage</code> method. For example:
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      Image fxImg = img.toImage();
+   </pre>
+   
+   Several conversion methods allow to specify the width of the resulting image (keeping the form factor), or
+   scaling the image. For example: 
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      Image fxImg = img.toImage(100); // the resulting image will have a width of 100 pixels
+      Image fxImg2 = img.toImageScaled(0.5d); // the resulting image will be scaled by a 0.5 factor    
+   </pre>  
+   
+   It is also possible to use the JavaFX <code>SnapshotParameters</code> to customize the resulting image.
+   
+   <title title="Accessing the named nodes"/>
+   The SVG nodes which have an <code>id</code> attribute can be accessed through the <source syntax="java">getNode(id)</source>
+   method in the <code>SVGImage</code> result.
+   
+   <title title="threading usage"/>
+   You an use the library in the JavaFX Platform Thread or in any other Thread. The library will make sure that
+   the conversion will be performed in the JavaFX Platform Thread, and will return the result in the calling Thread.      
+            
+   <cat id="general" />
+</article>

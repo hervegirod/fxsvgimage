@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories>
+   <category id="general" desc="General informations" />
+   <category id="support" desc="Informations about the support for the SVG standard specification" />
+</categories>

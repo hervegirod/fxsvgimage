@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Release history">
+   <altTitle desc="history" />
+   <meta desc="This article presents the history of the releases of the library" />
+   
+   <title title="Version 0.1" /> 
+   Initial release of the library.
+   
+   <title title="Version 0.2" /> 
+   <ul>
+      <li>Support percentages when appropriate (for example for GradientStop definitions)</li>
+      <li>Support some RadialGradient definitions</li>
+      <li>Allow to specify default SnapshotParameters in the SVGImage</li>
+      <li>Use a class to specify the parameters for the SVG loading</li>
+      <li>Fix the layout position of scaled images</li>
+      <li>Fix an exception which could appear after a rotation</li>
+   </ul>    
+   
+   <title title="Version 0.3" /> 
+   <ul>
+      <li>Protect against unparsable transforms</li>
+      <li>Accept the "-" character for the minus sign</li>
+      <li>Fix the library not allowing to use several times the same clip</li>
+      <li>Fix the library not parsing direct "clip-path" elements (only parsed those defined within style values)</li>
+      <li>Fix some style values not properly parsed</li>
+      <li>Fix the stroke of shapes which was incorrectly assigned as a fill</li>
+      <li>Allow to call the loader outside of the JavaFX Platform Thread</li>
+   </ul>     
+   
+   <title title="Version 0.3.1" /> 
+   <ul>
+      <li>Correctly wrap all exceptions during parsing by a SVGParsingException</li>
+      <li>Add Unit Tests</li>
+      <li>Support the cm length unit</li>
+   </ul>
+   
+   <title title="Version 0.3.2" /> 
+   <ul>
+      <li>Fix the position of text and image elements</li>
+      <li>Support the mm and % length unit</li>
+      <li>Parse the SVG viewport width and height</li>
+      <li>Fix some cases where lengths where incorrectly parsed</li>
+      <li>Add a maven pom</li>
+   </ul>   
+
+   <title title="Version 0.4" /> 
+   <ul>
+      <li>Parse the viewBox element</li>
+      <li>Support stroke-dasharray and stroke-dashoffset</li>
+      <li>Support the style node</li>
+      <li>Avoid throwing an exception if the svg document contains a DTD with reference to an external http source, on a platform which has no internet access</li>
+      <li>Support the filter element</li>
+      <li>Propagate style attributes from parent nodes to child nodes</li>
+   </ul>                                    
+            
+   <cat id="general" />
+</article>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<leftMenu onIndex="true">
+   <menuItem desc="Download" >
+      <itemExternalRef url="https://github.com/hervegirod/fxsvgimage/releases/" />
+   </menuItem>
+   <menuItem desc="Project Details" >
+      <itemExternalRef url="https://github.com/hervegirod/fxsvgimage/" />
+   </menuItem>
+   <menuItem desc="FAQ" >
+      <itemInternalRef id="FAQ" />
+   </menuItem>   
+   <menuItem desc="License" >
+      <itemInternalRef id="License" />
+   </menuItem>
+</leftMenu>
+
+

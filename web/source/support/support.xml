@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SVG support">
+   <meta desc="This article presents the support for SVG specification" />
+
+   This library support:
+   <ul>
+      <li>px, pt, cm, mm, on, and % units. See also <ref id="units support" /></li>
+      <li>filters. See also <ref id="filters support" /></li>      
+      <li>clip paths</li>
+      <li>linear gradients</li>
+      <li>radial gradients</li>      
+      <li>the style element</li>      
+      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements</li>      
+      <li>fill, stroke, style, class, transform attributes</li>
+   </ul>
+   Notz that the support is mainly for SVG 1.1, but some SVG 1.2 constructs are also supported.
+
+   <title title="limitations"/>
+   <ul>
+      <li>Radial gradients which use absolute values for their definitions do not work correctly for the moment</li>
+      <li>Some filters are not handled</li>
+   </ul>
+            
+   <cat id="support" />
+</article>

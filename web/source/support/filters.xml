@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="filters support">
+   <meta desc="This article presents the support for SVG filters specification" />
+   The following filters are supported in the library
+   <note>See <a href="https://www.w3.org/TR/SVG11/filters.html">Filter Effects</a></note>:
+   <ul>
+      <li>
+         <code>feFlood</code>: This filter primitive creates a rectangle filled with color and opacity values</li>
+      <li>
+         <code>feImage</code>: This filter primitive refers to a graphic external to this filter element</li>         
+      <li>
+         <code>feGaussianBlur</code>: This filter primitive performs a Gaussian blur on the input image</li>                  
+      <li>
+         <code>feDropShadow</code>: This filter creates a drop shadow of the input image. Note
+         that it is a filter specified in SVG 1.2<note>See <a href="https://www.w3.org/TR/SVGFilter12/#feDropShadowElement">SVG Filters 1.2, Part 2</a></note>
+      </li>                           
+      <li>
+         <code>feOffset</code>: This filter primitive offsets the input image relative to its current position in the image space by the specified vector.</li>                        
+      <li>
+         <code>feMerge</code>: This filter primitive composites input image layers on top of each other</li>                                 
+   </ul>
+            
+   <cat id="support" />
+</article>
