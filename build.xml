@@ -18,9 +18,13 @@
       <!-- general properties definition -->
       <property name="archiveName" value="fxsvgImage"/>
       <property name="src.dir" value="${src.core.dir}/.." />
+      <property name="wikiDir" value="web/wiki/"/>  
       <condition property="javadoc.exists">
          <available file="${dist.javadoc.dir}" type="dir"/>
       </condition>
+      <condition property="wiki.exists">
+         <available file="${wikiDir}/index.html" type="dir"/>
+      </condition>      
       <condition property="distrib.notexists">
          <not>
             <available file="distrib" type="dir"/>
@@ -31,6 +35,17 @@
             <available file="distrib" type="dir"/>
          </not>
       </condition>
+      <property name="docGeneratorDirURL" value="https://downloads.sourceforge.net/project/docjgenerator/" />      
+      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.5.6.1/docGenerator-bin-1.5.6.1.zip" />
+      <property name="docGeneratorDir" value="web/soft/"/>       
+      <condition property="docgenerator.notexists">
+         <not>
+            <available file="web/soft/docGenerator.jar" type="file"/>
+         </not>
+      </condition>    
+      <condition property="docgenerator.exists">
+         <available file="web/soft/docGenerator.jar" type="file"/>
+      </condition>                 
       <property name="j2seapi" value="http://docs.oracle.com/javase/7/docs/api/"/>        
       <!-- To set with your location of Java 8 JDK -->
       <property name="javadocDir" value="${jdk.home}/docs/api"/>
@@ -64,8 +79,18 @@
          </fileset>
       </zip>
    </target>
+   
+   <!-- zip wiki -->
+   <target depends="version, -post-init"
+           description="create javadoc zip files" name="zipwiki" if="wiki.exists">
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-wiki-${version}.zip">
+         <fileset description="documentation" dir="${wikiDir}">
+            <include name="**/*"/>
+         </fileset>
+      </zip>
+   </target>   
 
-   <target depends="version, -post-init, zipjavadoc" description="create zip files" name="zip">
+   <target depends="version, -post-init, zipjavadoc, zipwiki" description="create zip files" name="zip">
       <!-- zip binary files -->
       <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-bin-${version}.zip">
          <fileset description="docs" dir=".">
@@ -170,4 +195,76 @@
          </fileset>
       </jar>
    </target>   
+   
+   <!-- =================================================================== -->
+   <!-- NB overwrite targets : wiki                                     -->
+   <!-- =================================================================== -->   
+   <target name="download docJGenerator"  description="download docJGenerator" 
+           depends="init, -post-init" if="docgenerator.notexists" >
+      <get src="${docGeneratorURL}" dest="${docGeneratorDir}/docGenerator.zip" verbose="false" usetimestamp="false"/>
+      <unzip src="${docGeneratorDir}/docGenerator.zip" dest="${docGeneratorDir}"/>
+      <delete includeEmptyDirs="true">
+         <fileset dir="${docGeneratorDir}/doc"  >
+            <include name="**"/>
+         </fileset>	 
+         <fileset dir="${docGeneratorDir}/tutorial"  >
+            <include name="**"/>
+         </fileset>	 
+         <fileset dir="${docGeneratorDir}/samples"  >
+            <include name="**"/>
+         </fileset>
+         <fileset dir="${docGeneratorDir}"  >
+            <include name="docGenerator.zip"/>
+         </fileset>	         	        
+      </delete>	      
+   </target>  
+   
+   <target name="delete docJGenerator"  description="delete docJGenerator" 
+           depends="init, -post-init" if="docgenerator.exists" >
+      <delete includeEmptyDirs="true">
+         <fileset dir="${docGeneratorDir}"  >
+            <include name="docGenerator.jar"/>
+            <include name="LICENSE.txt"/>
+            <include name="README.txt"/>
+         </fileset>	     
+         <fileset dir="${docGeneratorDir}/lib"  >
+            <include name="**"/>
+         </fileset>	 	                 
+      </delete>	      
+   </target>    
+   
+   <target name="generateWiki" description="generate Wiki" depends="init, version" > 
+      <java classname="org.docgene.main.DocGenerator">
+         <arg value="-input=web/source"/>
+         <arg value="-output=web/wiki"/>         
+         <arg value="-lightbox=true"/> 
+         <arg value="-$version=${version}"/>
+         <arg value="-search=titles"/>
+         <arg value="-fullTextSearch=true"/>
+         <classpath>
+            <pathelement path="web/soft/docGenerator.jar"/>        
+         </classpath>
+      </java>
+   </target>   
+   
+   <target name="generateWikiForSourceForge" description="generate foe sourceforge" depends="init, version" > 
+      <java classname="org.docgene.main.DocGenerator">
+         <arg value="-input=web/source"/>
+         <arg value="-output=web/sourceforge"/>         
+         <arg value="-lightbox=true"/> 
+         <arg value="-$version=${version}"/>
+         <arg value="-search=titles"/>
+         <arg value="-fullTextSearch=true"/>
+         <classpath>
+            <pathelement path="web/soft/docGenerator.jar"/>        
+         </classpath>
+      </java>
+   </target>      
+   
+   <target name="cleanWiki" description="clean Wiki" depends="init, version" >
+      <delete includeEmptyDirs="true" >
+         <fileset dir="web/wiki" includes="**/*" excludes="INTENTIONALLY_EMPTY" />
+         <fileset dir="web/sourceforge" includes="**/*" excludes="INTENTIONALLY_EMPTY" />
+      </delete>
+   </target>                                    
 </project>
