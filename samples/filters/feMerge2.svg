@@ -1,0 +1,13 @@
+<svg width="100%" height="220"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid red">
+   <defs>
+      <filter id="drop-shadow-3"> 
+         <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+         <feOffset in="blur" dx="4" dy="4" result="offsetBlur"/>
+         <feMerge>
+            <feMergeNode in="offsetBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+         </feMerge>
+      </filter>
+   </defs>
+   <rect x="10" y="10" width="100" height="100" fill="#00f" filter="url(#drop-shadow-3)" />
+</svg>

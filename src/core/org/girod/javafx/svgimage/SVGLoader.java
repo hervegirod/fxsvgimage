@@ -48,6 +48,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -99,6 +100,7 @@ public class SVGLoader implements SVGTags {
    private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
    private final Map<String, FilterSpec> filterSpecs = new HashMap<>();
    private final Map<String, Paint> gradients = new HashMap<>();
+   private boolean effectsSupported = false;
 
    private SVGLoader(URL url) {
       this.url = url;
@@ -365,6 +367,7 @@ public class SVGLoader implements SVGTags {
    }
 
    private SVGImage loadImplInJFX() throws IOException {
+      effectsSupported = Platform.isSupported(ConditionalFeature.EFFECT);
       SAXParserFactory saxfactory = SAXParserFactory.newInstance();
       try {
          // see https://stackoverflow.com/questions/10257576/how-to-ignore-inline-dtd-when-parsing-xml-file-in-java
@@ -464,10 +467,8 @@ public class SVGLoader implements SVGTags {
                   break;
                }
             case FILTER:
-               if (!acceptDefs) {
-                  buildFilter(childNode);
-                  break;
-               }
+               buildFilter(childNode);
+               break;
          }
          if (node != null) {
             if (node instanceof Shape) {
@@ -560,47 +561,28 @@ public class SVGLoader implements SVGTags {
          String name = childNode.getName();
          switch (name) {
             case FE_GAUSSIAN_BLUR:
-               buildGaussianBlur(spec, childNode);
+               SVGShapeBuilder.buildFEGaussianBlur(spec, childNode);
                break;
             case FE_DROP_SHADOW:
-               buildDropShadow(spec, childNode);
+               SVGShapeBuilder.buildFEDropShadow(spec, childNode, viewport);
+               break;
+            case FE_FLOOD:
+               SVGShapeBuilder.buildFEFlood(spec, childNode, viewport);
+               break;
+            case FE_IMAGE:
+               SVGShapeBuilder.buildFEImage(spec, url, childNode, viewport);
+               break;
+            case FE_OFFSET:
+               SVGShapeBuilder.buildFEOffset(spec, childNode, viewport);
+               break;
+            case FE_MERGE:
+               SVGShapeBuilder.buildFEMerge(spec, childNode);
+               break;
+            case FE_SPECULAR_LIGHTING:
+               SVGShapeBuilder.buildFESpecularLighting(spec, childNode, viewport);
                break;
          }
       }
-   }
-
-   private void buildGaussianBlur(FilterSpec spec, XMLNode node) {
-      double stdDeviation = 0d;
-      if (node.hasAttribute(STD_DEVIATION)) {
-         String stdDevS = node.getAttributeValue(STD_DEVIATION);
-         stdDevS = ParserUtils.parseFirstArgument(stdDevS);
-         stdDeviation = ParserUtils.parseDoubleProtected(stdDevS);
-      }
-      FilterSpec.FEGaussianBlur effect = new FilterSpec.FEGaussianBlur(stdDeviation);
-      spec.addEffect(effect);
-   }
-
-   private void buildDropShadow(FilterSpec spec, XMLNode node) {
-      double dx = node.getAttributeValueAsDouble(DX, true, viewport);
-      double dy = node.getAttributeValueAsDouble(DY, true, viewport);
-      double opacity = 1d;
-      double stdDeviation = 0d;
-      Color col = Color.BLACK;
-
-      if (node.hasAttribute(FLOOD_OPACITY)) {
-         opacity = node.getAttributeValueAsDouble(FLOOD_OPACITY, 1d);
-      }
-      if (node.hasAttribute(STD_DEVIATION)) {
-         String stdDevS = node.getAttributeValue(STD_DEVIATION);
-         stdDevS = ParserUtils.parseFirstArgument(stdDevS);
-         stdDeviation = ParserUtils.parseDoubleProtected(stdDevS);
-      }
-      if (node.hasAttribute(FLOOD_COLOR)) {
-         String colorS = node.getAttributeValue(FLOOD_COLOR);
-         col = ParserUtils.getColor(colorS, opacity);
-      }
-      FilterSpec.FEDropShadow effect = new FilterSpec.FEDropShadow(dx, dy, stdDeviation, col);
-      spec.addEffect(effect);
    }
 
    private void buildRadialGradient(XMLNode xmlNode) {
@@ -925,8 +907,8 @@ public class SVGLoader implements SVGTags {
    }
 
    private void setFilter(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(FILTER)) {
-         Effect effect = expressFilter(xmlNode.getAttributeValue(FILTER));
+      if (effectsSupported && xmlNode.hasAttribute(FILTER)) {
+         Effect effect = expressFilter(node, xmlNode.getAttributeValue(FILTER));
          if (effect != null) {
             node.setEffect(effect);
          }
@@ -940,23 +922,9 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private Effect expressFilter(String value) {
-      Effect lastEffect = null;
-      if (!value.equals("none")) {
-         if (value.startsWith("url(#")) {
-            String id = value.substring(5, value.length() - 1);
-            if (filterSpecs.containsKey(id)) {
-               FilterSpec spec = filterSpecs.get(id);
-               List<FilterSpec.FilterEffect> effects = spec.getEffects();
-               for (int i = effects.size() - 1; i >= 0; i--) {
-                  FilterSpec.FilterEffect filterEffect = effects.get(i);
-                  lastEffect = filterEffect.getEffect(lastEffect);
-               }
-            }
-         }
-      }
-
-      return lastEffect;
+   private Effect expressFilter(Node node, String value) {
+      Effect effect = ParserUtils.expressFilter(filterSpecs, node, value);
+      return effect;
    }
 
    private Paint expressPaint(String value) {
@@ -1092,6 +1060,14 @@ public class SVGLoader implements SVGTags {
                      double opacity = Double.parseDouble(styleValue);
                      shape.setOpacity(opacity);
                   } catch (NumberFormatException e) {
+                  }
+                  break;
+               case FILTER:
+                  if (effectsSupported) {
+                     Effect effect = expressFilter(shape, styleValue);
+                     if (effect != null) {
+                        shape.setEffect(effect);
+                     }
                   }
                   break;
                default:

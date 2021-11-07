@@ -1,0 +1,9 @@
+<svg width="100%" height="220"  xmlns="http://www.w3.org/2000/svg" style="outline: 1px solid red">
+   <defs>
+      <filter id="drop-shadow-3"> 
+         <feGaussianBlur stdDeviation="10"/>
+         <feOffset dx="4" dy="4" result="offsetBlur"/>
+      </filter>
+   </defs>
+   <rect x="10" y="10" width="100" height="100" fill="blue" filter="url(#drop-shadow-3)" />
+</svg>

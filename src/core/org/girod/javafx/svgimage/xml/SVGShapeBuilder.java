@@ -34,9 +34,13 @@ package org.girod.javafx.svgimage.xml;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.StringTokenizer;
+import javafx.scene.effect.Light;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
@@ -47,6 +51,12 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
+import static org.girod.javafx.svgimage.xml.SVGTags.DX;
+import static org.girod.javafx.svgimage.xml.SVGTags.DY;
+import static org.girod.javafx.svgimage.xml.SVGTags.FLOOD_COLOR;
+import static org.girod.javafx.svgimage.xml.SVGTags.FLOOD_OPACITY;
+import static org.girod.javafx.svgimage.xml.SVGTags.STD_DEVIATION;
 
 /**
  * The shape builder.
@@ -260,5 +270,153 @@ public class SVGShapeBuilder implements SVGTags {
       }
 
       return polyline;
+   }
+
+   public static void buildFEGaussianBlur(FilterSpec spec, XMLNode node) {
+      double stdDeviation = 0d;
+
+      String resultId = node.getAttributeValue(RESULT);
+      if (node.hasAttribute(STD_DEVIATION)) {
+         String stdDevS = node.getAttributeValue(STD_DEVIATION);
+         stdDevS = ParserUtils.parseFirstArgument(stdDevS);
+         stdDeviation = ParserUtils.parseDoubleProtected(stdDevS);
+      }
+      FilterSpec.FEGaussianBlur effect = new FilterSpec.FEGaussianBlur(resultId, stdDeviation);
+      if (node.hasAttribute(IN)) {
+         effect.setIn(node.getAttributeValue(IN));
+      }
+      spec.addEffect(resultId, effect);
+   }
+
+   public static void buildFEDropShadow(FilterSpec spec, XMLNode node, Viewport viewport) {
+      double dx = node.getAttributeValueAsDouble(DX, true, viewport);
+      double dy = node.getAttributeValueAsDouble(DY, true, viewport);
+      double opacity = 1d;
+      double stdDeviation = 0d;
+      Color col = Color.BLACK;
+
+      String resultId = node.getAttributeValue(RESULT);
+      if (node.hasAttribute(FLOOD_OPACITY)) {
+         opacity = node.getAttributeValueAsDouble(FLOOD_OPACITY, 1d);
+      }
+      if (node.hasAttribute(STD_DEVIATION)) {
+         String stdDevS = node.getAttributeValue(STD_DEVIATION);
+         stdDevS = ParserUtils.parseFirstArgument(stdDevS);
+         stdDeviation = ParserUtils.parseDoubleProtected(stdDevS);
+      }
+      if (node.hasAttribute(FLOOD_COLOR)) {
+         String colorS = node.getAttributeValue(FLOOD_COLOR);
+         col = ParserUtils.getColor(colorS, opacity);
+      }
+      FilterSpec.FEDropShadow effect = new FilterSpec.FEDropShadow(resultId, dx, dy, stdDeviation, col);
+      if (node.hasAttribute(IN)) {
+         effect.setIn(node.getAttributeValue(IN));
+      }
+      spec.addEffect(resultId, effect);
+   }
+
+   public static void buildFEFlood(FilterSpec spec, XMLNode node, Viewport viewport) {
+      double x = node.getAttributeValueAsDouble(X, true, viewport);
+      double y = node.getAttributeValueAsDouble(Y, true, viewport);
+      double width = node.getAttributeValueAsDouble(WIDTH, true, viewport);
+      double height = node.getAttributeValueAsDouble(HEIGHT, true, viewport);
+      double opacity = 1d;
+      Color col = Color.BLACK;
+      String resultId = node.getAttributeValue(RESULT);
+
+      if (node.hasAttribute(FLOOD_OPACITY)) {
+         opacity = node.getAttributeValueAsDouble(FLOOD_OPACITY, 1d);
+      }
+      if (node.hasAttribute(FLOOD_COLOR)) {
+         String colorS = node.getAttributeValue(FLOOD_COLOR);
+         col = ParserUtils.getColor(colorS, opacity);
+      }
+      FilterSpec.FEFlood effect = new FilterSpec.FEFlood(resultId, x, y, width, height, col);
+      if (node.hasAttribute(IN)) {
+         effect.setIn(node.getAttributeValue(IN));
+      }
+      spec.addEffect(resultId, effect);
+   }
+
+   public static void buildFEOffset(FilterSpec spec, XMLNode node, Viewport viewport) {
+      double dx = node.getAttributeValueAsDouble(DX, true, viewport);
+      double dy = node.getAttributeValueAsDouble(DY, true, viewport);
+      String resultId = node.getAttributeValue(RESULT);
+
+      FilterSpec.FEOffset effect = new FilterSpec.FEOffset(resultId, dx, dy);
+      if (node.hasAttribute(IN)) {
+         effect.setIn(node.getAttributeValue(IN));
+      }
+      spec.addEffect(resultId, effect);
+   }
+
+   public static void buildFEImage(FilterSpec spec, URL url, XMLNode node, Viewport viewport) {
+      double x = node.getAttributeValueAsDouble(X, true, viewport);
+      double y = node.getAttributeValueAsDouble(Y, true, viewport);
+      double width = node.getAttributeValueAsDouble(WIDTH, true, viewport);
+      double height = node.getAttributeValueAsDouble(HEIGHT, true, viewport);
+      String hrefAttribute = node.getAttributeValue(XLINK_HREF);
+      String resultId = node.getAttributeValue(RESULT);
+
+      Image image = null;
+      URL imageUrl = null;
+      try {
+         imageUrl = new URL(hrefAttribute);
+      } catch (MalformedURLException ex) {
+         try {
+            imageUrl = new URL(url, hrefAttribute);
+         } catch (MalformedURLException ex1) {
+         }
+      }
+      if (imageUrl != null) {
+         image = new Image(imageUrl.toString(), width, height, true, true);
+      }
+      FilterSpec.FEImage effect = new FilterSpec.FEImage(resultId, x, y, image);
+      spec.addEffect(resultId, effect);
+   }
+
+   public static void buildFESpecularLighting(FilterSpec spec, XMLNode node, Viewport viewport) {
+      XMLNode child = node.getFirstChild();
+      if (child != null) {
+         switch (child.getName()) {
+            case FE_DISTANT_LIGHT: {
+               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double azimuth = child.getAttributeValueAsDouble(AZIMUTH);
+               double elevation = child.getAttributeValueAsDouble(ELEVATION);
+               Light.Distant light = new Light.Distant(azimuth, elevation, col);
+               String resultId = node.getAttributeValue(RESULT);
+               FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
+         }
+      }
+   }
+
+   public static void buildFEMerge(FilterSpec spec, XMLNode node) {
+      String resultId = node.getAttributeValue(RESULT);
+      FilterSpec.FEMerge effect = new FilterSpec.FEMerge(resultId);
+      spec.addEffect(resultId, effect);
+
+      Iterator<XMLNode> it = node.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode child = it.next();
+         if (child.getName().equals(FE_MERGE_NODE)) {
+            String in = child.getAttributeValue(IN);
+            if (in != null) {
+               effect.addMergeNode(in);
+            }
+         }
+      }
    }
 }

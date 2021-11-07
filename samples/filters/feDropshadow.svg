@@ -1,0 +1,24 @@
+<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow">
+      <feDropShadow dx="10" dy="10" stdDeviation="0.2"/>
+    </filter>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="0" stdDeviation="0.5"
+          flood-color="cyan"/>
+    </filter>
+    <filter id="shadow3">
+      <feDropShadow dx="10" dy="10" stdDeviation="0"
+          flood-color="pink" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <circle cx="5" cy="50" r="40"
+      style="fill:pink; filter:url(#shadow);"/>
+
+  <circle cx="100" cy="50" r="40"
+      style="fill:pink; filter:url(#shadow2);"/>
+
+  <circle cx="200" cy="50" r="40"
+      style="fill:pink; filter:url(#shadow3);"/>
+</svg>
