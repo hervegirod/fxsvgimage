@@ -43,6 +43,7 @@ Note that contrary to other existing libraries, this library has no external dep
  - Avoid throwing an exception if the svg document contains a DTD with reference to an external http source, on a platform which has no internet access
  - Support the filter element for some filters
  - Propagate style attributes from parent nodes to child nodes
+ - Add a wiki
 
 # Usage
 Just calls one of the static `load` methods, for example:
