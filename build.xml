@@ -125,7 +125,13 @@
          </fileset>         
          <fileset description="samples" dir=".">
             <include name="samples/*"/>
-         </fileset>                                   
+         </fileset> 
+         <fileset description="web" dir=".">
+            <include name="web/source"/>
+            <include name="web/soft/INTENTIONALLY_EMPTY"/>
+            <include name="web/wiki/INTENTIONALLY_EMPTY"/>
+            <include name="web/sourceforge/INTENTIONALLY_EMPTY"/>
+         </fileset>                                            
          <fileset description="misc" dir=".">
             <include name="LICENSE"/>
             <include name="README.md"/>
