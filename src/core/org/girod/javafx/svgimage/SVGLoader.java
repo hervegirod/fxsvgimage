@@ -979,6 +979,32 @@ public class SVGLoader implements SVGTags {
          shape.setStrokeWidth(strokeWidth);
       }
 
+      if (xmlNode.hasAttribute(STROKE_DASHARRAY)) {
+         String dashArray = xmlNode.getAttributeValue(STROKE_DASHARRAY);
+         applyDash(shape, dashArray);
+      }
+
+      if (xmlNode.hasAttribute(STROKE_DASHOFFSET)) {
+         String dashOffset = xmlNode.getAttributeValue(STROKE_DASHOFFSET);
+         double offset = LengthParser.parseLength(dashOffset);
+         shape.setStrokeDashOffset(offset);
+      }
+
+      if (xmlNode.hasAttribute(STROKE_LINEJOIN)) {
+         String lineJoin = xmlNode.getAttributeValue(STROKE_LINEJOIN);
+         applyLineJoin(shape, lineJoin);
+      }
+
+      if (xmlNode.hasAttribute(STROKE_LINECAP)) {
+         String lineCap = xmlNode.getAttributeValue(STROKE_LINECAP);
+         applyLineCap(shape, lineCap);
+      }
+
+      if (xmlNode.hasAttribute(STROKE_MITERLIMIT)) {
+         String miterLimit = xmlNode.getAttributeValue(STROKE_MITERLIMIT);
+         applyMiterLimit(shape, miterLimit);
+      }
+
       if (xmlNode.hasAttribute(CLASS)) {
          String styleClasses = xmlNode.getAttributeValue(CLASS);
          setStyleClass(shape, styleClasses);
@@ -1027,33 +1053,13 @@ public class SVGLoader implements SVGTags {
                   shape.setStrokeDashOffset(offset);
                   break;
                case STROKE_LINECAP:
-                  StrokeLineCap linecap = StrokeLineCap.BUTT;
-                  if (styleValue.equals("round")) {
-                     linecap = StrokeLineCap.ROUND;
-                  } else if (styleValue.equals("square")) {
-                     linecap = StrokeLineCap.SQUARE;
-                  } else if (!styleValue.equals("butt")) {
-                  }
-
-                  shape.setStrokeLineCap(linecap);
+                  applyLineCap(shape, styleValue);
                   break;
                case STROKE_MITERLIMIT:
-                  try {
-                     double miterLimit = Double.parseDouble(styleValue);
-                     shape.setStrokeMiterLimit(miterLimit);
-                  } catch (NumberFormatException e) {
-                  }
+                  applyMiterLimit(shape, styleValue);
                   break;
                case STROKE_LINEJOIN:
-                  StrokeLineJoin linejoin = StrokeLineJoin.MITER;
-                  if (styleValue.equals("bevel")) {
-                     linejoin = StrokeLineJoin.BEVEL;
-                  } else if (styleValue.equals("round")) {
-                     linejoin = StrokeLineJoin.ROUND;
-                  } else if (!styleValue.equals("miter")) {
-                  }
-
-                  shape.setStrokeLineJoin(linejoin);
+                  applyLineJoin(shape, styleValue);
                   break;
                case OPACITY:
                   try {
@@ -1075,6 +1081,38 @@ public class SVGLoader implements SVGTags {
             }
          }
       }
+   }
+
+   private void applyMiterLimit(Shape shape, String styleValue) {
+      try {
+         double miterLimit = Double.parseDouble(styleValue);
+         shape.setStrokeMiterLimit(miterLimit);
+      } catch (NumberFormatException e) {
+      }
+   }
+
+   private void applyLineCap(Shape shape, String styleValue) {
+      StrokeLineCap linecap = StrokeLineCap.BUTT;
+      if (styleValue.equals("round")) {
+         linecap = StrokeLineCap.ROUND;
+      } else if (styleValue.equals("square")) {
+         linecap = StrokeLineCap.SQUARE;
+      } else if (!styleValue.equals("butt")) {
+         linecap = StrokeLineCap.BUTT;
+      }
+      shape.setStrokeLineCap(linecap);
+   }
+
+   private void applyLineJoin(Shape shape, String styleValue) {
+      StrokeLineJoin linejoin = StrokeLineJoin.MITER;
+      if (styleValue.equals("bevel")) {
+         linejoin = StrokeLineJoin.BEVEL;
+      } else if (styleValue.equals("round")) {
+         linejoin = StrokeLineJoin.ROUND;
+      } else if (!styleValue.equals("miter")) {
+         linejoin = StrokeLineJoin.MITER;
+      }
+      shape.setStrokeLineJoin(linejoin);
    }
 
    private void applyDash(Shape shape, String styleValue) {
