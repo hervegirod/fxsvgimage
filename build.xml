@@ -23,7 +23,7 @@
          <available file="${dist.javadoc.dir}" type="dir"/>
       </condition>
       <condition property="wiki.exists">
-         <available file="${wikiDir}/index.html" type="dir"/>
+         <available file="${wikiDir}/index.html" type="file"/>
       </condition>      
       <condition property="distrib.notexists">
          <not>
@@ -85,8 +85,8 @@
            description="create wiki zip files" name="zipwiki" if="wiki.exists">
       <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-wiki-${version}.zip">
          <fileset description="documentation" dir="${wikiDir}">
-            <include name="**/wiki/**/*"/>
-            <exclude name="**/wiki/INTENTIONALLY_EMPTY"/>
+            <include name="**/*.*"/>
+            <exclude name="INTENTIONALLY_EMPTY"/>
          </fileset>
       </zip>
    </target>   
