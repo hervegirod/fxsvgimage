@@ -82,10 +82,10 @@
    
    <!-- zip wiki -->
    <target depends="version, -post-init"
-           description="create javadoc zip files" name="zipwiki" if="wiki.exists">
+           description="create wiki zip files" name="zipwiki" if="wiki.exists">
       <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-wiki-${version}.zip">
          <fileset description="documentation" dir="${wikiDir}">
-            <include name="**/*"/>
+            <include name="**/wiki"/>
          </fileset>
       </zip>
    </target>   
