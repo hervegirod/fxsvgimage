@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="styling support">
+   <meta desc="This article presents the support for SVG styling specification" />
+   
+   <title title="support for style attributes"/>
+   The following style attributes elements are supported in the library
+   <note>See <a href="https://www.w3.org/TR/SVG11/styling.html">Styling Effects</a></note>:
+   <ul>
+      <li>
+         <code>fill</code>
+      </li>
+      <li>
+         <code>stroke</code>
+      </li>         
+      <li>
+         <code>stroke-width</code>
+      </li>    
+      <li>
+         <code>stroke-dasharray</code>
+      </li>         
+      <li>
+         <code>stroke-dashoffset</code>
+      </li>   
+      <li>
+         <code>stroke-linejoin</code>
+      </li>   
+      <li>
+         <code>stroke-linecap</code>
+      </li>    
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>                             
+      <li>
+         <code>opacity</code>
+      </li>                  
+      <li>
+         <code>style</code>
+      </li>                           
+      <li>
+         <code>class</code>
+      </li>        
+      <li>
+         <code>clipPath</code>
+      </li>           
+      <li>
+         <code>filter</code>: see <ref id="filters support" />
+      </li>                                                                  
+   </ul>
+   Note that the <code>opacity</code> and <code>transform</code> attributes are supported for all elements.
+   
+   <title title="support for styles specified within the style attribute"/>
+   The following styles are supported within the <code>style</code> attribute:
+   <ul>
+      <li>
+         <code>fill</code>
+      </li>
+      <li>
+         <code>stroke</code>
+      </li>         
+      <li>
+         <code>stroke-width</code>
+      </li>    
+      <li>
+         <code>stroke-dasharray</code>
+      </li>         
+      <li>
+         <code>stroke-dashoffset</code>
+      </li>   
+      <li>
+         <code>stroke-linejoin</code>
+      </li>   
+      <li>
+         <code>stroke-linecap</code>
+      </li>    
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>                             
+      <li>
+         <code>opacity</code>
+      </li>                        
+      <li>
+         <code>clipPath</code>
+      </li>                                                                         
+   </ul>   
+   
+   <title title="support for styles specified in the style element"/>
+   The following styles are supported within the rules specified in the <code>style</code> element, and can be accessed
+   through the <code>class</code> attribute:
+   <ul>
+      <li>
+         <code>fill</code>
+      </li>
+      <li>
+         <code>stroke</code>
+      </li>         
+      <li>
+         <code>stroke-width</code>
+      </li>    
+      <li>
+         <code>stroke-dasharray</code>
+      </li>                                                                                 
+   </ul>    
+            
+   <cat id="support" />
+</article>

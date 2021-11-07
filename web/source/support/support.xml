@@ -9,9 +9,9 @@
       <li>clip paths</li>
       <li>linear gradients</li>
       <li>radial gradients</li>      
-      <li>the style element</li>      
+      <li>the style element. See also <ref id="styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
       <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements</li>      
-      <li>fill, stroke, style, class, transform attributes</li>
+      <li>fill, stroke, style, class, transform attributes. See also <ref id="styling support" /></li>
    </ul>
    Notz that the support is mainly for SVG 1.1, but some SVG 1.2 constructs are also supported.
 
