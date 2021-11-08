@@ -9,7 +9,7 @@
       </feDiffuseLighting>
       <feComposite in = "SourceGraphic" in2 = "diffOut" operator = "arithmetic" k1 = "1" k2 = "0" k3 = "0" k4 = "0"/>
    </filter>
-   <g stroke="tomato" fill = "peru" filter = "url(#i1)">
+   <g stroke="tomato" fill = "olive" filter = "url(#i1)">
       <rect x="10%" y = "10%" width = "40%" height = "40%"/>
       <rect x="55%" y = "10%" width = "40%" height = "40%"/>
       <rect x="10%" y = "55%" width = "40%" height = "40%"/>

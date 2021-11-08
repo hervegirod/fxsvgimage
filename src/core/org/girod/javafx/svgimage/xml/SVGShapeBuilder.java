@@ -37,7 +37,6 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import javafx.scene.effect.Light;
-import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -51,6 +50,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
 import static org.girod.javafx.svgimage.xml.SVGTags.DX;
 import static org.girod.javafx.svgimage.xml.SVGTags.DY;
@@ -61,7 +61,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STD_DEVIATION;
 /**
  * The shape builder.
  *
- * @version 0.4
+ * @version 0.5
  */
 public class SVGShapeBuilder implements SVGTags {
    private SVGShapeBuilder() {
@@ -149,6 +149,9 @@ public class SVGShapeBuilder implements SVGTags {
       double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
       double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
       String hrefAttribute = xmlNode.getAttributeValue(HREF);
+      if (hrefAttribute == null) {
+         hrefAttribute = xmlNode.getAttributeValue(XLINK_HREF);
+      }
 
       URL imageUrl = null;
       try {
@@ -399,8 +402,157 @@ public class SVGShapeBuilder implements SVGTags {
                spec.addEffect(resultId, effect);
                break;
             }
+            case FE_POINT_LIGHT: {
+               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double x = child.getAttributeValueAsDouble(X, true, viewport);
+               double y = child.getAttributeValueAsDouble(Y, true, viewport);
+               double z = child.getAttributeValueAsDouble(Z, true, null);
+               Light.Point light = new Light.Point(x, y, z, col);
+               String resultId = node.getAttributeValue(RESULT);
+               FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
+            case FE_SPOT_LIGHT: {
+               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double x = child.getAttributeValueAsDouble(X, true, viewport);
+               double y = child.getAttributeValueAsDouble(Y, false, viewport);
+               double z = child.getAttributeValueAsDouble(Z, true, viewport);
+               double pointAtX = child.getAttributeValueAsDouble(POINT_AT_X, true, viewport);
+               double pointAtY = child.getAttributeValueAsDouble(POINT_AT_Y, false, viewport);
+               double pointAtZ = child.getAttributeValueAsDouble(POINT_AT_Z, true, viewport);
+               Light.Spot light = new Light.Spot(x, y, z, specularExponent, col);
+               light.setPointsAtX(pointAtX);
+               light.setPointsAtY(pointAtY);
+               light.setPointsAtZ(pointAtZ);
+               String resultId = node.getAttributeValue(RESULT);
+               FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
          }
       }
+   }
+
+   public static void buildFEDiffuseLighting(FilterSpec spec, XMLNode node, Viewport viewport) {
+      XMLNode child = node.getFirstChild();
+      if (child != null) {
+         switch (child.getName()) {
+            case FE_DISTANT_LIGHT: {
+               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double azimuth = child.getAttributeValueAsDouble(AZIMUTH);
+               double elevation = child.getAttributeValueAsDouble(ELEVATION);
+               Light.Distant light = new Light.Distant(azimuth, elevation, col);
+               String resultId = node.getAttributeValue(RESULT);
+               FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
+            case FE_POINT_LIGHT: {
+               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double x = child.getAttributeValueAsDouble(X, true, viewport);
+               double y = child.getAttributeValueAsDouble(Y, true, viewport);
+               double z = child.getAttributeValueAsDouble(Z, true, null);
+               Light.Point light = new Light.Point(x, y, z, col);
+               String resultId = node.getAttributeValue(RESULT);
+               FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
+            case FE_SPOT_LIGHT: {
+               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
+               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               Color col = null;
+               if (node.hasAttribute(LIGHTING_COLOR)) {
+                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+                  col = ParserUtils.getColor(colorS);
+               }
+               double x = child.getAttributeValueAsDouble(X, true, viewport);
+               double y = child.getAttributeValueAsDouble(Y, false, viewport);
+               double z = child.getAttributeValueAsDouble(Z, true, viewport);
+               double pointAtX = child.getAttributeValueAsDouble(POINT_AT_X, true, viewport);
+               double pointAtY = child.getAttributeValueAsDouble(POINT_AT_Y, false, viewport);
+               double pointAtZ = child.getAttributeValueAsDouble(POINT_AT_Z, true, viewport);
+               Light.Spot light = new Light.Spot(x, y, z, specularExponent, col);
+               light.setPointsAtX(pointAtX);
+               light.setPointsAtY(pointAtY);
+               light.setPointsAtZ(pointAtZ);
+               String resultId = node.getAttributeValue(RESULT);
+               FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
+               if (node.hasAttribute(IN)) {
+                  effect.setIn(node.getAttributeValue(IN));
+               }
+               spec.addEffect(resultId, effect);
+               break;
+            }
+         }
+      }
+   }
+
+   public static void buildFEComposite(FilterSpec spec, XMLNode node) {
+      String resultId = node.getAttributeValue(RESULT);
+      String in = node.getAttributeValue(IN);
+      String in2 = node.getAttributeValue(IN2);
+      String operator = node.getAttributeValue(OPERATOR);
+      short type = FilterSpec.FEComposite.OPERATOR_OVER;
+      switch (operator) {
+         case OPERATOR_OVER:
+            type = FilterSpec.FEComposite.OPERATOR_OVER;
+            break;
+         case OPERATOR_IN:
+            type = FilterSpec.FEComposite.OPERATOR_IN;
+            break;
+         case OPERATOR_OUT:
+            type = FilterSpec.FEComposite.OPERATOR_OUT;
+            break;
+         case OPERATOR_ATOP:
+            type = FilterSpec.FEComposite.OPERATOR_ATOP;
+            break;
+         case OPERATOR_XOR:
+            type = FilterSpec.FEComposite.OPERATOR_XOR;
+            break;
+         case OPERATOR_ARITHMETIC:
+            type = FilterSpec.FEComposite.OPERATOR_ARITHMETIC;
+            break;
+      }
+      FilterSpec.FEComposite effect = new FilterSpec.FEComposite(resultId, type, in, in2);
+      spec.addEffect(resultId, effect);
    }
 
    public static void buildFEMerge(FilterSpec spec, XMLNode node) {

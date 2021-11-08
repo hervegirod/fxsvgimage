@@ -3,12 +3,7 @@
    <desc>
       Filter example
    </desc>
-   <filter id="i1">
-      <feDiffuseLighting result = "diffOut" in = "SourceGraphic" diffuseConstant = "1.2" lighting-color = "white">
-         <fePointLight x = "400" y = "400" z = "150" pointsAtX = "0" pointsAtY = "0" pointsAtZ = "0"/>
-      </feDiffuseLighting>
-   </filter>
-   <g stroke="tomato" fill = "olive" filter = "url(#i1)">
+   <g stroke="tomato" fill = "olive">
       <rect x="10%" y = "10%" width = "40%" height = "40%"/>
       <rect x="55%" y = "10%" width = "40%" height = "40%"/>
       <rect x="10%" y = "55%" width = "40%" height = "40%"/>

@@ -37,13 +37,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 /**
  * Represents a "style" node in the SVG content.
  *
- * @since 0.4
+ * @version     0.5
  */
 public class Styles {
    public static final short FILL = 0;
@@ -87,26 +88,34 @@ public class Styles {
          return properties;
       }
 
-      public void apply(Shape shape) {
+      public void apply(Node node) {
          Iterator<Property> it = properties.values().iterator();
          while (it.hasNext()) {
             Property property = it.next();
             Object value = property.value;
             switch (property.type) {
                case FILL:
-                  shape.setFill((Color) value);
+                  if (node instanceof Shape) {
+                     ((Shape) node).setFill((Color) value);
+                  }
                   break;
                case STROKE:
-                  shape.setStroke((Color) value);
+                  if (node instanceof Shape) {
+                     ((Shape) node).setStroke((Color) value);
+                  }
                   break;
                case STROKE_WIDTH:
-                  shape.setStrokeWidth((Double) value);
+                  if (node instanceof Shape) {
+                     ((Shape) node).setStrokeWidth((Double) value);
+                  }
                   break;
                case STROKE_DASHARRAY:
-                  ObservableList<Double> strokeArray = shape.getStrokeDashArray();
-                  List<Double> theArray = (List<Double>)value;
-                  strokeArray.addAll(theArray);
-                  break;                  
+                  if (node instanceof Shape) {
+                     ObservableList<Double> strokeArray = ((Shape) node).getStrokeDashArray();
+                     List<Double> theArray = (List<Double>) value;
+                     strokeArray.addAll(theArray);
+                  }
+                  break;
             }
          }
       }

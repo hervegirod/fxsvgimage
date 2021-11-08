@@ -32,9 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.scene.paint.Color;
@@ -42,7 +40,7 @@ import javafx.scene.paint.Color;
 /**
  * This class parse a style declaration.
  *
- * @since 0.4
+ * @version 0.5
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s:\\#;]+\\}\\s*");
@@ -84,13 +82,10 @@ public class SVGStyleBuilder implements SVGTags {
                double width = ParserUtils.parseDoubleProtected(value, true, viewport);
                rule.addProperty(key, Styles.STROKE_WIDTH, width);
             } else if (key.equals(STROKE_DASHARRAY)) {
-               List<Double> list = new ArrayList<>();
-               StringTokenizer tokenizer = new StringTokenizer(value, " ,");
-               while (tokenizer.hasMoreTokens()) {
-                  String dash = tokenizer.nextToken();
-                  list.add(ParserUtils.parseDoubleProtected(dash, true, viewport));
+               List<Double> list = ParserUtils.parseDashArray(value, viewport);
+               if (list != null) {
+                  rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
                }
-               rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
             }
          }
       }

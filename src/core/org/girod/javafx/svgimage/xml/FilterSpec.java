@@ -39,7 +39,6 @@ import java.util.Map;
 import javafx.scene.Node;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -54,7 +53,7 @@ import javafx.scene.paint.Color;
 /**
  * Contains the specification for a filter.
  *
- * @since 0.4
+ * @version 0.5
  */
 public class FilterSpec implements SVGTags {
    public static final short PREVIOUS_EFFECT = 0;
@@ -94,10 +93,9 @@ public class FilterSpec implements SVGTags {
        * Return the associated JavaFX effect.
        *
        * @param node the node on which the effect applies
-       * @param namedEffects the named effects for the filter effect
        * @return the effect
        */
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects);
+      public Effect getEffect(Node node);
 
       public default void resolveEffect(Effect effect, Effect sourceAlpha, Effect previousEffect, Map<String, Effect> namedEffects) {
       }
@@ -139,7 +137,7 @@ public class FilterSpec implements SVGTags {
    }
 
    public static class FEMerge extends AbstractFilterEffect {
-      private List<String> mergeNodes = new ArrayList<>();
+      private final List<String> mergeNodes = new ArrayList<>();
 
       public FEMerge(String resultId) {
          super(resultId);
@@ -150,7 +148,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          return new Blend(BlendMode.ADD);
       }
 
@@ -209,7 +207,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          DropShadow dropShadow = new DropShadow(stdDeviation, dx, dy, floodColor);
          return dropShadow;
       }
@@ -237,7 +235,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          GaussianBlur gaussianBlur = new GaussianBlur(stdDeviation);
          return gaussianBlur;
       }
@@ -272,7 +270,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          ColorInput colInput = new ColorInput(x, y, width, height, color);
          return colInput;
       }
@@ -291,7 +289,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          ImageInput imageInput = new ImageInput(source, x, y);
          return imageInput;
       }
@@ -320,7 +318,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          double ulx = dx + node.getLayoutX();
          double uly = dy + node.getLayoutY();
          double urx = ulx + node.getBoundsInLocal().getWidth();
@@ -349,7 +347,7 @@ public class FilterSpec implements SVGTags {
       }
 
       @Override
-      public Effect getEffect(Node node, Map<String, Effect> namedEffects) {
+      public Effect getEffect(Node node) {
          Lighting lighting = new Lighting(light);
          lighting.setSpecularConstant(specularConstant);
          lighting.setSpecularExponent(specularExponent);
@@ -361,18 +359,51 @@ public class FilterSpec implements SVGTags {
       public void resolveEffect(Effect effect, Effect sourceAlpha, Effect previousEffect, Map<String, Effect> namedEffects) {
          if (inputType == NAMED_EFFECT && namedEffects.containsKey(in)) {
             Effect _effect = namedEffects.get(in);
-            ((GaussianBlur) effect).setInput(_effect);
+            ((Lighting) effect).setContentInput(_effect);
          } else if (inputType == PREVIOUS_EFFECT) {
-            ((GaussianBlur) effect).setInput(previousEffect);
+            ((Lighting) effect).setContentInput(previousEffect);
          } else if (inputType == SOURCE_ALPHA_EFFECT) {
-            ((GaussianBlur) effect).setInput(sourceAlpha);
+            ((Lighting) effect).setContentInput(sourceAlpha);
+         }
+      }
+   }
+
+   public static class FEDiffuseLighting extends AbstractFilterEffect {
+      public final double diffuseConstant;
+      public final Light light;
+
+      public FEDiffuseLighting(String resultId, double diffuseConstant, Light light) {
+         super(resultId);
+         this.diffuseConstant = diffuseConstant;
+         this.light = light;
+      }
+
+      @Override
+      public Effect getEffect(Node node) {
+         Lighting lighting = new Lighting(light);
+         lighting.setDiffuseConstant(diffuseConstant);
+         lighting.setSpecularConstant(0);
+         lighting.setSpecularExponent(0);
+         lighting.setSurfaceScale(0);
+         return lighting;
+      }
+
+      @Override
+      public void resolveEffect(Effect effect, Effect sourceAlpha, Effect previousEffect, Map<String, Effect> namedEffects) {
+         if (inputType == NAMED_EFFECT && namedEffects.containsKey(in)) {
+            Effect _effect = namedEffects.get(in);
+            ((Lighting) effect).setContentInput(_effect);
+         } else if (inputType == PREVIOUS_EFFECT) {
+            ((Lighting) effect).setContentInput(previousEffect);
+         } else if (inputType == SOURCE_ALPHA_EFFECT) {
+            ((Lighting) effect).setContentInput(sourceAlpha);
          }
       }
    }
 
    public static class AppliedEffect {
-      private FilterEffect effectSpec;
-      private Effect effect;
+      private final FilterEffect effectSpec;
+      private final Effect effect;
 
       public AppliedEffect(FilterEffect effectSpec, Effect effect) {
          this.effectSpec = effectSpec;
@@ -385,6 +416,76 @@ public class FilterSpec implements SVGTags {
 
       public Effect getEffect() {
          return effect;
+      }
+   }
+
+   public static class FEComposite extends AbstractFilterEffect {
+      public static final short OPERATOR_OVER = 0;
+      public static final short OPERATOR_IN = 1;
+      public static final short OPERATOR_OUT = 2;
+      public static final short OPERATOR_ATOP = 3;
+      public static final short OPERATOR_XOR = 4;
+      public static final short OPERATOR_ARITHMETIC = 5;
+      private short type = OPERATOR_OVER;
+      private final String compIn;
+      private final String compIn2;
+
+      public FEComposite(String resultId, short type, String in, String in2) {
+         super(resultId);
+         this.type = type;
+         this.compIn = in;
+         this.compIn2 = in2;
+      }
+
+      @Override
+      public Effect getEffect(Node node) {
+         switch (type) {
+            case OPERATOR_OVER:
+               return new Blend(BlendMode.SRC_OVER);
+            case OPERATOR_ATOP:
+               return new Blend(BlendMode.SRC_ATOP);
+            case OPERATOR_IN:
+               return new Blend(BlendMode.OVERLAY);
+            case OPERATOR_OUT:
+               return new Blend(BlendMode.ADD);
+            case OPERATOR_XOR:
+               return new Blend(BlendMode.EXCLUSION);
+            case OPERATOR_ARITHMETIC:
+               return new Blend(BlendMode.SRC_OVER);
+            default:
+               return new Blend(BlendMode.SRC_OVER);
+         }
+      }
+
+      @Override
+      public void resolveEffect(Effect effect, Effect sourceAlpha, Effect previousEffect, Map<String, Effect> namedEffects) {
+         Blend blend = (Blend) effect;
+         if (compIn != null) {
+            if (namedEffects.containsKey(compIn)) {
+               blend.setTopInput(namedEffects.get(compIn));
+            } else if (compIn.equals(SOURCE_ALPHA)) {
+               blend.setTopInput(sourceAlpha);
+            } else if (compIn.equals(SOURCE_GRAPHIC)) {
+               blend.setTopInput(null);
+            } else {
+               blend.setTopInput(previousEffect);
+            }
+         } else {
+            blend.setTopInput(previousEffect);
+         }
+         if (compIn2 != null) {
+            if (namedEffects.containsKey(compIn2)) {
+               blend.setBottomInput(namedEffects.get(compIn2));
+            } else if (compIn2.equals(SOURCE_ALPHA)) {
+               blend.setBottomInput(sourceAlpha);
+            } else if (compIn2.equals(SOURCE_GRAPHIC)) {
+               blend.setBottomInput(null);
+            } else {
+               blend.setBottomInput(previousEffect);
+            }
+         } else {
+            blend.setBottomInput(previousEffect);
+         }
       }
    }
 }

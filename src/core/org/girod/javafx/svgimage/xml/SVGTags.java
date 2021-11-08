@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags.
  *
- * @version 0.4
+ * @version 0.5
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -54,6 +54,7 @@ public interface SVGTags {
    public static String SVG = "svg";
    public static String G = "g";
    public static String DEFS = "defs";
+   public static String NONE = "none";
    public static String CLIP_PATH = "clipPath";
    public static String USERSPACE_ON_USE = "userSpaceOnUse";
    public static String LINEAR_GRADIENT = "linearGradient";
@@ -71,17 +72,28 @@ public interface SVGTags {
    public static String FE_FLOOD = "feFlood";
    public static String FE_IMAGE = "feImage";
    public static String FE_OFFSET = "feOffset";
+   public static String FE_COMPOSITE = "feComposite";
    public static String FE_MERGE = "feMerge";
    public static String FE_MERGE_NODE = "feMergeNode";
    public static String FE_DISTANT_LIGHT = "feDistantLight";
    public static String FE_POINT_LIGHT = "fePointLight";
    public static String FE_SPOT_LIGHT = "feSpotLight";
    public static String FE_SPECULAR_LIGHTING = "feSpecularLighting";
+   public static String FE_DIFFUSE_LIGHTING = "feDiffuseLighting";
    public static String FLOOD_COLOR = "flood-color";
    public static String FLOOD_OPACITY = "flood-opacity";
    public static String STD_DEVIATION = "stdDeviation";
    public static String IN = "in";
+   public static String IN2 = "in2";
+   public static String OPERATOR = "operator";
+   public static String OPERATOR_OVER = "over";
+   public static String OPERATOR_IN = "in";
+   public static String OPERATOR_OUT = "out";
+   public static String OPERATOR_ATOP = "atop";
+   public static String OPERATOR_XOR = "xor";
+   public static String OPERATOR_ARITHMETIC = "arithmetic";
    public static String SURFACE_SCALE = "surfaceScale";
+   public static String DIFFUSE_CONSTANT = "diffuseConstant";
    public static String SPECULAR_CONSTANT = "specularConstant";
    public static String SPECULAR_EXPONENT = "specularExponent";
    public static String LIGHTING_COLOR = "lighting-color";
@@ -101,10 +113,14 @@ public interface SVGTags {
    public static String R = "r";
    public static String X = "x";
    public static String Y = "y";
+   public static String Z = "z";
    public static String X1 = "x1";
    public static String Y1 = "y1";
    public static String X2 = "x2";
    public static String Y2 = "y2";
+   public static String POINT_AT_X = "pointsAtX";
+   public static String POINT_AT_Y = "pointsAtY";
+   public static String POINT_AT_Z = "pointsAtZ";
    public static String OFFSET = "offset";
    public static String STYLE = "style";
    public static String FONT_FAMILY = "font-family";

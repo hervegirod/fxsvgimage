@@ -48,9 +48,9 @@ import javafx.scene.paint.Color;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.4
+ * @version 0.5
  */
-public class ParserUtils {
+public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
 
    private ParserUtils() {
@@ -62,6 +62,19 @@ public class ParserUtils {
       } catch (IllegalArgumentException ex) {
          return null;
       }
+   }
+
+   public static List<Double> parseDashArray(String value, Viewport viewport) {
+      if (value == null || value.equals(NONE)) {
+         return null;
+      }
+      List<Double> list = new ArrayList<>();
+      StringTokenizer tokenizer = new StringTokenizer(value, " ,");
+      while (tokenizer.hasMoreTokens()) {
+         String dash = tokenizer.nextToken();
+         list.add(ParserUtils.parseDoubleProtected(dash, true, viewport));
+      }
+      return list;
    }
 
    public static Color getColor(String value, double opacity) {
@@ -141,7 +154,7 @@ public class ParserUtils {
                      useSourceAlpha = true;
                   }
                   String resultId = filterEffect.getResultId();
-                  lastEffect = filterEffect.getEffect(node, namedEffects);
+                  lastEffect = filterEffect.getEffect(node);
                   appliedEffects.add(new FilterSpec.AppliedEffect(filterEffect, lastEffect));
                   if (resultId != null && lastEffect != null) {
                      namedEffects.put(resultId, lastEffect);
