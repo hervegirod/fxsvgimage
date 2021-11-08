@@ -61,7 +61,7 @@
       <li>Support the feDistantLight, fePointLight, and feSpotLight elements</li>
       <li>Fix most stylings not correctly applied on non Shape elements</li>
       <li>Fix the xlink:href attribute not taken into account for image elements</li>
-      <li>Fix the "none" value for the stroke-dasharray throwing an exception    </li>
+      <li>Fix the "none" value for the stroke-dasharray throwing an exception</li>
    </ul>                                                                         
             
    <cat id="general" />
