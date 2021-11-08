@@ -45,6 +45,15 @@ Note that contrary to other existing libraries, this library has no external dep
  - Propagate style attributes from parent nodes to child nodes
  - Add a wiki
 
+## 0.5
+ - Fix the parsing of the viewBox element for the width and height
+ - Support the filter element for the feSpecularLighting and feDiffuseLighting filters. Note that the result is still
+   incorrect in many cases
+ - Support the feDistantLight, fePointLight, and feSpotLight elements
+ - Fix most stylings not correctly applied on non Shape elements
+ - Fix the xlink:href attribute not taken into account for image elements
+ - Fix the "none" value for the stroke-dasharray throwing an exception 
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
