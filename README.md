@@ -1,5 +1,6 @@
 # fxsvgimage
-This library allows to convert a SVG file to a JavaFX Node tree or an Image. 
+This library allows to convert a SVG file to a JavaFX Node tree or an Image. See https://fxsvgimage.sourceforge.io/ for a more
+complete documentation.
 
 Note that contrary to other existing libraries, this library has no external dependencies (including Batik)
 
