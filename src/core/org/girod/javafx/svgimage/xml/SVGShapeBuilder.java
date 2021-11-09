@@ -36,6 +36,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +51,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
@@ -61,9 +65,11 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STD_DEVIATION;
 /**
  * The shape builder.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public class SVGShapeBuilder implements SVGTags {
+   private static final Pattern NUMBER = Pattern.compile("\\d+");
+
    private SVGShapeBuilder() {
    }
 
@@ -106,6 +112,39 @@ public class SVGShapeBuilder implements SVGTags {
       return circle;
    }
 
+   public static FontPosture getFontPosture(String value) {
+      FontPosture posture = FontPosture.REGULAR;
+      if (value == null) {
+         return posture;
+      }
+      if (value.equals(ITALIC)) {
+         posture = FontPosture.ITALIC;
+      }
+      return posture;
+   }
+
+   public static FontWeight getFontWeight(String value) {
+      FontWeight weight = FontWeight.NORMAL;
+      if (value == null) {
+         return weight;
+      }
+      if (value.equals(BOLD)) {
+         weight = FontWeight.BOLD;
+      } else if (value.equals(BOLDER)) {
+         weight = FontWeight.EXTRA_BOLD;
+      } else if (value.equals(LIGHTER)) {
+         weight = FontWeight.LIGHT;
+      } else {
+         Matcher m = NUMBER.matcher(value);
+         if (m.matches()) {
+            int weightNumber = Integer.parseInt(value);
+            weight = FontWeight.findByWeight(weightNumber);
+         }
+      }
+
+      return weight;
+   }
+
    /**
     * Build a "text" element.
     *
@@ -114,11 +153,19 @@ public class SVGShapeBuilder implements SVGTags {
     * @return the Text
     */
    public static Text buildText(XMLNode xmlNode, Viewport viewport) {
-      Font font = null;
-      if (xmlNode.hasAttribute(FONT_FAMILY) && xmlNode.hasAttribute(FONT_SIZE)) {
-         font = Font.font(xmlNode.getAttributeValue(FONT_FAMILY).replace("'", ""),
-            xmlNode.getAttributeValueAsDouble(FONT_SIZE));
+      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
+      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
+      String family = null;
+      if (hasFamily) {
+         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
       }
+      double size = 12d;
+      if (hasSize) {
+         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
+      }
+      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
+      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
+      Font font = Font.font(family, weight, posture, size);
 
       String cdata = xmlNode.getCDATA();
       if (cdata != null) {

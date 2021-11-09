@@ -64,6 +64,10 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
@@ -88,7 +92,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public class SVGLoader implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
@@ -1021,6 +1025,10 @@ public class SVGLoader implements SVGTags {
       }
 
       if (xmlNode.hasAttribute(STYLE)) {
+         FontWeight fontWeight = FontWeight.NORMAL;
+         FontPosture fontPosture = FontPosture.REGULAR;
+         double fontSize = 12d;
+         String fontFamily = null;
          String styles = xmlNode.getAttributeValue(STYLE);
          StringTokenizer tokenizer = new StringTokenizer(styles, ";");
          while (tokenizer.hasMoreTokens()) {
@@ -1039,6 +1047,26 @@ public class SVGLoader implements SVGTags {
             switch (styleName) {
                case CLIP_PATH:
                   setClipPath(node, styleValue);
+                  break;
+               case FONT_FAMILY:
+                  if (node instanceof Text) {
+                     fontFamily = styleValue.replace("'", "");
+                  }
+                  break;
+               case FONT_WEIGHT:
+                  if (node instanceof Text) {
+                     fontWeight = SVGShapeBuilder.getFontWeight(styleValue);
+                  }
+                  break;
+               case FONT_STYLE:
+                  if (node instanceof Text) {
+                     fontPosture = SVGShapeBuilder.getFontPosture(styleValue);
+                  }
+                  break;
+               case FONT_SIZE:
+                  if (node instanceof Text) {
+                     fontSize = ParserUtils.parseFontSize(styleValue);
+                  }
                   break;
                case FILL:
                   if (node instanceof Shape) {
@@ -1100,6 +1128,10 @@ public class SVGLoader implements SVGTags {
                default:
                   break;
             }
+         }
+         if (node instanceof Text) {
+            Font font = Font.font(fontFamily, fontWeight, fontPosture, fontSize);
+            ((Text) node).setFont(font);
          }
       }
    }

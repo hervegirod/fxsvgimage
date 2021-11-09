@@ -36,12 +36,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorInput;
+import javafx.scene.effect.DisplacementMap;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.effect.FloatMap;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.effect.ImageInput;
 import javafx.scene.effect.Light;
@@ -53,7 +56,7 @@ import javafx.scene.paint.Color;
 /**
  * Contains the specification for a filter.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public class FilterSpec implements SVGTags {
    public static final short PREVIOUS_EFFECT = 0;
@@ -414,6 +417,10 @@ public class FilterSpec implements SVGTags {
          return effectSpec;
       }
 
+      public String getResultId() {
+         return effectSpec.getResultId();
+      }
+
       public Effect getEffect() {
          return effect;
       }
@@ -435,6 +442,22 @@ public class FilterSpec implements SVGTags {
          this.type = type;
          this.compIn = in;
          this.compIn2 = in2;
+      }
+
+      public boolean shouldApply(List<FilterSpec.AppliedEffect> appliedEffects, int index) {
+         boolean compInIsSourceGraphics = compIn != null && compIn.equals(SOURCE_GRAPHIC);
+         if (!compInIsSourceGraphics) {
+            return true;
+         }
+         if (compIn2 == null || index == 0) {
+            return false;
+         }
+         FilterSpec.AppliedEffect previousEffect = appliedEffects.get(index - 1);
+         return !compIn2.equals(previousEffect.getResultId());
+      }
+
+      public boolean isSecondLast() {
+         return compIn != null && compIn.equals(SOURCE_GRAPHIC);
       }
 
       @Override

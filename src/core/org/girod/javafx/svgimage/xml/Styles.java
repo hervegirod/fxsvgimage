@@ -40,17 +40,25 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 /**
  * Represents a "style" node in the SVG content.
  *
- * @version     0.5
+ * @version 0.5.1
  */
 public class Styles {
    public static final short FILL = 0;
    public static final short STROKE = 1;
    public static final short STROKE_WIDTH = 2;
    public static final short STROKE_DASHARRAY = 3;
+   public static final short FONT_SIZE = 4;
+   public static final short FONT_WEIGHT = 5;
+   public static final short FONT_STYLE = 6;
+   public static final short FONT_FAMILY = 7;
    private final Map<String, Rule> rules = new HashMap<>();
 
    public Styles() {
@@ -89,6 +97,12 @@ public class Styles {
       }
 
       public void apply(Node node) {
+         FontWeight fontWeight = FontWeight.NORMAL;
+         FontPosture fontPosture = FontPosture.REGULAR;
+         double fontSize = 12d;
+         String fontFamily = null;
+         boolean hasFontProperties = false;
+
          Iterator<Property> it = properties.values().iterator();
          while (it.hasNext()) {
             Property property = it.next();
@@ -116,6 +130,34 @@ public class Styles {
                      strokeArray.addAll(theArray);
                   }
                   break;
+               case FONT_FAMILY:
+                  if (node instanceof Text) {
+                     fontFamily = ((String) value).replace("'", "");
+                     hasFontProperties = true;
+                  }
+                  break;
+               case FONT_WEIGHT:
+                  if (node instanceof Text) {
+                     fontWeight = (FontWeight) value;
+                     hasFontProperties = true;
+                  }
+                  break;
+               case FONT_STYLE:
+                  if (node instanceof Text) {
+                     fontPosture = (FontPosture) value;
+                     hasFontProperties = true;
+                  }
+                  break;
+               case FONT_SIZE:
+                  if (node instanceof Text) {
+                     fontSize = (Double) value;
+                     hasFontProperties = true;
+                  }
+                  break;
+            }
+            if (hasFontProperties && node instanceof Text) {
+               Font font = Font.font(fontFamily, fontWeight, fontPosture, fontSize);
+               ((Text) node).setFont(font);
             }
          }
       }

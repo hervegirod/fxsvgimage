@@ -36,11 +36,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 /**
  * This class parse a style declaration.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s:\\#;]+\\}\\s*");
@@ -86,6 +88,18 @@ public class SVGStyleBuilder implements SVGTags {
                if (list != null) {
                   rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
                }
+            } else if (key.equals(FONT_FAMILY)) {
+               String fontFamily = value.replace("'", "");
+               rule.addProperty(key, Styles.FONT_FAMILY, fontFamily);
+            } else if (key.equals(FONT_WEIGHT)) {
+               FontWeight fontWeight = SVGShapeBuilder.getFontWeight(value);
+               rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);   
+            } else if (key.equals(FONT_STYLE)) {
+               FontPosture fontPosture = SVGShapeBuilder.getFontPosture(value);
+               rule.addProperty(key, Styles.FONT_STYLE, fontPosture);  
+            } else if (key.equals(FONT_SIZE)) {
+               double size = ParserUtils.parseFontSize(value);
+               rule.addProperty(key, Styles.FONT_SIZE, size);                
             }
          }
       }

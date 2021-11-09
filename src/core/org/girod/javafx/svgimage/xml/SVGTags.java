@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -72,6 +72,7 @@ public interface SVGTags {
    public static String FE_FLOOD = "feFlood";
    public static String FE_IMAGE = "feImage";
    public static String FE_OFFSET = "feOffset";
+   public static String FE_MORPHOLOGY = "feMorphology";
    public static String FE_COMPOSITE = "feComposite";
    public static String FE_MERGE = "feMerge";
    public static String FE_MERGE_NODE = "feMergeNode";
@@ -118,13 +119,23 @@ public interface SVGTags {
    public static String Y1 = "y1";
    public static String X2 = "x2";
    public static String Y2 = "y2";
+   public static String RADIUS = "radius";
    public static String POINT_AT_X = "pointsAtX";
    public static String POINT_AT_Y = "pointsAtY";
    public static String POINT_AT_Z = "pointsAtZ";
+   public static String DILATE = "dilate";
    public static String OFFSET = "offset";
    public static String STYLE = "style";
    public static String FONT_FAMILY = "font-family";
+   public static String FONT_STYLE = "font-style";
    public static String FONT_SIZE = "font-size";
+   public static String FONT_WEIGHT = "font-weight";
+   public static String NORMAL = "normal";
+   public static String BOLD = "bold";
+   public static String BOLDER = "bolder";
+   public static String LIGHTER = "lighter";
+   public static String ITALIC = "italic";
+   public static String OBLIQUE = "oblique";
    public static String WIDTH = "width";
    public static String HEIGHT = "height";
    public static String TRANSFORM = "transform";

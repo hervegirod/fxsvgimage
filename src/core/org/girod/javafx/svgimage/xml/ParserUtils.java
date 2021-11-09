@@ -48,10 +48,11 @@ import javafx.scene.paint.Color;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.5
+ * @version 0.5.1
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
+   private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
 
    private ParserUtils() {
    }
@@ -105,6 +106,30 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   public static double parseFontSize(String valueS) {
+      Matcher m = FONT_SIZE_PAT.matcher(valueS);
+      if (m.matches()) {
+         int groupCount = m.groupCount();
+         if (groupCount == 1) {
+            double size = Double.parseDouble(valueS);
+            return size;
+         } else {
+            String value1 = m.group(1);
+            double size = Double.parseDouble(value1);
+            String unit = m.group(2);
+            if (unit != null && unit.equals("px")) {
+               // see https://stackoverflow.com/questions/12788422/svg-coordinate-system-points-vs-pixels
+               size = size * 1.25d;
+               return size;
+            } else {
+               return size;
+            }
+         }
+      } else {
+         return 12d;
+      }
+   }
+
    public static double parseDoubleProtected(String valueS, boolean isWidth, Viewport viewport) {
       valueS = valueS.replace('−', '-');
       Matcher m = ZERO.matcher(valueS);
@@ -150,6 +175,13 @@ public class ParserUtils implements SVGTags {
                List<FilterSpec.FilterEffect> effects = spec.getEffects();
                for (int i = 0; i < effects.size(); i++) {
                   FilterSpec.FilterEffect filterEffect = effects.get(i);
+                  if (filterEffect instanceof FilterSpec.FEComposite) {
+                     FilterSpec.FEComposite feComposite = (FilterSpec.FEComposite) filterEffect;
+                     boolean toApply = feComposite.shouldApply(appliedEffects, i);
+                     if (!toApply) {
+                        continue;
+                     }
+                  }
                   if (filterEffect.getInputType() == FilterSpec.SOURCE_ALPHA_EFFECT) {
                      useSourceAlpha = true;
                   }
