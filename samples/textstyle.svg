@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:jfreesvg="http://www.jfree.org/jfreesvg/svg" width="504" height="504" text-rendering="auto" shape-rendering="auto">
+   <defs>
+      <clipPath id="_6956964959000clip-0">
+         <path d="M 0 0 L 505 0 L 505 505 L 0 505 L 0 0 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-1">
+         <path d="M 398.94 −33 L 398.94 472 L −106.06 472 L −106.06 −33 L 398.94 −33 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-2">
+         <path d="M 301.09 −33 L 301.09 472 L −203.91 472 L −203.91 −33 L 301.09 −33 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-3">
+         <path d="M 199.74 −33 L 199.74 472 L −305.26 472 L −305.26 −33 L 199.74 −33 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-4">
+         <path d="M 98.4 −33 L 98.4 472 L −406.6 472 L −406.6 −33 L 98.4 −33 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-5">
+         <path d="M 301 −11 L 301 494 L −204 494 L −204 −11 L 301 −11 Z "/>
+      </clipPath>
+      <clipPath id="_6956964959000clip-6">
+         <path d="M 45 45 L 482 45 L 482 449 L 45 449 L 45 45 Z "/>
+      </clipPath>
+   </defs>
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" />
+   <rect x="0" y="0" width="504" height="504" style="fill: rgb(255,255,255); fill-opacity: 1.0" />
+   <line x1="167" y1="448" x2="442" y2="448" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="167" y1="448" x2="167" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="304" y1="448" x2="304" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="442" y1="448" x2="442" y2="453" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <g >
+      <text x="157" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-0)">500</text>
+   </g>
+   <g >
+      <text x="291" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-0)">1000</text>
+   </g>
+   <g >
+      <text x="429" y="469" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-0)">1500</text>
+   </g>
+   <line x1="45" y1="392" x2="45" y2="88" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="45" y1="392" x2="40" y2="392" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="45" y1="291" x2="40" y2="291" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="45" y1="190" x2="40" y2="190" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <line x1="45" y1="88" x2="40" y2="88" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-0)"/>
+   <g transform="matrix(−0,−1,1,0,33,398.942029)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-1)">50</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,301.093398)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-2)">100</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,199.744767)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-3)">150</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,33,98.396135)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-4)">200</text>
+   </g>
+   <g style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;; fill: none" clip-path="url(#_6956964959000clip-0)">
+      <path d="M 45 448 L 481 448 L 481 45 L 45 45 L 45 448"/>
+   </g>
+   <g >
+      <text x="234" y="491" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-0)">Age (days)</text>
+   </g>
+   <g transform="matrix(−0,−1,1,0,11,301)">
+      <text x="0" y="0" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-5)">Circumference (mm)</text>
+   </g>
+   <line x1="66" y1="431" x2="157" y2="393" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="166" y1="387" x2="208" y2="346" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="216" y1="339" x2="301" y2="278" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="311" y1="274" x2="363" y2="262" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="371" y1="256" x2="403" y2="216" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="412" y1="212" x2="459" y2="210" style="stroke-width: 1.5;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 59 433 L 61 431 L 63 433 L 61 435 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 160 390 L 162 388 L 164 390 L 162 392 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 210 342 L 212 340 L 214 342 L 212 344 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 303 275 L 305 273 L 308 275 L 305 277 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 366 261 L 368 259 L 370 261 L 368 263 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 405 212 L 407 210 L 409 212 L 407 214 Z "/>
+   </g>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 463 210 L 465 208 L 467 210 L 465 212 Z "/>
+   </g>
+   <line x1="66" y1="430" x2="157" y2="379" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="166" y1="372" x2="208" y2="322" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="216" y1="315" x2="301" y2="264" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="311" y1="260" x2="363" y2="251" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="372" y1="246" x2="403" y2="210" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="412" y1="205" x2="459" y2="200" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="61.5" cy="433.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="61.5" cy="433.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="162.5" cy="376.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="162.5" cy="376.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212.5" cy="317.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212.5" cy="317.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="305.5" cy="261.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="305.5" cy="261.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="368.5" cy="250.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="368.5" cy="250.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="407.5" cy="206.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="407.5" cy="206.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465.5" cy="200.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465.5" cy="200.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="66" y1="431" x2="157" y2="396" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="165" y1="390" x2="208" y2="334" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="216" y1="326" x2="301" y2="244" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="310" y1="238" x2="363" y2="209" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="371" y1="201" x2="404" y2="146" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="412" y1="141" x2="459" y2="136" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="62" cy="434" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="62" cy="434" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="163" cy="395" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="163" cy="395" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212" cy="330" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212" cy="330" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="306" cy="241" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="306" cy="241" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="369" cy="207" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="369" cy="207" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="408" cy="142" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="408" cy="142" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465" cy="136" rx="2" ry="2" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465" cy="136" rx="2" ry="2" style="stroke-width: 1.5;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="66" y1="424" x2="158" y2="357" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="165" y1="349" x2="209" y2="274" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="216" y1="265" x2="302" y2="181" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="310" y1="175" x2="363" y2="148" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="371" y1="140" x2="404" y2="87" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="412" y1="82" x2="459" y2="82" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="61.5" cy="427.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="61.5" cy="427.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="162.5" cy="354.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="162.5" cy="354.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212.5" cy="269.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="212.5" cy="269.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="305.5" cy="178.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="305.5" cy="178.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="368.5" cy="145.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="368.5" cy="145.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="407.5" cy="82.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="407.5" cy="82.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465.5" cy="82.5" rx="2.5" ry="2.5" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="465.5" cy="82.5" rx="2.5" ry="2.5" style="stroke-width: 1.5;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;; fill: none" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="66" y1="426" x2="157" y2="371" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="165" y1="363" x2="209" y2="272" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="215" y1="263" x2="302" y2="159" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="311" y1="153" x2="363" y2="133" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="371" y1="126" x2="404" y2="75" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="412" y1="69" x2="459" y2="61" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="59" y1="427" x2="62" y2="427" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="427" x2="63" y2="430" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="431" x2="60" y2="431" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="59" y1="431" x2="59" y2="428" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="160" y1="366" x2="163" y2="366" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="164" y1="366" x2="164" y2="369" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="164" y1="370" x2="161" y2="370" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="160" y1="370" x2="160" y2="367" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="210" y1="265" x2="213" y2="265" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="214" y1="265" x2="214" y2="268" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="214" y1="269" x2="211" y2="269" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="210" y1="269" x2="210" y2="266" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="304" y1="153" x2="306" y2="153" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="307" y1="153" x2="307" y2="156" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="307" y1="157" x2="305" y2="157" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="304" y1="157" x2="304" y2="154" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="366" y1="129" x2="369" y2="129" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="370" y1="129" x2="370" y2="132" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="370" y1="133" x2="367" y2="133" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="366" y1="133" x2="366" y2="130" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="405" y1="68" x2="408" y2="68" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="409" y1="68" x2="409" y2="71" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="409" y1="72" x2="406" y2="72" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="405" y1="72" x2="405" y2="69" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="463" y1="58" x2="466" y2="58" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="467" y1="58" x2="467" y2="61" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="467" y1="62" x2="464" y2="62" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="463" y1="62" x2="463" y2="59" style="stroke-width: 1.5;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <g >
+      <text x="222" y="30" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 14px; font-weight: bold;" clip-path="url(#_6956964959000clip-0)">Tree Growth</text>
+   </g>
+   <g >
+      <text x="212" y="502" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 12px;" clip-path="url(#_6956964959000clip-0)">example of line plot</text>
+   </g>
+   <rect x="61" y="60" width="32" height="76" style="fill: rgb(255,255,255); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="61" y1="60" x2="91" y2="60" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="92" y1="60" x2="92" y2="134" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="92" y1="135" x2="62" y2="135" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="61" y1="135" x2="61" y2="61" style="stroke-width: 1.0;stroke: rgb(0,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="82" x2="76" y2="82" style="stroke-width: 1.0;stroke: rgb(255,0,0);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="93" x2="76" y2="93" style="stroke-width: 1.0;stroke: rgb(204,255,0);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 4.0, 4.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="104" x2="76" y2="104" style="stroke-width: 1.0;stroke: rgb(0,255,102);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="115" x2="76" y2="115" style="stroke-width: 1.0;stroke: rgb(0,102,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 1.0, 3.0, 4.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="63" y1="126" x2="76" y2="126" style="stroke-width: 1.0;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-miterlimit: 3;stroke-dasharray: 7.0, 3.0;" clip-path="url(#_6956964959000clip-6)"/>
+   <g style="fill: rgb(255,0,0); fill-opacity: 1.0; stroke: none" clip-path="url(#_6956964959000clip-6)">
+      <path d="M 68 82 L 70 80 L 71 82 L 70 84 Z "/>
+   </g>
+   <ellipse cx="70" cy="93" rx="2" ry="2" style="fill: rgb(255,0,0); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="69.5" cy="104.5" rx="1.5" ry="1.5" style="fill: rgb(255,0,0); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <ellipse cx="70" cy="115" rx="2" ry="2" style="fill: rgb(255,0,0); fill-opacity: 1.0" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="68" y1="125" x2="70" y2="125" style="stroke-width: 1.0;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="71" y1="125" x2="71" y2="126" style="stroke-width: 1.0;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="71" y1="127" x2="69" y2="127" style="stroke-width: 1.0;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <line x1="68" y1="127" x2="68" y2="126" style="stroke-width: 1.0;stroke: rgb(204,0,255);stroke-opacity: 1.0;stroke-linecap: square;stroke-miterlimit: 10;" clip-path="url(#_6956964959000clip-6)"/>
+   <g >
+      <text x="66" y="71" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">Tree</text>
+   </g>
+   <g >
+      <text x="82" y="88" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">1</text>
+   </g>
+   <g >
+      <text x="82" y="99" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">2</text>
+   </g>
+   <g >
+      <text x="82" y="110" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">3</text>
+   </g>
+   <g >
+      <text x="82" y="121" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">4</text>
+   </g>
+   <g >
+      <text x="82" y="132" style="fill: rgb(0,0,0); fill-opacity: 1.0; font-family: sans-serif; font-size: 10px;" clip-path="url(#_6956964959000clip-6)">5</text>
+   </g>
+</svg>
+
