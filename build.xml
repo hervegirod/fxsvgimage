@@ -260,6 +260,7 @@
          <arg value="-output=web/sourceforge"/>         
          <arg value="-lightbox=true"/> 
          <arg value="-$version=${version}"/>
+         <arg value="web/source/sourceforge.properties"/>         
          <arg value="-search=titles"/>
          <arg value="-fullTextSearch=true"/>
          <classpath>
