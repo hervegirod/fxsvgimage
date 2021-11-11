@@ -56,9 +56,13 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix the "none" value for the stroke-dasharray throwing an exception 
 
 ## 0.5.1
- - Support the font-style and font-weight attributes for text (also supported in style)
+ - Support the "font-style" and "font-weight" attributes for text (also supported in style)
  - Fix the computing of font size when an unit is provided
  - Support the Font characteristics in the style node
+ - Support the "oblique" value for the font-style property
+ - Fix some styles in the style element which were not correctly parsed
+ - Support the "fill-opacity" attribute
+ - Support percents for the "opacity" and "fill-opacity" attributes
 
 # Usage
 Just calls one of the static `load` methods, for example:
