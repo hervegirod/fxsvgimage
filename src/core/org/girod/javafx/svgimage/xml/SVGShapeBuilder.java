@@ -112,6 +112,49 @@ public class SVGShapeBuilder implements SVGTags {
       return circle;
    }
 
+   public static void applyFontOblique(Text text) {
+      String style = text.getStyle();
+      String addStyle = "-fx-font-style: oblique;";
+      if (style == null) {
+         text.setStyle(addStyle);
+      } else {
+         style = style + addStyle;
+         text.setStyle(style);
+      }
+   }
+
+   public static FontPosture applyFontPosture(Text text, String value) {
+      if (value == null) {
+         return FontPosture.REGULAR;
+      }
+      if (value.equals("oblique")) {
+         String style = text.getStyle();
+         String addStyle = "-fx-font-style: oblique;";
+         if (style == null) {
+            text.setStyle(addStyle);
+         } else {
+            style = style + addStyle;
+            text.setStyle(style);
+         }
+         return FontPosture.REGULAR;
+      }
+      FontPosture posture = getFontPosture(value);
+      return posture;
+   }
+
+   public static ExtendedFontPosture getExtendedFontPosture(String value) {
+      if (value == null) {
+         return new ExtendedFontPosture(FontPosture.REGULAR);
+      }
+      if (value.equals(ITALIC)) {
+         return new ExtendedFontPosture(FontPosture.ITALIC);
+      }
+      if (value.equals(OBLIQUE)) {
+         return new ExtendedFontPosture(true);
+      }
+      return new ExtendedFontPosture(FontPosture.REGULAR);
+   }
+
    public static FontPosture getFontPosture(String value) {
       FontPosture posture = FontPosture.REGULAR;
       if (value == null) {

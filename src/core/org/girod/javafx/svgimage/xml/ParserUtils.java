@@ -44,6 +44,8 @@ import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
 
 /**
  * Several utilities for shape parsing.
@@ -83,6 +85,35 @@ public class ParserUtils implements SVGTags {
          return Color.web(value, opacity);
       } catch (IllegalArgumentException ex) {
          return null;
+      }
+   }
+
+   public static double parseOpacity(String value) {
+      boolean isPercent = false;
+      if (value.endsWith("%")) {
+         value = value.substring(0, value.length() - 1);
+         isPercent = true;
+      }
+      try {
+         double opacity = Double.parseDouble(value);
+         if (isPercent) {
+            opacity = opacity / 100d;
+         }
+         return opacity;
+      } catch (NumberFormatException e) {
+         return -1;
+      }
+   }
+
+   public static void setFillOpacity(Node node, double fillOpacity) {
+      if (node instanceof Shape) {
+         Shape shape = (Shape) node;
+         Paint paint = shape.getFill();
+         if (paint != null && paint instanceof Color) {
+            Color fill = (Color) paint;
+            fill = fill.deriveColor(0, 0, 0, fillOpacity);
+            shape.setFill(fill);
+         }
       }
    }
 

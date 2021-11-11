@@ -140,6 +140,7 @@ public interface SVGTags {
    public static String HEIGHT = "height";
    public static String TRANSFORM = "transform";
    public static String OPACITY = "opacity";
+   public static String FILL_OPACITY = "fill-opacity";
    public static String STROKE_WIDTH = "stroke-width";
    public static String STROKE_LINECAP = "stroke-linecap";
    public static String STROKE_MITERLIMIT = "stroke-miterlimit";

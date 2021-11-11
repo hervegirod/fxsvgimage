@@ -45,8 +45,8 @@ import javafx.scene.text.FontWeight;
  * @version 0.5.1
  */
 public class SVGStyleBuilder implements SVGTags {
-   private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s:\\#;]+\\}\\s*");
-   private static final Pattern RULE_CONTENT = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*:\\s*[a-zA-Z0-9_\\-+\\.\\#\\.]*");
+   private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
+   private static final Pattern RULE_CONTENT = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*:\\s*[a-zA-Z0-9_\\-+,\\.\\#\\.]*");
 
    private SVGStyleBuilder() {
    }
@@ -93,13 +93,23 @@ public class SVGStyleBuilder implements SVGTags {
                rule.addProperty(key, Styles.FONT_FAMILY, fontFamily);
             } else if (key.equals(FONT_WEIGHT)) {
                FontWeight fontWeight = SVGShapeBuilder.getFontWeight(value);
-               rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);   
+               rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);
             } else if (key.equals(FONT_STYLE)) {
-               FontPosture fontPosture = SVGShapeBuilder.getFontPosture(value);
-               rule.addProperty(key, Styles.FONT_STYLE, fontPosture);  
+               ExtendedFontPosture fontPosture = SVGShapeBuilder.getExtendedFontPosture(value);
+               rule.addProperty(key, Styles.FONT_STYLE, fontPosture);
             } else if (key.equals(FONT_SIZE)) {
                double size = ParserUtils.parseFontSize(value);
-               rule.addProperty(key, Styles.FONT_SIZE, size);                
+               rule.addProperty(key, Styles.FONT_SIZE, size);
+            } else if (key.equals(OPACITY)) {
+               double opacity = ParserUtils.parseOpacity(value);
+               if (opacity >= 0) {
+                  rule.addProperty(key, Styles.OPACITY, opacity);
+               }
+            } else if (key.equals(FILL_OPACITY)) {
+               double opacity = ParserUtils.parseOpacity(value);
+               if (opacity >= 0) {
+                  rule.addProperty(key, Styles.FILL_OPACITY, opacity);
+               }
             }
          }
       }

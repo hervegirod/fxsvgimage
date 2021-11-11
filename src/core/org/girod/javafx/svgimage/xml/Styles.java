@@ -59,6 +59,8 @@ public class Styles {
    public static final short FONT_WEIGHT = 5;
    public static final short FONT_STYLE = 6;
    public static final short FONT_FAMILY = 7;
+   public static final short OPACITY = 8;
+   public static final short FILL_OPACITY = 9;
    private final Map<String, Rule> rules = new HashMap<>();
 
    public Styles() {
@@ -98,7 +100,7 @@ public class Styles {
 
       public void apply(Node node) {
          FontWeight fontWeight = FontWeight.NORMAL;
-         FontPosture fontPosture = FontPosture.REGULAR;
+         ExtendedFontPosture fontPosture = new ExtendedFontPosture(FontPosture.REGULAR);
          double fontSize = 12d;
          String fontFamily = null;
          boolean hasFontProperties = false;
@@ -144,7 +146,7 @@ public class Styles {
                   break;
                case FONT_STYLE:
                   if (node instanceof Text) {
-                     fontPosture = (FontPosture) value;
+                     fontPosture = (ExtendedFontPosture) value;
                      hasFontProperties = true;
                   }
                   break;
@@ -154,9 +156,24 @@ public class Styles {
                      hasFontProperties = true;
                   }
                   break;
+               case OPACITY:
+                  if (node instanceof Shape) {
+                     double opacity = (Double) value;
+                     ((Shape) node).setOpacity(opacity);
+                  }
+                  break;
+               case FILL_OPACITY:
+                  if (node instanceof Shape) {
+                     double fillOpacity = (Double) value;
+                     ParserUtils.setFillOpacity((Shape) node, fillOpacity);
+                  }
+                  break;
             }
             if (hasFontProperties && node instanceof Text) {
-               Font font = Font.font(fontFamily, fontWeight, fontPosture, fontSize);
+               Font font = Font.font(fontFamily, fontWeight, fontPosture.posture, fontSize);
+               if (fontPosture.isOblique) {
+                  SVGShapeBuilder.applyFontOblique((Text) node);
+               }
                ((Text) node).setFont(font);
             }
          }

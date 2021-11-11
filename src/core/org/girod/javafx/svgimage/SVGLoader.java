@@ -923,8 +923,18 @@ public class SVGLoader implements SVGTags {
 
    private void setOpacity(Node node, XMLNode xmlNode) {
       if (xmlNode.hasAttribute(OPACITY)) {
-         double opacity = xmlNode.getAttributeValueAsDouble(OPACITY);
-         node.setOpacity(opacity);
+         String opacityS = xmlNode.getAttributeValue(OPACITY);
+         double opacity = ParserUtils.parseOpacity(opacityS);
+         if (opacity >= 0) {
+            node.setOpacity(opacity);
+         }
+      }
+      if (xmlNode.hasAttribute(FILL_OPACITY) && node instanceof Shape) {
+         String fillOpacityS = xmlNode.getAttributeValue(FILL_OPACITY);
+         double fillOpacity = ParserUtils.parseOpacity(fillOpacityS);
+         if (fillOpacity >= 0) {
+            ParserUtils.setFillOpacity(node, fillOpacity);
+         }
       }
    }
 
@@ -1060,7 +1070,7 @@ public class SVGLoader implements SVGTags {
                   break;
                case FONT_STYLE:
                   if (node instanceof Text) {
-                     fontPosture = SVGShapeBuilder.getFontPosture(styleValue);
+                     fontPosture = SVGShapeBuilder.applyFontPosture((Text) node, styleValue);
                   }
                   break;
                case FONT_SIZE:
@@ -1110,13 +1120,22 @@ public class SVGLoader implements SVGTags {
                      applyLineJoin(((Shape) node), styleValue);
                   }
                   break;
-               case OPACITY:
-                  try {
-                     double opacity = Double.parseDouble(styleValue);
+               case OPACITY: {
+                  double opacity = ParserUtils.parseOpacity(styleValue);
+                  if (opacity >= 0) {
                      node.setOpacity(opacity);
-                  } catch (NumberFormatException e) {
                   }
-                  break;
+               }
+               break;
+               case FILL_OPACITY: {
+                  if (node instanceof Shape) {
+                     double fillOpacity = ParserUtils.parseOpacity(styleValue);
+                     if (fillOpacity >= 0) {
+                        ParserUtils.setFillOpacity(node, fillOpacity);
+                     }
+                  }
+               }
+               break;
                case FILTER:
                   if (effectsSupported) {
                      Effect effect = expressFilter(node, styleValue);
