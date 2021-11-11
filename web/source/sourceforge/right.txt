@@ -1,0 +1,19 @@
+<h2>
+    Developers
+</h2>
+<h3>
+    Join this project:
+</h3>
+<p>
+    To join this project, please
+    contact the project administrators of this project, as shown on the
+    <a href="http://sourceforge.net/projects/fxsvgimage/">project summary page</a>.
+</p>
+<h3>
+    Get the source code:
+</h3>
+<p>
+    Source code for this project is available as <a href="http://sourceforge.net/projects/fxsvgimage/files">downloads</a>
+    or through the git repository used by the project, as accessible from the
+    <a href="https://github.com/hervegirod/fxsvgimage">github develop page</a>.
+</p>

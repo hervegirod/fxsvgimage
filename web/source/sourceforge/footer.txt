@@ -1,0 +1,19 @@
+<p>
+    <a href="http://sourceforge.net/">
+        Project Web Hosted by <img src="index.php_files/sflogo.gif" alt="SourceForge.net">
+    </a>
+    Copyright 1999-2010 -
+    <a href="http://geek.net/" title="Network which provides and promotes Open Source software downloads, development, discussion and news.">
+        Geeknet</a>, Inc., All Rights Reserved
+    <a href="http://sourceforge.net/about">
+        About
+    </a>
+    -
+    <a href="http://sourceforge.net/tos/tos.php">
+        Legal
+    </a>
+    -
+    <a href="http://p.sf.net/sourceforge/getsupport">
+        Help
+    </a>
+</p>

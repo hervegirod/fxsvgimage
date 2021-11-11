@@ -1,0 +1,25 @@
+div.bottomAdditional
+{
+    text-align: center;
+    font-size: 80%;
+}
+
+div.middleForIDX
+{
+    float: left;
+    width: 60%;
+    margin: 0;
+}
+
+div.right
+{
+    float: left;
+    width: 20%;
+    font-size: 80%;
+}
+
+div.left
+{
+    background: url("http://j661.sourceforge.net/prweb-sidebar.png") top left fixed no-repeat, #f5faff;
+    padding: 0px 0px 0px 25px;
+}

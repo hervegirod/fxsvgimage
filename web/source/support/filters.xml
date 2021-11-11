@@ -45,10 +45,8 @@
    
    <title title="limitations" />
    <ul>
-      <li>For the moment, the light effects are not correctly handled in a lot of the cases, mainly because the
-       JavaFX architecture does not need to use a feComposite. The usage of a feComposite often degrades the result
-      compared to the SVG reference</li>
-      <li>A lot of the Porter-Duff compositing operations used in the feComposite are not converted correctly to the
+      <li>For the moment, the light effects are not correctly handled in a some of the cases</li>
+      <li>A lot of the Porter-Duff compositing operations used in the <code>feComposite</code> filter are not converted correctly to the
          JavaFX equivalent</li>
    </ul>
             

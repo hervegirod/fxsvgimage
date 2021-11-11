@@ -29,10 +29,25 @@
       </li>    
       <li>
          <code>stroke-miterlimit</code>
-      </li>                             
+      </li>
+      <li>
+         <code>font-family</code>      
+      </li>     
+      <li>
+         <code>font-size</code>      
+      </li>  
+      <li>
+         <code>font-weight</code>      
+      </li>             
+      <li>
+         <code>font-style</code>      
+      </li>      
       <li>
          <code>opacity</code>
       </li>                  
+      <li>
+         <code>fill-opacity</code>
+      </li>          
       <li>
          <code>style</code>
       </li>                           
@@ -74,10 +89,25 @@
       </li>    
       <li>
          <code>stroke-miterlimit</code>
-      </li>                             
+      </li>             
+      <li>
+         <code>font-family</code>      
+      </li>     
+      <li>
+         <code>font-size</code>      
+      </li>  
+      <li>
+         <code>font-weight</code>      
+      </li>             
+      <li>
+         <code>font-style</code>      
+      </li>                      
       <li>
          <code>opacity</code>
-      </li>                        
+      </li>  
+      <li>
+         <code>fill-opacity</code>
+      </li>                               
       <li>
          <code>clipPath</code>
       </li>                                                                         
@@ -98,7 +128,25 @@
       </li>    
       <li>
          <code>stroke-dasharray</code>
-      </li>                                                                                 
+      </li>        
+      <li>
+         <code>font-family</code>      
+      </li>     
+      <li>
+         <code>font-size</code>      
+      </li>  
+      <li>
+         <code>font-weight</code>      
+      </li>             
+      <li>
+         <code>font-style</code>      
+      </li> 
+      <li>
+         <code>opacity</code>
+      </li>  
+      <li>
+         <code>fill-opacity</code>
+      </li>                                                                                           
    </ul>    
             
    <cat id="support" />

@@ -11,7 +11,7 @@
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
    </pre>
 
-   The <code>SVGImage</code> class is a JavaFX Group.      
+   The <code>SVGImage</code> class is a JavaFX <code>Group</code>.      
    
    <title title="SVG support"/>
    <moreInfo id="SVG support" />   
