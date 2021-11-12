@@ -17,6 +17,7 @@
    <moreInfo id="SVG support" /> 
    
    <title title="built-in browser"/>
+   <moreInfo id="browser" /> 
    You can start the built-in browser by double-clicking on the <code>fxsvgBrowser.jar</code> jar file.  
    
    <title title="License"/>
