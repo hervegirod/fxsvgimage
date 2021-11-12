@@ -64,6 +64,7 @@ Note that contrary to other existing libraries, this library has no external dep
  - Support the "fill-opacity" attribute
  - Support the "text-decoration" attribute
  - Support the "baseline-shift" attribute for tspan elements
+ - Support the "rx" and "ry" attributes for rect elements
  - Fix the tspan elements not using the styles from their text parent
  - Fix the tspan elements not correctly positioned if not having a declared position in the SVG document
  - Support percents for the "opacity" and "fill-opacity" attributes
