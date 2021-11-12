@@ -47,6 +47,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
 import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
 import static org.girod.javafx.svgimage.xml.SVGTags.STROKE;
@@ -252,6 +253,30 @@ public class ParserUtils implements SVGTags {
       }
 
       return lastEffect;
+   }
+
+   public static void setBaselineShift(Text text, String value) {
+      // http://www.svgbasics.com/font_effects_italic.html
+      // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
+      if (value.equals(BASELINE_SUB)) {
+         text.setTranslateY(text.getFont().getSize() * 0.3);
+      } else if (value.equals(BASELINE_SUPER)) {
+         text.setTranslateY(text.getFont().getSize() * -0.3);
+      } else {
+         boolean isPercent = false;
+         if (value.endsWith("%")) {
+            isPercent = true;
+            value = value.substring(0, value.length());
+         }
+         try {
+            double shift = -Double.parseDouble(value);
+            if (isPercent) {
+               shift = shift * 100d;
+            }
+            text.setTranslateY(text.getFont().getSize() * shift);
+         } catch (NumberFormatException e) {
+         }
+      }
    }
 
    public static boolean hasXPosition(XMLNode node) {

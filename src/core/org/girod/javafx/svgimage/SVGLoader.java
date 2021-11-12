@@ -493,11 +493,7 @@ public class SVGLoader implements SVGTags {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
                   String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
-                  if (shiftValue.equals(BASELINE_SUB)) {
-                     tspanText.setTranslateY(tspanText.getFont().getSize() * 0.3);
-                  } else if (shiftValue.equals(BASELINE_SUPER)) {
-                     tspanText.setTranslateY(tspanText.getFont().getSize() * -0.3);
-                  }
+                  ParserUtils.setBaselineShift(tspanText, shiftValue);
                }
                // https://vanseodesign.com/web-design/svg-text-tspan-element/
                if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
