@@ -113,12 +113,12 @@ public class ParserUtils implements SVGTags {
    }
 
    public static void setFillOpacity(Node node, double fillOpacity) {
-      if (node instanceof Shape) {
+      if (node instanceof Shape && fillOpacity < 1d) {
          Shape shape = (Shape) node;
          Paint paint = shape.getFill();
          if (paint != null && paint instanceof Color) {
             Color fill = (Color) paint;
-            fill = fill.deriveColor(0, 0, 0, fillOpacity);
+            fill = fill.deriveColor(0, 1, 1, fillOpacity);
             shape.setFill(fill);
          }
       }

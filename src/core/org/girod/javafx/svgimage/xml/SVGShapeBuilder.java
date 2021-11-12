@@ -93,6 +93,14 @@ public class SVGShapeBuilder implements SVGTags {
       double width = xmlNode.getAttributeValueAsDouble(WIDTH, true, viewport, 0);
       double height = xmlNode.getAttributeValueAsDouble(HEIGHT, false, viewport, 0);
       Rectangle rect = new Rectangle(x, y, width, height);
+      if (xmlNode.hasAttribute(RX)) {
+         double rx = xmlNode.getAttributeValueAsDouble(RX, true, viewport, 0);
+         rect.setArcWidth(rx);
+      }
+      if (xmlNode.hasAttribute(RY)) {
+         double ry = xmlNode.getAttributeValueAsDouble(RY, false, viewport, 0);
+         rect.setArcHeight(ry);
+      }
       return rect;
    }
 
