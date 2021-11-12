@@ -42,7 +42,7 @@ import org.xml.sax.ext.DefaultHandler2;
 /**
  * Parse an XML File and return the associated tree of Nodes.
  *
- * @version 0.4
+ * @version 0.5.1
  */
 public class XMLTreeHandler extends DefaultHandler2 implements SVGTags {
    private XMLNode node = null;
@@ -143,26 +143,9 @@ public class XMLTreeHandler extends DefaultHandler2 implements SVGTags {
       }
       if (node != null) {
          // Propagate style attributes from parent nodes to child nodes
-         propagateStyleAttributes(childNode);
+         ParserUtils.propagateStyleAttributes(node, childNode);
       }
       nodes.push(childNode);
       node = childNode;
-   }
-
-   private void propagateStyleAttributes(XMLNode childNode) {
-      Iterator<Entry<String, String>> it = node.attributes.entrySet().iterator();
-      while (it.hasNext()) {
-         Entry<String, String> entry = it.next();
-         switch (entry.getKey()) {
-            case STYLE:
-            case STROKE:
-            case FILL:
-            case STROKE_WIDTH:
-            case CLASS:
-               if (!childNode.hasAttribute(entry.getKey())) {
-                  childNode.addAttribute(entry.getKey(), entry.getValue());
-               }
-         }
-      }
    }
 }

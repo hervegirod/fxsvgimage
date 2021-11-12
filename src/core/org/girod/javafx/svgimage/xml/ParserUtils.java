@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +47,11 @@ import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
+import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
+import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
+import static org.girod.javafx.svgimage.xml.SVGTags.STROKE;
+import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_WIDTH;
+import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 
 /**
  * Several utilities for shape parsing.
@@ -246,5 +252,81 @@ public class ParserUtils implements SVGTags {
       }
 
       return lastEffect;
+   }
+
+   public static boolean hasXPosition(XMLNode node) {
+      return node.hasAttribute(X) || node.hasAttribute(DX);
+   }
+
+   public static Map<String, String> getStyles(XMLNode node) {
+      Map<String, String> styles = new HashMap<>();
+      if (node.hasAttribute(STYLE)) {
+         String styleValue = node.getAttributeValue(STYLE);
+         StringTokenizer tok = new StringTokenizer(styleValue, ";");
+         while (tok.hasMoreTokens()) {
+            String tk = tok.nextToken().trim();
+            if (tk.isEmpty()) {
+               continue;
+            }
+            int index = tk.indexOf(':');
+            if (index != -1) {
+               String key = tk.substring(0, index);
+               if (index < tk.length() - 1) {
+                  String value = tk.substring(index + 1);
+                  styles.put(key, value);
+               }
+            }
+         }
+      }
+      return styles;
+   }
+
+   public static String mergeStyles(Map<String, String> styles, XMLNode node) {
+      styles = new HashMap<>(styles);
+      if (node.hasAttribute(STYLE)) {
+         String styleValue = node.getAttributeValue(STYLE);
+         StringTokenizer tok = new StringTokenizer(styleValue, ";");
+         while (tok.hasMoreTokens()) {
+            String tk = tok.nextToken().trim();
+            if (tk.isEmpty()) {
+               continue;
+            }
+            int index = tk.indexOf(':');
+            if (index != -1) {
+               String key = tk.substring(0, index);
+               if (index < tk.length() - 1) {
+                  String value = tk.substring(index + 1);
+                  styles.put(key, value);
+               }
+            }
+         }
+      }
+      StringBuilder buf = new StringBuilder();
+      Iterator<Entry<String, String>> it = styles.entrySet().iterator();
+      while (it.hasNext()) {
+         Entry<String, String> entry = it.next();
+         buf.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+      }
+      return buf.toString();
+   }
+
+   public static void propagateStyleAttributes(XMLNode parentNode, XMLNode childNode) {
+      if (childNode.getName().equals(TSPAN)) {
+         return;
+      }
+      Iterator<Map.Entry<String, String>> it = parentNode.attributes.entrySet().iterator();
+      while (it.hasNext()) {
+         Map.Entry<String, String> entry = it.next();
+         switch (entry.getKey()) {
+            case STYLE:
+            case STROKE:
+            case FILL:
+            case STROKE_WIDTH:
+            case CLASS:
+               if (!childNode.hasAttribute(entry.getKey())) {
+                  childNode.addAttribute(entry.getKey(), entry.getValue());
+               }
+         }
+      }
    }
 }

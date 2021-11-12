@@ -82,6 +82,7 @@ import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
+import org.girod.javafx.svgimage.xml.SpanGroup;
 import org.girod.javafx.svgimage.xml.Styles;
 import org.girod.javafx.svgimage.xml.Viewport;
 import org.girod.javafx.svgimage.xml.XMLNode;
@@ -408,6 +409,7 @@ public class SVGLoader implements SVGTags {
       while (it.hasNext()) {
          XMLNode childNode = it.next();
          Node node = null;
+         SpanGroup spanGroup = null;
          String name = childNode.getName();
          switch (name) {
             case STYLE:
@@ -437,7 +439,7 @@ public class SVGLoader implements SVGTags {
             case TEXT:
                node = SVGShapeBuilder.buildText(childNode, viewport);
                if (node == null) {
-                  node = buildTSpanGroup(childNode);
+                  spanGroup = buildTSpanGroup(childNode);
                }
                break;
             case IMAGE:
@@ -475,14 +477,45 @@ public class SVGLoader implements SVGTags {
                break;
          }
          if (node != null) {
-            setNodeStyle(node, childNode);
-            setOpacity(node, childNode);
-            setFilter(node, childNode);
-            setTransform(node, childNode);
-
+            addStyles(node, childNode);
             group.getChildren().add(node);
+         } else if (spanGroup != null) {
+            Map<String, String> theStylesMap = ParserUtils.getStyles(childNode);
+            Iterator<SpanGroup.TSpan> it2 = spanGroup.getSpans().iterator();
+            SpanGroup.TSpan previous = null;
+            while (it2.hasNext()) {
+               SpanGroup.TSpan tspan = it2.next();
+               Text tspanText = tspan.text;
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
+               tspan.node.addAttribute(STYLE, theStyles);
+               addStyles(tspanText, tspan.node);
+               if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
+                  // http://www.svgbasics.com/font_effects_italic.html
+                  // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
+                  String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
+                  if (shiftValue.equals(BASELINE_SUB)) {
+                     tspanText.setTranslateY(tspanText.getFont().getSize() * 0.3);
+                  } else if (shiftValue.equals(BASELINE_SUPER)) {
+                     tspanText.setTranslateY(tspanText.getFont().getSize() * -0.3);
+                  }
+               }
+               // https://vanseodesign.com/web-design/svg-text-tspan-element/
+               if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
+                  double width = previous.text.getLayoutBounds().getWidth();
+                  tspanText.setLayoutX(width + previous.text.getLayoutX());
+               }
+               previous = tspan;
+            }
+            group.getChildren().add(spanGroup.getTextGroup());
          }
       }
+   }
+
+   private void addStyles(Node node, XMLNode xmlNode) {
+      setNodeStyle(node, xmlNode);
+      setOpacity(node, xmlNode);
+      setFilter(node, xmlNode);
+      setTransform(node, xmlNode);
    }
 
    private void parseViewport(XMLNode xmlNode) {
@@ -519,24 +552,26 @@ public class SVGLoader implements SVGTags {
       buildNode(xmlNode, null, true);
    }
 
-   private Group buildTSpanGroup(XMLNode xmlNode) {
+   private SpanGroup buildTSpanGroup(XMLNode xmlNode) {
       Group group = new Group();
+      SpanGroup spanGroup = new SpanGroup(group);
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
-         Node node = null;
+         Text text = null;
          String name = childNode.getName();
          switch (name) {
             case TSPAN:
-               node = SVGShapeBuilder.buildText(childNode, viewport);
+               text = SVGShapeBuilder.buildText(childNode, viewport);
                break;
          }
-         if (node != null) {
-            group.getChildren().add(node);
+         if (text != null) {
+            group.getChildren().add(text);
+            spanGroup.addTSpan(childNode, text);
          }
       }
 
-      return group;
+      return spanGroup;
    }
 
    private Group buildGroup(XMLNode xmlNode) {
@@ -1066,6 +1101,11 @@ public class SVGLoader implements SVGTags {
                case FONT_WEIGHT:
                   if (node instanceof Text) {
                      fontWeight = SVGShapeBuilder.getFontWeight(styleValue);
+                  }
+                  break;
+               case TEXT_DECORATION:
+                  if (node instanceof Text) {
+                     SVGShapeBuilder.applyTextDecoration((Text) node, styleValue);
                   }
                   break;
                case FONT_STYLE:

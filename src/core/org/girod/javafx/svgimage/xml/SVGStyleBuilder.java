@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.scene.paint.Color;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 /**
@@ -74,41 +73,66 @@ public class SVGStyleBuilder implements SVGTags {
             int index = theProperty.indexOf(':');
             String key = theProperty.substring(0, index).trim();
             String value = theProperty.substring(index + 1, theProperty.length()).trim();
-            if (key.equals(FILL)) {
-               Color col = ParserUtils.getColor(value);
-               rule.addProperty(key, Styles.FILL, col);
-            } else if (key.equals(STROKE)) {
-               Color col = ParserUtils.getColor(value);
-               rule.addProperty(key, Styles.STROKE, col);
-            } else if (key.equals(STROKE_WIDTH)) {
-               double width = ParserUtils.parseDoubleProtected(value, true, viewport);
-               rule.addProperty(key, Styles.STROKE_WIDTH, width);
-            } else if (key.equals(STROKE_DASHARRAY)) {
-               List<Double> list = ParserUtils.parseDashArray(value, viewport);
-               if (list != null) {
-                  rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
+            switch (key) {
+               case FILL: {
+                  Color col = ParserUtils.getColor(value);
+                  rule.addProperty(key, Styles.FILL, col);
+                  break;
                }
-            } else if (key.equals(FONT_FAMILY)) {
-               String fontFamily = value.replace("'", "");
-               rule.addProperty(key, Styles.FONT_FAMILY, fontFamily);
-            } else if (key.equals(FONT_WEIGHT)) {
-               FontWeight fontWeight = SVGShapeBuilder.getFontWeight(value);
-               rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);
-            } else if (key.equals(FONT_STYLE)) {
-               ExtendedFontPosture fontPosture = SVGShapeBuilder.getExtendedFontPosture(value);
-               rule.addProperty(key, Styles.FONT_STYLE, fontPosture);
-            } else if (key.equals(FONT_SIZE)) {
-               double size = ParserUtils.parseFontSize(value);
-               rule.addProperty(key, Styles.FONT_SIZE, size);
-            } else if (key.equals(OPACITY)) {
-               double opacity = ParserUtils.parseOpacity(value);
-               if (opacity >= 0) {
-                  rule.addProperty(key, Styles.OPACITY, opacity);
+               case STROKE: {
+                  Color col = ParserUtils.getColor(value);
+                  rule.addProperty(key, Styles.STROKE, col);
+                  break;
                }
-            } else if (key.equals(FILL_OPACITY)) {
-               double opacity = ParserUtils.parseOpacity(value);
-               if (opacity >= 0) {
-                  rule.addProperty(key, Styles.FILL_OPACITY, opacity);
+               case STROKE_WIDTH: {
+                  double width = ParserUtils.parseDoubleProtected(value, true, viewport);
+                  rule.addProperty(key, Styles.STROKE_WIDTH, width);
+                  break;
+               }
+               case STROKE_DASHARRAY: {
+                  List<Double> list = ParserUtils.parseDashArray(value, viewport);
+                  if (list != null) {
+                     rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
+                  }
+                  break;
+               }
+               case FONT_FAMILY: {
+                  String fontFamily = value.replace("'", "");
+                  rule.addProperty(key, Styles.FONT_FAMILY, fontFamily);
+                  break;
+               }
+               case FONT_WEIGHT: {
+                  FontWeight fontWeight = SVGShapeBuilder.getFontWeight(value);
+                  rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);
+                  break;
+               }
+               case FONT_STYLE: {
+                  ExtendedFontPosture fontPosture = SVGShapeBuilder.getExtendedFontPosture(value);
+                  rule.addProperty(key, Styles.FONT_STYLE, fontPosture);
+                  break;
+               }
+               case FONT_SIZE: {
+                  double size = ParserUtils.parseFontSize(value);
+                  rule.addProperty(key, Styles.FONT_SIZE, size);
+                  break;
+               }
+               case TEXT_DECORATION: {
+                  rule.addProperty(key, Styles.TEXT_DECORATION, value);
+                  break;
+               }
+               case OPACITY: {
+                  double opacity = ParserUtils.parseOpacity(value);
+                  if (opacity >= 0) {
+                     rule.addProperty(key, Styles.OPACITY, opacity);
+                  }
+                  break;
+               }
+               case FILL_OPACITY: {
+                  double opacity = ParserUtils.parseOpacity(value);
+                  if (opacity >= 0) {
+                     rule.addProperty(key, Styles.FILL_OPACITY, opacity);
+                  }
+                  break;
                }
             }
          }

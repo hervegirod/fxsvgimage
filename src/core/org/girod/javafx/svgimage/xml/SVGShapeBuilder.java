@@ -123,6 +123,25 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   public static void applyTextDecoration(Text text, String value) {
+      String style = text.getStyle();
+      String addStyle = null;
+      if (value.equals(UNDERLINE)) {
+         addStyle = "-fx-underline: true;";
+      } else if (value.equals(LINE_THROUGH)) {
+         addStyle = "-fx-strikethrough: true;";
+      }
+      if (addStyle == null) {
+         return;
+      }
+      if (style == null) {
+         text.setStyle(addStyle);
+      } else {
+         style = style + addStyle;
+         text.setStyle(style);
+      }
+   }
+
    public static FontPosture applyFontPosture(Text text, String value) {
       if (value == null) {
          return FontPosture.REGULAR;
@@ -215,6 +234,9 @@ public class SVGShapeBuilder implements SVGTags {
          double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
          double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
          Text text = new Text(x, y, cdata);
+         if (xmlNode.hasAttribute(TEXT_DECORATION)) {
+            SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+         }
          if (font != null) {
             text.setFont(font);
          }

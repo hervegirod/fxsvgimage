@@ -59,8 +59,9 @@ public class Styles {
    public static final short FONT_WEIGHT = 5;
    public static final short FONT_STYLE = 6;
    public static final short FONT_FAMILY = 7;
-   public static final short OPACITY = 8;
-   public static final short FILL_OPACITY = 9;
+   public static final short TEXT_DECORATION = 8;
+   public static final short OPACITY = 9;
+   public static final short FILL_OPACITY = 10;
    private final Map<String, Rule> rules = new HashMap<>();
 
    public Styles() {
@@ -154,6 +155,11 @@ public class Styles {
                   if (node instanceof Text) {
                      fontSize = (Double) value;
                      hasFontProperties = true;
+                  }
+                  break;
+               case TEXT_DECORATION:
+                  if (node instanceof Text) {
+                     SVGShapeBuilder.applyTextDecoration((Text) node, (String) value);
                   }
                   break;
                case OPACITY:
