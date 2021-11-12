@@ -62,6 +62,10 @@ Note that contrary to other existing libraries, this library has no external dep
  - Support the "oblique" value for the font-style property
  - Fix some styles in the style element which were not correctly parsed
  - Support the "fill-opacity" attribute
+ - Support the "text-decoration" attribute
+ - Support the "baseline-shift" attribute for tspan elements
+ - Fix the tspan elements not using the styles from their text parent
+ - Fix the tspan elements not correctly positioned if not having a declared position in the SVG document
  - Support percents for the "opacity" and "fill-opacity" attributes
 
 # Usage
@@ -76,6 +80,7 @@ This library support:
 - clip paths
 - linear gradients
 - radial gradients
+- filters
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
 - fill, stroke, style, class, transform attributes
 
