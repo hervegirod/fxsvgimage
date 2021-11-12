@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +45,6 @@ import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -55,12 +52,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -68,7 +60,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -77,7 +68,6 @@ import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.FilterSpec;
 import org.girod.javafx.svgimage.xml.LengthParser;
 import org.girod.javafx.svgimage.xml.ParserUtils;
-import org.girod.javafx.svgimage.xml.PercentParser;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
@@ -96,7 +86,6 @@ import org.xml.sax.SAXException;
  * @version 0.5.1
  */
 public class SVGLoader implements SVGTags {
-   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
    private final URL url;
    private final SVGImage root;
    private Viewport viewport = null;
@@ -464,12 +453,12 @@ public class SVGLoader implements SVGTags {
                }
             case LINEAR_GRADIENT:
                if (acceptDefs) {
-                  buildLinearGradient(childNode);
+                  SVGShapeBuilder.buildLinearGradient(gradientSpecs, gradients, childNode);
                   break;
                }
             case RADIAL_GRADIENT:
                if (acceptDefs) {
-                  buildRadialGradient(childNode);
+                  SVGShapeBuilder.buildRadialGradient(gradientSpecs, gradients, childNode);
                   break;
                }
             case FILTER:
@@ -622,241 +611,6 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void buildRadialGradient(XMLNode xmlNode) {
-      String id = null;
-      Double fx = null;
-      Double fy = null;
-      Double cx = null;
-      Double cy = null;
-      Double r = null;
-      Transform transform = null;
-      String href = null;
-
-      Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
-      while (it.hasNext()) {
-         String attrname = it.next();
-         switch (attrname) {
-            case ID:
-               id = xmlNode.getAttributeValue(attrname);
-               break;
-            case XLINK_HREF:
-               href = xmlNode.getAttributeValue(attrname);
-               if (href.startsWith("#")) {
-                  href = href.substring(1);
-               } else {
-                  href = null;
-               }
-            case GRADIENT_UNITS:
-               String gradientUnits = xmlNode.getAttributeValue(attrname);
-               if (!gradientUnits.equals(USERSPACE_ON_USE)) {
-                  return;
-               }
-               break;
-            case FX:
-               fx = PercentParser.parseValue(xmlNode, attrname);
-               break;
-            case FY:
-               fy = PercentParser.parseValue(xmlNode, attrname);
-               break;
-            case CX:
-               cx = PercentParser.parseValue(xmlNode, attrname);
-               break;
-            case CY:
-               cy = PercentParser.parseValue(xmlNode, attrname);
-               break;
-            case R:
-               r = PercentParser.parseValue(xmlNode, attrname);
-               break;
-            case GRADIENT_TRANSFORM:
-               transform = extractTransform(xmlNode.getAttributeValue(attrname));
-               break;
-            default:
-               break;
-         }
-      }
-
-      GradientSpec spec = new GradientSpec();
-      if (id != null) {
-         gradientSpecs.put(id, spec);
-      }
-      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, RADIAL_GRADIENT);
-      if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
-         specstops = gradientSpecs.get(href).getStops();
-      }
-      List<Stop> stops = convertStops(specstops);
-
-      if (id != null && cx != null && cy != null && r != null) {
-         double fDistance = 0.0;
-         double fAngle = 0.0;
-
-         if (transform != null && transform instanceof Affine) {
-            double tempCx = cx;
-            double tempCy = cy;
-            double tempR = r;
-
-            Affine affine = (Affine) transform;
-            cx = tempCx * affine.getMxx() + tempCy * affine.getMxy() + affine.getTx();
-            cy = tempCx * affine.getMyx() + tempCy * affine.getMyy() + affine.getTy();
-
-            r = Math.sqrt(tempR * affine.getMxx() * tempR * affine.getMxx() + tempR * affine.getMyx() * tempR * affine.getMyx());
-
-            if (fx != null && fy != null) {
-               double tempFx = fx;
-               double tempFy = fy;
-               fx = tempFx * affine.getMxx() + tempFy * affine.getMxy() + affine.getTx();
-               fy = tempFx * affine.getMyx() + tempFy * affine.getMyy() + affine.getTy();
-            } else {
-               fAngle = Math.asin(affine.getMyx()) * 180.0 / Math.PI;
-               fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
-            }
-         }
-
-         if (fx != null && fy != null) {
-            fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
-            fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
-         }
-
-         RadialGradient gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, true, CycleMethod.NO_CYCLE, stops);
-         gradients.put(id, gradient);
-      }
-   }
-
-   private void buildLinearGradient(XMLNode xmlNode) {
-      String id = null;
-      double x1 = 0;
-      double y1 = 0;
-      double x2 = 0;
-      double y2 = 0;
-      Transform transform = null;
-      String href = null;
-
-      Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
-      while (it.hasNext()) {
-         String attrname = it.next();
-         switch (attrname) {
-            case ID:
-               id = xmlNode.getAttributeValue(attrname);
-               break;
-            case XLINK_HREF:
-               href = xmlNode.getAttributeValue(attrname);
-               if (href.startsWith("#")) {
-                  href = href.substring(1);
-               } else {
-                  href = null;
-               }
-               break;
-            case GRADIENT_UNITS:
-               String gradientUnits = xmlNode.getAttributeValue(attrname);
-               if (!gradientUnits.equals(USERSPACE_ON_USE)) {
-                  return;
-               }
-               break;
-            case X1:
-               x1 = xmlNode.getAttributeValueAsDouble(attrname);
-               break;
-            case Y1:
-               y1 = xmlNode.getAttributeValueAsDouble(attrname);
-               break;
-            case X2:
-               x2 = xmlNode.getAttributeValueAsDouble(attrname);
-               break;
-            case Y2:
-               y2 = xmlNode.getAttributeValueAsDouble(attrname);
-               break;
-            case GRADIENT_TRANSFORM:
-               transform = extractTransform(xmlNode.getAttributeValue(attrname));
-               break;
-            default:
-               break;
-         }
-      }
-
-      GradientSpec spec = new GradientSpec();
-      if (id != null) {
-         gradientSpecs.put(id, spec);
-      }
-      List<GradientSpec.Stop> specstops = buildStops(spec, xmlNode, LINEAR_GRADIENT);
-      if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
-         specstops = gradientSpecs.get(href).getStops();
-      }
-      List<Stop> stops = convertStops(specstops);
-
-      if (id != null && x1 != 0 && y1 != 0 && x2 != 0 && y2 != 0) {
-         if (transform != null && transform instanceof Affine) {
-            double x1d = x1;
-            double y1d = y1;
-            double x2d = x2;
-            double y2d = y2;
-            Affine affine = (Affine) transform;
-            x1 = x1d * affine.getMxx() + y1d * affine.getMxy() + affine.getTx();
-            y1 = x1d * affine.getMyx() + y1d * affine.getMyy() + affine.getTy();
-            x2 = x2d * affine.getMxx() + y2d * affine.getMxy() + affine.getTx();
-            y2 = x2d * affine.getMyx() + y2d * affine.getMyy() + affine.getTy();
-         }
-
-         LinearGradient gradient = new LinearGradient(x1, y1, x2, y2, false, CycleMethod.NO_CYCLE, stops);
-         gradients.put(id, gradient);
-      }
-   }
-
-   private List<Stop> convertStops(List<GradientSpec.Stop> specstops) {
-      List<Stop> stops = new ArrayList<>();
-      Iterator<GradientSpec.Stop> it = specstops.iterator();
-      while (it.hasNext()) {
-         GradientSpec.Stop theStop = it.next();
-         Stop stop = new Stop(theStop.offset, theStop.color);
-         stops.add(stop);
-      }
-      return stops;
-   }
-
-   private List<GradientSpec.Stop> buildStops(GradientSpec spec, XMLNode xmlNode, String kindOfGradient) {
-      List<GradientSpec.Stop> stops = new ArrayList<>();
-      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
-      while (it.hasNext()) {
-         XMLNode childNode = it.next();
-         if (!childNode.getName().equals(STOP)) {
-            continue;
-         }
-         double offset = 0d;
-         String color = null;
-         double opacity = 1.0;
-
-         Iterator<String> it2 = childNode.getAttributes().keySet().iterator();
-         while (it2.hasNext()) {
-            String attrname = it2.next();
-            switch (attrname) {
-               case OFFSET:
-                  offset = PercentParser.parseValue(childNode, attrname);
-                  break;
-               case STYLE:
-                  String style = childNode.getAttributeValue(attrname);
-                  StringTokenizer tokenizer = new StringTokenizer(style, ";");
-                  while (tokenizer.hasMoreTokens()) {
-                     String item = tokenizer.nextToken().trim();
-                     if (item.startsWith("stop-color")) {
-                        color = item.substring(11);
-                     } else if (item.startsWith("stop-opacity")) {
-                        opacity = ParserUtils.parseDoubleProtected(item.substring(13));
-                     } else {
-                     }
-                  }
-                  break;
-               default:
-                  break;
-            }
-         }
-
-         if (color != null) {
-            Color colour = Color.web(color, opacity);
-            GradientSpec.Stop stop = spec.addStop(offset, opacity, colour);
-            stops.add(stop);
-         }
-      }
-
-      return stops;
-   }
-
    private void buildClipPath(XMLNode xmlNode) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
@@ -867,80 +621,11 @@ public class SVGLoader implements SVGTags {
    private void setTransform(Node node, XMLNode xmlNode) {
       if (xmlNode.hasAttribute(TRANSFORM)) {
          String transforms = xmlNode.getAttributeValue(TRANSFORM);
-         Transform transform = extractTransform(transforms);
+         Transform transform = ParserUtils.extractTransform(transforms);
          if (transform != null) {
             node.getTransforms().add(transform);
          }
       }
-   }
-
-   private List<Double> getArguments(String transformTxt) {
-      List<Double> args = new ArrayList<>();
-      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
-      if (m.matches()) {
-         String content = m.group(1);
-         String remaining = content;
-         while (true) {
-            int index = remaining.indexOf(' ');
-            if (index == -1) {
-               index = remaining.indexOf(',');
-            }
-            if (index == -1) {
-               ParserUtils.parseDoubleArgument(args, remaining);
-               break;
-            } else {
-               String beginning = remaining.substring(0, index);
-               ParserUtils.parseDoubleArgument(args, beginning);
-               remaining = remaining.substring(index + 1);
-            }
-         }
-      } else {
-         return null;
-      }
-      return args;
-   }
-
-   private Transform extractTransform(String transforms) {
-      Transform transform = null;
-
-      StringTokenizer tokenizer = new StringTokenizer(transforms, ")");
-
-      while (tokenizer.hasMoreTokens()) {
-         String transformTxt = tokenizer.nextToken() + ")";
-         if (transformTxt.startsWith("translate(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 2) {
-               transform = Transform.translate(args.get(0), args.get(1));
-            }
-         } else if (transformTxt.startsWith("scale(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 2) {
-               transform = Transform.scale(args.get(0), args.get(1));
-            }
-         } else if (transformTxt.startsWith("rotate(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 3) {
-               transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
-            }
-         } else if (transformTxt.startsWith("skewX(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 1) {
-               transform = Transform.shear(args.get(0), 1);
-            }
-         } else if (transformTxt.startsWith("skewY(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 1) {
-               transform = Transform.shear(1, args.get(0));
-            }
-         } else if (transformTxt.startsWith("matrix(")) {
-            List<Double> args = getArguments(transformTxt);
-            if (args.size() == 6) {
-               transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
-            }
-         }
-      }
-
-      return transform;
    }
 
    private void setFilter(Node node, XMLNode xmlNode) {
@@ -974,20 +659,6 @@ public class SVGLoader implements SVGTags {
       return effect;
    }
 
-   private Paint expressPaint(String value) {
-      Paint paint = null;
-      if (!value.equals("none")) {
-         if (value.startsWith("url(#")) {
-            String id = value.substring(5, value.length() - 1);
-            paint = gradients.get(id);
-         } else {
-            paint = Color.web(value);
-         }
-      }
-
-      return paint;
-   }
-
    private void setStyleClass(Node node, String styleClasses) {
       StringTokenizer tok = new StringTokenizer(styleClasses, " ");
       while (tok.hasMoreTokens()) {
@@ -1002,7 +673,7 @@ public class SVGLoader implements SVGTags {
 
    private void setClipPath(Node node, String spec) {
       if (spec.startsWith("url(#")) {
-         String clipID = spec.substring(5, spec.length() - 1);
+         String clipID = ParserUtils.getURL(spec);
          if (clippingFactory.hasClip(clipID)) {
             Shape clipShape = clippingFactory.createClip(clipID, viewport);
             if (clipShape != null) {
@@ -1016,11 +687,11 @@ public class SVGLoader implements SVGTags {
       if (node instanceof Shape) {
          Shape shape = (Shape) node;
          if (xmlNode.hasAttribute(FILL)) {
-            shape.setFill(expressPaint(xmlNode.getAttributeValue(FILL)));
+            shape.setFill(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(FILL)));
          }
 
          if (xmlNode.hasAttribute(STROKE)) {
-            shape.setStroke(expressPaint(xmlNode.getAttributeValue(STROKE)));
+            shape.setStroke(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(STROKE)));
          }
 
          if (xmlNode.hasAttribute(STROKE_WIDTH)) {
@@ -1116,12 +787,12 @@ public class SVGLoader implements SVGTags {
                   break;
                case FILL:
                   if (node instanceof Shape) {
-                     ((Shape) node).setFill(expressPaint(styleValue));
+                     ((Shape) node).setFill(ParserUtils.expressPaint(gradients, styleValue));
                   }
                   break;
                case STROKE:
                   if (node instanceof Shape) {
-                     ((Shape) node).setStroke(expressPaint(styleValue));
+                     ((Shape) node).setStroke(ParserUtils.expressPaint(gradients, styleValue));
                   }
                   break;
                case STROKE_WIDTH:

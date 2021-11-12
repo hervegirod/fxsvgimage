@@ -48,6 +48,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
 import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
 import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
 import static org.girod.javafx.svgimage.xml.SVGTags.STROKE;
@@ -62,6 +63,8 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
    private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
+   private static final Pattern URL_PAT = Pattern.compile("url\\('?([^']+)'?\\)");
+   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
 
    private ParserUtils() {
    }
@@ -72,6 +75,100 @@ public class ParserUtils implements SVGTags {
       } catch (IllegalArgumentException ex) {
          return null;
       }
+   }
+
+   public static String getURL(String value) {
+      Matcher m = URL_PAT.matcher(value);
+      if (m.matches()) {
+         value = m.group(1);
+      }
+      if (value.startsWith("#")) {
+         value = value.substring(1);
+      }
+      return value;
+   }
+
+   public static Paint expressPaint(Map<String, Paint> gradients, String value) {
+      Paint paint = null;
+      if (!value.equals("none")) {
+         if (value.startsWith("url(")) {
+            String id = getURL(value);
+            paint = gradients.get(id);
+         } else {
+            paint = ParserUtils.getColor(value);
+         }
+      }
+
+      return paint;
+   }
+
+   private static List<Double> getTransformArguments(String transformTxt) {
+      List<Double> args = new ArrayList<>();
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
+      if (m.matches()) {
+         String content = m.group(1);
+         String remaining = content;
+         while (true) {
+            int index = remaining.indexOf(' ');
+            if (index == -1) {
+               index = remaining.indexOf(',');
+            }
+            if (index == -1) {
+               ParserUtils.parseDoubleArgument(args, remaining);
+               break;
+            } else {
+               String beginning = remaining.substring(0, index);
+               ParserUtils.parseDoubleArgument(args, beginning);
+               remaining = remaining.substring(index + 1);
+            }
+         }
+      } else {
+         return null;
+      }
+      return args;
+   }
+
+   public static Transform extractTransform(String transforms) {
+      Transform transform = null;
+
+      StringTokenizer tokenizer = new StringTokenizer(transforms, ")");
+
+      while (tokenizer.hasMoreTokens()) {
+         String transformTxt = tokenizer.nextToken() + ")";
+         if (transformTxt.startsWith("translate(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 2) {
+               transform = Transform.translate(args.get(0), args.get(1));
+            }
+         } else if (transformTxt.startsWith("scale(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 2) {
+               transform = Transform.scale(args.get(0), args.get(1));
+            }
+         } else if (transformTxt.startsWith("rotate(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 3) {
+               transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
+            }
+         } else if (transformTxt.startsWith("skewX(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 1) {
+               transform = Transform.shear(args.get(0), 1);
+            }
+         } else if (transformTxt.startsWith("skewY(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 1) {
+               transform = Transform.shear(1, args.get(0));
+            }
+         } else if (transformTxt.startsWith("matrix(")) {
+            List<Double> args = getTransformArguments(transformTxt);
+            if (args.size() == 6) {
+               transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
+            }
+         }
+      }
+
+      return transform;
    }
 
    public static List<Double> parseDashArray(String value, Viewport viewport) {
@@ -206,8 +303,8 @@ public class ParserUtils implements SVGTags {
       Effect lastEffect = null;
       boolean useSourceAlpha = false;
       if (!value.equals("none")) {
-         if (value.startsWith("url(#")) {
-            String id = value.substring(5, value.length() - 1);
+         if (value.startsWith("url(")) {
+            String id = ParserUtils.getURL(value);
             if (filterSpecs.containsKey(id)) {
                FilterSpec spec = filterSpecs.get(id);
                List<FilterSpec.FilterEffect> effects = spec.getEffects();

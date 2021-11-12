@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * This utility class parse a percent value.
  *
- * @since 0.2
+ * @version 0.5.1
  */
 public class PercentParser {
    private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");
@@ -52,15 +52,27 @@ public class PercentParser {
     *
     * @param node the node
     * @param attrName the attribute name
+    * @param allowAbsolute true if absolute values must be allowed
     * @return the value clamped between and 1
     */
-   public static double parseValue(XMLNode node, String attrName) {
+   public static double parseValue(XMLNode node, String attrName, boolean allowAbsolute) {
       String valueAsString = node.getAttributeValue(attrName);
       if (valueAsString != null) {
-         return parseValue(valueAsString);
+         return parseValue(valueAsString, allowAbsolute);
       } else {
          return 0;
       }
+   }
+
+   /**
+    * Parse a node attribute as a percent value.
+    *
+    * @param node the node
+    * @param attrName the attribute name
+    * @return the value clamped between and 1
+    */
+   public static double parseValue(XMLNode node, String attrName) {
+      return parseValue(node, attrName, false);
    }
 
    /**
@@ -70,13 +82,24 @@ public class PercentParser {
     * @return the value clamped between and 1
     */
    public static double parseValue(String value) {
+      return parseValue(value, false);
+   }
+
+   /**
+    * Parse a percent value.
+    *
+    * @param value the value
+    * @param allowAbsolute true if absolute values must be allowed
+    * @return the value
+    */
+   public static double parseValue(String value, boolean allowAbsolute) {
       value = value.trim();
       Matcher m = NUMBER.matcher(value);
       if (m.matches()) {
          double parsedValue = Double.parseDouble(value);
          if (parsedValue < 0) {
             parsedValue = 0;
-         } else if (parsedValue > 1) {
+         } else if (!allowAbsolute && parsedValue > 1) {
             parsedValue = 1;
          }
          return parsedValue;

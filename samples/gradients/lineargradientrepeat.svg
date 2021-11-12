@@ -1,0 +1,27 @@
+<svg width="220" height="150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="PadGradient"
+                    x1="33%" x2="67%">
+      <stop offset="0%"  stop-color="fuchsia"/>
+      <stop offset="100%" stop-color="orange"/>
+    </linearGradient>
+    <linearGradient id="ReflectGradient" spreadMethod="reflect"
+                    x1="33%" x2="67%">
+      <stop offset="0%"  stop-color="fuchsia"/>
+      <stop offset="100%" stop-color="orange"/>
+    </linearGradient>
+    <linearGradient id="RepeatGradient" spreadMethod="repeat"
+                    x1="33%" x2="67%">
+      <stop offset="0%"  stop-color="fuchsia"/>
+      <stop offset="100%" stop-color="orange"/>
+    </linearGradient>
+  </defs>
+
+  <rect fill="url(#PadGradient)"
+          x="10" y="0" width="200" height="40"/>
+  <rect fill="url(#ReflectGradient)"
+          x="10" y="50" width="200" height="40"/>
+  <rect fill="url(#RepeatGradient)"
+          x="10" y="100" width="200" height="40"/>
+</svg>
+

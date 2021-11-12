@@ -60,7 +60,13 @@ public interface SVGTags {
    public static String LINEAR_GRADIENT = "linearGradient";
    public static String RADIAL_GRADIENT = "radialGradient";
    public static String GRADIENT_UNITS = "gradientUnits";
+   public static String SPREAD_METHOD = "spreadMethod";
+   public static String SPREAD_PAD = "pad";
+   public static String SPREAD_REFLECT = "reflect";
+   public static String SPREAD_REPEAT = "repeat";
    public static String STOP = "stop";
+   public static String STOP_COLOR = "stop-color";
+   public static String STOP_OPACITY = "stop-opacity";
    public static String GRADIENT_TRANSFORM = "gradientTransform";
    public static String TSPAN = "tspan";
    public static String ID = "id";
