@@ -2,6 +2,8 @@
 <article desc="clipPath support">
    <meta desc="This article presents the support for SVG clipPath specification" />
             
-   The library support the <code>clipPath</code> attribute for all elements.
+   The library support the <code>clipPath</code> attribute for all elements<note>See
+      <a href="https://www.w3.org/TR/SVG11/masking.html">Clipping, Masking and Compositing</a>
+   </note>.
    <cat id="support" />
 </article>

@@ -69,7 +69,9 @@
    Note that the <code>opacity</code> and <code>transform</code> attributes are supported for all elements.
    
    <title title="support for styles specified within the style attribute"/>
-   The following styles are supported within the <code>style</code> attribute:
+   The following styles are supported within the <code>style</code> attribute<note>See
+      <a href="https://www.w3.org/TR/SVG11/styling.html#StyleAttribute">The style attribute</a>
+   </note>:
    <ul>
       <li>
          <code>fill</code>
@@ -122,8 +124,11 @@
    </ul>   
    
    <title title="support for styles specified in the style element"/>
-   The following styles are supported within the rules specified in the <code>style</code> element, and can be accessed
-   through the <code>class</code> attribute:
+   The following styles are supported within the rules specified in the <code>style</code> element<note>See
+      <a href="https://www.w3.org/TR/SVG11/styling.html#StyleElement">The style element</a>
+   </note>, and can be accessed through the <code>class</code> attribute<note>See
+      <a href="https://www.w3.org/TR/SVG11/styling.html#ClassAttribute">The class attribute</a>
+   </note>:
    <ul>
       <li>
          <code>fill</code>

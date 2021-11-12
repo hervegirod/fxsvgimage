@@ -2,7 +2,7 @@
 <article desc="SVG support">
    <meta desc="This article presents the support for SVG specification" />
 
-   This library support:
+   This library supports:
    <ul>
       <li>px, pt, cm, mm, on, and % units. See also <ref id="units support" /></li>
       <li>filters. See also <ref id="filters support" /></li>      
