@@ -43,6 +43,11 @@
          <code>font-style</code>      
       </li>      
       <li>
+         <code>text-decoration</code>      
+      </li>       
+      <li>
+         <code>baseline-shift</code> on <code>tspan</code> elements</li>   
+      <li>
          <code>opacity</code>
       </li>                  
       <li>
@@ -103,6 +108,9 @@
          <code>font-style</code>      
       </li>                      
       <li>
+         <code>text-decoration</code>      
+      </li>         
+      <li>
          <code>opacity</code>
       </li>  
       <li>
@@ -141,6 +149,9 @@
       <li>
          <code>font-style</code>      
       </li> 
+      <li>
+         <code>text-decoration</code>      
+      </li>       
       <li>
          <code>opacity</code>
       </li>  
