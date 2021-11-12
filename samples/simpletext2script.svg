@@ -18,7 +18,7 @@
          x="11.074231"
          y="51.795765"
          id="text4144">
-         <tspan x="11.074231" y="51.795765">Hello</tspan>
-         <tspan baseline-shift="sub" x="100.074231" y="51.795765">World</tspan></text>
+         <tspan>Hello</tspan>
+         <tspan baseline-shift="sub">World</tspan></text>
    </g>
 </svg>
