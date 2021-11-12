@@ -6,14 +6,16 @@
    <ul>
       <li>px, pt, cm, mm, on, and % units. See also <ref id="units support" /></li>
       <li>filters. See also <ref id="filters support" /></li>      
-      <li>clip paths</li>
-      <li>linear gradients</li>
-      <li>radial gradients</li>      
+      <li>clip paths. See also <ref id="clipPath support" /></li>
+      <li>linear and radial gradients. See also <ref id="Gradients support" /></li>    
       <li>the style element. See also <ref id="styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
-      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements</li>      
-      <li>fill, stroke, style, class, transform attributes. See also <ref id="styling support" /></li>
+      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
+         See also <ref id="SVG shapes support" />
+      </li>      
+      <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
+      <li>transform attributes. See also <ref id="transform support" /></li>
    </ul>
-   Notz that the support is mainly for SVG 1.1, but some SVG 1.2 constructs are also supported.
+   Note that the support is mainly for SVG 1.1, but some SVG 1.2 constructs are also supported.
 
    <title title="limitations"/>
    <ul>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SVG shapes support">
+   <meta desc="This article presents the support for SVG shapes" />
+   This article presents the support for SVG shapes.
+   
+   <title title="attributes supported for all elements" />
+   All elements support the following attributes:
+   <ul>
+      <li>
+         The attributes for <ref id="transform support" />
+      </li>           
+      <li>
+         The attributes for <ref id="styling support" />
+      </li> 
+      <li>
+         The attributes for <ref id="clipPath support" />
+      </li>             
+   </ul>
+      
+   <title title="g" />
+   No attributes are supported besides those supported for all elements. 
+   
+   <title title="rect" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>x</code>
+      </li>
+      <li>
+         <code>y</code>
+      </li>        
+      <li>
+         <code>width</code>
+      </li>
+      <li>
+         <code>height</code>
+      </li>  
+      <li>
+         <code>rx</code>
+      </li>
+      <li>
+         <code>ry</code>
+      </li>     
+      <li>
+         <code>color</code>
+      </li>     
+      <li>
+         <code>fill-color</code>
+      </li>      
+      <li>
+         <code>opacity</code>
+      </li>   
+      <li>
+         <code>fill-opacity</code>
+      </li>    
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>               
+   </ul>
+   
+   <title title="line" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>x1</code>
+      </li>
+      <li>
+         <code>y1</code>
+      </li>        
+      <li>
+         <code>x2</code>
+      </li>
+      <li>
+         <code>y2</code>
+      </li>       
+      <li>
+         <code>stroke</code>
+      </li>        
+      <li>
+         <code>opacity</code>
+      </li>     
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>                 
+   </ul>   
+   
+   <title title="circle" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>cx</code>
+      </li>
+      <li>
+         <code>cy</code>
+      </li>        
+      <li>
+         <code>r</code>
+      </li>
+      <li>
+         <code>stroke</code>
+      </li>     
+      <li>
+         <code>fill-color</code>
+      </li>      
+      <li>
+         <code>opacity</code>
+      </li>   
+      <li>
+         <code>fill-opacity</code>
+      </li>    
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>               
+   </ul>   
+   
+   <title title="ellipse" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>cx</code>
+      </li>
+      <li>
+         <code>cy</code>
+      </li>        
+      <li>
+         <code>rx</code>
+      </li>
+      <li>
+         <code>ry</code>
+      </li>      
+      <li>
+         <code>stroke</code>
+      </li>     
+      <li>
+         <code>fill-color</code>
+      </li>      
+      <li>
+         <code>opacity</code>
+      </li>   
+      <li>
+         <code>fill-opacity</code>
+      </li>    
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>                
+   </ul>      
+   
+   <title title="polyline" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>points</code>
+      </li>      
+      <li>
+         <code>stroke</code>
+      </li>        
+      <li>
+         <code>opacity</code>
+      </li>     
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>                 
+   </ul>
+   Note that the <code>fill</code> attribute is unsupported. All polylines are not filled.  
+   
+   <title title="polygon" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>points</code>
+      </li>      
+      <li>
+         <code>stroke</code>
+      </li>        
+      <li>
+         <code>fill-color</code>
+      </li>      
+      <li>
+         <code>opacity</code>
+      </li>   
+      <li>
+         <code>fill-opacity</code>
+      </li>    
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>                 
+   </ul>        
+   
+   <title title="path" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>d</code>
+      </li>      
+      <li>
+         <code>stroke</code>
+      </li>        
+      <li>
+         <code>fill-color</code>
+      </li>      
+      <li>
+         <code>opacity</code>
+      </li>   
+      <li>
+         <code>fill-opacity</code>
+      </li>        
+      <li>
+         The attributes for <ref id="Strokes support" />
+      </li>                
+   </ul>     
+   
+   <title title="text" />
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>x</code>
+      </li>
+      <li>
+         <code>y</code>
+      </li>        
+      <li>
+         <code>font-family</code>
+      </li>
+      <li>
+         <code>font-size</code>
+      </li>  
+      <li>
+         <code>font-style</code>
+      </li>
+      <li>
+         <code>text-decoration</code>
+      </li>                        
+   </ul>   
+   
+   <title level="2" title="tspan" />
+   Text can contain <code>tspan</code> elements.
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>x</code>
+      </li>
+      <li>
+         <code>y</code>
+      </li>        
+      <li>
+         <code>font-family</code>
+      </li>
+      <li>
+         <code>font-size</code>
+      </li>  
+      <li>
+         <code>font-style</code>
+      </li>
+      <li>
+         <code>text-decoration</code>
+      </li>    
+      <li>
+         <code>baseline-shift</code>
+      </li>                                    
+   </ul>     
+            
+   <cat id="support" />
+</article>

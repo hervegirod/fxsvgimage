@@ -2,4 +2,5 @@
 <categories>
    <category id="general" desc="General informations" />
    <category id="support" desc="Informations about the support for the SVG standard specification" />
+   <category id="browser" desc="Concerns the built-in svg browser" />
 </categories>

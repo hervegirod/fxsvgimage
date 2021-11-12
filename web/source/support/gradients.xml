@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Gradients support">
+   <meta desc="This article presents the support for gradients" />
+   Gradients can be defined in the <code>defs</code> element<note>See also 
+      <a href="https://www.w3.org/TR/SVG11/pservers.html">Gradients and Patterns</a>
+   </note>. For example:
+   <pre syntax="xml">
+      &lt;linearGradient id="linearGradient4144"
+        &lt;stop offset="5%" stop-color="#F60" /&gt;
+        &lt;stop offset="95%" stop-color="#FF6" /&gt;
+      &lt;/linearGradient&gt;   
+   </pre>      
+   
+   <title title="linear gradient" />
+   The following attributes are supported for the linear gradient specification:
+   <ul>
+      <li>
+         <code>id</code>: the id of the gradient, to use in shapes which refer to this gradient
+      </li>         
+      <li>
+         <code>x1</code> and <code>y1</code>
+      </li>
+      <li>
+         <code>stroke-linecap</code>
+      </li>     
+      <li>
+         <code>stroke-linejoin</code>
+      </li>                     
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>                                              
+   </ul>   
+   
+   <cat id="support" />
+</article>

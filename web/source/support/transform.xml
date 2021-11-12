@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="transform support">
+   <meta desc="This article presents the support for SVG transform specification" />
+   The library support the <code>transform</code> attribute for all elements.
+            
+   <cat id="support" />
+</article>

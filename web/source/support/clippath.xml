@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="clipPath support">
+   <meta desc="This article presents the support for SVG clipPath specification" />
+            
+   The library support the <code>clipPath</code> attribute for all elements.
+   <cat id="support" />
+</article>

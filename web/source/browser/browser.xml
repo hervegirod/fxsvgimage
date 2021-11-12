@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="browser" >
+   <meta desc="This article presents the buitl-in browser" />
+   You can start the built-in browser by double-clicking on the <code>fxsvgBrowser.jar</code> jar file.
+   <img id="browser" />
+   
+   <title title="menu" />
+   The browser allows to:
+   <ul>
+      <li>Open a SVG file using the library</li>
+      <li>Save the opened SVG file as a png image</li>      
+   </ul>
+
+   <cat id="browser" />
+</article>

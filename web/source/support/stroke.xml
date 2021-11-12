@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Strokes support">
+   <meta desc="This article presents the support for strokes" />
+   The following attributes are supported for strokes:
+   <ul>
+      <li>
+         <code>stroke-width</code>
+      </li>         
+      <li>
+         <code>stroke-dasharray</code>
+      </li>
+      <li>
+         <code>stroke-linecap</code>
+      </li>     
+      <li>
+         <code>stroke-linejoin</code>
+      </li>                     
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>                                              
+   </ul>
+            
+   <cat id="support" />
+</article>

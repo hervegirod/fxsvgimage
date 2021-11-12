@@ -7,7 +7,7 @@
    <note>See <a href="https://www.w3.org/TR/SVG11/styling.html">Styling Effects</a></note>:
    <ul>
       <li>
-         <code>fill</code>
+         <code>fill</code>. See also <ref id="Gradients support" />
       </li>
       <li>
          <code>stroke</code>
