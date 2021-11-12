@@ -104,6 +104,7 @@
          </fileset>         
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
+            <include name="SVGBrowser.jar"/>
          </fileset>
       </zip>
       <!-- zip source files  -->
@@ -120,6 +121,7 @@
          </fileset>          
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
+            <include name="SVGBrowser.jar"/>
          </fileset>
          <fileset description="project" dir="${dist.dir}/..">
             <include name="nbproject/**/*.*"/>
@@ -193,14 +195,21 @@
    <target name="-jarlib" depends="init,compile,-pre-pre-jar,-pre-jar" >
       <!-- Core Jar construction -->
       <jar description="core jar binary file" compress="true" jarfile="${dist.dir}/fxsvgImage.jar" 
-           manifest="${src.dir}/manifest.mf" >
+           manifest="${src.dir}/core/manifest.mf" >
          <fileset defaultexcludes="yes" dir="${build.classes.dir}">
             <include name="org/girod/**/*.class"/>
             <include name="org/girod/**/*.xml"/>                   
             <include name="org/girod/**/*.properties"/>  
-            <exclude name="org/girod/javafx/svgimage/samples/**/*.*"/>         
+            <exclude name="org/girod/javafx/svgimage/browser/**/*.*"/>         
          </fileset>
       </jar>
+      <!-- browser Jar construction -->
+      <jar description="browser jar binary file" compress="true" jarfile="${dist.dir}/fxsvgBrowser.jar" 
+           manifest="${src.dir}/browser/manifest.mf" >
+         <fileset defaultexcludes="yes" dir="${build.classes.dir}">
+            <include name="org/girod/javafx/svgimage/browser/**/*.*"/>         
+         </fileset>
+      </jar>      
    </target>   
    
    <!-- =================================================================== -->

@@ -68,6 +68,10 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix the tspan elements not using the styles from their text parent
  - Fix the tspan elements not correctly positioned if not having a declared position in the SVG document
  - Support percents for the "opacity" and "fill-opacity" attributes
+ - Fix the radial gradients
+ - Support the spreadMethod argument for gradients
+ - Allow urls specifications enclosed with "'" quotes
+ - Add a SVG browser
 
 # Usage
 Just calls one of the static `load` methods, for example:
