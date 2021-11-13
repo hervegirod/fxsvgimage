@@ -76,7 +76,7 @@ Note that contrary to other existing libraries, this library has no external dep
  - Support the fill-rule property for paths
  - Add a SVG browser
 
-## 0.5.1
+## 0.5.2
  - Fix the SVG browser not included in the distribution
 
 # Usage
