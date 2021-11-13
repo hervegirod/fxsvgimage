@@ -8,7 +8,7 @@
    The browser allows to:
    <ul>
       <li>Open a SVG file using the library</li>
-      <li>Save the opened SVG file as a png image</li>      
+      <li>Save the opened SVG file as a png of jpeg image</li>      
    </ul>
    
    <title title="zooming" />   
