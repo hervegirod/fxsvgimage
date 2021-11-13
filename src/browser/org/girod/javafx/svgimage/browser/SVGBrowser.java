@@ -32,21 +32,11 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.browser;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferInt;
-import java.awt.image.DirectColorModel;
-import java.awt.image.PixelGrabber;
-import java.awt.image.Raster;
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -56,30 +46,26 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.imageio.ImageIO;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
 /**
  * A sample browser.
  *
- * @since 0.5.1
+ * @version 0.5.3
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
@@ -206,28 +192,7 @@ public class SVGBrowser extends Application {
       } else if (ext.equals("jpeg")) {
          ext = "jpg";
       }
-
-      SnapshotParameters params = new SnapshotParameters();
-      params.setFill(Color.WHITE);
-      WritableImage image = svgImage.snapshot(params, null);
-      try {
-         RenderedImage awtImg = SwingFXUtils.fromFXImage(image, null);
-         if (ext.equals("jpg")) {
-            // see https://stackoverflow.com/questions/4386446/issue-using-imageio-write-jpg-file-pink-background
-            PixelGrabber pg = new PixelGrabber((java.awt.Image) awtImg, 0, 0, -1, -1, true);
-            pg.grabPixels();
-            int width = pg.getWidth(), height = pg.getHeight();
-
-            int[] RGB_MASKS = { 0xFF0000, 0xFF00, 0xFF };
-            ColorModel RGB_OPAQUE = new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
-            DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
-            WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
-            awtImg = new BufferedImage(RGB_OPAQUE, raster, false, null);
-         }
-         ImageIO.write(awtImg, ext, file);
-      } catch (IOException | InterruptedException ex) {
-         System.err.println(ex.getMessage());
-      }
+      svgImage.snapshot(ext, file);
    }
 
    private void open() {

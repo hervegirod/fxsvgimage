@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -43,11 +44,12 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.3
+ * @version 0.5.3
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -199,6 +201,40 @@ public class SVGImage extends Group {
    private WritableImage snapshotImplInJFX(SnapshotParameters params) {
       WritableImage image = this.snapshot(params, null);
       return image;
+   }
+
+   /**
+    * Saves a snapshot of the image.
+    *
+    * @param params the parameters
+    * @param format the format
+    * @param file the file
+    * @return true if the save was successful
+    */
+   public boolean snapshot(SnapshotParameters params, String format, File file) {
+      try {
+         Class.forName("org.girod.javafx.svgimage.AwtImageConverter", true, getClass().getClassLoader());
+         WritableImage image = snapshotImpl(params);
+         return AwtImageConverter.snapshot(image, params, format, file);
+      } catch (ClassNotFoundException ex) {
+         return false;
+      }
+   }
+
+   /**
+    * Saves a snapshot of the image.
+    *
+    * @param format the format
+    * @param file the file
+    * @return true if the save was successful
+    */
+   public boolean snapshot(String format, File file) {
+      SnapshotParameters params = SNAPSHOT_PARAMS;
+      if (params == null) {
+         params = new SnapshotParameters();
+         params.setFill(Color.WHITE);
+      }
+      return snapshot(params, format, file);
    }
 
    private WritableImage snapshotImpl(final SnapshotParameters params) {
