@@ -91,7 +91,7 @@ Note that contrary to other existing libraries, this library has no external dep
  - Allow to use more than one transformation in the "transform" or "gradientTransform" attribute
 
 ## 0.5.5 
- - Fix the text elements with tspan children not having their position set
+ - Fix the text elements with tspan children not having their position set if they have an x,y position
 
 # Usage
 Just calls one of the static `load` methods, for example:
