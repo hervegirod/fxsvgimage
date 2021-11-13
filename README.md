@@ -79,6 +79,9 @@ Note that contrary to other existing libraries, this library has no external dep
 ## 0.5.2
  - Fix the SVG browser not included in the distribution
 
+## 0.5.3
+ - Add a snapshot method in the SVGImage to simplify the process of writing the content of the result on disk
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
