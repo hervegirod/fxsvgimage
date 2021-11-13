@@ -33,7 +33,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage.xml;
 
 /**
- * The list of svg tags.
+ * The list of svg tags handled by the library.
  *
  * @version 0.5.1
  */
@@ -55,7 +55,8 @@ public interface SVGTags {
    public static String G = "g";
    public static String DEFS = "defs";
    public static String NONE = "none";
-   public static String CLIP_PATH = "clipPath";
+   public static String CLIP_PATH_SPEC = "clipPath";
+   public static String CLIP_PATH = "clip-path";
    public static String USERSPACE_ON_USE = "userSpaceOnUse";
    public static String LINEAR_GRADIENT = "linearGradient";
    public static String RADIAL_GRADIENT = "radialGradient";
@@ -70,6 +71,10 @@ public interface SVGTags {
    public static String GRADIENT_TRANSFORM = "gradientTransform";
    public static String TSPAN = "tspan";
    public static String ID = "id";
+   public static String FILL_RULE = "fill-rule";
+   public static String CLIP_RULE = "clip-rule";
+   public static String NON_ZERO = "nonzero";
+   public static String EVEN_ODD = "evenodd";
    public static String XLINK_HREF = "xlink:href";
    public static String HREF = "href";
    public static String FILTER = "filter";
@@ -125,6 +130,7 @@ public interface SVGTags {
    public static String Y1 = "y1";
    public static String X2 = "x2";
    public static String Y2 = "y2";
+   public static String POINTS = "points";
    public static String RADIUS = "radius";
    public static String POINT_AT_X = "pointsAtX";
    public static String POINT_AT_Y = "pointsAtY";
@@ -132,6 +138,11 @@ public interface SVGTags {
    public static String DILATE = "dilate";
    public static String OFFSET = "offset";
    public static String STYLE = "style";
+   public static String SQUARE = "square";
+   public static String ROUND = "round";
+   public static String BUTT = "butt";
+   public static String BEVEL = "bevel";
+   public static String MITER = "miter";
    public static String FONT_FAMILY = "font-family";
    public static String FONT_STYLE = "font-style";
    public static String FONT_SIZE = "font-size";

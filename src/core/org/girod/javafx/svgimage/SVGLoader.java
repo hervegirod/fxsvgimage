@@ -446,7 +446,7 @@ public class SVGLoader implements SVGTags {
                   buildDefs(childNode);
                   break;
                }
-            case CLIP_PATH:
+            case CLIP_PATH_SPEC:
                if (acceptDefs) {
                   buildClipPath(childNode);
                   break;
@@ -872,11 +872,11 @@ public class SVGLoader implements SVGTags {
 
    private void applyLineCap(Shape shape, String styleValue) {
       StrokeLineCap linecap = StrokeLineCap.BUTT;
-      if (styleValue.equals("round")) {
+      if (styleValue.equals(ROUND)) {
          linecap = StrokeLineCap.ROUND;
-      } else if (styleValue.equals("square")) {
+      } else if (styleValue.equals(SQUARE)) {
          linecap = StrokeLineCap.SQUARE;
-      } else if (!styleValue.equals("butt")) {
+      } else if (!styleValue.equals(BUTT)) {
          linecap = StrokeLineCap.BUTT;
       }
       shape.setStrokeLineCap(linecap);
@@ -884,11 +884,11 @@ public class SVGLoader implements SVGTags {
 
    private void applyLineJoin(Shape shape, String styleValue) {
       StrokeLineJoin linejoin = StrokeLineJoin.MITER;
-      if (styleValue.equals("bevel")) {
+      if (styleValue.equals(BEVEL)) {
          linejoin = StrokeLineJoin.BEVEL;
-      } else if (styleValue.equals("round")) {
+      } else if (styleValue.equals(ROUND)) {
          linejoin = StrokeLineJoin.ROUND;
-      } else if (!styleValue.equals("miter")) {
+      } else if (!styleValue.equals(MITER)) {
          linejoin = StrokeLineJoin.MITER;
       }
       shape.setStrokeLineJoin(linejoin);

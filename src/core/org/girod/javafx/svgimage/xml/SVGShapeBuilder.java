@@ -52,6 +52,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
@@ -125,11 +126,11 @@ public class SVGShapeBuilder implements SVGTags {
       double height = xmlNode.getAttributeValueAsDouble(HEIGHT, false, viewport, 0);
       Rectangle rect = new Rectangle(x, y, width, height);
       if (xmlNode.hasAttribute(RX)) {
-         double rx = xmlNode.getAttributeValueAsDouble(RX, true, viewport, 0);
+         double rx = 2 * xmlNode.getAttributeValueAsDouble(RX, true, viewport, 0);
          rect.setArcWidth(rx);
       }
       if (xmlNode.hasAttribute(RY)) {
-         double ry = xmlNode.getAttributeValueAsDouble(RY, false, viewport, 0);
+         double ry = 2 * xmlNode.getAttributeValueAsDouble(RY, false, viewport, 0);
          rect.setArcHeight(ry);
       }
       return rect;
@@ -185,7 +186,7 @@ public class SVGShapeBuilder implements SVGTags {
       if (value == null) {
          return FontPosture.REGULAR;
       }
-      if (value.equals("oblique")) {
+      if (value.equals(OBLIQUE)) {
          String style = text.getStyle();
          String addStyle = "-fx-font-style: oblique;";
          if (style == null) {
@@ -550,7 +551,8 @@ public class SVGShapeBuilder implements SVGTags {
                         color = item.substring(11);
                      } else if (item.startsWith(STOP_OPACITY)) {
                         opacity = ParserUtils.parseDoubleProtected(item.substring(13));
-                     } else {
+                     } else if (item.startsWith(OFFSET)) {
+                        offset = PercentParser.parseValue(item.substring(7));
                      }
                   }
                   break;
@@ -630,9 +632,13 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildPath(XMLNode xmlNode, Viewport viewport) {
+   public static SVGPath buildPath(XMLNode xmlNode, Viewport viewport) {
       SVGPath path = new SVGPath();
       String content = xmlNode.getAttributeValue(D);
+      FillRule rule = ParserUtils.getFillRule(xmlNode);
+      if (rule != null) {
+         path.setFillRule(rule);
+      }
       content = content.replace('−', '-');
       path.setContent(content);
 
@@ -646,8 +652,8 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildPolygon(XMLNode xmlNode, Viewport viewport) {
-      String pointsAttribute = xmlNode.getAttributeValue("points");
+   public static Polygon buildPolygon(XMLNode xmlNode, Viewport viewport) {
+      String pointsAttribute = xmlNode.getAttributeValue(POINTS);
       Polygon polygon = new Polygon();
 
       StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
@@ -672,7 +678,7 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildLine(XMLNode xmlNode, Viewport viewport) {
+   public static Line buildLine(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(X1) && xmlNode.hasAttribute(Y1) && xmlNode.hasAttribute(X2) && xmlNode.hasAttribute(Y2)) {
          double x1 = xmlNode.getAttributeValueAsDouble(X1, true, viewport);
          double y1 = xmlNode.getAttributeValueAsDouble(Y1, false, viewport);
@@ -692,9 +698,9 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildPolyline(XMLNode xmlNode, Viewport viewport) {
+   public static Polyline buildPolyline(XMLNode xmlNode, Viewport viewport) {
       Polyline polyline = new Polyline();
-      String pointsAttribute = xmlNode.getAttributeValue("points");
+      String pointsAttribute = xmlNode.getAttributeValue(POINTS);
 
       StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
       while (tokenizer.hasMoreTokens()) {

@@ -35,13 +35,16 @@ package org.girod.javafx.svgimage.xml;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javafx.scene.shape.FillRule;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
 /**
+ * This class handles tha list of defined clipping paths.
  *
- * @version 0.3.2
+ * @version 0.5.1
  */
-public class ClippingFactory {
+public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
 
    public ClippingFactory() {
@@ -55,6 +58,13 @@ public class ClippingFactory {
       return clipSpecs.containsKey(id);
    }
 
+   /**
+    * Creates a clip.
+    *
+    * @param id the clip id
+    * @param viewport the viewport
+    * @return the clip
+    */
    public Shape createClip(String id, Viewport viewport) {
       XMLNode xmlNode = clipSpecs.get(id);
       if (clipSpecs.containsKey(id)) {
@@ -65,17 +75,33 @@ public class ClippingFactory {
             Shape shape = null;
             String name = childNode.getName();
             switch (name) {
-               case "circle":
+               case CIRCLE:
                   shape = SVGShapeBuilder.buildCircle(childNode, viewport);
                   break;
-               case "path":
+               case PATH:
                   shape = SVGShapeBuilder.buildPath(childNode, viewport);
+                  FillRule rule = ParserUtils.getClipRule(childNode);
+                  if (rule != null) {
+                     ((SVGPath) shape).setFillRule(rule);
+                  }
                   break;
-               case "ellipse":
+               case POLYLINE:
+                  shape = SVGShapeBuilder.buildPolyline(xmlNode, viewport);
+                  break;
+               case POLYGON:
+                  shape = SVGShapeBuilder.buildPolygon(xmlNode, viewport);
+                  break;
+               case ELLIPSE:
                   shape = SVGShapeBuilder.buildEllipse(childNode, viewport);
                   break;
-               case "rect":
+               case RECT:
                   shape = SVGShapeBuilder.buildRect(childNode, viewport);
+                  break;
+               case LINE:
+                  shape = SVGShapeBuilder.buildLine(childNode, viewport);
+                  break;
+               case TEXT:
+                  shape = SVGShapeBuilder.buildText(childNode, viewport);
                   break;
             }
             if (theShape == null) {

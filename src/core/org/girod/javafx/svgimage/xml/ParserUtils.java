@@ -46,6 +46,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
@@ -90,7 +91,7 @@ public class ParserUtils implements SVGTags {
 
    public static Paint expressPaint(Map<String, Paint> gradients, String value) {
       Paint paint = null;
-      if (!value.equals("none")) {
+      if (!value.equals(NONE)) {
          if (value.startsWith("url(")) {
             String id = getURL(value);
             paint = gradients.get(id);
@@ -100,6 +101,36 @@ public class ParserUtils implements SVGTags {
       }
 
       return paint;
+   }
+
+   public static FillRule getClipRule(XMLNode node) {
+      if (node.hasAttribute(CLIP_RULE)) {
+         String value = node.getAttributeValue(CLIP_RULE);
+         if (value.equals(NON_ZERO)) {
+            return FillRule.NON_ZERO;
+         } else if (value.equals(EVEN_ODD)) {
+            return FillRule.EVEN_ODD;
+         } else {
+            return null;
+         }
+      } else {
+         return null;
+      }
+   }
+
+   public static FillRule getFillRule(XMLNode node) {
+      if (node.hasAttribute(FILL_RULE)) {
+         String value = node.getAttributeValue(FILL_RULE);
+         if (value.equals(NON_ZERO)) {
+            return FillRule.NON_ZERO;
+         } else if (value.equals(EVEN_ODD)) {
+            return FillRule.EVEN_ODD;
+         } else {
+            return null;
+         }
+      } else {
+         return null;
+      }
    }
 
    private static List<Double> getTransformArguments(String transformTxt) {
@@ -302,7 +333,7 @@ public class ParserUtils implements SVGTags {
       List<FilterSpec.AppliedEffect> appliedEffects = new ArrayList<>();
       Effect lastEffect = null;
       boolean useSourceAlpha = false;
-      if (!value.equals("none")) {
+      if (!value.equals(NONE)) {
          if (value.startsWith("url(")) {
             String id = ParserUtils.getURL(value);
             if (filterSpecs.containsKey(id)) {
