@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
@@ -59,7 +60,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.5.1
+ * @version 0.5.4
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -133,25 +134,15 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   private static List<Double> getTransformArguments(String transformTxt) {
+   private static List<Double> getTransformArguments(String transformTxt, Viewport viewport) {
       List<Double> args = new ArrayList<>();
       Matcher m = TRANSFORM_PAT.matcher(transformTxt);
       if (m.matches()) {
          String content = m.group(1);
-         String remaining = content;
-         while (true) {
-            int index = remaining.indexOf(' ');
-            if (index == -1) {
-               index = remaining.indexOf(',');
-            }
-            if (index == -1) {
-               ParserUtils.parseDoubleArgument(args, remaining);
-               break;
-            } else {
-               String beginning = remaining.substring(0, index);
-               ParserUtils.parseDoubleArgument(args, beginning);
-               remaining = remaining.substring(index + 1);
-            }
+         StringTokenizer tok = new StringTokenizer(content, ", ");
+         while (tok.hasMoreTokens()) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseDoubleArgument(args, argumentS, true, viewport);
          }
       } else {
          return null;
@@ -159,47 +150,93 @@ public class ParserUtils implements SVGTags {
       return args;
    }
 
-   public static Transform extractTransform(String transforms) {
-      Transform transform = null;
+   public static void setTransform(Node node, XMLNode xmlNode, Viewport viewport) {
+      if (xmlNode.hasAttribute(TRANSFORM)) {
+         String transforms = xmlNode.getAttributeValue(TRANSFORM);
+         List<Transform> transformList = ParserUtils.extractTransforms(transforms, viewport);
+         if (!transformList.isEmpty()) {
+            ObservableList<Transform> nodeTransforms = node.getTransforms();
+            Iterator<Transform> it = transformList.iterator();
+            while (it.hasNext()) {
+               Transform theTransForm = it.next();
+               nodeTransforms.add(theTransForm);
+            }
+         }
+      }
+   }
+
+   public static List<Transform> extractTransforms(String transforms, Viewport viewport) {
+      List<Transform> transformList = new ArrayList<>();
 
       StringTokenizer tokenizer = new StringTokenizer(transforms, ")");
 
       while (tokenizer.hasMoreTokens()) {
          String transformTxt = tokenizer.nextToken() + ")";
+         transformTxt = transformTxt.trim();
          if (transformTxt.startsWith("translate(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 2) {
-               transform = Transform.translate(args.get(0), args.get(1));
+               Transform transform = Transform.translate(args.get(0), args.get(1));
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("translateX(")) {
+            List<Double> args = getTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(args.get(0), 0);
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("translateY(")) {
+            List<Double> args = getTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(0, args.get(0));
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("scale(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 2) {
-               transform = Transform.scale(args.get(0), args.get(1));
+               Transform transform = Transform.scale(args.get(0), args.get(1));
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("scaleX(")) {
+            List<Double> args = getTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(args.get(0), 1);
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("scaleY(")) {
+            List<Double> args = getTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(1, args.get(0));
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("rotate(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 3) {
-               transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
+               Transform transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewX(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               transform = Transform.shear(args.get(0), 1);
+               Transform transform = Transform.shear(args.get(0), 1);
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewY(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               transform = Transform.shear(1, args.get(0));
+               Transform transform = Transform.shear(1, args.get(0));
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("matrix(")) {
-            List<Double> args = getTransformArguments(transformTxt);
+            List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 6) {
-               transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
+               Transform transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
+               transformList.add(transform);
             }
          }
       }
 
-      return transform;
+      return transformList;
    }
 
    public static List<Double> parseDashArray(String value, Viewport viewport) {
@@ -306,18 +343,10 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   public static void parseDoubleArgument(List<Double> args, String value) {
+   public static void parseDoubleArgument(List<Double> args, String value, boolean isWidth, Viewport viewport) {
       value = value.replace('−', '-');
-      Matcher m = ZERO.matcher(value);
-      if (m.matches()) {
-         args.add(0d);
-      } else {
-         try {
-            double valueD = Double.parseDouble(value);
-            args.add(valueD);
-         } catch (NumberFormatException e) {
-         }
-      }
+      double d = LengthParser.parseLength(value, isWidth, viewport);
+      args.add(d);
    }
 
    /**

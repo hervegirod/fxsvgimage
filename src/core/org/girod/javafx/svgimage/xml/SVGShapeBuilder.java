@@ -166,10 +166,25 @@ public class SVGShapeBuilder implements SVGTags {
    public static void applyTextDecoration(Text text, String value) {
       String style = text.getStyle();
       String addStyle = null;
-      if (value.equals(UNDERLINE)) {
-         addStyle = "-fx-underline: true;";
-      } else if (value.equals(LINE_THROUGH)) {
-         addStyle = "-fx-strikethrough: true;";
+      StringTokenizer tok = new StringTokenizer(value, " ");
+      while (tok.hasMoreTokens()) {
+         String tk = tok.nextToken().trim();
+         if (tk.isEmpty()) {
+            continue;
+         }
+         if (tk.equals(UNDERLINE)) {
+            if (addStyle == null) {
+               addStyle = "-fx-underline: true;";
+            } else {
+               addStyle = addStyle + "-fx-underline: true;";
+            }
+         } else if (tk.equals(LINE_THROUGH)) {
+            if (addStyle == null) {
+               addStyle = "-fx-strikethrough: true;";
+            } else {
+               addStyle = addStyle + "-fx-strikethrough: true;";
+            }
+         }
       }
       if (addStyle == null) {
          return;
@@ -307,14 +322,14 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
-   public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode) {
+   public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       String id = null;
       Double fx = null;
       Double fy = null;
       Double cx = null;
       Double cy = null;
       Double r = null;
-      Transform transform = null;
+      List<Transform> transformList = null;
       String href = null;
       CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
 
@@ -363,7 +378,7 @@ public class SVGShapeBuilder implements SVGTags {
                isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
                break;
             case GRADIENT_TRANSFORM:
-               transform = ParserUtils.extractTransform(xmlNode.getAttributeValue(attrname));
+               transformList = ParserUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
                break;
             default:
                break;
@@ -384,28 +399,39 @@ public class SVGShapeBuilder implements SVGTags {
          double fDistance = 0.0;
          double fAngle = 0.0;
 
-         if (transform != null && transform instanceof Affine) {
-            double tempCx = cx;
-            double tempCy = cy;
-            double tempR = r;
+         if (transformList != null && !transformList.isEmpty()) {
+            Transform concatTransform = null;
+            Iterator<Transform> it2 = transformList.iterator();
+            while (it2.hasNext()) {
+               Transform theTransform = it2.next();
+               if (concatTransform == null) {
+                  concatTransform = theTransform;
+               } else {
+                  concatTransform = concatTransform.createConcatenation(theTransform);
+               }
+            }
 
-            Affine affine = (Affine) transform;
-            cx = tempCx * affine.getMxx() + tempCy * affine.getMxy() + affine.getTx();
-            cy = tempCx * affine.getMyx() + tempCy * affine.getMyy() + affine.getTy();
+            if (concatTransform != null && concatTransform instanceof Affine) {
+               double tempCx = cx;
+               double tempCy = cy;
+               double tempR = r;
+               Affine affine = (Affine) concatTransform;
+               cx = tempCx * affine.getMxx() + tempCy * affine.getMxy() + affine.getTx();
+               cy = tempCx * affine.getMyx() + tempCy * affine.getMyy() + affine.getTy();
 
-            r = Math.sqrt(tempR * affine.getMxx() * tempR * affine.getMxx() + tempR * affine.getMyx() * tempR * affine.getMyx());
+               r = Math.sqrt(tempR * affine.getMxx() * tempR * affine.getMxx() + tempR * affine.getMyx() * tempR * affine.getMyx());
 
-            if (fx != null && fy != null) {
-               double tempFx = fx;
-               double tempFy = fy;
-               fx = tempFx * affine.getMxx() + tempFy * affine.getMxy() + affine.getTx();
-               fy = tempFx * affine.getMyx() + tempFy * affine.getMyy() + affine.getTy();
-            } else {
-               fAngle = Math.asin(affine.getMyx()) * 180.0 / Math.PI;
-               fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
+               if (fx != null && fy != null) {
+                  double tempFx = fx;
+                  double tempFy = fy;
+                  fx = tempFx * affine.getMxx() + tempFy * affine.getMxy() + affine.getTx();
+                  fy = tempFx * affine.getMyx() + tempFy * affine.getMyy() + affine.getTy();
+               } else {
+                  fAngle = Math.asin(affine.getMyx()) * 180.0 / Math.PI;
+                  fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
+               }
             }
          }
-
          if (fx != null && fy != null) {
             fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
             fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
@@ -434,13 +460,13 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
-   public static void buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode) {
+   public static void buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       String id = null;
       double x1 = 0;
       double y1 = 0;
       double x2 = 1d;
       double y2 = 0d;
-      Transform transform = null;
+      List<Transform> transformList = null;
       String href = null;
       CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
 
@@ -482,7 +508,7 @@ public class SVGShapeBuilder implements SVGTags {
                y2 = getGradientPos(xmlNode, Y2);
                break;
             case GRADIENT_TRANSFORM:
-               transform = ParserUtils.extractTransform(xmlNode.getAttributeValue(attrname));
+               transformList = ParserUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
                break;
             default:
                break;
@@ -500,16 +526,30 @@ public class SVGShapeBuilder implements SVGTags {
       List<Stop> stops = convertStops(specstops);
 
       if (id != null && !(x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)) {
-         if (transform != null && transform instanceof Affine) {
-            double x1d = x1;
-            double y1d = y1;
-            double x2d = x2;
-            double y2d = y2;
-            Affine affine = (Affine) transform;
-            x1 = x1d * affine.getMxx() + y1d * affine.getMxy() + affine.getTx();
-            y1 = x1d * affine.getMyx() + y1d * affine.getMyy() + affine.getTy();
-            x2 = x2d * affine.getMxx() + y2d * affine.getMxy() + affine.getTx();
-            y2 = x2d * affine.getMyx() + y2d * affine.getMyy() + affine.getTy();
+
+         if (transformList != null && !transformList.isEmpty()) {
+            Transform concatTransform = null;
+            Iterator<Transform> it2 = transformList.iterator();
+            while (it2.hasNext()) {
+               Transform theTransform = it2.next();
+               if (concatTransform == null) {
+                  concatTransform = theTransform;
+               } else {
+                  concatTransform = concatTransform.createConcatenation(theTransform);
+               }
+            }
+
+            if (concatTransform != null && concatTransform instanceof Affine) {
+               double x1d = x1;
+               double y1d = y1;
+               double x2d = x2;
+               double y2d = y2;
+               Affine affine = (Affine) concatTransform;
+               x1 = x1d * affine.getMxx() + y1d * affine.getMxy() + affine.getTx();
+               y1 = x1d * affine.getMyx() + y1d * affine.getMyy() + affine.getTy();
+               x2 = x2d * affine.getMxx() + y2d * affine.getMxy() + affine.getTx();
+               y2 = x2d * affine.getMyx() + y2d * affine.getMyy() + affine.getTy();
+            }
          }
 
          LinearGradient gradient = new LinearGradient(x1, y1, x2, y2, true, cycleMethod, stops);

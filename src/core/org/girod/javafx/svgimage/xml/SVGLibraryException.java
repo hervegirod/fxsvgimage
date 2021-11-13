@@ -32,40 +32,21 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-import javafx.scene.paint.Color;
-
 /**
- * Contains the specification for a radial or linear gradient.
+ * The exception which can be thrown by the library.
  *
- * @version 0.5.4
+ * @since 0.5.4
  */
-public class GradientSpec {
-   private final List<Stop> stops = new ArrayList<>();
-
-   public GradientSpec() {
+public class SVGLibraryException extends RuntimeException {
+   public SVGLibraryException(String message) {
+      super(message);
    }
 
-   public Stop addStop(double offset, double opacity, Color color) {
-      Stop stop = new Stop(offset, opacity, color);
-      stops.add(stop);
-      return stop;
+   public SVGLibraryException(String message, Throwable cause) {
+      super(message, cause);
    }
 
-   public List<Stop> getStops() {
-      return stops;
-   }
-
-   public static class Stop {
-      public final double offset;
-      public final double opacity;
-      public final Color color;
-
-      private Stop(double offset, double opacity, Color color) {
-         this.offset = offset;
-         this.opacity = opacity;
-         this.color = color;
-      }
+   public SVGLibraryException(Throwable cause) {
+      super(cause);
    }
 }

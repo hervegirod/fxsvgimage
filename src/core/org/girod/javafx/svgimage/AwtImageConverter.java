@@ -47,17 +47,18 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
+import org.girod.javafx.svgimage.xml.SVGLibraryException;
 
 /**
  * Converts a JPG image to handle the transparent background.
  *
- * @since 0.5.3
+ * @version 0.5.4
  */
-public class AwtImageConverter {
+class AwtImageConverter {
+   private static Object colorModel = null;
    private static final int[] RGB_MASKS = { 0xFF0000, 0xFF00, 0xFF };
-   private static final ColorModel RGB_OPAQUE = new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
 
-   public static boolean snapshot(WritableImage image, SnapshotParameters params, String format, File file) {
+   static boolean snapshot(WritableImage image, SnapshotParameters params, String format, File file) throws SVGLibraryException {
       RenderedImage awtImg = SwingFXUtils.fromFXImage(image, null);
       try {
          if (format.equals("jpg")) {
@@ -68,13 +69,20 @@ public class AwtImageConverter {
 
             DataBuffer buffer = new DataBufferInt((int[]) pg.getPixels(), pg.getWidth() * pg.getHeight());
             WritableRaster raster = Raster.createPackedRaster(buffer, width, height, width, RGB_MASKS, null);
-            awtImg = new BufferedImage(RGB_OPAQUE, raster, false, null);
+            if (colorModel == null) {
+               colorModel = new DirectColorModel(32, RGB_MASKS[0], RGB_MASKS[1], RGB_MASKS[2]);
+            }
+            awtImg = new BufferedImage((ColorModel) colorModel, raster, false, null);
          }
          ImageIO.write(awtImg, format, file);
          return true;
       } catch (IOException | InterruptedException ex) {
-         System.err.println(ex.getMessage());
-         return false;
+         if (SVGImage.isRethrowingExceptions()) {
+            throw new SVGLibraryException(ex);
+         } else {
+            System.err.println(ex.getMessage());
+            return false;
+         }
       }
    }
 }

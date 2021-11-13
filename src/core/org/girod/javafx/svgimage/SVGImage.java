@@ -45,13 +45,15 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import org.girod.javafx.svgimage.xml.SVGLibraryException;
 
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.5.3
+ * @version 0.5.4
  */
 public class SVGImage extends Group {
+   private static boolean RETROW_EXCEPTIONS = false;
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
 
@@ -63,6 +65,14 @@ public class SVGImage extends Group {
     */
    public static void setDefaultSnapshotParameters(SnapshotParameters params) {
       SNAPSHOT_PARAMS = params;
+   }
+
+   public static void rethrowExceptions(boolean rethrow) {
+      RETROW_EXCEPTIONS = rethrow;
+   }
+
+   public static boolean isRethrowingExceptions() {
+      return RETROW_EXCEPTIONS;
    }
 
    /**
@@ -211,13 +221,23 @@ public class SVGImage extends Group {
     * @param file the file
     * @return true if the save was successful
     */
-   public boolean snapshot(SnapshotParameters params, String format, File file) {
+   public boolean snapshot(SnapshotParameters params, String format, File file) throws SVGLibraryException {
       try {
          Class.forName("org.girod.javafx.svgimage.AwtImageConverter", true, getClass().getClassLoader());
          WritableImage image = snapshotImpl(params);
          return AwtImageConverter.snapshot(image, params, format, file);
+      } catch (SVGLibraryException ex) {
+         if (RETROW_EXCEPTIONS) {
+            throw ex;
+         } else {
+            return false;
+         }
       } catch (ClassNotFoundException ex) {
-         return false;
+         if (RETROW_EXCEPTIONS) {
+            throw new SVGLibraryException(ex);
+         } else {
+            return false;
+         }
       }
    }
 
@@ -228,7 +248,7 @@ public class SVGImage extends Group {
     * @param file the file
     * @return true if the save was successful
     */
-   public boolean snapshot(String format, File file) {
+   public boolean snapshot(String format, File file) throws SVGLibraryException {
       SnapshotParameters params = SNAPSHOT_PARAMS;
       if (params == null) {
          params = new SnapshotParameters();

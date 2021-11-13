@@ -72,6 +72,7 @@ import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
+import static org.girod.javafx.svgimage.xml.SVGTags.TRANSFORM;
 import org.girod.javafx.svgimage.xml.SpanGroup;
 import org.girod.javafx.svgimage.xml.Styles;
 import org.girod.javafx.svgimage.xml.Viewport;
@@ -83,7 +84,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.5.1
+ * @version 0.5.4
  */
 public class SVGLoader implements SVGTags {
    private final URL url;
@@ -453,12 +454,12 @@ public class SVGLoader implements SVGTags {
                }
             case LINEAR_GRADIENT:
                if (acceptDefs) {
-                  SVGShapeBuilder.buildLinearGradient(gradientSpecs, gradients, childNode);
+                  SVGShapeBuilder.buildLinearGradient(gradientSpecs, gradients, childNode, viewport);
                   break;
                }
             case RADIAL_GRADIENT:
                if (acceptDefs) {
-                  SVGShapeBuilder.buildRadialGradient(gradientSpecs, gradients, childNode);
+                  SVGShapeBuilder.buildRadialGradient(gradientSpecs, gradients, childNode, viewport);
                   break;
                }
             case FILTER:
@@ -500,7 +501,7 @@ public class SVGLoader implements SVGTags {
       setNodeStyle(node, xmlNode);
       setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
-      setTransform(node, xmlNode);
+      ParserUtils.setTransform(node, xmlNode, viewport);
    }
 
    private void parseViewport(XMLNode xmlNode) {
@@ -615,16 +616,6 @@ public class SVGLoader implements SVGTags {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          clippingFactory.addClipSpec(id, xmlNode);
-      }
-   }
-
-   private void setTransform(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(TRANSFORM)) {
-         String transforms = xmlNode.getAttributeValue(TRANSFORM);
-         Transform transform = ParserUtils.extractTransform(transforms);
-         if (transform != null) {
-            node.getTransforms().add(transform);
-         }
       }
    }
 
@@ -832,8 +823,8 @@ public class SVGLoader implements SVGTags {
                   if (opacity >= 0) {
                      node.setOpacity(opacity);
                   }
+                  break;
                }
-               break;
                case FILL_OPACITY: {
                   if (node instanceof Shape) {
                      double fillOpacity = ParserUtils.parseOpacity(styleValue);
@@ -841,9 +832,21 @@ public class SVGLoader implements SVGTags {
                         ParserUtils.setFillOpacity(node, fillOpacity);
                      }
                   }
+                  break;
                }
-               break;
-               case FILTER:
+               case TRANSFORM: {
+                  List<Transform> transformList = ParserUtils.extractTransforms(styleValue, viewport);
+                  if (!transformList.isEmpty()) {
+                     ObservableList<Transform> nodeTransforms = node.getTransforms();
+                     Iterator<Transform> it = transformList.iterator();
+                     while (it.hasNext()) {
+                        Transform theTransForm = it.next();
+                        nodeTransforms.add(theTransForm);
+                     }
+                  }
+                  break;
+               }
+               case FILTER: {
                   if (effectsSupported) {
                      Effect effect = expressFilter(node, styleValue);
                      if (effect != null) {
@@ -851,6 +854,7 @@ public class SVGLoader implements SVGTags {
                      }
                   }
                   break;
+               }
                default:
                   break;
             }

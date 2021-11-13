@@ -35,9 +35,9 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The exception which can be thrown by the library.
  *
- * @since 0.3
+ * @version 0.5.4
  */
-public class SVGParsingException extends RuntimeException {
+public class SVGParsingException extends SVGLibraryException {
    public SVGParsingException(String message) {
       super(message);
    }

@@ -38,11 +38,11 @@ import java.util.regex.Pattern;
 /**
  * This utility class parse a length value.
  *
- * @version 0.3.2
+ * @version 0.5.4
  */
 public class LengthParser {
-   private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");
-   private static final Pattern NUMBER_UNIT = Pattern.compile("(\\d+)(\\.\\d*)?([a-z%A-Z]+)");
+   private static final Pattern NUMBER = Pattern.compile("\\-?\\d+(\\.\\d+)?");
+   private static final Pattern NUMBER_UNIT = Pattern.compile("(\\-?\\d+)(\\.\\d*)?([a-z%A-Z]+)");
    private static final double INCH = 1 / 96d;
 
    private LengthParser() {

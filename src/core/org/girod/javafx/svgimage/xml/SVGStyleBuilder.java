@@ -32,16 +32,19 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontWeight;
+import javafx.scene.transform.Transform;
 
 /**
  * This class parse a style declaration.
  *
- * @version 0.5.1
+ * @version 0.5.4
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -131,6 +134,13 @@ public class SVGStyleBuilder implements SVGTags {
                   double opacity = ParserUtils.parseOpacity(value);
                   if (opacity >= 0) {
                      rule.addProperty(key, Styles.FILL_OPACITY, opacity);
+                  }
+                  break;
+               }
+               case TRANSFORM: {
+                  List<Transform> transformList = ParserUtils.extractTransforms(value, viewport);
+                  if (!transformList.isEmpty()) {
+                     rule.addProperty(key, Styles.TRANSFORM, transformList);
                   }
                   break;
                }

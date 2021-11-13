@@ -44,11 +44,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
 
 /**
  * Represents a "style" node in the SVG content.
  *
- * @version 0.5.1
+ * @version 0.5.4
  */
 public class Styles {
    public static final short FILL = 0;
@@ -62,6 +63,7 @@ public class Styles {
    public static final short TEXT_DECORATION = 8;
    public static final short OPACITY = 9;
    public static final short FILL_OPACITY = 10;
+   public static final short TRANSFORM = 11;
    private final Map<String, Rule> rules = new HashMap<>();
 
    public Styles() {
@@ -173,6 +175,10 @@ public class Styles {
                      double fillOpacity = (Double) value;
                      ParserUtils.setFillOpacity((Shape) node, fillOpacity);
                   }
+                  break;
+               case TRANSFORM:
+                  Transform transform = (Transform) value;
+                  node.getTransforms().add(transform);
                   break;
             }
             if (hasFontProperties && node instanceof Text) {

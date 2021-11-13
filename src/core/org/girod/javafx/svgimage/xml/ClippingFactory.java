@@ -109,6 +109,9 @@ public class ClippingFactory implements SVGTags {
             } else {
                theShape = Shape.union(theShape, shape);
             }
+            if (xmlNode.hasAttribute(TRANSFORM)) {
+               ParserUtils.setTransform(theShape, xmlNode, viewport);
+            }
          }
          return theShape;
       } else {
