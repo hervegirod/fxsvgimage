@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.scene.Group;
 import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -87,6 +88,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STOP;
 import static org.girod.javafx.svgimage.xml.SVGTags.STOP_COLOR;
 import static org.girod.javafx.svgimage.xml.SVGTags.STOP_OPACITY;
 import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
+import static org.girod.javafx.svgimage.xml.SVGTags.TSPAN;
 import static org.girod.javafx.svgimage.xml.SVGTags.USERSPACE_ON_USE;
 import static org.girod.javafx.svgimage.xml.SVGTags.X1;
 import static org.girod.javafx.svgimage.xml.SVGTags.X2;
@@ -260,6 +262,39 @@ public class SVGShapeBuilder implements SVGTags {
       }
 
       return weight;
+   }
+
+   /**
+    * Build a "text" element with tspan children.
+    *
+    * @param xmlNode the node
+    * @param viewport the viewport
+    * @return the Text
+    */
+   public static SpanGroup buildTSpanGroup(XMLNode xmlNode, Viewport viewport) {
+      Group group = new Group();
+      double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
+      double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
+      group.setLayoutX(x);
+      group.setLayoutY(y);
+      SpanGroup spanGroup = new SpanGroup(group);
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode childNode = it.next();
+         Text text = null;
+         String name = childNode.getName();
+         switch (name) {
+            case TSPAN:
+               text = SVGShapeBuilder.buildText(childNode, viewport);
+               break;
+         }
+         if (text != null) {
+            group.getChildren().add(text);
+            spanGroup.addTSpan(childNode, text);
+         }
+      }
+
+      return spanGroup;
    }
 
    /**
