@@ -82,6 +82,14 @@ Note that contrary to other existing libraries, this library has no external dep
 ## 0.5.3
  - Add a snapshot method in the SVGImage to simplify the process of writing the content of the result on disk
 
+## 0.5.4
+ - Make sure that the snapshot generation class does not emit an exception before the actual generation if Swing is not available
+ - Allow to have both underline and line-through for a text
+ - Support the "transform" attribute for the clipPath element
+ - Support the translateX, translateY, scaleX, and scaleY transformations
+ - Allow to use units in transformations
+ - Allow to use more than one transformation in the "transform" or "gradientTransform" attribute
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
