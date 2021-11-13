@@ -165,7 +165,8 @@ public class SVGBrowser extends Application {
          return;
       }
       FileChooser fileChooser = new FileChooser();
-      fileChooser.getExtensionFilters().add(new ExtensionFilter("PNG Files", "*.png"));
+      fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PNG Files", "*.png"),
+         new ExtensionFilter("JPEG Files", "*.jpg", ".jpeg"));
       fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
       fileChooser.setTitle("Save as Image");
       File file = fileChooser.showSaveDialog(stage);
@@ -173,14 +174,28 @@ public class SVGBrowser extends Application {
          return;
       }
       String name = file.getName();
-      if (!name.endsWith(".png")) {
-         name = name + ".png";
-         file = new File(file.getParentFile(), name);
+      int index = name.lastIndexOf('.');
+      String ext = null;
+      if (index < name.length() - 1) {
+         ext = name.substring(index + 1);
       }
+      if (ext != null && !ext.equals("png") && !ext.equals("jpg") && !ext.equals("jpeg")) {
+         name = name + ".png";
+         ext = "png";
+         file = new File(file.getParentFile(), name);
+      } else {
+         ExtensionFilter filter = fileChooser.getSelectedExtensionFilter();
+         if (filter == null) {
+            name = name + ".png";
+            ext = "png";
+            file = new File(file.getParentFile(), name);
+         }
+      }
+
       SnapshotParameters params = new SnapshotParameters();
       WritableImage image = svgImage.snapshot(params, null);
       try {
-         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+         ImageIO.write(SwingFXUtils.fromFXImage(image, null), ext, file);
       } catch (IOException ex) {
       }
    }
