@@ -2,10 +2,19 @@
 <article desc="clipPath support">
    <meta desc="This article presents the support for SVG clipPath specification" />
             
-   The library support the <code>clipPath</code> attribute for all elements<note>See
+   The library support the <code>clip-path</code> attribute for all elements<note>See
       <a href="https://www.w3.org/TR/SVG11/masking.html">Clipping, Masking and Compositing</a>
    </note>.
    
+   The following attributes are supported at the <code>clipPath</code> declaration level:
+   <ul>
+      <li>
+         <code>id</code>: the id of the clipping path</li>
+      <li>
+         <code>transform</code>: the optional transform to apply to the clipping path</li>        
+   </ul>   
+   
+   <title title="supported shapes" />
    All basic shapes are supported to construct the clips:
    <ul>
       <li>

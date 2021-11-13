@@ -232,8 +232,12 @@
       </li>                        
    </ul>   
    
+   Note: only the <code>underline</code> and <code>line-through</code> values are supported for the <code>text-decoration</code>
+   attribute.
+   
    <title level="2" title="tspan" />
    Text can contain <code>tspan</code> elements.
+   
    The following attributes are supported:
    <ul>
       <li>
