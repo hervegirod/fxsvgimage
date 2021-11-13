@@ -16,7 +16,7 @@
    
    <title title="limitations"/>       
    You will be able to use the direct methods to generate a snapshot only if you have swing available. If not, you will still
-   be able to save the image using an alternate third party library to save the converted JavaFX Image on the disk.
+   be able to save the image using an alternate third party library to save the converted JavaFX Image on the disk. 
             
    <title title="threading usage"/>
    As for the <code>SVGLoader</code> class, you can use this class in the JavaFX Platform Thread or in any other Thread. 
