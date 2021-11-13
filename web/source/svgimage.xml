@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SVGImage">
+   <altTitle desc="SVGImage usage" />
+   <meta desc="This article presents the usage of the SVGImage class" />
+   The <code>SVGImage</code> is a a JavaFX Group which is the result of the <ref id="SVGLoader" /> 
+   <code>load</code> static method.
+   
+   <title title="overview" />   
+   The <code>SVGImage</code> can be used directly in any JavaFX node graph. This class has also several additional methods
+   which allows you to:
+   <ul>
+      <li>Get the JavaFX implementations of named SVG nodes</li>
+      <li>Convert the Node content to a JavaFX Image</li>      
+      <li>Produce a snapshot in a File in an ImageIO supported output format</li>            
+   </ul>  
+   
+   <title title="limitations"/>       
+   You will be able to use the direct methods to generate a snapshot only if you have swing available. If not, you will still
+   be able to save the image using an alternate third party library to save the converted JavaFX Image on the disk.
+            
+   <title title="threading usage"/>
+   As for the <code>SVGLoader</code> class, you can use this class in the JavaFX Platform Thread or in any other Thread. 
+   The library will make sure that the conversion will be performed in the JavaFX Platform Thread, and will return the result in 
+   the calling Thread.    
+               
+   <see id="SVGLoader" />               
+   <cat id="general" />
+</article>
