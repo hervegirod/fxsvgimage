@@ -76,6 +76,9 @@ Note that contrary to other existing libraries, this library has no external dep
  - Support the fill-rule property for paths
  - Add a SVG browser
 
+## 0.5.1
+ - Fix the SVG browser not included in the distribution
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~

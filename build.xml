@@ -104,7 +104,7 @@
          </fileset>         
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
-            <include name="SVGBrowser.jar"/>
+            <include name="fxsvgBrowser.jar"/>
          </fileset>
       </zip>
       <!-- zip source files  -->
@@ -121,7 +121,7 @@
          </fileset>          
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
-            <include name="SVGBrowser.jar"/>
+            <include name="fxsvgBrowser.jar"/>
          </fileset>
          <fileset description="project" dir="${dist.dir}/..">
             <include name="nbproject/**/*.*"/>
