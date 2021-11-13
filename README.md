@@ -71,6 +71,9 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix the radial gradients
  - Support the spreadMethod argument for gradients
  - Allow urls specifications enclosed with "'" quotes
+ - Fix the "clip-path" attribute or style not taken into account for nodes
+ - Support text, line, polygon and polyline in the clipPath element
+ - Support the fill-rule property for paths
  - Add a SVG browser
 
 # Usage
