@@ -67,10 +67,21 @@ public class SVGImage extends Group {
       SNAPSHOT_PARAMS = params;
    }
 
+   /**
+    * Set if exceptions thrown internally during the snapshot generation should be rethrown as
+    * {@link org.girod.javafx.svgimage.xml.SVGLibraryException}. The default value is false.
+    *
+    * @param rethrow true if exceptions thrown internally during the snapshot generation should be rethrown
+    */
    public static void rethrowExceptions(boolean rethrow) {
       RETROW_EXCEPTIONS = rethrow;
    }
 
+   /**
+    * Return true if exceptions thrown internally during the snapshot generation should be rethrown.
+    *
+    * @return true if exceptions thrown internally during the snapshot generation should be rethrown
+    */
    public static boolean isRethrowingExceptions() {
       return RETROW_EXCEPTIONS;
    }
@@ -216,6 +227,13 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.SVGLibraryException} if the
+    * snapshot generation generated an exception <b>and</b> {@link #isRethrowingExceptions()} retrusn true. It means that by
+    * default the method will simply return false if it could not save the snapshot.
+    *
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing
+    * not available.
+    *
     * @param params the parameters
     * @param format the format
     * @param file the file
@@ -243,6 +261,13 @@ public class SVGImage extends Group {
 
    /**
     * Saves a snapshot of the image.
+    *
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.SVGLibraryException} if the
+    * snapshot generation generated an exception <b>and</b> {@link #isRethrowingExceptions()} retrusn true. It means that by
+    * default the method will simply return false if it could not save the snapshot.
+    *
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing
+    * not available.
     *
     * @param format the format
     * @param file the file
