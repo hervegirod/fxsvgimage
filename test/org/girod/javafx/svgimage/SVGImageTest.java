@@ -38,13 +38,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import javafx.scene.image.Image;
 
 /**
  * Unit tests for generating images.
  *
- * @version 0.3.1
+ * @version 0.5.4
  */
 public class SVGImageTest {
 
@@ -66,6 +68,7 @@ public class SVGImageTest {
    @After
    public void tearDown() {
    }
+
    /**
     * Test of generating an image.
     */
@@ -76,5 +79,19 @@ public class SVGImageTest {
       SVGImage result = SVGLoader.load(url);
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
+   }
+
+   /**
+    * Test of generating a snapshot.
+    */
+   @Test
+   public void testSnapshot() throws IOException {
+      System.out.println("SVGImageTest : testSnapshot");
+      URL url = this.getClass().getResource("circle.svg");
+      SVGImage result = SVGLoader.load(url);
+      File file = File.createTempFile("fxsvgimage", "png");
+      boolean isValid = result.snapshot("png", file);
+      assertTrue("File must exist", isValid);
+      file.delete();
    }
 }
