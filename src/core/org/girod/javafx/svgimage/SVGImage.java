@@ -50,10 +50,9 @@ import org.girod.javafx.svgimage.xml.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.5.5
+ * @version 0.6
  */
 public class SVGImage extends Group {
-   private static boolean RETROW_EXCEPTIONS = false;
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
 
@@ -65,25 +64,6 @@ public class SVGImage extends Group {
     */
    public static void setDefaultSnapshotParameters(SnapshotParameters params) {
       SNAPSHOT_PARAMS = params;
-   }
-
-   /**
-    * Set if exceptions thrown internally during the snapshot generation should be rethrown as
-    * {@link org.girod.javafx.svgimage.xml.SVGLibraryException}. The default value is false.
-    *
-    * @param rethrow true if exceptions thrown internally during the snapshot generation should be rethrown
-    */
-   public static void rethrowExceptions(boolean rethrow) {
-      RETROW_EXCEPTIONS = rethrow;
-   }
-
-   /**
-    * Return true if exceptions thrown internally during the snapshot generation should be rethrown.
-    *
-    * @return true if exceptions thrown internally during the snapshot generation should be rethrown
-    */
-   public static boolean isRethrowingExceptions() {
-      return RETROW_EXCEPTIONS;
    }
 
    /**
@@ -250,25 +230,20 @@ public class SVGImage extends Group {
     * @return true if the save was successful
     */
    public boolean snapshot(SnapshotParameters params, String format, File file) throws SVGLibraryException {
-      try {
-         Class.forName("org.girod.javafx.svgimage.AwtImageConverter", true, getClass().getClassLoader());
-         WritableImage image = snapshotImpl(params);
-         return AwtImageConverter.snapshot(image, params, format, file);
-      } catch (SVGLibraryException ex) {
-         if (RETROW_EXCEPTIONS) {
-            throw ex;
-         } else {
+      GlobalConfig config = GlobalConfig.getInstance();
+      if (config.isSwingAvailable()) {
+         try {
+            WritableImage image = snapshotImpl(params);
+            return AwtImageConverter.snapshot(image, params, format, file);
+         } catch (SVGLibraryException ex) {
+            config.handleLibraryException(ex);
             return false;
          }
-      } catch (ClassNotFoundException ex) {
-         if (RETROW_EXCEPTIONS) {
-            throw new SVGLibraryException(ex);
-         } else {
-            return false;
-         }
+      } else {
+         config.handleLibraryError("Swing not available");
+         return false;
       }
    }
-
    /**
     * Saves a snapshot of the image.
     *

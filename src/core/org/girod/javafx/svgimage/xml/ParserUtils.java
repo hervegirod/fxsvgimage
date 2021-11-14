@@ -52,6 +52,7 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import org.girod.javafx.svgimage.GlobalConfig;
 import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
 import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
 import static org.girod.javafx.svgimage.xml.SVGTags.STROKE;
@@ -61,7 +62,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.5.6
+ * @version 0.6
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -76,6 +77,7 @@ public class ParserUtils implements SVGTags {
       try {
          return Color.web(value);
       } catch (IllegalArgumentException ex) {
+         GlobalConfig.getInstance().handleParsingError("Color " + value + " is illegal");
          return null;
       }
    }
@@ -257,6 +259,7 @@ public class ParserUtils implements SVGTags {
       try {
          return Color.web(value, opacity);
       } catch (IllegalArgumentException ex) {
+         GlobalConfig.getInstance().handleParsingError("Color " + value + " is illegal");
          return null;
       }
    }
@@ -274,6 +277,7 @@ public class ParserUtils implements SVGTags {
          }
          return opacity;
       } catch (NumberFormatException e) {
+         GlobalConfig.getInstance().handleParsingError("Opacity " + value + " is not a number");
          return -1;
       }
    }
@@ -305,6 +309,7 @@ public class ParserUtils implements SVGTags {
             double valueD = Double.parseDouble(valueS);
             return valueD;
          } catch (NumberFormatException e) {
+            GlobalConfig.getInstance().handleParsingError("Value " + valueS + " is not a number");
             return 0d;
          }
       }
@@ -461,6 +466,7 @@ public class ParserUtils implements SVGTags {
             }
             text.setTranslateY(text.getFont().getSize() * shift);
          } catch (NumberFormatException e) {
+            GlobalConfig.getInstance().handleParsingError("Value " + value + " is not a number");
          }
       }
    }
@@ -561,20 +567,35 @@ public class ParserUtils implements SVGTags {
    public static Viewport parseViewport(XMLNode xmlNode) {
       double width = 0;
       double height = 0;
+      double viewboxWidth = 0;
+      double viewboxHeight = 0;
+      boolean hasWidthAndHeight = false;
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
          width = xmlNode.getLengthValue(WIDTH, 0);
          height = xmlNode.getLengthValue(HEIGHT, 0);
-      } else if (xmlNode.hasAttribute(VIEWBOX)) {
+         hasWidthAndHeight = true;
+      }
+      if (xmlNode.hasAttribute(VIEWBOX)) {
          String box = xmlNode.getAttributeValue(VIEWBOX);
          StringTokenizer tok = new StringTokenizer(box, " ,");
          if (tok.countTokens() >= 4) {
             tok.nextToken();
             tok.nextToken();
-            width = ParserUtils.parseDoubleProtected(tok.nextToken());
-            height = ParserUtils.parseDoubleProtected(tok.nextToken());
+            viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
+            viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
          }
       }
-      Viewport theViewport = new Viewport(width, height);
+      Viewport theViewport;
+      if (hasWidthAndHeight) {
+         theViewport = new Viewport(width, height);
+      } else {
+         theViewport = new Viewport();
+      }
+      if (xmlNode.hasAttribute(PRESERVE_ASPECT_RATIO)) {
+         boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
+         theViewport.setPreserveAspectRatio(preserve);
+      }
+      theViewport.setViewbox(viewboxWidth, viewboxHeight);
       return theViewport;
    }
 

@@ -52,7 +52,7 @@ import org.girod.javafx.svgimage.xml.SVGLibraryException;
 /**
  * Converts a JPG image to handle the transparent background.
  *
- * @version 0.5.4
+ * @version 0.6
  */
 class AwtImageConverter {
    private static Object colorModel = null;
@@ -77,12 +77,7 @@ class AwtImageConverter {
          ImageIO.write(awtImg, format, file);
          return true;
       } catch (IOException | InterruptedException ex) {
-         if (SVGImage.isRethrowingExceptions()) {
-            throw new SVGLibraryException(ex);
-         } else {
-            System.err.println(ex.getMessage());
-            return false;
-         }
+         throw new SVGLibraryException(ex);
       }
    }
 }

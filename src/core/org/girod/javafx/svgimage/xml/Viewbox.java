@@ -37,33 +37,71 @@ import javafx.scene.Node;
 /**
  * Represents a viewbox for a symbol.
  *
- * @since 0.5.6
+ * @version 0.6
  */
 public class Viewbox {
-   private double width = 0;
-   private double height = 0;
-   private double viewboxWidth = 0;
-   private double viewboxHeight = 0;
-   private boolean preserveAspectRatio = true;
+   /**
+    * The width attribute.
+    */
+   protected double width = 0;
+   /**
+    * The height attribute.
+    */
+   protected double height = 0;
+   /**
+    * The width of the viewBox attribute.
+    */
+   protected double viewboxWidth = 0;
+   /**
+    * The height of the viewBox attribute.
+    */
+   protected double viewboxHeight = 0;
+   /**
+    * True if the "preserveAspectRatio" attribute has a value different from "none".
+    */
+   protected boolean preserveAspectRatio = true;
 
    public Viewbox(double width, double height) {
       this.width = width;
       this.height = height;
    }
 
+   /**
+    * Set true if the aspect ratio must be preserved. Note that only two states are supported, contrary to the
+    * full SVG specification.
+    *
+    * @param preserveAspectRatio true if the aspect ratio must be preserved
+    */
    public void setPreserveAspectRatio(boolean preserveAspectRatio) {
       this.preserveAspectRatio = preserveAspectRatio;
    }
 
+   /**
+    * Return true if the aspect ratio must be preserved. Note that only two states are supported, contrary to the
+    * full SVG specification.
+    *
+    * @return true if the aspect ratio must be preserved
+    */
    public boolean isPreservingAspectRatio() {
       return preserveAspectRatio;
    }
 
+   /**
+    * Set the width and height of the viewBox
+    *
+    * @param viewboxWidth the viewBox width
+    * @param viewboxHeight the viewBox height
+    */
    public void setViewbox(double viewboxWidth, double viewboxHeight) {
       this.viewboxWidth = viewboxWidth;
       this.viewboxHeight = viewboxHeight;
    }
 
+   /**
+    * Scale a Node.
+    *
+    * @param node the node
+    */
    public void scaleNode(Node node) {
       if (!preserveAspectRatio) {
          node.setScaleX(width / viewboxWidth);
@@ -71,6 +109,14 @@ public class Viewbox {
       }
    }
 
+   /**
+    * Scale a SVG element attribute value. The value will only be scaled if the
+    * {@link #isPreservingAspectRatio()} returns true.
+    *
+    * @param isWidth true for a width value
+    * @param value the value
+    * @return the scaled value
+    */
    public double scaleValue(boolean isWidth, double value) {
       if (preserveAspectRatio) {
          return value * width / viewboxWidth;
@@ -82,7 +128,7 @@ public class Viewbox {
    }
 
    /**
-    * Return the width.
+    * Return the viewBox width.
     *
     * @return the width
     */
@@ -91,7 +137,7 @@ public class Viewbox {
    }
 
    /**
-    * Return the height.
+    * Return the viewBox height.
     *
     * @return the height
     */

@@ -32,8 +32,10 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -69,16 +71,25 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.5.6
+ * @version 0.6
  */
 public class SVGLoader implements SVGTags {
    private final URL url;
+   private final String content;
    private final SVGImage root;
    private Viewport viewport = null;
    private final LoaderContext context;
 
    private SVGLoader(URL url) {
       this.url = url;
+      this.content = null;
+      this.root = new SVGImage();
+      this.context = new LoaderContext(root, url);
+   }
+
+   private SVGLoader(String content) {
+      this.url = null;
+      this.content = content;
       this.root = new SVGImage();
       this.context = new LoaderContext(root, url);
    }
@@ -108,6 +119,19 @@ public class SVGLoader implements SVGTags {
     */
    public static SVGImage load(URL url) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url);
+      SVGImage img = loader.loadImpl();
+      return img;
+   }
+
+   /**
+    * Load a svg URL.
+    *
+    * @param content the content
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage load(String content) throws SVGParsingException {
+      SVGLoader loader = new SVGLoader(content);
       SVGImage img = loader.loadImpl();
       return img;
    }
@@ -144,6 +168,20 @@ public class SVGLoader implements SVGTags {
    }
 
    /**
+    * Load a svg String content, and set the styleSheets of the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage load(String content, String styleSheets) throws SVGParsingException {
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      return load(content, params);
+   }
+
+   /**
     * Load a svg File, and scale the associated JavaFX Node.
     *
     * @param file the file
@@ -172,6 +210,20 @@ public class SVGLoader implements SVGTags {
       LoaderParameters params = new LoaderParameters();
       params.scale = scale;
       return load(url, params);
+   }
+
+   /**
+    * Load a svg String content, and scale the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param scale the scale
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage loadScaled(String content, double scale) throws SVGParsingException {
+      LoaderParameters params = new LoaderParameters();
+      params.scale = scale;
+      return load(content, params);
    }
 
    /**
@@ -206,6 +258,20 @@ public class SVGLoader implements SVGTags {
    }
 
    /**
+    * Load a svg String content, and set the resulting width the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param width the resulting width
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage load(String content, double width) throws SVGParsingException {
+      LoaderParameters params = new LoaderParameters();
+      params.width = width;
+      return load(content, params);
+   }
+
+   /**
     * Load a svg File, set the styleSheets and set the resulting width of the associated JavaFX Node.
     *
     * @param file the File
@@ -237,6 +303,22 @@ public class SVGLoader implements SVGTags {
       params.styleSheets = styleSheets;
       params.width = width;
       return load(url, params);
+   }
+
+   /**
+    * Load a svg String content, set the styleSheets and set the resulting width of the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param width the resulting width
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage load(String content, double width, String styleSheets) throws SVGParsingException {
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      params.width = width;
+      return load(content, params);
    }
 
    /**
@@ -275,6 +357,22 @@ public class SVGLoader implements SVGTags {
    }
 
    /**
+    * Load a svg String content, set the styleSheets and scale of the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param scale the scale
+    * @param styleSheets the styleSheets
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage loadScaled(String content, double scale, String styleSheets) throws SVGParsingException {
+      LoaderParameters params = new LoaderParameters();
+      params.styleSheets = styleSheets;
+      params.scale = scale;
+      return load(content, params);
+   }
+
+   /**
     * Load a svg URL, and set the parameters of the associated JavaFX Node.
     *
     * @param url the URL
@@ -307,14 +405,46 @@ public class SVGLoader implements SVGTags {
       return img;
    }
 
+   /**
+    * Load a svg String content, and set the parameters of the associated JavaFX Node.
+    *
+    * @param content the String content
+    * @param params the parameters
+    * @return the SVGImage
+    * @throws SVGParsingException
+    */
+   public static SVGImage load(String content, LoaderParameters params) throws SVGParsingException {
+      SVGLoader loader = new SVGLoader(content);
+      SVGImage img = loader.loadImpl();
+      if (params.styleSheets != null) {
+         img.getStylesheets().add(params.styleSheets);
+      }
+      if (params.scale > 0) {
+         double initialWidth = img.getLayoutBounds().getWidth();
+         double initialHeight = img.getLayoutBounds().getHeight();
+         img.setScaleX(params.scale);
+         img.setScaleY(params.scale);
+         img.setTranslateX(-initialWidth / 2 + initialWidth * params.scale / 2);
+         img.setTranslateY(-initialHeight / 2);
+      } else if (params.width > 0) {
+         double initialWidth = img.getLayoutBounds().getWidth();
+         double initialHeight = img.getLayoutBounds().getHeight();
+         double scaleX = params.width / initialWidth;
+         img.setScaleX(scaleX);
+         img.setScaleY(scaleX);
+         img.setTranslateX(-initialWidth / 2 + initialWidth * scaleX / 2);
+         img.setTranslateY(-initialHeight / 2);
+      }
+      return img;
+   }
+
    private SVGImage loadImpl() throws SVGParsingException {
       if (Platform.isFxApplicationThread()) {
          try {
             return loadImplInJFX();
-         } catch (SVGParsingException ex) {
-            throw ex;
          } catch (Exception ex) {
-            throw new SVGParsingException(ex);
+            GlobalConfig.getInstance().handleParsingException(ex);
+            return null;
          }
       } else {
          // the next instruction is only there to initialize the JavaFX platform
@@ -333,11 +463,8 @@ public class SVGLoader implements SVGTags {
             return null;
          } catch (ExecutionException ex) {
             Throwable th = ex.getCause();
-            if (th instanceof SVGParsingException) {
-               throw (SVGParsingException) th;
-            } else {
-               throw new SVGParsingException(ex.getCause());
-            }
+            GlobalConfig.getInstance().handleParsingException(th);
+            return null;
          }
       }
    }
@@ -352,9 +479,15 @@ public class SVGLoader implements SVGTags {
          saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
          SAXParser parser = saxfactory.newSAXParser();
          XMLTreeHandler handler = new XMLTreeHandler();
-         parser.parse(url.openStream(), handler);
+         if (url != null) {
+            parser.parse(url.openStream(), handler);
+         } else {
+            InputStream stream = new ByteArrayInputStream(content.getBytes());
+            parser.parse(stream, handler);
+         }
          return walk(handler.getRoot());
       } catch (ParserConfigurationException | SAXException ex) {
+         GlobalConfig.getInstance().handleParsingException(ex);
          return null;
       }
    }
@@ -364,6 +497,10 @@ public class SVGLoader implements SVGTags {
       if (name.equals(SVG)) {
          if (viewport == null) {
             viewport = ParserUtils.parseViewport(xmlRoot);
+            context.viewport = viewport;
+            if (viewport != null) {
+               viewport.scaleNode(root);
+            }
          }
       }
       buildNode(xmlRoot, root);
@@ -456,6 +593,7 @@ public class SVGLoader implements SVGTags {
             case SVG:
                if (viewport == null) {
                   viewport = ParserUtils.parseViewport(childNode);
+                  context.viewport = viewport;
                }
                node = buildGroup(childNode);
                break;

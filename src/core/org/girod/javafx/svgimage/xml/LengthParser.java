@@ -39,7 +39,7 @@ import javafx.geometry.Bounds;
 /**
  * This utility class parse a length value.
  *
- * @version 0.5.5
+ * @version 0.6
  */
 public class LengthParser {
    private static final Pattern NUMBER = Pattern.compile("\\-?\\d*(\\.\\d+)?");
@@ -158,9 +158,9 @@ public class LengthParser {
                if (viewport == null) {
                   return 0;
                } else if (isWidth) {
-                  return parsedValue * viewport.getWidth() / 100;
+                  return parsedValue * viewport.getBestWidth() / 100;
                } else {
-                  return parsedValue * viewport.getHeight() / 100;
+                  return parsedValue * viewport.getBestHeight() / 100;
                }
             default:
                return parsedValue;
@@ -220,9 +220,9 @@ public class LengthParser {
                if (viewport == null) {
                   return 0;
                } else if (isWidth) {
-                  return parsedValue * viewport.getWidth() / 100;
+                  return parsedValue * viewport.getBestWidth() / 100;
                } else {
-                  return parsedValue * viewport.getHeight() / 100;
+                  return parsedValue * viewport.getBestHeight() / 100;
                }
             default:
                return parsedValue;

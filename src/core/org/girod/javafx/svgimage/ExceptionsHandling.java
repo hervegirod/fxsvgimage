@@ -30,49 +30,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.xml;
+package org.girod.javafx.svgimage;
 
 /**
- * Represents the viewport.
+ * The exceptions handling type.
  *
  * @since 0.6
  */
-public class Viewport extends Viewbox {
-   private final boolean hasWidthAndHeight;
-
-   public Viewport(double width, double height) {
-      super(width, height);
-      this.hasWidthAndHeight = true;
-   }
-
-   public Viewport() {
-      super(0, 0);
-      this.hasWidthAndHeight = false;
-   }
-
+public interface ExceptionsHandling {
    /**
-    * Return the "best" width. It will return the width if it exists, else it will be the viewBox width.
-    *
-    * @return the width
+    * Skip the exceptions.
     */
-   public double getBestWidth() {
-      if (hasWidthAndHeight) {
-         return width;
-      } else {
-         return viewboxWidth;
-      }
-   }
-
+   public static short SKIP_EXCEPTION = 0;
    /**
-    * Return the height. It will return the height if it exists, else it will be the viewBox height.
-    *
-    * @return the height
+    * Print the exception message on the <code>System.err</code> stream.
     */
-   public double getBestHeight() {
-      if (hasWidthAndHeight) {
-         return height;
-      } else {
-         return viewboxHeight;
-      }
-   }
+   public static short PRINT_EXCEPTION_MESSAGE = 1;
+   /**
+    * Print the exception StackTrace.
+    */
+   public static short PRINT_EXCEPTION_STACKTRACE = 2;
+   /**
+    * Rethrow the exceptions.
+    */
+   public static short RETROW_EXCEPTION = 3;
+   /**
+    * Rethrow the exceptions and the error messages as exceptions.
+    */
+   public static short RETROW_ALL = 4;
 }

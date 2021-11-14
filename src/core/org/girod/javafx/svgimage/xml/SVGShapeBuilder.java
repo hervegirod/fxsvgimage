@@ -71,11 +71,12 @@ import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
 import org.girod.javafx.svgimage.LoaderContext;
+import org.girod.javafx.svgimage.GlobalConfig;
 
 /**
  * The shape builder.
  *
- * @version 0.5.6
+ * @version 0.6
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -938,6 +939,7 @@ public class SVGShapeBuilder implements SVGTags {
          try {
             imageUrl = new URL(url, hrefAttribute);
          } catch (MalformedURLException ex1) {
+            GlobalConfig.getInstance().handleParsingError("URL " + hrefAttribute + " is not well formed");
          }
       }
       if (imageUrl != null) {
@@ -1202,6 +1204,7 @@ public class SVGShapeBuilder implements SVGTags {
          try {
             imageUrl = new URL(url, hrefAttribute);
          } catch (MalformedURLException ex1) {
+            GlobalConfig.getInstance().handleParsingError("URL " + hrefAttribute + " is not well formed");
          }
       }
       if (imageUrl != null) {

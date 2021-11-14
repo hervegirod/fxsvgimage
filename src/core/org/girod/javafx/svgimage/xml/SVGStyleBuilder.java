@@ -42,7 +42,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
@@ -51,6 +50,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import org.girod.javafx.svgimage.GlobalConfig;
 import org.girod.javafx.svgimage.LoaderContext;
 import static org.girod.javafx.svgimage.xml.SVGTags.BEVEL;
 import static org.girod.javafx.svgimage.xml.SVGTags.BUTT;
@@ -81,7 +81,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.TRANSFORM;
 /**
  * This class parse a style declaration.
  *
- * @version 0.5.5
+ * @version 0.6
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -384,6 +384,7 @@ public class SVGStyleBuilder implements SVGTags {
          double miterLimit = Double.parseDouble(styleValue);
          shape.setStrokeMiterLimit(miterLimit);
       } catch (NumberFormatException e) {
+         GlobalConfig.getInstance().handleParsingError("MiterLimit " + styleValue + " is not a number");
       }
    }
 
