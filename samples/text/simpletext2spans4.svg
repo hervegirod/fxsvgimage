@@ -12,7 +12,7 @@
    <g id="layer1">
       <rect stroke="black" fill="none" width="300" height="10" x="100" y="100" />
       <text style="font-size:40px;font-family:sans-serif;fill:#ffff00;stroke:#0000ff;" x="100" y="100">
-         <tspan>Hello</tspan>
+         <tspan dx="100" >Hello</tspan>
          <tspan>World</tspan>
       </text>
    </g>

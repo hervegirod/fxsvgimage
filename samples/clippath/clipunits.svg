@@ -1,0 +1,15 @@
+<svg viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <clipPath id="myClip1" clipPathUnits="userSpaceOnUse">
+    <circle cx="50" cy="50" r="35" />
+  </clipPath>
+
+  <clipPath id="myClip2" clipPathUnits="objectBoundingBox">
+    <circle cx=".5" cy=".5" r=".35" />
+  </clipPath>
+
+  <!-- Some reference rect to materialized to clip path -->
+  <rect id="r1" x="0"  y="0"  width="45" height="45" clip-path="url(#myClip1)" fill="red" />
+  <rect id="r2" x="0"  y="55" width="45" height="45" clip-path="url(#myClip1)" fill="red" />
+  <rect id="r3" x="55" y="55" width="45" height="45" clip-path="url(#myClip1)" fill="red" />
+  <rect id="r4" x="55" y="0"  width="45" height="45" clip-path="url(#myClip2)" fill="red"/>
+</svg>
