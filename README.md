@@ -98,6 +98,11 @@ Note that contrary to other existing libraries, this library has no external dep
  - Fix the values for coordinates parsed to a value of zero if having a pattern without an integer part (such as ".5")
  - Support the use element for basic shapes
 
+## 0.5.5 
+ - Support the use element for images and g elements
+ - Support the symbol element
+ - Support the "viewBox", "width", "height", and "preserveAspectRatio" attributes for the symbol element
+
 # Usage
 Just calls one of the static `load` methods, for example:
 ~~~~
