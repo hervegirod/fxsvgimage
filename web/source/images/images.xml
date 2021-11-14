@@ -2,6 +2,7 @@
 <images>
    <image id="browser" url="browser.png" />
    <image id="clippath" url="clippath.jpg" />
+   <image id="use" url="use.jpg" />   
    <image id="lineargradient" url="lineargradient.jpg" />
    <image id="radialgradient" url="radialgradient.jpg" />   
 </images>

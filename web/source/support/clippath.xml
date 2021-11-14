@@ -11,7 +11,9 @@
       <li>
          <code>id</code>: the id of the clipping path</li>
       <li>
-         <code>transform</code>: the optional transform to apply to the clipping path</li>        
+         <code>transform</code>: the optional transform to apply to the clipping path</li>     
+      <li>
+         <code>clipPathUnits</code>: the optional units for the specification of the clipping path</li>                   
    </ul>   
    
    <title title="supported shapes" />
@@ -57,7 +59,7 @@
    <title title="limitations"/>  
    <ul>
       <li>The <code>clipPathUnits</code> attribute is not supported</li>
-      <li>The <code>fill-rule</code> attribute is supported only for the <code>path</code> element</li>      
+      <li>The <code>clip-rule</code> attribute is supported only for the <code>path</code> element</li>      
    </ul>
    
    <cat id="support" />

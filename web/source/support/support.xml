@@ -12,6 +12,7 @@
       <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
          See also <ref id="SVG shapes support" />
       </li>      
+      <li>the use element. See also <ref id="use element support" /></li>
       <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
       <li>transform attributes. See also <ref id="transform support" /></li>
    </ul>
