@@ -92,6 +92,11 @@ Note that contrary to other existing libraries, this library has no external dep
 
 ## 0.5.5 
  - Fix the text elements with tspan children not having their position set if they have an x,y position
+ - Support the tspan "dx" and "dy" attributes
+ - Support the "clipPathUnits" attribute for clipPaths elements
+ - Fix the clipPath elements only being taken into account in defs parents
+ - Fix the values for coordinates parsed to a value of zero if having a pattern without an integer part (such as ".5")
+ - Support the use element for basic shapes
 
 # Usage
 Just calls one of the static `load` methods, for example:
