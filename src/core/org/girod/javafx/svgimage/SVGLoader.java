@@ -32,15 +32,12 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
-import org.girod.javafx.svgimage.xml.GradientSpec;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -50,13 +47,10 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.FilterSpec;
 import org.girod.javafx.svgimage.xml.ParserUtils;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
@@ -64,7 +58,8 @@ import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
 import org.girod.javafx.svgimage.xml.SpanGroup;
-import org.girod.javafx.svgimage.xml.Styles;
+import org.girod.javafx.svgimage.xml.SymbolSpec;
+import org.girod.javafx.svgimage.xml.Viewbox;
 import org.girod.javafx.svgimage.xml.Viewport;
 import org.girod.javafx.svgimage.xml.XMLNode;
 import org.girod.javafx.svgimage.xml.XMLRoot;
@@ -74,23 +69,18 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.5.5
+ * @version 0.5.6
  */
 public class SVGLoader implements SVGTags {
    private final URL url;
    private final SVGImage root;
    private Viewport viewport = null;
-   private Styles svgStyle = null;
-   private final ClippingFactory clippingFactory = new ClippingFactory();
-   private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
-   private final Map<String, FilterSpec> filterSpecs = new HashMap<>();
-   private final Map<String, Paint> gradients = new HashMap<>();
-   private Map<String, XMLNode> namedNodes = new HashMap<>();
-   private boolean effectsSupported = false;
+   private final LoaderContext context;
 
    private SVGLoader(URL url) {
       this.url = url;
       this.root = new SVGImage();
+      this.context = new LoaderContext(root, url);
    }
 
    /**
@@ -353,7 +343,7 @@ public class SVGLoader implements SVGTags {
    }
 
    private SVGImage loadImplInJFX() throws IOException {
-      effectsSupported = Platform.isSupported(ConditionalFeature.EFFECT);
+      context.effectsSupported = Platform.isSupported(ConditionalFeature.EFFECT);
       SAXParserFactory saxfactory = SAXParserFactory.newInstance();
       try {
          // see https://stackoverflow.com/questions/10257576/how-to-ignore-inline-dtd-when-parsing-xml-file-in-java
@@ -372,7 +362,9 @@ public class SVGLoader implements SVGTags {
    private SVGImage walk(XMLRoot xmlRoot) {
       String name = xmlRoot.getName();
       if (name.equals(SVG)) {
-         parseViewport(xmlRoot);
+         if (viewport == null) {
+            viewport = ParserUtils.parseViewport(xmlRoot);
+         }
       }
       buildNode(xmlRoot, root);
       return root;
@@ -382,10 +374,24 @@ public class SVGLoader implements SVGTags {
       buildNode(xmlNode, group, false);
    }
 
+   private void addSymbol(XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         SymbolSpec symbol = new SymbolSpec(xmlNode);
+         Viewbox viewbox = ParserUtils.parseViewbox(xmlNode);
+         symbol.setViewbox(viewbox);
+         if (xmlNode.hasAttribute(PRESERVE_ASPECT_RATIO)) {
+            boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
+            viewbox.setPreserveAspectRatio(preserve);
+         }
+         context.addSymbol(id, symbol);
+      }
+   }
+
    private void addNamedNode(XMLNode xmlNode, Node node) {
       if (node != null && xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
-         namedNodes.put(id, xmlNode);
+         context.addNamedNode(id, xmlNode);
       }
    }
 
@@ -404,56 +410,61 @@ public class SVGLoader implements SVGTags {
                manageSVGStyle(childNode);
                break;
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode, null, viewport);
+               node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case CIRCLE:
-               node = SVGShapeBuilder.buildCircle(childNode, null, viewport);
+               node = SVGShapeBuilder.buildCircle(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case ELLIPSE:
-               node = SVGShapeBuilder.buildEllipse(childNode, null, viewport);
+               node = SVGShapeBuilder.buildEllipse(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode, null, viewport);
+               node = SVGShapeBuilder.buildPath(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case POLYGON:
-               node = SVGShapeBuilder.buildPolygon(childNode, null, viewport);
+               node = SVGShapeBuilder.buildPolygon(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case LINE:
-               node = SVGShapeBuilder.buildLine(childNode, null, viewport);
+               node = SVGShapeBuilder.buildLine(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case POLYLINE:
-               node = SVGShapeBuilder.buildPolyline(childNode, null, viewport);
+               node = SVGShapeBuilder.buildPolyline(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case USE:
-               node = SVGShapeBuilder.buildUse(childNode, namedNodes, gradients, svgStyle, effectsSupported, filterSpecs, null, viewport);
+               node = SVGShapeBuilder.buildUse(childNode, context, null, viewport);
                break;
             case TEXT:
-               node = SVGShapeBuilder.buildText(childNode, null, viewport);
+               node = SVGShapeBuilder.buildText(childNode, null, null, viewport);
                if (node == null) {
-                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, viewport);
+                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, null, viewport);
                   addNamedNode(childNode, spanGroup.getTextGroup());
                } else {
                   addNamedNode(childNode, node);
                }
                break;
             case IMAGE:
-               node = SVGShapeBuilder.buildImage(childNode, url, null, viewport);
+               node = SVGShapeBuilder.buildImage(childNode, url, null, null, viewport);
                addNamedNode(childNode, node);
                break;
             case SVG:
-               parseViewport(childNode);
+               if (viewport == null) {
+                  viewport = ParserUtils.parseViewport(childNode);
+               }
                node = buildGroup(childNode);
                break;
             case G:
                node = buildGroup(childNode);
                addNamedNode(childNode, node);
+               break;
+            case SYMBOL:
+               addSymbol(childNode);
                break;
             case DEFS:
                if (!acceptDefs) {
@@ -465,12 +476,12 @@ public class SVGLoader implements SVGTags {
                break;
             case LINEAR_GRADIENT:
                if (acceptDefs) {
-                  SVGShapeBuilder.buildLinearGradient(gradientSpecs, gradients, childNode, viewport);
+                  SVGShapeBuilder.buildLinearGradient(context.gradientSpecs, context.gradients, childNode, viewport);
                   break;
                }
             case RADIAL_GRADIENT:
                if (acceptDefs) {
-                  SVGShapeBuilder.buildRadialGradient(gradientSpecs, gradients, childNode, viewport);
+                  SVGShapeBuilder.buildRadialGradient(context.gradientSpecs, context.gradients, childNode, viewport);
                   break;
                }
             case FILTER:
@@ -515,32 +526,11 @@ public class SVGLoader implements SVGTags {
       ParserUtils.setTransform(node, xmlNode, viewport);
    }
 
-   private void parseViewport(XMLNode xmlNode) {
-      if (viewport == null) {
-         double width = 0;
-         double height = 0;
-         if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
-            width = xmlNode.getLengthValue(WIDTH, 0);
-            height = xmlNode.getLengthValue(HEIGHT, 0);
-         } else if (xmlNode.hasAttribute(VIEWBOX)) {
-            String box = xmlNode.getAttributeValue(VIEWBOX);
-            StringTokenizer tok = new StringTokenizer(box, " ,");
-            if (tok.countTokens() >= 4) {
-               tok.nextToken();
-               tok.nextToken();
-               width = ParserUtils.parseDoubleProtected(tok.nextToken());
-               height = ParserUtils.parseDoubleProtected(tok.nextToken());
-            }
-         }
-         viewport = new Viewport(width, height);
-      }
-   }
-
    private void manageSVGStyle(XMLNode xmlNode) {
-      if (svgStyle == null) {
+      if (context.svgStyle == null) {
          String cdata = xmlNode.getCDATA();
          if (cdata != null) {
-            svgStyle = SVGStyleBuilder.parseStyle(cdata, viewport);
+            context.svgStyle = SVGStyleBuilder.parseStyle(cdata, viewport);
          }
       }
    }
@@ -560,7 +550,7 @@ public class SVGLoader implements SVGTags {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          FilterSpec spec = new FilterSpec();
-         filterSpecs.put(id, spec);
+         context.filterSpecs.put(id, spec);
          buildFilterEffects(spec, xmlNode);
       }
    }
@@ -604,12 +594,12 @@ public class SVGLoader implements SVGTags {
    private void buildClipPath(XMLNode xmlNode) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
-         clippingFactory.addClipSpec(id, xmlNode);
+         context.clippingFactory.addClipSpec(id, xmlNode);
       }
    }
 
    private void setFilter(Node node, XMLNode xmlNode) {
-      if (effectsSupported && xmlNode.hasAttribute(FILTER)) {
+      if (context.effectsSupported && xmlNode.hasAttribute(FILTER)) {
          Effect effect = expressFilter(node, xmlNode.getAttributeValue(FILTER));
          if (effect != null) {
             node.setEffect(effect);
@@ -618,12 +608,11 @@ public class SVGLoader implements SVGTags {
    }
 
    private Effect expressFilter(Node node, String value) {
-      Effect effect = ParserUtils.expressFilter(filterSpecs, node, value);
+      Effect effect = ParserUtils.expressFilter(context.filterSpecs, node, value);
       return effect;
    }
 
    private void setNodeStyle(Node node, XMLNode xmlNode) {
-      SVGStyleBuilder.setNodeStyle(node, gradients, xmlNode, clippingFactory, svgStyle,
-         effectsSupported, filterSpecs, viewport);
+      SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
    }
 }

@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 0.5.5
+ * @version 0.5.6
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -54,6 +54,7 @@ public interface SVGTags {
    public static String SVG = "svg";
    public static String USE = "use";
    public static String G = "g";
+   public static String SYMBOL = "symbol";
    public static String DEFS = "defs";
    public static String NONE = "none";
    public static String CLIP_PATH_SPEC = "clipPath";
@@ -98,6 +99,7 @@ public interface SVGTags {
    public static String FLOOD_COLOR = "flood-color";
    public static String FLOOD_OPACITY = "flood-opacity";
    public static String STD_DEVIATION = "stdDeviation";
+   public static String PRESERVE_ASPECT_RATIO = "preserveAspectRatio";
    public static String IN = "in";
    public static String IN2 = "in2";
    public static String OPERATOR = "operator";

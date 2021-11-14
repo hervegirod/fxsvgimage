@@ -51,6 +51,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
+import org.girod.javafx.svgimage.LoaderContext;
 import static org.girod.javafx.svgimage.xml.SVGTags.BEVEL;
 import static org.girod.javafx.svgimage.xml.SVGTags.BUTT;
 import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
@@ -186,16 +187,15 @@ public class SVGStyleBuilder implements SVGTags {
       return styles;
    }
 
-   public static void setNodeStyle(Node node, Map<String, Paint> gradients, XMLNode xmlNode,
-      ClippingFactory clippingFactory, Styles svgStyle, boolean effectsSupported, Map<String, FilterSpec> filterSpecs, Viewport viewport) {
+   public static void setNodeStyle(Node node, XMLNode xmlNode, LoaderContext context, Viewport viewport) {
       if (node instanceof Shape) {
          Shape shape = (Shape) node;
          if (xmlNode.hasAttribute(FILL)) {
-            shape.setFill(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(FILL)));
+            shape.setFill(ParserUtils.expressPaint(context.gradients, xmlNode.getAttributeValue(FILL)));
          }
 
          if (xmlNode.hasAttribute(STROKE)) {
-            shape.setStroke(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(STROKE)));
+            shape.setStroke(ParserUtils.expressPaint(context.gradients, xmlNode.getAttributeValue(STROKE)));
          }
 
          if (xmlNode.hasAttribute(STROKE_WIDTH)) {
@@ -232,12 +232,12 @@ public class SVGStyleBuilder implements SVGTags {
 
       if (xmlNode.hasAttribute(CLASS)) {
          String styleClasses = xmlNode.getAttributeValue(CLASS);
-         setStyleClass(node, styleClasses, svgStyle);
+         setStyleClass(node, styleClasses, context.svgStyle);
       }
 
-      if (xmlNode.hasAttribute(CLIP_PATH) && clippingFactory != null) {
+      if (xmlNode.hasAttribute(CLIP_PATH) && context.clippingFactory != null) {
          String content = xmlNode.getAttributeValue(CLIP_PATH);
-         setClipPath(node, content, clippingFactory, viewport);
+         setClipPath(node, content, context.clippingFactory, viewport);
       }
 
       if (xmlNode.hasAttribute(STYLE)) {
@@ -262,7 +262,7 @@ public class SVGStyleBuilder implements SVGTags {
 
             switch (styleName) {
                case CLIP_PATH:
-                  setClipPath(node, styleValue, clippingFactory, viewport);
+                  setClipPath(node, styleValue, context.clippingFactory, viewport);
                   break;
                case FONT_FAMILY:
                   if (node instanceof Text) {
@@ -291,12 +291,12 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                case FILL:
                   if (node instanceof Shape) {
-                     ((Shape) node).setFill(ParserUtils.expressPaint(gradients, styleValue));
+                     ((Shape) node).setFill(ParserUtils.expressPaint(context.gradients, styleValue));
                   }
                   break;
                case STROKE:
                   if (node instanceof Shape) {
-                     ((Shape) node).setStroke(ParserUtils.expressPaint(gradients, styleValue));
+                     ((Shape) node).setStroke(ParserUtils.expressPaint(context.gradients, styleValue));
                   }
                   break;
                case STROKE_WIDTH:
@@ -360,8 +360,8 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                }
                case FILTER: {
-                  if (effectsSupported) {
-                     Effect effect = expressFilter(node, styleValue, filterSpecs);
+                  if (context.effectsSupported) {
+                     Effect effect = expressFilter(node, styleValue, context.filterSpecs);
                      if (effect != null) {
                         node.setEffect(effect);
                      }

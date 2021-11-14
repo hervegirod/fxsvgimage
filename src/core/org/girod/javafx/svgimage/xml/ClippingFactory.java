@@ -86,32 +86,32 @@ public class ClippingFactory implements SVGTags {
             String name = childNode.getName();
             switch (name) {
                case CIRCLE:
-                  shape = SVGShapeBuilder.buildCircle(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildCircle(childNode, objectBoundingBox, null, viewport);
                   break;
                case PATH:
-                  shape = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, null, viewport);
                   FillRule rule = ParserUtils.getClipRule(childNode);
                   if (rule != null) {
                      ((SVGPath) shape).setFillRule(rule);
                   }
                   break;
                case POLYLINE:
-                  shape = SVGShapeBuilder.buildPolyline(xmlNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildPolyline(xmlNode, objectBoundingBox, null, viewport);
                   break;
                case POLYGON:
-                  shape = SVGShapeBuilder.buildPolygon(xmlNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildPolygon(xmlNode, objectBoundingBox, null, viewport);
                   break;
                case ELLIPSE:
-                  shape = SVGShapeBuilder.buildEllipse(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildEllipse(childNode, objectBoundingBox, null, viewport);
                   break;
                case RECT:
-                  shape = SVGShapeBuilder.buildRect(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildRect(childNode, objectBoundingBox, null, viewport);
                   break;
                case LINE:
-                  shape = SVGShapeBuilder.buildLine(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildLine(childNode, objectBoundingBox, null, viewport);
                   break;
                case TEXT:
-                  shape = SVGShapeBuilder.buildText(childNode, objectBoundingBox, viewport);
+                  shape = SVGShapeBuilder.buildText(childNode, objectBoundingBox, null, viewport);
                   break;
             }
             if (theShape == null) {

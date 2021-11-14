@@ -61,7 +61,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.5.5
+ * @version 0.5.6
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -556,5 +556,61 @@ public class ParserUtils implements SVGTags {
             ParserUtils.setFillOpacity(node, fillOpacity);
          }
       }
+   }
+
+   public static Viewport parseViewport(XMLNode xmlNode) {
+      double width = 0;
+      double height = 0;
+      if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
+         width = xmlNode.getLengthValue(WIDTH, 0);
+         height = xmlNode.getLengthValue(HEIGHT, 0);
+      } else if (xmlNode.hasAttribute(VIEWBOX)) {
+         String box = xmlNode.getAttributeValue(VIEWBOX);
+         StringTokenizer tok = new StringTokenizer(box, " ,");
+         if (tok.countTokens() >= 4) {
+            tok.nextToken();
+            tok.nextToken();
+            width = ParserUtils.parseDoubleProtected(tok.nextToken());
+            height = ParserUtils.parseDoubleProtected(tok.nextToken());
+         }
+      }
+      Viewport theViewport = new Viewport(width, height);
+      return theViewport;
+   }
+
+   public static boolean getPreserveAspectRatio(String value) {
+      if (!value.contains(" ")) {
+         return !value.equals(NONE);
+      } else {
+         StringTokenizer tok = new StringTokenizer(value, " ");
+         return !tok.nextToken().equals(NONE);
+      }
+   }
+
+   public static Viewbox parseViewbox(XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
+         double width = xmlNode.getLengthValue(WIDTH, 0);
+         double height = xmlNode.getLengthValue(HEIGHT, 0);
+         if (xmlNode.hasAttribute(VIEWBOX)) {
+            String box = xmlNode.getAttributeValue(VIEWBOX);
+            StringTokenizer tok = new StringTokenizer(box, " ,");
+            if (tok.countTokens() >= 4) {
+               tok.nextToken();
+               tok.nextToken();
+               double viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
+               Viewbox theViewbox = new Viewbox(width, height);
+               theViewbox.setViewbox(viewboxWidth, viewboxHeight);
+               return theViewbox;
+            } else {
+               return null;
+            }
+         } else {
+            return null;
+         }
+      } else {
+         return null;
+      }
+
    }
 }
