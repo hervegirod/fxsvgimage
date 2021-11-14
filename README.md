@@ -5,7 +5,7 @@ complete documentation.
 Note that contrary to other existing libraries, this library has no external dependencies (including Batik)
 
 # History
-See https://fxsvgimage.sourceforge.io/history.html
+See https://fxsvgimage.sourceforge.io/articles/article_history.html
 
 # Usage
 Just calls one of the static `load` methods, for example:
