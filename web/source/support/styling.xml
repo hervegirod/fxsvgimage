@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="styling support">
    <meta desc="This article presents the support for SVG styling specification" />
+   Therere several ways to add styling to an element:
+   <ul>
+      <li>By setting explicitly the value for styling attributes for an element. For example: <source syntax="xml">fill="red"</source></li>
+      <li>By setting the value for the <code>style</code> attribute for an element. For example: <source syntax="xml">style="fill: red;"</source></li>
+      <li>By setting the content for the <code>style</code> element. For example: <source syntax="xml">&lt;style&gt;".st0{fill: red;}&lt;/style&gt;"</source></li>      
+   </ul>
    
    <title title="support for style attributes"/>
    The following style attributes elements are supported in the library
@@ -11,25 +17,10 @@
       </li>
       <li>
          <code>stroke</code>
-      </li>         
-      <li>
-         <code>stroke-width</code>
       </li>    
       <li>
-         <code>stroke-dasharray</code>
-      </li>         
-      <li>
-         <code>stroke-dashoffset</code>
-      </li>   
-      <li>
-         <code>stroke-linejoin</code>
-      </li>   
-      <li>
-         <code>stroke-linecap</code>
-      </li>    
-      <li>
-         <code>stroke-miterlimit</code>
-      </li>
+         <ref id="stroke properties" />
+      </li>               
       <li>
          <code>font-family</code>      
       </li>     
@@ -68,6 +59,16 @@
    </ul>
    Note that the <code>opacity</code> and <code>transform</code> attributes are supported for all elements.
    
+   <title level="2" title="example"/>
+   <pre syntax="xml">
+      &lt;svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200" viewBox="0 0 200 200"&gt;
+         &lt;g&gt;
+            &lt;rect fill="red" width="100" height="100" x="50" y="50" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt; 
+   </pre>   
+   
    <title title="support for styles specified within the style attribute"/>
    The following styles are supported within the <code>style</code> attribute<note>See
       <a href="https://www.w3.org/TR/SVG11/styling.html#StyleAttribute">The style attribute</a>
@@ -80,23 +81,8 @@
          <code>stroke</code>
       </li>         
       <li>
-         <code>stroke-width</code>
-      </li>    
-      <li>
-         <code>stroke-dasharray</code>
-      </li>         
-      <li>
-         <code>stroke-dashoffset</code>
-      </li>   
-      <li>
-         <code>stroke-linejoin</code>
-      </li>   
-      <li>
-         <code>stroke-linecap</code>
-      </li>    
-      <li>
-         <code>stroke-miterlimit</code>
-      </li>             
+         <ref id="stroke properties" />
+      </li>              
       <li>
          <code>font-family</code>      
       </li>     
@@ -122,6 +108,16 @@
          <code>clipPath</code>
       </li>                                                                         
    </ul>   
+   
+   <title level="2" title="example"/>
+   <pre syntax="xml">
+      &lt;svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200" viewBox="0 0 200 200"&gt;
+         &lt;g&gt;
+            &lt;rect style="fill:red;" width="100" height="100" x="50" y="50" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt; 
+   </pre>
    
    <title title="support for styles specified in the style element"/>
    The following styles are supported within the rules specified in the <code>style</code> element<note>See
@@ -163,7 +159,18 @@
       <li>
          <code>fill-opacity</code>
       </li>                                                                                           
-   </ul>    
+   </ul>   
+   
+   <title level="2" title="example"/>
+   <pre syntax="xml">
+      &lt;svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200" viewBox="0 0 200 200"&gt;
+         &lt;style&gt;.st0{fill: red;}&lt;/style&gt;
+         &lt;g&gt;
+            &lt;rect class="st0" width="100" height="100" x="50" y="50" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt; 
+   </pre>      
             
    <cat id="support" />
 </article>

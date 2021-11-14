@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="SVG shapes support">
    <meta desc="This article presents the support for SVG shapes" />
-   This article presents the support for SVG shapes.
+   This article presents the support for SVG shapes<note>See <a href="https://www.w3.org/TR/SVG11/shapes.html">Basic Shapes</a></note>.
    
    <title title="attributes supported for all elements" />
    All elements support the following attributes:

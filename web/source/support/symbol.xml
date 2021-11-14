@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="symbol element support">
    <meta desc="This article presents the support for the symbol element" />
-   The library support the <code>symbol</code> element. Contrary to a regular element, a symbol is only shown for its
-   usages (see <ref id="use element support" />).
+   The library support the <code>symbol</code> element<note>See <a href="https://www.w3.org/TR/SVG11/struct.html#SymbolElement">The symbol element</a></note>. 
+   
+   Contrary to a regular element, a symbol is only shown for its usages (see <ref id="use element support" />).
    
    The following attributes are supported:
    <ul>

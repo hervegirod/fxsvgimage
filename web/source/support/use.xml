@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="use element support">
    <meta desc="This article presents the support for the use element" />
-   The library support the <code>use</code> element.
+   The library support the <code>use</code> element<note>See <a href="https://www.w3.org/TR/SVG11/struct.html#UseElement">The use element</a></note>.
    
    The following attributes are supported:
    <ul>
@@ -28,9 +28,7 @@
    <img id="use" />
    
    <title title="limitations"/>  
-   <ul>
-      <li>For the moment only basic shapes can be used. For example <code>g</code> elements cannot be used</li>
-      <li>The <code>symbol</code> element is currently not supported</li>      
+   <ul>   
       <li>The overriding of attributes is still not correctly supported</li>  
    </ul>
    
