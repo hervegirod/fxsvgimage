@@ -7,6 +7,8 @@
    All elements support the following attributes:
    <ul>
       <li>
+         The <code>id</code> attribute</li>           
+      <li>
          The attributes for <ref id="transform support" />
       </li>           
       <li>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="use element support">
    <meta desc="This article presents the support for the use element" />
-   The library support the use element.
+   The library support the <code>use</code> element.
    
    The following attributes are supported:
    <ul>
@@ -34,5 +34,6 @@
       <li>The overrding of attributes is still not correctly supported</li>  
    </ul>
    
+   <see id="symbol element support" />
    <cat id="support" />
 </article>

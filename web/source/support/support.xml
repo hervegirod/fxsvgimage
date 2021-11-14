@@ -11,7 +11,8 @@
       <li>the style element. See also <ref id="styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
       <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
          See also <ref id="SVG shapes support" />
-      </li>      
+      </li>     
+      <li>the symbol element. See also <ref id="symbol element support" /></li> 
       <li>the use element. See also <ref id="use element support" /></li>
       <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
       <li>transform attributes. See also <ref id="transform support" /></li>
