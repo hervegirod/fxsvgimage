@@ -62,7 +62,74 @@
       <li>Fix most stylings not correctly applied on non Shape elements</li>
       <li>Fix the xlink:href attribute not taken into account for image elements</li>
       <li>Fix the "none" value for the stroke-dasharray throwing an exception</li>
-   </ul>                                                                         
+   </ul>           
+   
+   <title title="Version 0.5.1" /> 
+   <ul>
+      <li>Support the "font-style" and "font-weight" attributes for text (also supported in style)</li>
+      <li>Fix the computing of font size when an unit is provided</li>
+      <li>Support the Font characteristics in the style node</li>
+      <li>Support the "oblique" value for the font-style property</li>
+      <li>Fix some styles in the style element which were not correctly parsed</li>
+      <li>Support the "fill-opacity" attribute</li>
+      <li>Support the "text-decoration" attribute</li>
+      <li>Support the "baseline-shift" attribute for tspan elements</li>
+      <li>Support the "rx" and "ry" attributes for rect elements</li>
+      <li>Fix the tspan elements not using the styles from their text parent</li>
+      <li>Fix the tspan elements not correctly positioned if not having a declared position in the SVG document</li>
+      <li>Support percents for the "opacity" and "fill-opacity" attributes</li>
+      <li>Fix the radial gradients</li>
+      <li>Support the spreadMethod argument for gradients</li>
+      <li>Allow urls specifications enclosed with "'" quotes</li>
+      <li>Fix the "clip-path" attribute or style not taken into account for nodes</li>
+      <li>Support text, line, polygon and polyline in the clipPath element</li>
+      <li>Support the fill-rule property for paths</li>
+      <li>Add a SVG browser</li>
+   </ul>           
+
+   <title title="Version 0.5.2" /> 
+   <ul>
+      <li>Fix the SVG browser not included in the distribution</li>
+   </ul>   
+   
+   <title title="Version 0.5.3" /> 
+   <ul>
+      <li>Add a snapshot method in the SVGImage to simplify the process of writing the content of the result on disk</li>
+   </ul>  
+
+   <title title="Version 0.5.4" /> 
+   <ul>
+      <li>Make sure that the snapshot generation class does not emit an exception before the actual generation if Swing is not available</li>
+      <li>Allow to have both underline and line-through for a text</li>
+      <li>Support the "transform" attribute for the clipPath element</li>
+      <li>Support the translateX, translateY, scaleX, and scaleY transformations</li>
+      <li>Allow to use units in transformations</li>
+      <li>Allow to use more than one transformation in the "transform" or "gradientTransform" attribute</li>
+   </ul>  
+
+   <title title="Version 0.5.5" /> 
+   <ul>
+      <li>Fix the text elements with tspan children not having their position set if they have an x,y position</li>
+      <li>Support the tspan "dx" and "dy" attributes</li>
+      <li>Support the "clipPathUnits" attribute for clipPaths elements</li>
+      <li>Fix the clipPath elements only being taken into account in defs parents</li>
+      <li>Fix the values for coordinates parsed to a value of zero if having a pattern without an integer part (such as ".5")</li>
+      <li>Support the use element for basic shapes</li>
+   </ul>  
+
+   <title title="Version 0.5.6" /> 
+   <ul>
+      <li>Support the use element for images and g elements</li>
+      <li>Support the symbol element</li>
+      <li>Support the "viewBox", "width", "height", and "preserveAspectRatio" attributes for the symbol element</li>
+   </ul>   
+   
+   <title title="Version 0.6" /> 
+   <ul>
+      <li>Support the "preserveAspectRatio" attribute for the svg root element</li>
+      <li>Allow to load a SVG from a String</li>
+      <li>Specifies a global configuration for the handling of exceptions during parsing</li>
+   </ul>                                                                                                                                                                                                                                                                                                                                                                                             
             
    <cat id="general" />
 </article>

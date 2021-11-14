@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="symbol element support">
    <meta desc="This article presents the support for the symbol element" />
-   The library support the <code>symbol</code> element. Cnotrary to a regular element, a symbol is only shown for its
+   The library support the <code>symbol</code> element. Contrary to a regular element, a symbol is only shown for its
    usages (see <ref id="use element support" />).
    
    The following attributes are supported:

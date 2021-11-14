@@ -16,7 +16,7 @@
    </ul>
    
    <title title="example"/>
-   The following specifiation:
+   The following specification:
    <pre syntax="xml">
       &lt;svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"&gt;
          &lt;circle id="myCircle" cx="50" cy="50" r="20" stroke="blue"/&gt;
@@ -31,7 +31,7 @@
    <ul>
       <li>For the moment only basic shapes can be used. For example <code>g</code> elements cannot be used</li>
       <li>The <code>symbol</code> element is currently not supported</li>      
-      <li>The overrding of attributes is still not correctly supported</li>  
+      <li>The overriding of attributes is still not correctly supported</li>  
    </ul>
    
    <see id="symbol element support" />

@@ -15,6 +15,21 @@
    
    <title title="SVG support"/>
    <moreInfo id="SVG support" /> 
+   This library supports:
+   <ul>
+      <li>px, pt, cm, mm, on, and % units. See also <ref id="units support" /></li>
+      <li>filters. See also <ref id="filters support" /></li>      
+      <li>clip paths. See also <ref id="clipPath support" /></li>
+      <li>linear and radial gradients. See also <ref id="Gradients support" /></li>    
+      <li>the style element. See also <ref id="styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
+      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
+         See also <ref id="SVG shapes support" />
+      </li>     
+      <li>the symbol element. See also <ref id="symbol element support" /></li> 
+      <li>the use element. See also <ref id="use element support" /></li>
+      <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
+      <li>transform attributes. See also <ref id="transform support" /></li>
+   </ul>   
    
    <title title="built-in browser"/>
    <moreInfo id="browser" /> 
