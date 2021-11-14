@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <rect x="10" y="10" width="40" height="20"
+         style="stroke: #000000; fill: none;">
+      <animate attributeName="x"
+               attributeType="XML"
+               from="10" to="400"
+               begin="0s" dur="10s"
+               repeatCount="indefinite"
+      />
+      <animate attributeName="y"
+               attributeType="XML"
+               from="10" to="100"
+               begin="0s" dur="10s"
+               fill="freeze"
+               repeatCount="indefinite"
+      />
+   </rect>
+</svg>
+

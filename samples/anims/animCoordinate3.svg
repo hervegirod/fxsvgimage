@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <rect x="10" y="10" width="40" height="20"
+         style="stroke: #000000; fill: none;">
+      <animateTransform attributeName="transform" attributeType="XML"
+                        type="scale"
+                        from="1" to="3"
+                        begin="0s" dur="10s"
+                        repeatCount="indefinite"
+                        additive="sum"
+      />
+      <animateTransform attributeName="transform" attributeType="XML"
+                        type="rotate"
+                        from="0 30 20" to="360 30 20"
+                        begin="0s" dur="10s"
+                        fill="freeze"
+                        repeatCount="indefinite"
+                        additive="sum"
+      />
+   </rect>
+</svg>
+

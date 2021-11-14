@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <rect x="0" y="0" width="30" height="15"
+         style="stroke: #ff0000; fill: none;">
+
+      <animate id="one"
+               attributeName="x" attributeType="XML"
+               from="0" to="400"
+               begin="0s" dur="10s" fill="freeze"
+      />
+      <animate
+         attributeName="y" attributeType="XML"
+         from="0" to="50"
+         begin="one.end" dur="10s" fill="freeze"
+      />
+   </rect>
+</svg>
+
