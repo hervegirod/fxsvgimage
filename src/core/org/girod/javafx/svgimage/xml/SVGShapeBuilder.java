@@ -41,7 +41,9 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,38 +70,11 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
-import static org.girod.javafx.svgimage.xml.SVGTags.CX;
-import static org.girod.javafx.svgimage.xml.SVGTags.CY;
-import static org.girod.javafx.svgimage.xml.SVGTags.DX;
-import static org.girod.javafx.svgimage.xml.SVGTags.DY;
-import static org.girod.javafx.svgimage.xml.SVGTags.FLOOD_COLOR;
-import static org.girod.javafx.svgimage.xml.SVGTags.FLOOD_OPACITY;
-import static org.girod.javafx.svgimage.xml.SVGTags.FX;
-import static org.girod.javafx.svgimage.xml.SVGTags.FY;
-import static org.girod.javafx.svgimage.xml.SVGTags.GRADIENT_TRANSFORM;
-import static org.girod.javafx.svgimage.xml.SVGTags.GRADIENT_UNITS;
-import static org.girod.javafx.svgimage.xml.SVGTags.ID;
-import static org.girod.javafx.svgimage.xml.SVGTags.LINEAR_GRADIENT;
-import static org.girod.javafx.svgimage.xml.SVGTags.OFFSET;
-import static org.girod.javafx.svgimage.xml.SVGTags.R;
-import static org.girod.javafx.svgimage.xml.SVGTags.RADIAL_GRADIENT;
-import static org.girod.javafx.svgimage.xml.SVGTags.STD_DEVIATION;
-import static org.girod.javafx.svgimage.xml.SVGTags.STOP;
-import static org.girod.javafx.svgimage.xml.SVGTags.STOP_COLOR;
-import static org.girod.javafx.svgimage.xml.SVGTags.STOP_OPACITY;
-import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
-import static org.girod.javafx.svgimage.xml.SVGTags.TSPAN;
-import static org.girod.javafx.svgimage.xml.SVGTags.USERSPACE_ON_USE;
-import static org.girod.javafx.svgimage.xml.SVGTags.X1;
-import static org.girod.javafx.svgimage.xml.SVGTags.X2;
-import static org.girod.javafx.svgimage.xml.SVGTags.XLINK_HREF;
-import static org.girod.javafx.svgimage.xml.SVGTags.Y1;
-import static org.girod.javafx.svgimage.xml.SVGTags.Y2;
 
 /**
  * The shape builder.
  *
- * @version 0.5.1
+ * @version 0.5.5
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -111,28 +86,29 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "rect" element.
     *
     * @param xmlNode the node
+    * @param bounds an optinal bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildRect(XMLNode xmlNode, Viewport viewport) {
+   public static Shape buildRect(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       double x = 0.0;
       double y = 0.0;
 
       if (xmlNode.hasAttribute(X)) {
-         x = xmlNode.getAttributeValueAsDouble(X, true, viewport);
+         x = xmlNode.getPositionValue(X, true, bounds, viewport);
       }
       if (xmlNode.hasAttribute(Y)) {
-         y = xmlNode.getAttributeValueAsDouble(Y, false, viewport);
+         y = xmlNode.getPositionValue(Y, false, viewport);
       }
-      double width = xmlNode.getAttributeValueAsDouble(WIDTH, true, viewport, 0);
-      double height = xmlNode.getAttributeValueAsDouble(HEIGHT, false, viewport, 0);
+      double width = xmlNode.getLengthValue(WIDTH, true, bounds, viewport, 0);
+      double height = xmlNode.getLengthValue(HEIGHT, false, bounds, viewport, 0);
       Rectangle rect = new Rectangle(x, y, width, height);
       if (xmlNode.hasAttribute(RX)) {
-         double rx = 2 * xmlNode.getAttributeValueAsDouble(RX, true, viewport, 0);
+         double rx = 2 * xmlNode.getLengthValue(RX, true, bounds, viewport, 0);
          rect.setArcWidth(rx);
       }
       if (xmlNode.hasAttribute(RY)) {
-         double ry = 2 * xmlNode.getAttributeValueAsDouble(RY, false, viewport, 0);
+         double ry = 2 * xmlNode.getLengthValue(RY, false, bounds, viewport, 0);
          rect.setArcHeight(ry);
       }
       return rect;
@@ -142,13 +118,14 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "circle" element.
     *
     * @param xmlNode the node
+    * @param bounds an optinal bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildCircle(XMLNode xmlNode, Viewport viewport) {
-      double cx = xmlNode.getAttributeValueAsDouble(CX, true, viewport, 0);
-      double cy = xmlNode.getAttributeValueAsDouble(CY, false, viewport, 0);
-      double r = xmlNode.getAttributeValueAsDouble(R, true, viewport, 0);
+   public static Shape buildCircle(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
+      double cx = xmlNode.getPositionValue(CX, true, bounds, viewport, 0);
+      double cy = xmlNode.getPositionValue(CY, false, bounds, viewport, 0);
+      double r = xmlNode.getLengthValue(R, true, bounds, viewport, 0);
       Circle circle = new Circle(cx, cy, r);
 
       return circle;
@@ -268,25 +245,27 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "text" element with tspan children.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the Text
     */
-   public static SpanGroup buildTSpanGroup(XMLNode xmlNode, Viewport viewport) {
+   public static SpanGroup buildTSpanGroup(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       Group group = new Group();
-      double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
-      double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
+      double x = xmlNode.getLengthValue(X, true, bounds, viewport, 0);
+      double y = xmlNode.getLengthValue(Y, false, bounds, viewport, 0);
       group.setLayoutX(x);
       group.setLayoutY(y);
       SpanGroup spanGroup = new SpanGroup(group);
+      Text text = null;
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
-         Text text = null;
          String name = childNode.getName();
          switch (name) {
-            case TSPAN:
-               text = SVGShapeBuilder.buildText(childNode, viewport);
+            case TSPAN: {
+               text = buildTspan(group, text, childNode, bounds, viewport);
                break;
+            }
          }
          if (text != null) {
             group.getChildren().add(text);
@@ -301,10 +280,11 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "text" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the Text
     */
-   public static Text buildText(XMLNode xmlNode, Viewport viewport) {
+   public static Text buildText(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
       boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
       String family = null;
@@ -321,8 +301,65 @@ public class SVGShapeBuilder implements SVGTags {
 
       String cdata = xmlNode.getCDATA();
       if (cdata != null) {
-         double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
-         double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
+         double x = xmlNode.getPositionValue(X, true, bounds, viewport, 0);
+         double y = xmlNode.getPositionValue(Y, false, bounds, viewport, 0);
+         Text text = new Text(x, y, cdata);
+         if (xmlNode.hasAttribute(TEXT_DECORATION)) {
+            SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+         }
+         if (font != null) {
+            text.setFont(font);
+         }
+
+         return text;
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Build a "tspan" element.
+    *
+    * @param group the parent group
+    * @param previous the previous node
+    * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
+    * @param viewport the viewport
+    * @return the Text
+    */
+   public static Text buildTspan(Group group, Text previous, XMLNode xmlNode, Bounds bounds, Viewport viewport) {
+      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
+      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
+      String family = null;
+      if (hasFamily) {
+         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
+      }
+      double size = 12d;
+      if (hasSize) {
+         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
+      }
+      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
+      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
+      Font font = Font.font(family, weight, posture, size);
+
+      String cdata = xmlNode.getCDATA();
+      if (cdata != null) {
+         double x = 0;
+         double y = 0;
+         if (xmlNode.hasAttribute(DX)) {
+            x = xmlNode.getPositionValue(DX, true, bounds, viewport, 0);
+         } else if (xmlNode.hasAttribute(X)) {
+            double _x = xmlNode.getPositionValue(X, true, bounds, viewport, 0);
+            x = _x - group.getLayoutX();
+         } else if (previous != null) {
+            x = previous.getLayoutX() + previous.getLayoutBounds().getWidth();
+         }
+         if (xmlNode.hasAttribute(DY)) {
+            y = xmlNode.getPositionValue(DY, false, bounds, viewport, 0);
+         } else if (xmlNode.hasAttribute(Y)) {
+            double _y = xmlNode.getPositionValue(Y, true, bounds, viewport, 0);
+            y = _y - group.getLayoutY();
+         }
          Text text = new Text(x, y, cdata);
          if (xmlNode.hasAttribute(TEXT_DECORATION)) {
             SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
@@ -647,18 +684,128 @@ public class SVGShapeBuilder implements SVGTags {
    }
 
    /**
+    * Build a "use" element.
+    *
+    * @param xmlNode the node
+    * @param namedNodes the named nodes in the XML tree
+    * @param gradients the gradients
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
+    * @param effectsSupported true if the filter effcts are supported
+    * @param filterSpecs the filter effects
+    * @param svgStyle the svg style
+    * @param viewport the viewport
+    * @return the shape
+    */
+   public static Node buildUse(XMLNode xmlNode, Map<String, XMLNode> namedNodes,
+      Map<String, Paint> gradients, Styles svgStyle, boolean effectsSupported, Map<String, FilterSpec> filterSpecs, Bounds bounds, Viewport viewport) {
+      String id = null;
+      if (xmlNode.hasAttribute(HREF)) {
+         id = xmlNode.getAttributeValue(HREF);
+      } else if (xmlNode.hasAttribute(XLINK_HREF)) {
+         id = xmlNode.getAttributeValue(XLINK_HREF);
+      }
+      if (id != null && id.startsWith("#")) {
+         id = id.substring(1);
+      }
+
+      if (id != null && namedNodes.containsKey(id)) {
+         XMLNode namedNode = namedNodes.get(id);
+         Node nodeFromUse = null;
+         String name = namedNode.getName();
+         SpanGroup spanGroup = null;
+         switch (name) {
+            case RECT:
+               nodeFromUse = buildRect(namedNode, null, viewport);
+               break;
+            case CIRCLE:
+               nodeFromUse = buildCircle(namedNode, null, viewport);
+               break;
+            case ELLIPSE:
+               nodeFromUse = buildEllipse(namedNode, null, viewport);
+               break;
+            case PATH:
+               nodeFromUse = buildPath(namedNode, null, viewport);
+               break;
+            case POLYGON:
+               nodeFromUse = buildPolygon(namedNode, null, viewport);
+               break;
+            case LINE:
+               nodeFromUse = buildLine(namedNode, null, viewport);
+               break;
+            case POLYLINE:
+               nodeFromUse = buildPolyline(namedNode, null, viewport);
+               break;
+            case TEXT:
+               nodeFromUse = SVGShapeBuilder.buildText(namedNode, null, viewport);
+               if (nodeFromUse == null) {
+                  spanGroup = SVGShapeBuilder.buildTSpanGroup(namedNode, null, viewport);
+               }
+               break;
+         }
+         if (nodeFromUse != null) {
+            if (xmlNode.hasAttribute(X)) {
+               double x = xmlNode.getPositionValue(X, true, viewport);
+               nodeFromUse.setLayoutX(x);
+            }
+            if (xmlNode.hasAttribute(Y)) {
+               double y = xmlNode.getPositionValue(Y, true, viewport);
+               nodeFromUse.setLayoutY(y);
+            }
+            SVGStyleBuilder.setNodeStyle(nodeFromUse, gradients, xmlNode, null, svgStyle, true, null, viewport);
+            return nodeFromUse;
+         } else if (spanGroup != null) {
+            Map<String, String> theStylesMap = ParserUtils.getStyles(namedNode);
+            Iterator<SpanGroup.TSpan> it2 = spanGroup.getSpans().iterator();
+            SpanGroup.TSpan previous = null;
+            while (it2.hasNext()) {
+               SpanGroup.TSpan tspan = it2.next();
+               Text tspanText = tspan.text;
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
+               tspan.node.addAttribute(STYLE, theStyles);
+               addStyles(gradients, svgStyle, effectsSupported, filterSpecs, tspanText, tspan.node, viewport);
+               if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
+                  // http://www.svgbasics.com/font_effects_italic.html
+                  // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
+                  String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
+                  ParserUtils.setBaselineShift(tspanText, shiftValue);
+               }
+               // https://vanseodesign.com/web-design/svg-text-tspan-element/
+               if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
+                  double width = previous.text.getLayoutBounds().getWidth();
+                  tspanText.setLayoutX(width + previous.text.getLayoutX());
+               }
+               previous = tspan;
+            }
+            return spanGroup.getTextGroup();
+         } else {
+            return null;
+         }
+      } else {
+         return null;
+      }
+   }
+
+   private static void addStyles(Map<String, Paint> gradients, Styles svgStyle, boolean effectsSupported, Map<String, FilterSpec> filterSpecs, Node node, XMLNode xmlNode, Viewport viewport) {
+      SVGStyleBuilder.setNodeStyle(node, gradients, xmlNode, null, svgStyle,
+         effectsSupported, filterSpecs, viewport);
+      ParserUtils.setOpacity(node, xmlNode);
+      ParserUtils.setTransform(node, xmlNode, viewport);
+   }
+
+   /**
     * Build an "image" node.
     *
     * @param xmlNode the node
     * @param url the reference url
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the ImageView
     */
-   public static ImageView buildImage(XMLNode xmlNode, URL url, Viewport viewport) {
-      double width = xmlNode.getAttributeValueAsDouble(WIDTH, true, viewport, 0);
-      double height = xmlNode.getAttributeValueAsDouble(HEIGHT, false, viewport, 0);
-      double x = xmlNode.getAttributeValueAsDouble(X, true, viewport, 0);
-      double y = xmlNode.getAttributeValueAsDouble(Y, false, viewport, 0);
+   public static ImageView buildImage(XMLNode xmlNode, URL url, Bounds bounds, Viewport viewport) {
+      double width = xmlNode.getLengthValue(WIDTH, true, bounds, viewport, 0);
+      double height = xmlNode.getLengthValue(HEIGHT, false, bounds, viewport, 0);
+      double x = xmlNode.getLengthValue(X, true, bounds, viewport, 0);
+      double y = xmlNode.getLengthValue(Y, false, bounds, viewport, 0);
       String hrefAttribute = xmlNode.getAttributeValue(HREF);
       if (hrefAttribute == null) {
          hrefAttribute = xmlNode.getAttributeValue(XLINK_HREF);
@@ -688,14 +835,15 @@ public class SVGShapeBuilder implements SVGTags {
     * Build an "ellipse" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Shape buildEllipse(XMLNode xmlNode, Viewport viewport) {
-      Ellipse ellipse = new Ellipse(xmlNode.getAttributeValueAsDouble(CX, true, viewport, 0),
-         xmlNode.getAttributeValueAsDouble(CY, false, viewport, 0),
-         xmlNode.getAttributeValueAsDouble(RX, true, viewport, 0),
-         xmlNode.getAttributeValueAsDouble(RY, false, viewport, 0));
+   public static Shape buildEllipse(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
+      Ellipse ellipse = new Ellipse(xmlNode.getPositionValue(CX, true, bounds, viewport, 0),
+         xmlNode.getPositionValue(CY, false, bounds, viewport, 0),
+         xmlNode.getLengthValue(RX, true, bounds, viewport, 0),
+         xmlNode.getLengthValue(RY, false, bounds, viewport, 0));
 
       return ellipse;
    }
@@ -704,10 +852,11 @@ public class SVGShapeBuilder implements SVGTags {
     * Build an "path" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static SVGPath buildPath(XMLNode xmlNode, Viewport viewport) {
+   public static SVGPath buildPath(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       SVGPath path = new SVGPath();
       String content = xmlNode.getAttributeValue(D);
       FillRule rule = ParserUtils.getFillRule(xmlNode);
@@ -724,10 +873,11 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "polygon" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Polygon buildPolygon(XMLNode xmlNode, Viewport viewport) {
+   public static Polygon buildPolygon(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       String pointsAttribute = xmlNode.getAttributeValue(POINTS);
       Polygon polygon = new Polygon();
 
@@ -736,8 +886,8 @@ public class SVGShapeBuilder implements SVGTags {
          String point = tokenizer.nextToken();
 
          StringTokenizer tokenizer2 = new StringTokenizer(point, ",");
-         Double x = ParserUtils.parseDoubleProtected(tokenizer2.nextToken(), true, viewport);
-         Double y = ParserUtils.parseDoubleProtected(tokenizer2.nextToken(), false, viewport);
+         Double x = ParserUtils.parsePositionValue(tokenizer2.nextToken(), true, bounds, viewport);
+         Double y = ParserUtils.parsePositionValue(tokenizer2.nextToken(), false, bounds, viewport);
 
          polygon.getPoints().add(x);
          polygon.getPoints().add(y);
@@ -750,15 +900,16 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "line" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Line buildLine(XMLNode xmlNode, Viewport viewport) {
+   public static Line buildLine(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       if (xmlNode.hasAttribute(X1) && xmlNode.hasAttribute(Y1) && xmlNode.hasAttribute(X2) && xmlNode.hasAttribute(Y2)) {
-         double x1 = xmlNode.getAttributeValueAsDouble(X1, true, viewport);
-         double y1 = xmlNode.getAttributeValueAsDouble(Y1, false, viewport);
-         double x2 = xmlNode.getAttributeValueAsDouble(X2, true, viewport);
-         double y2 = xmlNode.getAttributeValueAsDouble(Y2, false, viewport);
+         double x1 = xmlNode.getPositionValue(X1, true, bounds, viewport);
+         double y1 = xmlNode.getPositionValue(Y1, false, bounds, viewport);
+         double x2 = xmlNode.getPositionValue(X2, true, bounds, viewport);
+         double y2 = xmlNode.getPositionValue(Y2, false, bounds, viewport);
 
          return new Line(x1, y1, x2, y2);
       } else {
@@ -770,10 +921,11 @@ public class SVGShapeBuilder implements SVGTags {
     * Build a "polyline" element.
     *
     * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
     * @return the shape
     */
-   public static Polyline buildPolyline(XMLNode xmlNode, Viewport viewport) {
+   public static Polyline buildPolyline(XMLNode xmlNode, Bounds bounds, Viewport viewport) {
       Polyline polyline = new Polyline();
       String pointsAttribute = xmlNode.getAttributeValue(POINTS);
 
@@ -781,8 +933,8 @@ public class SVGShapeBuilder implements SVGTags {
       while (tokenizer.hasMoreTokens()) {
          String points = tokenizer.nextToken();
          StringTokenizer tokenizer2 = new StringTokenizer(points, ",");
-         double x = ParserUtils.parseDoubleProtected(tokenizer2.nextToken(), true, viewport);
-         double y = ParserUtils.parseDoubleProtected(tokenizer2.nextToken(), false, viewport);
+         double x = ParserUtils.parsePositionValue(tokenizer2.nextToken(), true, bounds, viewport);
+         double y = ParserUtils.parsePositionValue(tokenizer2.nextToken(), false, bounds, viewport);
          polyline.getPoints().add(x);
          polyline.getPoints().add(y);
       }
@@ -807,15 +959,15 @@ public class SVGShapeBuilder implements SVGTags {
    }
 
    public static void buildFEDropShadow(FilterSpec spec, XMLNode node, Viewport viewport) {
-      double dx = node.getAttributeValueAsDouble(DX, true, viewport);
-      double dy = node.getAttributeValueAsDouble(DY, true, viewport);
+      double dx = node.getLengthValue(DX, true, viewport);
+      double dy = node.getLengthValue(DY, true, viewport);
       double opacity = 1d;
       double stdDeviation = 0d;
       Color col = Color.BLACK;
 
       String resultId = node.getAttributeValue(RESULT);
       if (node.hasAttribute(FLOOD_OPACITY)) {
-         opacity = node.getAttributeValueAsDouble(FLOOD_OPACITY, 1d);
+         opacity = node.getLengthValue(FLOOD_OPACITY, 1d);
       }
       if (node.hasAttribute(STD_DEVIATION)) {
          String stdDevS = node.getAttributeValue(STD_DEVIATION);
@@ -834,16 +986,16 @@ public class SVGShapeBuilder implements SVGTags {
    }
 
    public static void buildFEFlood(FilterSpec spec, XMLNode node, Viewport viewport) {
-      double x = node.getAttributeValueAsDouble(X, true, viewport);
-      double y = node.getAttributeValueAsDouble(Y, true, viewport);
-      double width = node.getAttributeValueAsDouble(WIDTH, true, viewport);
-      double height = node.getAttributeValueAsDouble(HEIGHT, true, viewport);
+      double x = node.getLengthValue(X, true, viewport);
+      double y = node.getLengthValue(Y, true, viewport);
+      double width = node.getLengthValue(WIDTH, true, viewport);
+      double height = node.getLengthValue(HEIGHT, true, viewport);
       double opacity = 1d;
       Color col = Color.BLACK;
       String resultId = node.getAttributeValue(RESULT);
 
       if (node.hasAttribute(FLOOD_OPACITY)) {
-         opacity = node.getAttributeValueAsDouble(FLOOD_OPACITY, 1d);
+         opacity = node.getLengthValue(FLOOD_OPACITY, 1d);
       }
       if (node.hasAttribute(FLOOD_COLOR)) {
          String colorS = node.getAttributeValue(FLOOD_COLOR);
@@ -857,8 +1009,8 @@ public class SVGShapeBuilder implements SVGTags {
    }
 
    public static void buildFEOffset(FilterSpec spec, XMLNode node, Viewport viewport) {
-      double dx = node.getAttributeValueAsDouble(DX, true, viewport);
-      double dy = node.getAttributeValueAsDouble(DY, true, viewport);
+      double dx = node.getLengthValue(DX, true, viewport);
+      double dy = node.getLengthValue(DY, true, viewport);
       String resultId = node.getAttributeValue(RESULT);
 
       FilterSpec.FEOffset effect = new FilterSpec.FEOffset(resultId, dx, dy);
@@ -869,10 +1021,10 @@ public class SVGShapeBuilder implements SVGTags {
    }
 
    public static void buildFEImage(FilterSpec spec, URL url, XMLNode node, Viewport viewport) {
-      double x = node.getAttributeValueAsDouble(X, true, viewport);
-      double y = node.getAttributeValueAsDouble(Y, true, viewport);
-      double width = node.getAttributeValueAsDouble(WIDTH, true, viewport);
-      double height = node.getAttributeValueAsDouble(HEIGHT, true, viewport);
+      double x = node.getLengthValue(X, true, viewport);
+      double y = node.getLengthValue(Y, true, viewport);
+      double width = node.getLengthValue(WIDTH, true, viewport);
+      double height = node.getLengthValue(HEIGHT, true, viewport);
       String hrefAttribute = node.getAttributeValue(XLINK_HREF);
       String resultId = node.getAttributeValue(RESULT);
 
@@ -898,16 +1050,16 @@ public class SVGShapeBuilder implements SVGTags {
       if (child != null) {
          switch (child.getName()) {
             case FE_DISTANT_LIGHT: {
-               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double azimuth = child.getAttributeValueAsDouble(AZIMUTH);
-               double elevation = child.getAttributeValueAsDouble(ELEVATION);
+               double azimuth = child.getLengthValue(AZIMUTH);
+               double elevation = child.getLengthValue(ELEVATION);
                Light.Distant light = new Light.Distant(azimuth, elevation, col);
                String resultId = node.getAttributeValue(RESULT);
                FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
@@ -918,17 +1070,17 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_POINT_LIGHT: {
-               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double x = child.getAttributeValueAsDouble(X, true, viewport);
-               double y = child.getAttributeValueAsDouble(Y, true, viewport);
-               double z = child.getAttributeValueAsDouble(Z, true, null);
+               double x = child.getLengthValue(X, true, viewport);
+               double y = child.getLengthValue(Y, true, viewport);
+               double z = child.getLengthValue(Z, true, null);
                Light.Point light = new Light.Point(x, y, z, col);
                String resultId = node.getAttributeValue(RESULT);
                FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
@@ -939,20 +1091,20 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_SPOT_LIGHT: {
-               double surfaceScale = node.getAttributeValueAsDouble(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getAttributeValueAsDouble(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double x = child.getAttributeValueAsDouble(X, true, viewport);
-               double y = child.getAttributeValueAsDouble(Y, false, viewport);
-               double z = child.getAttributeValueAsDouble(Z, true, viewport);
-               double pointAtX = child.getAttributeValueAsDouble(POINT_AT_X, true, viewport);
-               double pointAtY = child.getAttributeValueAsDouble(POINT_AT_Y, false, viewport);
-               double pointAtZ = child.getAttributeValueAsDouble(POINT_AT_Z, true, viewport);
+               double x = child.getLengthValue(X, true, viewport);
+               double y = child.getLengthValue(Y, false, viewport);
+               double z = child.getLengthValue(Z, true, viewport);
+               double pointAtX = child.getLengthValue(POINT_AT_X, true, viewport);
+               double pointAtY = child.getLengthValue(POINT_AT_Y, false, viewport);
+               double pointAtZ = child.getLengthValue(POINT_AT_Z, true, viewport);
                Light.Spot light = new Light.Spot(x, y, z, specularExponent, col);
                light.setPointsAtX(pointAtX);
                light.setPointsAtY(pointAtY);
@@ -974,14 +1126,14 @@ public class SVGShapeBuilder implements SVGTags {
       if (child != null) {
          switch (child.getName()) {
             case FE_DISTANT_LIGHT: {
-               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
+               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double azimuth = child.getAttributeValueAsDouble(AZIMUTH);
-               double elevation = child.getAttributeValueAsDouble(ELEVATION);
+               double azimuth = child.getLengthValue(AZIMUTH);
+               double elevation = child.getLengthValue(ELEVATION);
                Light.Distant light = new Light.Distant(azimuth, elevation, col);
                String resultId = node.getAttributeValue(RESULT);
                FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
@@ -992,15 +1144,15 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_POINT_LIGHT: {
-               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
+               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double x = child.getAttributeValueAsDouble(X, true, viewport);
-               double y = child.getAttributeValueAsDouble(Y, true, viewport);
-               double z = child.getAttributeValueAsDouble(Z, true, null);
+               double x = child.getLengthValue(X, true, viewport);
+               double y = child.getLengthValue(Y, true, viewport);
+               double z = child.getLengthValue(Z, true, null);
                Light.Point light = new Light.Point(x, y, z, col);
                String resultId = node.getAttributeValue(RESULT);
                FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
@@ -1011,19 +1163,19 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_SPOT_LIGHT: {
-               double diffuseConstant = node.getAttributeValueAsDouble(DIFFUSE_CONSTANT, 0.3d);
-               double specularExponent = node.getAttributeValueAsDouble(SPECULAR_EXPONENT, 20d);
+               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
+               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double x = child.getAttributeValueAsDouble(X, true, viewport);
-               double y = child.getAttributeValueAsDouble(Y, false, viewport);
-               double z = child.getAttributeValueAsDouble(Z, true, viewport);
-               double pointAtX = child.getAttributeValueAsDouble(POINT_AT_X, true, viewport);
-               double pointAtY = child.getAttributeValueAsDouble(POINT_AT_Y, false, viewport);
-               double pointAtZ = child.getAttributeValueAsDouble(POINT_AT_Z, true, viewport);
+               double x = child.getLengthValue(X, true, viewport);
+               double y = child.getLengthValue(Y, false, viewport);
+               double z = child.getLengthValue(Z, true, viewport);
+               double pointAtX = child.getLengthValue(POINT_AT_X, true, viewport);
+               double pointAtY = child.getLengthValue(POINT_AT_Y, false, viewport);
+               double pointAtZ = child.getLengthValue(POINT_AT_Z, true, viewport);
                Light.Spot light = new Light.Spot(x, y, z, specularExponent, col);
                light.setPointsAtX(pointAtX);
                light.setPointsAtY(pointAtY);

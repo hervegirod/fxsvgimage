@@ -50,7 +50,7 @@ import org.girod.javafx.svgimage.xml.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.5.4
+ * @version 0.5.5
  */
 public class SVGImage extends Group {
    private static boolean RETROW_EXCEPTIONS = false;
@@ -97,6 +97,16 @@ public class SVGImage extends Group {
 
    void putNode(String id, Node node) {
       nodes.put(id, node);
+   }
+
+   /**
+    * Return true if there is a Node indicated by an id.
+    *
+    * @param id the name of the Node
+    * @return true if there is a Node indicated by the id
+    */
+   public boolean hasNode(String id) {
+      return nodes.containsKey(id);
    }
 
    /**

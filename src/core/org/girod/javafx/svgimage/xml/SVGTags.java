@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 0.5.1
+ * @version 0.5.5
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -52,12 +52,12 @@ public interface SVGTags {
    public static String IMAGE = "image";
    public static String D = "d";
    public static String SVG = "svg";
+   public static String USE = "use";
    public static String G = "g";
    public static String DEFS = "defs";
    public static String NONE = "none";
    public static String CLIP_PATH_SPEC = "clipPath";
    public static String CLIP_PATH = "clip-path";
-   public static String USERSPACE_ON_USE = "userSpaceOnUse";
    public static String LINEAR_GRADIENT = "linearGradient";
    public static String RADIAL_GRADIENT = "radialGradient";
    public static String GRADIENT_UNITS = "gradientUnits";
@@ -73,6 +73,9 @@ public interface SVGTags {
    public static String ID = "id";
    public static String FILL_RULE = "fill-rule";
    public static String CLIP_RULE = "clip-rule";
+   public static String CLIP_PATH_UNITS = "clipPathUnits";
+   public static String USERSPACE_ON_USE = "userSpaceOnUse";
+   public static String OBJECT_BOUNDINGBOX = "objectBoundingBox";
    public static String NON_ZERO = "nonzero";
    public static String EVEN_ODD = "evenodd";
    public static String XLINK_HREF = "xlink:href";

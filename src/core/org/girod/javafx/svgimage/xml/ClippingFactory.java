@@ -35,14 +35,16 @@ package org.girod.javafx.svgimage.xml;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
 /**
- * This class handles tha list of defined clipping paths.
+ * This class handles the list of defined clipping paths.
  *
- * @version 0.5.1
+ * @version 0.5.5
  */
 public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
@@ -62,13 +64,21 @@ public class ClippingFactory implements SVGTags {
     * Creates a clip.
     *
     * @param id the clip id
+    * @param node the node to clip
     * @param viewport the viewport
     * @return the clip
     */
-   public Shape createClip(String id, Viewport viewport) {
+   public Shape createClip(String id, Node node, Viewport viewport) {
       XMLNode xmlNode = clipSpecs.get(id);
       if (clipSpecs.containsKey(id)) {
+         Bounds objectBoundingBox = null;
          Shape theShape = null;
+         if (xmlNode.hasAttribute(CLIP_PATH_UNITS)) {
+            String units = xmlNode.getAttributeValue(CLIP_PATH_UNITS);
+            if (units.equals(OBJECT_BOUNDINGBOX)) {
+               objectBoundingBox = node.getBoundsInLocal();
+            }
+         }
          Iterator<XMLNode> it = xmlNode.getChildren().iterator();
          while (it.hasNext()) {
             XMLNode childNode = it.next();
@@ -76,32 +86,32 @@ public class ClippingFactory implements SVGTags {
             String name = childNode.getName();
             switch (name) {
                case CIRCLE:
-                  shape = SVGShapeBuilder.buildCircle(childNode, viewport);
+                  shape = SVGShapeBuilder.buildCircle(childNode, objectBoundingBox, viewport);
                   break;
                case PATH:
-                  shape = SVGShapeBuilder.buildPath(childNode, viewport);
+                  shape = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, viewport);
                   FillRule rule = ParserUtils.getClipRule(childNode);
                   if (rule != null) {
                      ((SVGPath) shape).setFillRule(rule);
                   }
                   break;
                case POLYLINE:
-                  shape = SVGShapeBuilder.buildPolyline(xmlNode, viewport);
+                  shape = SVGShapeBuilder.buildPolyline(xmlNode, objectBoundingBox, viewport);
                   break;
                case POLYGON:
-                  shape = SVGShapeBuilder.buildPolygon(xmlNode, viewport);
+                  shape = SVGShapeBuilder.buildPolygon(xmlNode, objectBoundingBox, viewport);
                   break;
                case ELLIPSE:
-                  shape = SVGShapeBuilder.buildEllipse(childNode, viewport);
+                  shape = SVGShapeBuilder.buildEllipse(childNode, objectBoundingBox, viewport);
                   break;
                case RECT:
-                  shape = SVGShapeBuilder.buildRect(childNode, viewport);
+                  shape = SVGShapeBuilder.buildRect(childNode, objectBoundingBox, viewport);
                   break;
                case LINE:
-                  shape = SVGShapeBuilder.buildLine(childNode, viewport);
+                  shape = SVGShapeBuilder.buildLine(childNode, objectBoundingBox, viewport);
                   break;
                case TEXT:
-                  shape = SVGShapeBuilder.buildText(childNode, viewport);
+                  shape = SVGShapeBuilder.buildText(childNode, objectBoundingBox, viewport);
                   break;
             }
             if (theShape == null) {

@@ -42,6 +42,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
@@ -60,7 +61,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.5.4
+ * @version 0.5.5
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -142,7 +143,7 @@ public class ParserUtils implements SVGTags {
          StringTokenizer tok = new StringTokenizer(content, ", ");
          while (tok.hasMoreTokens()) {
             String argumentS = tok.nextToken();
-            ParserUtils.parseDoubleArgument(args, argumentS, true, viewport);
+            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
          }
       } else {
          return null;
@@ -247,7 +248,7 @@ public class ParserUtils implements SVGTags {
       StringTokenizer tokenizer = new StringTokenizer(value, " ,");
       while (tokenizer.hasMoreTokens()) {
          String dash = tokenizer.nextToken();
-         list.add(ParserUtils.parseDoubleProtected(dash, true, viewport));
+         list.add(parseLengthValue(dash, true, null, viewport));
       }
       return list;
    }
@@ -333,19 +334,47 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   public static double parseDoubleProtected(String valueS, boolean isWidth, Viewport viewport) {
+   /**
+    * Parse a position value.
+    *
+    * @param valueS thre value as a string
+    * @param isWidth true if the position represents a width
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
+    * @return the distance
+    */
+   public static double parsePositionValue(String valueS, boolean isWidth, Bounds bounds, Viewport viewport) {
       valueS = valueS.replace('−', '-');
       Matcher m = ZERO.matcher(valueS);
       if (m.matches()) {
          return 0d;
       } else {
-         return LengthParser.parseLength(valueS, isWidth, viewport);
+         return LengthParser.parsePosition(valueS, isWidth, bounds, viewport);
       }
    }
 
-   public static void parseDoubleArgument(List<Double> args, String value, boolean isWidth, Viewport viewport) {
+   /**
+    * Parse a length value.
+    *
+    * @param valueS thre value as a string
+    * @param isWidth true if the distance represents a width
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
+    * @return the distance
+    */
+   public static double parseLengthValue(String valueS, boolean isWidth, Bounds bounds, Viewport viewport) {
+      valueS = valueS.replace('−', '-');
+      Matcher m = ZERO.matcher(valueS);
+      if (m.matches()) {
+         return 0d;
+      } else {
+         return LengthParser.parseLength(valueS, isWidth, bounds, viewport);
+      }
+   }
+
+   public static void parseLengthValue(List<Double> args, String value, boolean isWidth, Bounds bounds, Viewport viewport) {
       value = value.replace('−', '-');
-      double d = LengthParser.parseLength(value, isWidth, viewport);
+      double d = LengthParser.parseLength(value, isWidth, bounds, viewport);
       args.add(d);
    }
 
@@ -508,6 +537,23 @@ public class ParserUtils implements SVGTags {
                if (!childNode.hasAttribute(entry.getKey())) {
                   childNode.addAttribute(entry.getKey(), entry.getValue());
                }
+         }
+      }
+   }
+
+   public static void setOpacity(Node node, XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(OPACITY)) {
+         String opacityS = xmlNode.getAttributeValue(OPACITY);
+         double opacity = ParserUtils.parseOpacity(opacityS);
+         if (opacity >= 0) {
+            node.setOpacity(opacity);
+         }
+      }
+      if (xmlNode.hasAttribute(FILL_OPACITY) && node instanceof Shape) {
+         String fillOpacityS = xmlNode.getAttributeValue(FILL_OPACITY);
+         double fillOpacity = ParserUtils.parseOpacity(fillOpacityS);
+         if (fillOpacity >= 0) {
+            ParserUtils.setFillOpacity(node, fillOpacity);
          }
       }
    }

@@ -38,11 +38,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import javafx.geometry.Bounds;
 
 /**
  * A Node in an XML File.
  *
- * @version 0.3
+ * @version 0.5.5
  */
 public class XMLNode {
    /**
@@ -359,8 +360,8 @@ public class XMLNode {
     * @param attrName the attribute name
     * @return the value of the attribute
     */
-   public double getAttributeValueAsDouble(String attrName) {
-      return getAttributeValueAsDouble(attrName, 0f);
+   public double getLengthValue(String attrName) {
+      return getLengthValue(attrName, 0f);
    }
 
    /**
@@ -371,19 +372,21 @@ public class XMLNode {
     * @param viewport the viewport
     * @return the value of the attribute
     */
-   public double getAttributeValueAsDouble(String attrName, boolean isWidth, Viewport viewport) {
-      return getAttributeValueAsDouble(attrName, isWidth, viewport, 0f);
+   public double getPositionValue(String attrName, boolean isWidth, Viewport viewport) {
+      return getPositionValue(attrName, isWidth, null, viewport, 0f);
    }
 
    /**
     * Return the value of an attribute of a specified name as a double.
     *
     * @param attrName the attribute name
-    * @param defaultValue the default value
+    * @param isWidth true for a width length
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
     * @return the value of the attribute
     */
-   public double getAttributeValueAsDouble(String attrName, double defaultValue) {
-      return getAttributeValueAsDouble(attrName, true, null, defaultValue);
+   public double getPositionValue(String attrName, boolean isWidth, Bounds bounds, Viewport viewport) {
+      return getPositionValue(attrName, isWidth, bounds, viewport, 0f);
    }
 
    /**
@@ -392,15 +395,77 @@ public class XMLNode {
     * @param attrName the attribute name
     * @param isWidth true for a width length
     * @param viewport the viewport
+    * @return the value of the attribute
+    */
+   public double getLengthValue(String attrName, boolean isWidth, Viewport viewport) {
+      return getLengthValue(attrName, isWidth, null, viewport, 0f);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param isWidth true for a width length
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
+    * @return the value of the attribute
+    */
+   public double getLengthValue(String attrName, boolean isWidth, Bounds bounds, Viewport viewport) {
+      return getLengthValue(attrName, isWidth, bounds, viewport, 0f);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
     * @param defaultValue the default value
     * @return the value of the attribute
     */
-   public double getAttributeValueAsDouble(String attrName, boolean isWidth, Viewport viewport, double defaultValue) {
+   public double getLengthValue(String attrName, double defaultValue) {
+      return getLengthValue(attrName, true, null, null, defaultValue);
+   }
+
+   /**
+    * Return the value of a length attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param isWidth true for a width length
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
+    * @param defaultValue the default value
+    * @return the value of the attribute
+    */
+   public double getLengthValue(String attrName, boolean isWidth, Bounds bounds, Viewport viewport, double defaultValue) {
       if (attributes.containsKey(attrName)) {
          String attrvalue = attributes.get(attrName);
          attrvalue = attrvalue.replace('−', '-');
          try {
-            double d = LengthParser.parseLength(attrvalue, isWidth, viewport);
+            double d = LengthParser.parseLength(attrvalue, isWidth, bounds, viewport);
+            return d;
+         } catch (NumberFormatException e) {
+            return defaultValue;
+         }
+      } else {
+         return defaultValue;
+      }
+   }
+
+   /**
+    * Return the value of a position attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param isWidth true for a width length
+    * @param bounds
+    * @param viewport the viewport
+    * @param defaultValue the default value
+    * @return the value of the attribute
+    */
+   public double getPositionValue(String attrName, boolean isWidth, Bounds bounds, Viewport viewport, double defaultValue) {
+      if (attributes.containsKey(attrName)) {
+         String attrvalue = attributes.get(attrName);
+         attrvalue = attrvalue.replace('−', '-');
+         try {
+            double d = LengthParser.parsePosition(attrvalue, isWidth, bounds, viewport);
             return d;
          } catch (NumberFormatException e) {
             return defaultValue;

@@ -39,7 +39,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.Callable;
@@ -47,32 +46,23 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.FilterSpec;
-import org.girod.javafx.svgimage.xml.LengthParser;
 import org.girod.javafx.svgimage.xml.ParserUtils;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
-import static org.girod.javafx.svgimage.xml.SVGTags.TRANSFORM;
 import org.girod.javafx.svgimage.xml.SpanGroup;
 import org.girod.javafx.svgimage.xml.Styles;
 import org.girod.javafx.svgimage.xml.Viewport;
@@ -95,6 +85,7 @@ public class SVGLoader implements SVGTags {
    private final Map<String, GradientSpec> gradientSpecs = new HashMap<>();
    private final Map<String, FilterSpec> filterSpecs = new HashMap<>();
    private final Map<String, Paint> gradients = new HashMap<>();
+   private Map<String, XMLNode> namedNodes = new HashMap<>();
    private boolean effectsSupported = false;
 
    private SVGLoader(URL url) {
@@ -391,6 +382,13 @@ public class SVGLoader implements SVGTags {
       buildNode(xmlNode, group, false);
    }
 
+   private void addNamedNode(XMLNode xmlNode, Node node) {
+      if (node != null && xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         namedNodes.put(id, xmlNode);
+      }
+   }
+
    private void buildNode(XMLNode xmlNode, Group group, boolean acceptDefs) {
       if (group == null) {
          group = new Group();
@@ -406,34 +404,48 @@ public class SVGLoader implements SVGTags {
                manageSVGStyle(childNode);
                break;
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode, viewport);
+               node = SVGShapeBuilder.buildRect(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case CIRCLE:
-               node = SVGShapeBuilder.buildCircle(childNode, viewport);
+               node = SVGShapeBuilder.buildCircle(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case ELLIPSE:
-               node = SVGShapeBuilder.buildEllipse(childNode, viewport);
+               node = SVGShapeBuilder.buildEllipse(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode, viewport);
+               node = SVGShapeBuilder.buildPath(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case POLYGON:
-               node = SVGShapeBuilder.buildPolygon(childNode, viewport);
+               node = SVGShapeBuilder.buildPolygon(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case LINE:
-               node = SVGShapeBuilder.buildLine(childNode, viewport);
+               node = SVGShapeBuilder.buildLine(childNode, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case POLYLINE:
-               node = SVGShapeBuilder.buildPolyline(childNode, viewport);
+               node = SVGShapeBuilder.buildPolyline(childNode, null, viewport);
+               addNamedNode(childNode, node);
+               break;
+            case USE:
+               node = SVGShapeBuilder.buildUse(childNode, namedNodes, gradients, svgStyle, effectsSupported, filterSpecs, null, viewport);
                break;
             case TEXT:
-               node = SVGShapeBuilder.buildText(childNode, viewport);
+               node = SVGShapeBuilder.buildText(childNode, null, viewport);
                if (node == null) {
-                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, viewport);
+                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, viewport);
+                  addNamedNode(childNode, spanGroup.getTextGroup());
+               } else {
+                  addNamedNode(childNode, node);
                }
                break;
             case IMAGE:
-               node = SVGShapeBuilder.buildImage(childNode, url, viewport);
+               node = SVGShapeBuilder.buildImage(childNode, url, null, viewport);
+               addNamedNode(childNode, node);
                break;
             case SVG:
                parseViewport(childNode);
@@ -441,6 +453,7 @@ public class SVGLoader implements SVGTags {
                break;
             case G:
                node = buildGroup(childNode);
+               addNamedNode(childNode, node);
                break;
             case DEFS:
                if (!acceptDefs) {
@@ -448,10 +461,8 @@ public class SVGLoader implements SVGTags {
                   break;
                }
             case CLIP_PATH_SPEC:
-               if (acceptDefs) {
-                  buildClipPath(childNode);
-                  break;
-               }
+               buildClipPath(childNode);
+               break;
             case LINEAR_GRADIENT:
                if (acceptDefs) {
                   SVGShapeBuilder.buildLinearGradient(gradientSpecs, gradients, childNode, viewport);
@@ -499,7 +510,7 @@ public class SVGLoader implements SVGTags {
 
    private void addStyles(Node node, XMLNode xmlNode) {
       setNodeStyle(node, xmlNode);
-      setOpacity(node, xmlNode);
+      ParserUtils.setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
       ParserUtils.setTransform(node, xmlNode, viewport);
    }
@@ -509,8 +520,8 @@ public class SVGLoader implements SVGTags {
          double width = 0;
          double height = 0;
          if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
-            width = xmlNode.getAttributeValueAsDouble(WIDTH, 0);
-            height = xmlNode.getAttributeValueAsDouble(HEIGHT, 0);
+            width = xmlNode.getLengthValue(WIDTH, 0);
+            height = xmlNode.getLengthValue(HEIGHT, 0);
          } else if (xmlNode.hasAttribute(VIEWBOX)) {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");
@@ -606,283 +617,13 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void setOpacity(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(OPACITY)) {
-         String opacityS = xmlNode.getAttributeValue(OPACITY);
-         double opacity = ParserUtils.parseOpacity(opacityS);
-         if (opacity >= 0) {
-            node.setOpacity(opacity);
-         }
-      }
-      if (xmlNode.hasAttribute(FILL_OPACITY) && node instanceof Shape) {
-         String fillOpacityS = xmlNode.getAttributeValue(FILL_OPACITY);
-         double fillOpacity = ParserUtils.parseOpacity(fillOpacityS);
-         if (fillOpacity >= 0) {
-            ParserUtils.setFillOpacity(node, fillOpacity);
-         }
-      }
-   }
-
    private Effect expressFilter(Node node, String value) {
       Effect effect = ParserUtils.expressFilter(filterSpecs, node, value);
       return effect;
    }
 
-   private void setStyleClass(Node node, String styleClasses) {
-      StringTokenizer tok = new StringTokenizer(styleClasses, " ");
-      while (tok.hasMoreTokens()) {
-         String styleClass = tok.nextToken();
-         node.getStyleClass().add(styleClass);
-         if (svgStyle != null && svgStyle.hasRule(styleClass)) {
-            Styles.Rule rule = svgStyle.getRule(styleClass);
-            rule.apply(node);
-         }
-      }
-   }
-
-   private void setClipPath(Node node, String spec) {
-      if (spec.startsWith("url(#")) {
-         String clipID = ParserUtils.getURL(spec);
-         if (clippingFactory.hasClip(clipID)) {
-            Shape clipShape = clippingFactory.createClip(clipID, viewport);
-            if (clipShape != null) {
-               node.setClip(clipShape);
-            }
-         }
-      }
-   }
-
    private void setNodeStyle(Node node, XMLNode xmlNode) {
-      if (node instanceof Shape) {
-         Shape shape = (Shape) node;
-         if (xmlNode.hasAttribute(FILL)) {
-            shape.setFill(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(FILL)));
-         }
-
-         if (xmlNode.hasAttribute(STROKE)) {
-            shape.setStroke(ParserUtils.expressPaint(gradients, xmlNode.getAttributeValue(STROKE)));
-         }
-
-         if (xmlNode.hasAttribute(STROKE_WIDTH)) {
-            double strokeWidth = xmlNode.getAttributeValueAsDouble(STROKE_WIDTH, 1);
-            shape.setStrokeWidth(strokeWidth);
-         }
-
-         if (xmlNode.hasAttribute(STROKE_DASHARRAY)) {
-            String dashArray = xmlNode.getAttributeValue(STROKE_DASHARRAY);
-            applyDash(shape, dashArray);
-         }
-
-         if (xmlNode.hasAttribute(STROKE_DASHOFFSET)) {
-            String dashOffset = xmlNode.getAttributeValue(STROKE_DASHOFFSET);
-            double offset = LengthParser.parseLength(dashOffset);
-            shape.setStrokeDashOffset(offset);
-         }
-
-         if (xmlNode.hasAttribute(STROKE_LINEJOIN)) {
-            String lineJoin = xmlNode.getAttributeValue(STROKE_LINEJOIN);
-            applyLineJoin(shape, lineJoin);
-         }
-
-         if (xmlNode.hasAttribute(STROKE_LINECAP)) {
-            String lineCap = xmlNode.getAttributeValue(STROKE_LINECAP);
-            applyLineCap(shape, lineCap);
-         }
-
-         if (xmlNode.hasAttribute(STROKE_MITERLIMIT)) {
-            String miterLimit = xmlNode.getAttributeValue(STROKE_MITERLIMIT);
-            applyMiterLimit(shape, miterLimit);
-         }
-      }
-
-      if (xmlNode.hasAttribute(CLASS)) {
-         String styleClasses = xmlNode.getAttributeValue(CLASS);
-         setStyleClass(node, styleClasses);
-      }
-
-      if (xmlNode.hasAttribute(CLIP_PATH)) {
-         String content = xmlNode.getAttributeValue(CLIP_PATH);
-         setClipPath(node, content);
-      }
-
-      if (xmlNode.hasAttribute(STYLE)) {
-         FontWeight fontWeight = FontWeight.NORMAL;
-         FontPosture fontPosture = FontPosture.REGULAR;
-         double fontSize = 12d;
-         String fontFamily = null;
-         String styles = xmlNode.getAttributeValue(STYLE);
-         StringTokenizer tokenizer = new StringTokenizer(styles, ";");
-         while (tokenizer.hasMoreTokens()) {
-            String style = tokenizer.nextToken();
-
-            StringTokenizer tokenizer2 = new StringTokenizer(style, ":");
-            String styleName = tokenizer2.nextToken().trim();
-            String styleValue = null;
-            if (tokenizer2.hasMoreTokens()) {
-               styleValue = tokenizer2.nextToken().trim();
-            }
-            if (styleValue == null) {
-               continue;
-            }
-
-            switch (styleName) {
-               case CLIP_PATH:
-                  setClipPath(node, styleValue);
-                  break;
-               case FONT_FAMILY:
-                  if (node instanceof Text) {
-                     fontFamily = styleValue.replace("'", "");
-                  }
-                  break;
-               case FONT_WEIGHT:
-                  if (node instanceof Text) {
-                     fontWeight = SVGShapeBuilder.getFontWeight(styleValue);
-                  }
-                  break;
-               case TEXT_DECORATION:
-                  if (node instanceof Text) {
-                     SVGShapeBuilder.applyTextDecoration((Text) node, styleValue);
-                  }
-                  break;
-               case FONT_STYLE:
-                  if (node instanceof Text) {
-                     fontPosture = SVGShapeBuilder.applyFontPosture((Text) node, styleValue);
-                  }
-                  break;
-               case FONT_SIZE:
-                  if (node instanceof Text) {
-                     fontSize = ParserUtils.parseFontSize(styleValue);
-                  }
-                  break;
-               case FILL:
-                  if (node instanceof Shape) {
-                     ((Shape) node).setFill(ParserUtils.expressPaint(gradients, styleValue));
-                  }
-                  break;
-               case STROKE:
-                  if (node instanceof Shape) {
-                     ((Shape) node).setStroke(ParserUtils.expressPaint(gradients, styleValue));
-                  }
-                  break;
-               case STROKE_WIDTH:
-                  if (node instanceof Shape) {
-                     double strokeWidth = LengthParser.parseLength(styleValue);
-                     ((Shape) node).setStrokeWidth(strokeWidth);
-                  }
-                  break;
-               case STROKE_DASHARRAY:
-                  if (node instanceof Shape) {
-                     applyDash(((Shape) node), styleValue);
-                  }
-                  break;
-               case STROKE_DASHOFFSET:
-                  if (node instanceof Shape) {
-                     double offset = LengthParser.parseLength(styleValue);
-                     ((Shape) node).setStrokeDashOffset(offset);
-                  }
-                  break;
-               case STROKE_LINECAP:
-                  if (node instanceof Shape) {
-                     applyLineCap(((Shape) node), styleValue);
-                  }
-                  break;
-               case STROKE_MITERLIMIT:
-                  if (node instanceof Shape) {
-                     applyMiterLimit(((Shape) node), styleValue);
-                  }
-                  break;
-               case STROKE_LINEJOIN:
-                  if (node instanceof Shape) {
-                     applyLineJoin(((Shape) node), styleValue);
-                  }
-                  break;
-               case OPACITY: {
-                  double opacity = ParserUtils.parseOpacity(styleValue);
-                  if (opacity >= 0) {
-                     node.setOpacity(opacity);
-                  }
-                  break;
-               }
-               case FILL_OPACITY: {
-                  if (node instanceof Shape) {
-                     double fillOpacity = ParserUtils.parseOpacity(styleValue);
-                     if (fillOpacity >= 0) {
-                        ParserUtils.setFillOpacity(node, fillOpacity);
-                     }
-                  }
-                  break;
-               }
-               case TRANSFORM: {
-                  List<Transform> transformList = ParserUtils.extractTransforms(styleValue, viewport);
-                  if (!transformList.isEmpty()) {
-                     ObservableList<Transform> nodeTransforms = node.getTransforms();
-                     Iterator<Transform> it = transformList.iterator();
-                     while (it.hasNext()) {
-                        Transform theTransForm = it.next();
-                        nodeTransforms.add(theTransForm);
-                     }
-                  }
-                  break;
-               }
-               case FILTER: {
-                  if (effectsSupported) {
-                     Effect effect = expressFilter(node, styleValue);
-                     if (effect != null) {
-                        node.setEffect(effect);
-                     }
-                  }
-                  break;
-               }
-               default:
-                  break;
-            }
-         }
-         if (node instanceof Text) {
-            Font font = Font.font(fontFamily, fontWeight, fontPosture, fontSize);
-            ((Text) node).setFont(font);
-         }
-      }
-   }
-
-   private void applyMiterLimit(Shape shape, String styleValue) {
-      try {
-         double miterLimit = Double.parseDouble(styleValue);
-         shape.setStrokeMiterLimit(miterLimit);
-      } catch (NumberFormatException e) {
-      }
-   }
-
-   private void applyLineCap(Shape shape, String styleValue) {
-      StrokeLineCap linecap = StrokeLineCap.BUTT;
-      if (styleValue.equals(ROUND)) {
-         linecap = StrokeLineCap.ROUND;
-      } else if (styleValue.equals(SQUARE)) {
-         linecap = StrokeLineCap.SQUARE;
-      } else if (!styleValue.equals(BUTT)) {
-         linecap = StrokeLineCap.BUTT;
-      }
-      shape.setStrokeLineCap(linecap);
-   }
-
-   private void applyLineJoin(Shape shape, String styleValue) {
-      StrokeLineJoin linejoin = StrokeLineJoin.MITER;
-      if (styleValue.equals(BEVEL)) {
-         linejoin = StrokeLineJoin.BEVEL;
-      } else if (styleValue.equals(ROUND)) {
-         linejoin = StrokeLineJoin.ROUND;
-      } else if (!styleValue.equals(MITER)) {
-         linejoin = StrokeLineJoin.MITER;
-      }
-      shape.setStrokeLineJoin(linejoin);
-   }
-
-   private void applyDash(Shape shape, String styleValue) {
-      ObservableList<Double> array = shape.getStrokeDashArray();
-      List<Double> list = ParserUtils.parseDashArray(styleValue, viewport);
-      if (list != null) {
-         for (int i = 0; i < list.size(); i++) {
-            array.add(list.get(i));
-         }
-      }
+      SVGStyleBuilder.setNodeStyle(node, gradients, xmlNode, clippingFactory, svgStyle,
+         effectsSupported, filterSpecs, viewport);
    }
 }
