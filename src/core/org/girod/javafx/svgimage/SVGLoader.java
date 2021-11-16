@@ -99,7 +99,7 @@ public class SVGLoader implements SVGTags {
     *
     * @param file the file
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the file cannot be converted to a URL
     */
    public static SVGImage load(File file) throws SVGParsingException {
       try {
@@ -115,7 +115,7 @@ public class SVGLoader implements SVGTags {
     *
     * @param url the URL
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url);
@@ -128,7 +128,7 @@ public class SVGLoader implements SVGTags {
     *
     * @param content the content
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(content);
@@ -142,7 +142,7 @@ public class SVGLoader implements SVGTags {
     * @param file the file
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the file cannot be converted to a URL
     */
    public static SVGImage load(File file, String styleSheets) throws SVGParsingException {
       try {
@@ -159,7 +159,7 @@ public class SVGLoader implements SVGTags {
     * @param url the URL
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the file cannot be converted to a URL
     */
    public static SVGImage load(URL url, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -173,7 +173,7 @@ public class SVGLoader implements SVGTags {
     * @param content the String content
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -187,7 +187,7 @@ public class SVGLoader implements SVGTags {
     * @param file the file
     * @param scale the scale
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage loadScaled(File file, double scale) throws SVGParsingException {
       try {
@@ -204,7 +204,7 @@ public class SVGLoader implements SVGTags {
     * @param url the URL
     * @param scale the scale
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage loadScaled(URL url, double scale) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -218,7 +218,7 @@ public class SVGLoader implements SVGTags {
     * @param content the String content
     * @param scale the scale
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage loadScaled(String content, double scale) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -232,7 +232,7 @@ public class SVGLoader implements SVGTags {
     * @param file the file
     * @param width the resulting width
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized or the file cannot be converted to a URL
     */
    public static SVGImage load(File file, double width) throws SVGParsingException {
       try {
@@ -249,7 +249,7 @@ public class SVGLoader implements SVGTags {
     * @param url the URL
     * @param width the resulting width
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url, double width) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -263,7 +263,7 @@ public class SVGLoader implements SVGTags {
     * @param content the String content
     * @param width the resulting width
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content, double width) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -278,7 +278,7 @@ public class SVGLoader implements SVGTags {
     * @param width the resulting width
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized or the file cannot be converted to a URL
     */
    public static SVGImage load(File file, double width, String styleSheets) throws SVGParsingException {
       try {
@@ -296,7 +296,7 @@ public class SVGLoader implements SVGTags {
     * @param width the resulting width
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url, double width, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -312,7 +312,7 @@ public class SVGLoader implements SVGTags {
     * @param width the resulting width
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content, double width, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -328,7 +328,7 @@ public class SVGLoader implements SVGTags {
     * @param scale the scale
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized or the file cannot be converted to a URL
     */
    public static SVGImage loadScaled(File file, double scale, String styleSheets) throws SVGParsingException {
       try {
@@ -347,7 +347,7 @@ public class SVGLoader implements SVGTags {
     * @param scale the scale
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage loadScaled(URL url, double scale, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -363,7 +363,7 @@ public class SVGLoader implements SVGTags {
     * @param scale the scale
     * @param styleSheets the styleSheets
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage loadScaled(String content, double scale, String styleSheets) throws SVGParsingException {
       LoaderParameters params = new LoaderParameters();
@@ -378,7 +378,7 @@ public class SVGLoader implements SVGTags {
     * @param url the URL
     * @param params the parameters
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url, LoaderParameters params) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url);
@@ -411,7 +411,7 @@ public class SVGLoader implements SVGTags {
     * @param content the String content
     * @param params the parameters
     * @return the SVGImage
-    * @throws SVGParsingException
+    * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content, LoaderParameters params) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(content);
