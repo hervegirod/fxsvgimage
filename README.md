@@ -21,6 +21,7 @@ This library support:
 - radial gradients
 - filters
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
+- use, symbol
 - fill, stroke, style, class, transform attributes
 
 # Limitations
