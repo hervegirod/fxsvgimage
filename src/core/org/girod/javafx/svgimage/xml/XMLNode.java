@@ -455,7 +455,7 @@ public class XMLNode {
     *
     * @param attrName the attribute name
     * @param isWidth true for a width length
-    * @param bounds
+    * @param bounds  the {@link Bounds} of the objectBoundingBox or null
     * @param viewport the viewport
     * @param defaultValue the default value
     * @return the value of the attribute

@@ -96,7 +96,7 @@ public class GlobalConfig implements ExceptionsHandling {
    }
 
    /**
-    * Handle an error message, depending on the value of the {@link #getExceptionHandling()}. An exception will
+    * Handle an error message, depending on the value of the {@link #getExceptionsHandling()}. An exception will
     * be throw only if the value for the exceptions handling is {@link ExceptionsHandling#RETROW_EXCEPTION}.
     *
     * @param message the error message
@@ -123,7 +123,7 @@ public class GlobalConfig implements ExceptionsHandling {
    }
 
    /**
-    * Handle an error message, depending on the value of the {@link #getExceptionHandling()}. An exception will
+    * Handle an error message, depending on the value of the {@link #getExceptionsHandling()}. An exception will
     * be throw only if the value for the exceptions handling is {@link ExceptionsHandling#RETROW_EXCEPTION}.
     *
     * @param message the error message
@@ -150,7 +150,7 @@ public class GlobalConfig implements ExceptionsHandling {
    }
 
    /**
-    * Handle a library exception, depending on the value of the {@link #getExceptionHandling()}. An exception will
+    * Handle a library exception, depending on the value of the {@link #getExceptionsHandling()}. An exception will
     * be throw only if the value for the exceptions handling is {@link ExceptionsHandling#RETROW_EXCEPTION}.
     *
     * @param th the Throwable
@@ -178,7 +178,7 @@ public class GlobalConfig implements ExceptionsHandling {
    }
 
    /**
-    * Handle a parsing exception, depending on the value of the {@link #getExceptionHandling()}. An exception will
+    * Handle a parsing exception, depending on the value of the {@link #getExceptionsHandling()}. An exception will
     * be throw only if the value for the exceptions handling is {@link ExceptionsHandling#RETROW_EXCEPTION}.
     *
     * @param th the Throwable
