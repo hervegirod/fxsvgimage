@@ -26,8 +26,7 @@ See https://jitpack.io/ for info on the syntax for other build systems such as g
 
 
 # History
-See [HISTORY.md](HISTORY.md) or https://fxsvgimage.sourceforge.io/articles/article_history.html
-
+See [HISTORY.md](HISTORY.md)
 
 # Usage
 Just calls one of the static `load` methods, for example:
@@ -43,6 +42,7 @@ This library support:
 - radial gradients
 - filters
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
+- use, symbol
 - fill, stroke, style, class, transform attributes
 
 # Limitations
