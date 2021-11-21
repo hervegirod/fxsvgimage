@@ -81,23 +81,23 @@
  - Allow to have both underline and line-through for a text
  - Support the "transform" attribute for the clipPath element
  - Support the translateX, translateY, scaleX, and scaleY transformations
- - Allow to use units in transformations
- - Allow to use more than one transformation in the "transform" or "gradientTransform" attribute
+ - Allow using units in transformations
+ - Allow using more than one transformation in the "transform" or "gradientTransform" attribute
 
-## 0.5.5 
- - Fix the text elements with tspan children not having their position set if they have an x,y position
- - Support the tspan "dx" and "dy" attributes
- - Support the "clipPathUnits" attribute for clipPaths elements
- - Fix the clipPath elements only being taken into account in defs parents
- - Fix the values for coordinates parsed to a value of zero if having a pattern without an integer part (such as ".5")
- - Support the use element for basic shapes
+## 0.5.5
+- Fix the text elements with tspan children not having their position set if they have an x,y position
+- Support the tspan "dx" and "dy" attributes
+- Support the "clipPathUnits" attribute for clipPaths elements
+- Fix the clipPath elements only being taken into account in defs parents
+- Fix the values for coordinates parsed to a value of zero if having a pattern without an integer part (such as ".5")
+- Support the use element for basic shapes
 
 ## 0.5.6
- - Support the use element for images and g elements
- - Support the symbol element
- - Support the "viewBox", "width", "height", and "preserveAspectRatio" attributes for the symbol element
+- Support the use element for images and g elements
+- Support the symbol element
+- Support the "viewBox", "width", "height", and "preserveAspectRatio" attributes for the symbol element
 
-## 0.6
- - Support the "preserveAspectRatio" attribute for the svg root element
- - Allow to load a SVG from a String
- - Specifies a global configuration for the handling of exceptions during parsing
+## 0.6 (in progress)
+- Support the "preserveAspectRatio" attribute for the svg root element
+- Allow to load a SVG from a String
+- Specifies a global configuration for the handling of exceptions during parsing
