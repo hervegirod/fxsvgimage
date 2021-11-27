@@ -36,9 +36,9 @@ import java.util.Iterator;
 import java.util.Objects;
 
 /**
- * A root Node in a graphml XML File.
+ * A root Node in an XML File.
  *
- * @since 0.1
+ * @version 0.6
  */
 public class XMLRoot extends XMLNode {
    private String encoding = null;

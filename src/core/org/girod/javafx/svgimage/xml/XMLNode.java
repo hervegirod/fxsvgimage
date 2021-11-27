@@ -360,8 +360,30 @@ public class XMLNode {
     * @param attrName the attribute name
     * @return the value of the attribute
     */
-   public double getLengthValue(String attrName) {
-      return getLengthValue(attrName, 0f);
+   public double getDoubleValue(String attrName) {
+      return getLengthValue(attrName, null, 0f);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param defaultValue the default value
+    * @return the value of the attribute
+    */
+   public double getDoubleValue(String attrName, double defaultValue) {
+      return getLengthValue(attrName, null, defaultValue);
+   }
+
+   /**
+    * Return the value of an attribute of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param viewport the viewport
+    * @return the value of the attribute
+    */
+   public double getLengthValue(String attrName, Viewport viewport) {
+      return getLengthValue(attrName, viewport, 0f);
    }
 
    /**
@@ -418,11 +440,35 @@ public class XMLNode {
     * Return the value of an attribute of a specified name as a double.
     *
     * @param attrName the attribute name
+    * @param viewport the viewport
     * @param defaultValue the default value
     * @return the value of the attribute
     */
-   public double getLengthValue(String attrName, double defaultValue) {
-      return getLengthValue(attrName, true, null, null, defaultValue);
+   public double getLengthValue(String attrName, Viewport viewport, double defaultValue) {
+      return getLengthValue(attrName, true, null, viewport, defaultValue);
+   }
+
+   /**
+    * Return the value of an lirn width of a specified name as a double.
+    *
+    * @param attrName the attribute name
+    * @param viewport the viewport
+    * @param defaultValue the default value
+    * @return the value of the attribute
+    */
+   public double getLineWidthValue(String attrName, Viewport viewport, double defaultValue) {
+      if (attributes.containsKey(attrName)) {
+         String attrvalue = attributes.get(attrName);
+         attrvalue = attrvalue.replace('−', '-');
+         try {
+            double d = LengthParser.parseLineWidth(attrvalue, viewport);
+            return d;
+         } catch (NumberFormatException e) {
+            return defaultValue;
+         }
+      } else {
+         return defaultValue;
+      }
    }
 
    /**
@@ -455,7 +501,7 @@ public class XMLNode {
     *
     * @param attrName the attribute name
     * @param isWidth true for a width length
-    * @param bounds  the {@link Bounds} of the objectBoundingBox or null
+    * @param bounds the {@link Bounds} of the objectBoundingBox or null
     * @param viewport the viewport
     * @param defaultValue the default value
     * @return the value of the attribute

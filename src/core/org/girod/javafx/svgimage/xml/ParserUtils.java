@@ -68,7 +68,6 @@ public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
    private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
    private static final Pattern URL_PAT = Pattern.compile("url\\('?([^']+)'?\\)");
-   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
 
    private ParserUtils() {
    }
@@ -135,111 +134,6 @@ public class ParserUtils implements SVGTags {
       } else {
          return null;
       }
-   }
-
-   private static List<Double> getTransformArguments(String transformTxt, Viewport viewport) {
-      List<Double> args = new ArrayList<>();
-      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
-      if (m.matches()) {
-         String content = m.group(1);
-         StringTokenizer tok = new StringTokenizer(content, ", ");
-         while (tok.hasMoreTokens()) {
-            String argumentS = tok.nextToken();
-            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
-         }
-      } else {
-         return null;
-      }
-      return args;
-   }
-
-   public static void setTransform(Node node, XMLNode xmlNode, Viewport viewport) {
-      if (xmlNode.hasAttribute(TRANSFORM)) {
-         String transforms = xmlNode.getAttributeValue(TRANSFORM);
-         List<Transform> transformList = ParserUtils.extractTransforms(transforms, viewport);
-         if (!transformList.isEmpty()) {
-            ObservableList<Transform> nodeTransforms = node.getTransforms();
-            Iterator<Transform> it = transformList.iterator();
-            while (it.hasNext()) {
-               Transform theTransForm = it.next();
-               nodeTransforms.add(theTransForm);
-            }
-         }
-      }
-   }
-
-   public static List<Transform> extractTransforms(String transforms, Viewport viewport) {
-      List<Transform> transformList = new ArrayList<>();
-
-      StringTokenizer tokenizer = new StringTokenizer(transforms, ")");
-
-      while (tokenizer.hasMoreTokens()) {
-         String transformTxt = tokenizer.nextToken() + ")";
-         transformTxt = transformTxt.trim();
-         if (transformTxt.startsWith("translate(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 2) {
-               Transform transform = Transform.translate(args.get(0), args.get(1));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("translateX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(args.get(0), 0);
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("translateY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(0, args.get(0));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("scale(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 2) {
-               Transform transform = Transform.scale(args.get(0), args.get(1));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("scaleX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(args.get(0), 1);
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("scaleY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(1, args.get(0));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("rotate(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 3) {
-               Transform transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("skewX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.shear(args.get(0), 1);
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("skewY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.shear(1, args.get(0));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("matrix(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
-            if (args.size() == 6) {
-               Transform transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
-               transformList.add(transform);
-            }
-         }
-      }
-
-      return transformList;
    }
 
    public static List<Double> parseDashArray(String value, Viewport viewport) {
@@ -381,6 +275,12 @@ public class ParserUtils implements SVGTags {
       value = value.replace('−', '-');
       double d = LengthParser.parseLength(value, isWidth, bounds, viewport);
       args.add(d);
+   }
+
+   public static double parseLineWidth(String value, Viewport viewport) {
+      value = value.replace('−', '-');
+      double d = LengthParser.parseLineWidth(value, viewport);
+      return d;
    }
 
    /**
@@ -570,11 +470,6 @@ public class ParserUtils implements SVGTags {
       double viewboxWidth = 0;
       double viewboxHeight = 0;
       boolean hasWidthAndHeight = false;
-      if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
-         width = xmlNode.getLengthValue(WIDTH, 0);
-         height = xmlNode.getLengthValue(HEIGHT, 0);
-         hasWidthAndHeight = true;
-      }
       if (xmlNode.hasAttribute(VIEWBOX)) {
          String box = xmlNode.getAttributeValue(VIEWBOX);
          StringTokenizer tok = new StringTokenizer(box, " ,");
@@ -584,6 +479,11 @@ public class ParserUtils implements SVGTags {
             viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
             viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
          }
+      }
+      if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
+         width = xmlNode.getDoubleValue(WIDTH, 0);
+         height = xmlNode.getDoubleValue(HEIGHT, 0);
+         hasWidthAndHeight = true;
       }
       Viewport theViewport;
       if (hasWidthAndHeight) {
@@ -608,10 +508,10 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   public static Viewbox parseViewbox(XMLNode xmlNode) {
+   public static Viewbox parseViewbox(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
-         double width = xmlNode.getLengthValue(WIDTH, 0);
-         double height = xmlNode.getLengthValue(HEIGHT, 0);
+         double width = xmlNode.getLengthValue(WIDTH, viewport, 0);
+         double height = xmlNode.getLengthValue(HEIGHT, viewport, 0);
          if (xmlNode.hasAttribute(VIEWBOX)) {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");

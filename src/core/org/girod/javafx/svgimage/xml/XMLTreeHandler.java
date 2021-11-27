@@ -32,8 +32,6 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -42,7 +40,7 @@ import org.xml.sax.ext.DefaultHandler2;
 /**
  * Parse an XML File and return the associated tree of Nodes.
  *
- * @version 0.5.1
+ * @version 0.6
  */
 public class XMLTreeHandler extends DefaultHandler2 implements SVGTags {
    private XMLNode node = null;

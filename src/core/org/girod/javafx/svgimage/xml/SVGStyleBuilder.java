@@ -52,31 +52,6 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.GlobalConfig;
 import org.girod.javafx.svgimage.LoaderContext;
-import static org.girod.javafx.svgimage.xml.SVGTags.BEVEL;
-import static org.girod.javafx.svgimage.xml.SVGTags.BUTT;
-import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
-import static org.girod.javafx.svgimage.xml.SVGTags.CLIP_PATH;
-import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
-import static org.girod.javafx.svgimage.xml.SVGTags.FILL_OPACITY;
-import static org.girod.javafx.svgimage.xml.SVGTags.FILTER;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_FAMILY;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_SIZE;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_STYLE;
-import static org.girod.javafx.svgimage.xml.SVGTags.FONT_WEIGHT;
-import static org.girod.javafx.svgimage.xml.SVGTags.MITER;
-import static org.girod.javafx.svgimage.xml.SVGTags.OPACITY;
-import static org.girod.javafx.svgimage.xml.SVGTags.ROUND;
-import static org.girod.javafx.svgimage.xml.SVGTags.SQUARE;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_DASHARRAY;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_DASHOFFSET;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_LINECAP;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_LINEJOIN;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_MITERLIMIT;
-import static org.girod.javafx.svgimage.xml.SVGTags.STROKE_WIDTH;
-import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
-import static org.girod.javafx.svgimage.xml.SVGTags.TEXT_DECORATION;
-import static org.girod.javafx.svgimage.xml.SVGTags.TRANSFORM;
 
 /**
  * This class parse a style declaration.
@@ -125,7 +100,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                }
                case STROKE_WIDTH: {
-                  double width = ParserUtils.parseLengthValue(value, true, null, viewport);
+                  double width = ParserUtils.parseLineWidth(value, viewport);
                   rule.addProperty(key, Styles.STROKE_WIDTH, width);
                   break;
                }
@@ -175,7 +150,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                }
                case TRANSFORM: {
-                  List<Transform> transformList = ParserUtils.extractTransforms(value, viewport);
+                  List<Transform> transformList = TransformUtils.extractTransforms(value, viewport);
                   if (!transformList.isEmpty()) {
                      rule.addProperty(key, Styles.TRANSFORM, transformList);
                   }
@@ -199,7 +174,7 @@ public class SVGStyleBuilder implements SVGTags {
          }
 
          if (xmlNode.hasAttribute(STROKE_WIDTH)) {
-            double strokeWidth = xmlNode.getLengthValue(STROKE_WIDTH, 1);
+            double strokeWidth = xmlNode.getLineWidthValue(STROKE_WIDTH, viewport, 1);
             shape.setStrokeWidth(strokeWidth);
          }
 
@@ -210,7 +185,7 @@ public class SVGStyleBuilder implements SVGTags {
 
          if (xmlNode.hasAttribute(STROKE_DASHOFFSET)) {
             String dashOffset = xmlNode.getAttributeValue(STROKE_DASHOFFSET);
-            double offset = LengthParser.parseLength(dashOffset);
+            double offset = LengthParser.parseLength(dashOffset, viewport);
             shape.setStrokeDashOffset(offset);
          }
 
@@ -226,7 +201,7 @@ public class SVGStyleBuilder implements SVGTags {
 
          if (xmlNode.hasAttribute(STROKE_MITERLIMIT)) {
             String miterLimit = xmlNode.getAttributeValue(STROKE_MITERLIMIT);
-            applyMiterLimit(shape, miterLimit);
+            applyMiterLimit(shape, miterLimit, viewport);
          }
       }
 
@@ -287,6 +262,7 @@ public class SVGStyleBuilder implements SVGTags {
                case FONT_SIZE:
                   if (node instanceof Text) {
                      fontSize = ParserUtils.parseFontSize(styleValue);
+                     fontSize = viewport.scaleLength(fontSize);
                   }
                   break;
                case FILL:
@@ -301,7 +277,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                case STROKE_WIDTH:
                   if (node instanceof Shape) {
-                     double strokeWidth = LengthParser.parseLength(styleValue);
+                     double strokeWidth = LengthParser.parseLineWidth(styleValue, viewport);
                      ((Shape) node).setStrokeWidth(strokeWidth);
                   }
                   break;
@@ -312,7 +288,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                case STROKE_DASHOFFSET:
                   if (node instanceof Shape) {
-                     double offset = LengthParser.parseLength(styleValue);
+                     double offset = LengthParser.parseLength(styleValue, viewport);
                      ((Shape) node).setStrokeDashOffset(offset);
                   }
                   break;
@@ -323,7 +299,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                case STROKE_MITERLIMIT:
                   if (node instanceof Shape) {
-                     applyMiterLimit(((Shape) node), styleValue);
+                     applyMiterLimit(((Shape) node), styleValue, viewport);
                   }
                   break;
                case STROKE_LINEJOIN:
@@ -348,7 +324,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                }
                case TRANSFORM: {
-                  List<Transform> transformList = ParserUtils.extractTransforms(styleValue, viewport);
+                  List<Transform> transformList = TransformUtils.extractTransforms(styleValue, viewport);
                   if (!transformList.isEmpty()) {
                      ObservableList<Transform> nodeTransforms = node.getTransforms();
                      Iterator<Transform> it = transformList.iterator();
@@ -379,9 +355,9 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }
 
-   private static void applyMiterLimit(Shape shape, String styleValue) {
+   private static void applyMiterLimit(Shape shape, String styleValue, Viewport viewport) {
       try {
-         double miterLimit = Double.parseDouble(styleValue);
+         double miterLimit = viewport.scaleLength(Double.parseDouble(styleValue));
          shape.setStrokeMiterLimit(miterLimit);
       } catch (NumberFormatException e) {
          GlobalConfig.getInstance().handleParsingError("MiterLimit " + styleValue + " is not a number");

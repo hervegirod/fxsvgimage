@@ -321,6 +321,7 @@ public class SVGShapeBuilder implements SVGTags {
       if (hasSize) {
          size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
       }
+      size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
       FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
       Font font = Font.font(family, weight, posture, size);
@@ -371,6 +372,7 @@ public class SVGShapeBuilder implements SVGTags {
       if (hasSize) {
          size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
       }
+      size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
       FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
       Font font = Font.font(family, weight, posture, size);
@@ -489,7 +491,7 @@ public class SVGShapeBuilder implements SVGTags {
                isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
                break;
             case GRADIENT_TRANSFORM:
-               transformList = ParserUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
+               transformList = TransformUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
                break;
             default:
                break;
@@ -619,7 +621,7 @@ public class SVGShapeBuilder implements SVGTags {
                y2 = getGradientPos(xmlNode, Y2);
                break;
             case GRADIENT_TRANSFORM:
-               transformList = ParserUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
+               transformList = TransformUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
                break;
             default:
                break;
@@ -909,7 +911,7 @@ public class SVGShapeBuilder implements SVGTags {
    private static void addStyles(LoaderContext context, Node node, XMLNode xmlNode, Viewport viewport) {
       SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
       ParserUtils.setOpacity(node, xmlNode);
-      ParserUtils.setTransform(node, xmlNode, viewport);
+      TransformUtils.setTransforms(node, xmlNode, viewport);
    }
 
    /**
@@ -1007,6 +1009,7 @@ public class SVGShapeBuilder implements SVGTags {
          path.setFillRule(rule);
       }
       content = content.replace('−', '-');
+      content = PathParser.parsePathContent(content, viewport);
       path.setContent(content);
 
       if (viewbox != null) {
@@ -1135,7 +1138,7 @@ public class SVGShapeBuilder implements SVGTags {
 
       String resultId = node.getAttributeValue(RESULT);
       if (node.hasAttribute(FLOOD_OPACITY)) {
-         opacity = node.getLengthValue(FLOOD_OPACITY, 1d);
+         opacity = node.getDoubleValue(FLOOD_OPACITY, 1d);
       }
       if (node.hasAttribute(STD_DEVIATION)) {
          String stdDevS = node.getAttributeValue(STD_DEVIATION);
@@ -1163,7 +1166,7 @@ public class SVGShapeBuilder implements SVGTags {
       String resultId = node.getAttributeValue(RESULT);
 
       if (node.hasAttribute(FLOOD_OPACITY)) {
-         opacity = node.getLengthValue(FLOOD_OPACITY, 1d);
+         opacity = node.getDoubleValue(FLOOD_OPACITY, 1d);
       }
       if (node.hasAttribute(FLOOD_COLOR)) {
          String colorS = node.getAttributeValue(FLOOD_COLOR);
@@ -1219,16 +1222,16 @@ public class SVGShapeBuilder implements SVGTags {
       if (child != null) {
          switch (child.getName()) {
             case FE_DISTANT_LIGHT: {
-               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getDoubleValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double azimuth = child.getLengthValue(AZIMUTH);
-               double elevation = child.getLengthValue(ELEVATION);
+               double azimuth = child.getDoubleValue(AZIMUTH);
+               double elevation = child.getDoubleValue(ELEVATION);
                Light.Distant light = new Light.Distant(azimuth, elevation, col);
                String resultId = node.getAttributeValue(RESULT);
                FESpecularLighting effect = new FESpecularLighting(resultId, specularConstant, specularExponent, surfaceScale, light);
@@ -1239,9 +1242,9 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_POINT_LIGHT: {
-               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getDoubleValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
@@ -1260,9 +1263,9 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_SPOT_LIGHT: {
-               double surfaceScale = node.getLengthValue(SURFACE_SCALE, 1.5d);
-               double specularConstant = node.getLengthValue(SPECULAR_CONSTANT, 0.3d);
-               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
+               double surfaceScale = node.getDoubleValue(SURFACE_SCALE, 1.5d);
+               double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
+               double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
@@ -1295,14 +1298,14 @@ public class SVGShapeBuilder implements SVGTags {
       if (child != null) {
          switch (child.getName()) {
             case FE_DISTANT_LIGHT: {
-               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
+               double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
-               double azimuth = child.getLengthValue(AZIMUTH);
-               double elevation = child.getLengthValue(ELEVATION);
+               double azimuth = child.getDoubleValue(AZIMUTH);
+               double elevation = child.getDoubleValue(ELEVATION);
                Light.Distant light = new Light.Distant(azimuth, elevation, col);
                String resultId = node.getAttributeValue(RESULT);
                FEDiffuseLighting effect = new FEDiffuseLighting(resultId, diffuseConstant, light);
@@ -1313,7 +1316,7 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_POINT_LIGHT: {
-               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
+               double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);
@@ -1332,8 +1335,8 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             }
             case FE_SPOT_LIGHT: {
-               double diffuseConstant = node.getLengthValue(DIFFUSE_CONSTANT, 0.3d);
-               double specularExponent = node.getLengthValue(SPECULAR_EXPONENT, 20d);
+               double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
+               double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
                if (node.hasAttribute(LIGHTING_COLOR)) {
                   String colorS = node.getAttributeValue(LIGHTING_COLOR);

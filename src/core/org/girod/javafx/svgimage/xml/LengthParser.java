@@ -45,6 +45,7 @@ public class LengthParser {
    private static final Pattern NUMBER = Pattern.compile("\\-?\\d*(\\.\\d+)?");
    private static final Pattern NUMBER_UNIT = Pattern.compile("(\\-?\\d+)(\\.\\d*)?([a-z%A-Z]+)");
    private static final double INCH = 1 / 96d;
+   private static final Viewport DEFAULT_VIEWPORT = new Viewport();
 
    private LengthParser() {
    }
@@ -53,11 +54,12 @@ public class LengthParser {
     * Parse a node attribute as a length value.
     *
     * @param node the node
+    * @param viewport the viewport
     * @param attrName the attribute name
     * @return the value
     */
-   public static double parseLength(XMLNode node, String attrName) {
-      return parseLength(node, true, null, null, attrName);
+   public static double parseLength(XMLNode node, Viewport viewport, String attrName) {
+      return parseLength(node, true, null, viewport, attrName);
    }
 
    /**
@@ -101,10 +103,23 @@ public class LengthParser {
     * Parse a length value.
     *
     * @param lengthValue the value
+    * @param viewport the viewport
     * @return the value
     */
-   public static double parseLength(String lengthValue) {
-      return parseLength(lengthValue, true, null, null);
+   public static double parseLength(String lengthValue, Viewport viewport) {
+      return parseLength(lengthValue, true, null, viewport);
+   }
+
+   /**
+    * Parse a length value.
+    *
+    * @param lengthValue the value
+    * @param isWidth for a width unit
+    * @param viewport the viewport
+    * @return the value
+    */
+   public static double parseLength(String lengthValue, boolean isWidth, Viewport viewport) {
+      return parseLength(lengthValue, isWidth, null, viewport);
    }
 
    /**
@@ -117,16 +132,19 @@ public class LengthParser {
     * @return the value
     */
    public static double parsePosition(String lengthValue, boolean isWidth, Bounds bounds, Viewport viewport) {
+      if (viewport == null) {
+         viewport = DEFAULT_VIEWPORT;
+      }
       lengthValue = lengthValue.trim();
       lengthValue = lengthValue.replace('−', '-');
       Matcher m = NUMBER.matcher(lengthValue);
       if (m.matches()) {
          if (bounds == null) {
-            return Double.parseDouble(lengthValue);
+            return viewport.scaleLength(Double.parseDouble(lengthValue));
          } else if (isWidth) {
-            return bounds.getMinX() + Double.parseDouble(lengthValue) * bounds.getWidth();
+            return viewport.scaleLength(bounds.getMinX() + Double.parseDouble(lengthValue) * bounds.getWidth());
          } else {
-            return bounds.getMinY() + Double.parseDouble(lengthValue) * bounds.getHeight();
+            return viewport.scaleLength(bounds.getMinY() + Double.parseDouble(lengthValue) * bounds.getHeight());
          }
       }
       m = NUMBER_UNIT.matcher(lengthValue);
@@ -145,25 +163,80 @@ public class LengthParser {
          }
          switch (unitS) {
             case "px":
-               return parsedValue;
+               return viewport.scaleLength(parsedValue);
             case "pt":
-               return parsedValue / INCH * 72d / 96d;
+               return viewport.scaleLength(parsedValue / INCH * 72d / 96d);
             case "in":
-               return parsedValue / INCH;
+               return viewport.scaleLength(parsedValue / INCH);
             case "cm":
-               return parsedValue / INCH * 72d / (96d * 2.54d);
+               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d));
             case "mm":
-               return parsedValue / INCH * 72d / (96d * 2.54d * 10);
+               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d * 10));
             case "%":
                if (viewport == null) {
                   return 0;
                } else if (isWidth) {
-                  return parsedValue * viewport.getBestWidth() / 100;
+                  return viewport.scaleLength(parsedValue * viewport.getBestWidth() / 100);
                } else {
-                  return parsedValue * viewport.getBestHeight() / 100;
+                  return viewport.scaleLength(parsedValue * viewport.getBestHeight() / 100);
                }
             default:
                return parsedValue;
+         }
+      }
+      return 0d;
+   }
+
+   /**
+    * Parse a line width value.
+    *
+    * @param lengthValue the value
+    * @param viewport the viewport
+    * @return the value
+    */
+   public static double parseLineWidth(String lengthValue, Viewport viewport) {
+      if (viewport == null) {
+         viewport = DEFAULT_VIEWPORT;
+      }
+      lengthValue = lengthValue.trim();
+      lengthValue = lengthValue.replace('−', '-');
+      Matcher m = NUMBER.matcher(lengthValue);
+      if (m.matches()) {
+         if (viewport == null) {
+            return Double.parseDouble(lengthValue);
+         } else {
+            return viewport.scaleLineWidth(Double.parseDouble(lengthValue));
+         }
+      }
+      m = NUMBER_UNIT.matcher(lengthValue);
+      if (m.matches()) {
+         String unitS = m.group(m.groupCount());
+         String startDigits = m.group(1);
+         String endDigit = null;
+         if (m.groupCount() > 1) {
+            endDigit = m.group(2);
+         }
+         double parsedValue;
+         if (endDigit == null) {
+            parsedValue = Double.parseDouble(startDigits);
+         } else {
+            parsedValue = Double.parseDouble(startDigits + "." + endDigit);
+         }
+         switch (unitS) {
+            case "px":
+               return viewport.scaleLineWidth(parsedValue);
+            case "pt":
+               return viewport.scaleLineWidth(parsedValue / INCH * 72d / 96d);
+            case "in":
+               return viewport.scaleLineWidth(parsedValue / INCH);
+            case "cm":
+               return viewport.scaleLineWidth(parsedValue / INCH * 72d / (96d * 2.54d));
+            case "mm":
+               return viewport.scaleLineWidth(parsedValue / INCH * 72d / (96d * 2.54d * 10));
+            case "%":
+               return viewport.scaleLineWidth(parsedValue * viewport.getBestWidth() / 100);
+            default:
+               return viewport.scaleLineWidth(parsedValue);
          }
       }
       return 0d;
@@ -179,16 +252,21 @@ public class LengthParser {
     * @return the value
     */
    public static double parseLength(String lengthValue, boolean isWidth, Bounds bounds, Viewport viewport) {
+      if (viewport == null) {
+         viewport = DEFAULT_VIEWPORT;
+      }
       lengthValue = lengthValue.trim();
       lengthValue = lengthValue.replace('−', '-');
       Matcher m = NUMBER.matcher(lengthValue);
       if (m.matches()) {
-         if (bounds == null) {
+         if (viewport == null) {
             return Double.parseDouble(lengthValue);
+         } else if (bounds == null) {
+            return viewport.scaleLength(Double.parseDouble(lengthValue));
          } else if (isWidth) {
-            return Double.parseDouble(lengthValue) * bounds.getWidth();
+            return viewport.scaleLength(Double.parseDouble(lengthValue) * bounds.getWidth());
          } else {
-            return Double.parseDouble(lengthValue) * bounds.getHeight();
+            return viewport.scaleLength(Double.parseDouble(lengthValue) * bounds.getHeight());
          }
       }
       m = NUMBER_UNIT.matcher(lengthValue);
@@ -207,25 +285,23 @@ public class LengthParser {
          }
          switch (unitS) {
             case "px":
-               return parsedValue;
+               return viewport.scaleLength(parsedValue);
             case "pt":
-               return parsedValue / INCH * 72d / 96d;
+               return viewport.scaleLength(parsedValue / INCH * 72d / 96d);
             case "in":
-               return parsedValue / INCH;
+               return viewport.scaleLength(parsedValue / INCH);
             case "cm":
-               return parsedValue / INCH * 72d / (96d * 2.54d);
+               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d));
             case "mm":
-               return parsedValue / INCH * 72d / (96d * 2.54d * 10);
+               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d * 10));
             case "%":
-               if (viewport == null) {
-                  return 0;
-               } else if (isWidth) {
-                  return parsedValue * viewport.getBestWidth() / 100;
+               if (isWidth) {
+                  return viewport.scaleLength(parsedValue * viewport.getBestWidth() / 100);
                } else {
-                  return parsedValue * viewport.getBestHeight() / 100;
+                  return viewport.scaleLength(parsedValue * viewport.getBestHeight() / 100);
                }
             default:
-               return parsedValue;
+               return viewport.scaleLength(parsedValue);
          }
       }
       return 0d;

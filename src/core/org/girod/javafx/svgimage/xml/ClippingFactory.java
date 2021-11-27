@@ -44,7 +44,7 @@ import javafx.scene.shape.Shape;
 /**
  * This class handles the list of defined clipping paths.
  *
- * @version 0.5.5
+ * @version 0.6
  */
 public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
@@ -120,7 +120,7 @@ public class ClippingFactory implements SVGTags {
                theShape = Shape.union(theShape, shape);
             }
             if (xmlNode.hasAttribute(TRANSFORM)) {
-               ParserUtils.setTransform(theShape, xmlNode, viewport);
+               TransformUtils.setTransforms(theShape, xmlNode, viewport);
             }
          }
          return theShape;

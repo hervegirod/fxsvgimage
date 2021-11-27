@@ -40,7 +40,7 @@ package org.girod.javafx.svgimage;
  * <li>No width setting is applied</li>
  * </ul>
  *
- * @since 0.2
+ * @version 0.6
  */
 public class LoaderParameters {
    /**
@@ -52,7 +52,15 @@ public class LoaderParameters {
     */
    public double scale = -1;
    /**
+    * True if line widths must also be scaled. The default is true, which means that line widths are also scaled.
+    */
+   public boolean scaleLineWidth = true;
+   /**
     * The width. The default is -1, which means that no width setting is applied.
     */
    public double width = -1;
+   /**
+    * True if the resulting image must be centered. The default is false.
+    */
+   public boolean centerImage = false;
 }

@@ -61,6 +61,7 @@ import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
 import org.girod.javafx.svgimage.xml.SVGTags;
 import org.girod.javafx.svgimage.xml.SpanGroup;
 import org.girod.javafx.svgimage.xml.SymbolSpec;
+import org.girod.javafx.svgimage.xml.TransformUtils;
 import org.girod.javafx.svgimage.xml.Viewbox;
 import org.girod.javafx.svgimage.xml.Viewport;
 import org.girod.javafx.svgimage.xml.XMLNode;
@@ -80,18 +81,18 @@ public class SVGLoader implements SVGTags {
    private Viewport viewport = null;
    private final LoaderContext context;
 
-   private SVGLoader(URL url) {
+   private SVGLoader(URL url, LoaderParameters params) {
       this.url = url;
       this.content = null;
       this.root = new SVGImage();
-      this.context = new LoaderContext(root, url);
+      this.context = new LoaderContext(root, params, url);
    }
 
-   private SVGLoader(String content) {
+   private SVGLoader(String content, LoaderParameters params) {
       this.url = null;
       this.content = content;
       this.root = new SVGImage();
-      this.context = new LoaderContext(root, url);
+      this.context = new LoaderContext(root, params, url);
    }
 
    /**
@@ -118,7 +119,7 @@ public class SVGLoader implements SVGTags {
     * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url) throws SVGParsingException {
-      SVGLoader loader = new SVGLoader(url);
+      SVGLoader loader = new SVGLoader(url, new LoaderParameters());
       SVGImage img = loader.loadImpl();
       return img;
    }
@@ -131,7 +132,7 @@ public class SVGLoader implements SVGTags {
     * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content) throws SVGParsingException {
-      SVGLoader loader = new SVGLoader(content);
+      SVGLoader loader = new SVGLoader(content, new LoaderParameters());
       SVGImage img = loader.loadImpl();
       return img;
    }
@@ -381,28 +382,28 @@ public class SVGLoader implements SVGTags {
     * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(URL url, LoaderParameters params) throws SVGParsingException {
-      SVGLoader loader = new SVGLoader(url);
+      SVGLoader loader = new SVGLoader(url, params);
       SVGImage img = loader.loadImpl();
+      if (params.centerImage) {
+         double theWidth = img.getLayoutBounds().getWidth();
+         double theHeight = img.getLayoutBounds().getHeight();
+         img.setTranslateX(-theWidth / 2);
+         img.setTranslateY(-theHeight / 2);
+      }
       if (params.styleSheets != null) {
          img.getStylesheets().add(params.styleSheets);
       }
-      if (params.scale > 0) {
-         double initialWidth = img.getLayoutBounds().getWidth();
-         double initialHeight = img.getLayoutBounds().getHeight();
-         img.setScaleX(params.scale);
-         img.setScaleY(params.scale);
-         img.setTranslateX(-initialWidth / 2 + initialWidth * params.scale / 2);
-         img.setTranslateY(-initialHeight / 2);
-      } else if (params.width > 0) {
-         double initialWidth = img.getLayoutBounds().getWidth();
-         double initialHeight = img.getLayoutBounds().getHeight();
-         double scaleX = params.width / initialWidth;
-         img.setScaleX(scaleX);
-         img.setScaleY(scaleX);
-         img.setTranslateX(-initialWidth / 2 + initialWidth * scaleX / 2);
-         img.setTranslateY(-initialHeight / 2);
-      }
       return img;
+   }
+
+   private void setViewportScaleImpl(Viewport viewport, LoaderParameters params) {
+      if (params.scale > 0) {
+         viewport.setScale(params.scale, params.scaleLineWidth);
+      } else if (params.width > 0) {
+         double initialWidth = viewport.getBestWidth();
+         double scale = params.width / initialWidth;
+         viewport.setScale(scale, params.scaleLineWidth);
+      }
    }
 
    /**
@@ -414,26 +415,16 @@ public class SVGLoader implements SVGTags {
     * @throws SVGParsingException if the SVGLoader cannot be initialized
     */
    public static SVGImage load(String content, LoaderParameters params) throws SVGParsingException {
-      SVGLoader loader = new SVGLoader(content);
+      SVGLoader loader = new SVGLoader(content, params);
       SVGImage img = loader.loadImpl();
+      if (params.centerImage) {
+         double theWidth = img.getLayoutBounds().getWidth();
+         double theHeight = img.getLayoutBounds().getHeight();
+         img.setTranslateX(-theWidth / 2);
+         img.setTranslateY(-theHeight / 2);
+      }
       if (params.styleSheets != null) {
          img.getStylesheets().add(params.styleSheets);
-      }
-      if (params.scale > 0) {
-         double initialWidth = img.getLayoutBounds().getWidth();
-         double initialHeight = img.getLayoutBounds().getHeight();
-         img.setScaleX(params.scale);
-         img.setScaleY(params.scale);
-         img.setTranslateX(-initialWidth / 2 + initialWidth * params.scale / 2);
-         img.setTranslateY(-initialHeight / 2);
-      } else if (params.width > 0) {
-         double initialWidth = img.getLayoutBounds().getWidth();
-         double initialHeight = img.getLayoutBounds().getHeight();
-         double scaleX = params.width / initialWidth;
-         img.setScaleX(scaleX);
-         img.setScaleY(scaleX);
-         img.setTranslateX(-initialWidth / 2 + initialWidth * scaleX / 2);
-         img.setTranslateY(-initialHeight / 2);
       }
       return img;
    }
@@ -497,6 +488,7 @@ public class SVGLoader implements SVGTags {
       if (name.equals(SVG)) {
          if (viewport == null) {
             viewport = ParserUtils.parseViewport(xmlRoot);
+            setViewportScaleImpl(viewport, context.params);
             context.viewport = viewport;
             if (viewport != null) {
                viewport.scaleNode(root);
@@ -515,7 +507,7 @@ public class SVGLoader implements SVGTags {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          SymbolSpec symbol = new SymbolSpec(xmlNode);
-         Viewbox viewbox = ParserUtils.parseViewbox(xmlNode);
+         Viewbox viewbox = ParserUtils.parseViewbox(xmlNode, viewport);
          symbol.setViewbox(viewbox);
          if (xmlNode.hasAttribute(PRESERVE_ASPECT_RATIO)) {
             boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
@@ -630,6 +622,7 @@ public class SVGLoader implements SVGTags {
             addStyles(node, childNode);
             group.getChildren().add(node);
          } else if (spanGroup != null) {
+            TransformUtils.setTransforms(spanGroup.getTextGroup(), childNode, viewport);
             Map<String, String> theStylesMap = ParserUtils.getStyles(childNode);
             Iterator<SpanGroup.TSpan> it2 = spanGroup.getSpans().iterator();
             SpanGroup.TSpan previous = null;
@@ -661,7 +654,7 @@ public class SVGLoader implements SVGTags {
       setNodeStyle(node, xmlNode);
       ParserUtils.setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
-      ParserUtils.setTransform(node, xmlNode, viewport);
+      TransformUtils.setTransforms(node, xmlNode, viewport);
    }
 
    private void manageSVGStyle(XMLNode xmlNode) {

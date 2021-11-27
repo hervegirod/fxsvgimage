@@ -47,13 +47,17 @@ import org.girod.javafx.svgimage.xml.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @since 0.5.6
+ * @version 0.6
  */
 public class LoaderContext {
    /**
     * The resulting group.
     */
    public final SVGImage root;
+   /**
+    * The loader parameters.
+    */
+   public final LoaderParameters params;
    /**
     * The viewport.
     */
@@ -84,10 +88,14 @@ public class LoaderContext {
    public final Map<String, Paint> gradients = new HashMap<>();
    private Map<String, XMLNode> namedNodes = new HashMap<>();
    private Map<String, SymbolSpec> symbols = new HashMap<>();
+   /**
+    * True if the effects are supported.
+    */
    public boolean effectsSupported = false;
 
-   public LoaderContext(SVGImage root, URL url) {
+   public LoaderContext(SVGImage root, LoaderParameters params, URL url) {
       this.root = root;
+      this.params = params;
       this.url = url;
    }
 

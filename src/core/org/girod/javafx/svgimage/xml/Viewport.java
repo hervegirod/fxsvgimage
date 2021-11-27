@@ -32,6 +32,8 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import javafx.scene.shape.Shape;
+
 /**
  * Represents the viewport.
  *
@@ -39,6 +41,9 @@ package org.girod.javafx.svgimage.xml;
  */
 public class Viewport extends Viewbox {
    private final boolean hasWidthAndHeight;
+   private double scale = -1;
+   private boolean isScaled = false;
+   private boolean scaleLineWidth = true;
 
    public Viewport(double width, double height) {
       super(width, height);
@@ -74,5 +79,90 @@ public class Viewport extends Viewbox {
       } else {
          return viewboxHeight;
       }
+   }
+
+   /**
+    * Scale a shape.
+    *
+    * @param shape the shape
+    */
+   public void scaleShape(Shape shape) {
+      if (isScaled) {
+         shape.setScaleX(scale);
+         shape.setScaleY(scale);
+      }
+   }
+
+   /**
+    * Scale a length value.
+    *
+    * @param length the length
+    * @return the scaled length
+    */
+   public double scaleLength(double length) {
+      if (isScaled) {
+         return length * scale;
+      } else {
+         return length;
+      }
+   }
+
+   /**
+    * Scale a line width.
+    *
+    * @param width the line width.
+    * @return the scaled line width
+    */
+   public double scaleLineWidth(double width) {
+      if (scaleLineWidth) {
+         return scaleLength(width);
+      } else {
+         return width;
+      }
+   }
+
+   /**
+    * Set the scale value.
+    *
+    * @param scale the scale
+    * @param scaleLineWidth true if line widths must also be scaled
+    */
+   public void setScale(double scale, boolean scaleLineWidth) {
+      if (scale > 0) {
+         this.isScaled = true;
+         this.scaleLineWidth = scaleLineWidth;
+         this.scale = scale;
+      } else {
+         this.isScaled = false;
+         this.scaleLineWidth = false;
+         this.scale = -1;
+      }
+   }
+
+   /**
+    * Return the scale.
+    *
+    * @return the scale
+    */
+   public double getScale() {
+      return scale;
+   }
+
+   /**
+    * Return true if lengths must be scaled.
+    *
+    * @return true if lengths must be scaled
+    */
+   public boolean isScaled() {
+      return isScaled;
+   }
+
+   /**
+    * Return true if line widths must be scaled.
+    *
+    * @return true if line widths must be scaled
+    */
+   public boolean isScalingLineWidth() {
+      return scaleLineWidth;
    }
 }
