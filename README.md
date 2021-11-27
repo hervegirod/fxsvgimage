@@ -4,8 +4,29 @@ complete documentation.
 
 Note that contrary to other existing libraries, this library has no external dependencies (including Batik)
 
+## Using fxsvgimage as a maven/gradle dependency
+fxsvgimage is not yet available in maven central. Until it is you can still use a release as a maven or gradle dependency 
+through [jitpack](https://jitpack.io/). For maven do the following:
+1. Add jitpack to your list of repositories i.e. in the `<repositories>` section add:
+```xml
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+```
+2. add the latest release of fxsvimage just as you would add a normal dependency e.g:
+```xml
+    <dependency>
+      <groupId>com.github.hervegirod</groupId>
+      <artifactId>fxsvgimage</artifactId>
+      <version>0.5.6</version>
+    </dependency>
+```
+See https://jitpack.io/ for info on the syntax for other build systems such as gradle, svt etc.
+
+
 # History
-See https://github.com/hervegirod/fxsvgimage/blob/main/HISTORY.md
+See [HISTORY.md](HISTORY.md)
 
 # Usage
 Just calls one of the static `load` methods, for example:
