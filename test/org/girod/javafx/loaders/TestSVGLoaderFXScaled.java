@@ -46,9 +46,9 @@ import org.girod.javafx.svgimage.xml.SVGParsingException;
 
 /**
  *
- * @since 0.3
+ * @since 0.6
  */
-public class TestSVGLoaderFX extends Application {
+public class TestSVGLoaderFXScaled extends Application {
    public static void main(String[] args) {
       launch(args);
    }
@@ -69,7 +69,7 @@ public class TestSVGLoaderFX extends Application {
       File file = fileChooser.showOpenDialog(stage);
       if (file != null) {
          try {
-            SVGImage svgImg = SVGLoader.load(file);
+            SVGImage svgImg = SVGLoader.load(file, 100);
             stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
 
             StackPane root = new StackPane();
@@ -77,8 +77,7 @@ public class TestSVGLoaderFX extends Application {
             stage.setScene(new Scene(root, 300, 250));
             stage.show();
          } catch (SVGParsingException e) {
-            Throwable th = e.getCause();
-            th.printStackTrace();
+            e.printStackTrace();
          }
       } else {
          System.exit(0);
