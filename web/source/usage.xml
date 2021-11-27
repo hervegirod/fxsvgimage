@@ -20,8 +20,8 @@
       <li>It is possible to specify a stylesheet to use for the result</li>
    </ul>
    
-   This can be achieved through one of the <code>load</code> static methods, or by using the
-   <code>LoaderParameters class</code>.
+   This can be achieved through one of the <code>load</code> static methods. You can also specify how you want to load the
+   SVG content by using the <ref id="LoaderParameters" /> class.
    
    <title title="Converting to an image"/>
    The <code>SVGImage</code> result can be converted to a JavaFX Image. The simplest way to perform the
@@ -46,9 +46,10 @@
    method in the <ref id="SVGImage" /> result.
    
    <title title="threading usage"/>
-   You an use the library in the JavaFX Platform Thread or in any other Thread. The library will make sure that
+   You can use the library in the JavaFX Platform Thread or in any other Thread. The library will make sure that
    the conversion will be performed in the JavaFX Platform Thread, and will return the result in the calling Thread.      
             
+   <see id="SVGLoader" />
    <see id="SVGImage" />
    <cat id="general" />
 </article>

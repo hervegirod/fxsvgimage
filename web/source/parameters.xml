@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="LoaderParameters">
+   <altTitle desc="SVGLoader parameters" />
+   <meta desc="This article presents the usage of the SVGLoader parameters" />
+   The <code>LoaderParameters</code> class allows to specify how you want to load the SVG content by the <ref id="SVGLoader" />.
+   
+   <title title="parameters" />
+   <title level="2" title="styleSheets" keepCase="true"/>
+   The <code>styleSheets</code> parameter allows to set an external StyleSheet to apply to the SVG result.
+   
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.stylesheet = &lt;the stylesheets path&gt;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>
+   
+   <title level="2" title="scale" keepCase="true"/>
+   The <code>scale</code> parameter allows to scale the SVG result. Note that:
+   <ul>
+      <li>An alternate way to define a scaling is to use the <code>width</code> parameter</li>      
+      <li>The parser will not apply a transform on the result of the parsing but will scale each coordinate during the parsing</li>
+   </ul>
+      
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.scale = 0.5d;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>  
+   
+   <title level="2" title="width" keepCase="true"/>
+   The <code>width</code> parameter allows to scale the SVG result by specifying the desiredwidth of the result. Note that:
+   <ul>
+      <li>An alternate way to define a scaling is to use the <code>scale</code> parameter</li>      
+      <li>The parser will not apply a transform on the result of the parsing but will scale each coordinate during the parsing</li>
+   </ul>
+      
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.width = 50;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>    
+    
+   <title level="2" title="scaleLineWidth" keepCase="true"/>
+   The <code>scaleLineWidth</code> parameter specifies if line widths will also be scaled if the <code>scale</code> or 
+   <code>width</code> parameter is used to scale the SVG result.
+         
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.scale = 0.5d;
+      params.scaleLineWidth = false;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>    
+   
+   <title level="2" title="centerImage" keepCase="true"/>
+   The <code>centerImage</code> parameter specifies if the resulting SVG Node position must be centered.
+         
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.scale = 0.5d;
+      params.centerImage = true;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>             
+               
+   <see id="SVGLoader" />               
+   <cat id="general" />
+</article>
