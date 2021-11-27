@@ -101,3 +101,7 @@
  - Support the "preserveAspectRatio" attribute for the svg root element
  - Allow to load a SVG from a String
  - Specifies a global configuration for the handling of exceptions during parsing
+ - Fix a lot of problems which appeared when scaling the content at the loader level
+ - Fix the position of the svg content which was not correctly translated if scaled during the loading 
+ - Take into account the viewport and the units in the path element
+ - Take into account rotate transforms with only one parameter
