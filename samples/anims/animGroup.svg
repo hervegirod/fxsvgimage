@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+   <g>
+      <animateTransform attributeName="transform" begin="0s" dur="5s" type="translate"
+         from="0 0"
+         to="60 60"
+         repeatCount="indefinite"
+      />             
+      <rect width="10" height="10"/>        
+   </g>
+</svg>
