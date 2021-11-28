@@ -29,6 +29,7 @@
       <li>the use element. See also <ref id="use element support" /></li>
       <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
       <li>transform attributes. See also <ref id="transform support" /></li>
+      <li>animations. See also <ref id="animations support" /></li>
       <li>The viewport on the SVG root. See also <ref id="SVG root support" /></li>
    </ul>   
    

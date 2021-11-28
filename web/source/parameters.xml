@@ -19,7 +19,6 @@
    The <code>scale</code> parameter allows to scale the SVG result. Note that:
    <ul>
       <li>An alternate way to define a scaling is to use the <code>width</code> parameter</li>      
-      <li>The parser will not apply a transform on the result of the parsing but will scale each coordinate during the parsing</li>
    </ul>
       
    For example:
@@ -28,6 +27,18 @@
       params.scale = 0.5d;
       SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
    </pre>  
+   
+   <messageBox type="info">
+      The parser will not apply a transform on the result of the parsing but will scale each coordinate during the parsing.
+      For example, if you have the following svg content:
+      <pre syntax="xml">
+         &lt;line x1="0" y1="0" x2="200" y2="200" /&gt;
+      </pre>
+      and you apply the previous parmaters during the loading, the rsult will be as if you had:
+      <pre syntax="xml">
+         &lt;line x1="0" y1="0" x2="100" y2="100" /&gt;
+      </pre>      
+   </messageBox>
    
    <title level="2" title="width" keepCase="true"/>
    The <code>width</code> parameter allows to scale the SVG result by specifying the desiredwidth of the result. Note that:
