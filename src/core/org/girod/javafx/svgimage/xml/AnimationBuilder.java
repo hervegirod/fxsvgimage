@@ -47,6 +47,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
+import javafx.animation.PathTransition;
 import javafx.beans.value.WritableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -55,6 +56,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 
 /**
@@ -103,6 +105,10 @@ public class AnimationBuilder implements SVGTags {
                }
                break;
             case ANIMATE_MOTION:
+               Animation motionTransition = buildAnimateMotion(xmlNode, xmlAnim, node, parallel, viewport);
+               if (motionTransition != null) {
+                  transitionsList.add(motionTransition);
+               }
                break;
             case ANIMATE_TRANSFORM:
                Animation transition = buildAnimateTransform(xmlNode, xmlAnim, node, parallel, viewport);
@@ -345,6 +351,45 @@ public class AnimationBuilder implements SVGTags {
       } else {
          return null;
       }
+   }
+
+   private static Transition buildAnimateMotion(XMLNode xmlNode, XMLNode xmlAnim, Node node, ParallelTransition parallel, Viewport viewport) {
+      if (!xmlAnim.hasAttribute(PATH)) {
+         return null;
+      }
+      String content = xmlAnim.getAttributeValue(PATH);
+      content = content.replace('−', '-');
+      content = PathParser.parsePathContent(content, viewport);
+      Duration duration = Duration.ZERO;
+      if (xmlAnim.hasAttribute(DUR)) {
+         duration = parseDuration(xmlAnim.getAttributeValue(DUR));
+      }
+      SVGPath path = new SVGPath();
+      path.setContent(content);
+      PathTransition transition;
+      if (parallel != null) {
+         transition = new PathTransition(duration, path);
+      } else {
+         transition = new PathTransition(duration, path, node);
+      }
+      transition.setDuration(duration);
+      if (xmlAnim.hasAttribute(REPEAT_COUNT)) {
+         String repeatValue = xmlAnim.getAttributeValue(REPEAT_COUNT);
+         if (repeatValue.equals(INDEFINITE)) {
+            transition.setCycleCount(Transition.INDEFINITE);
+         } else {
+            int count = ParserUtils.parseIntProtected(repeatValue);
+            transition.setCycleCount(count);
+         }
+      }
+      if (xmlAnim.hasAttribute(BEGIN)) {
+         String begin = xmlAnim.getAttributeValue(BEGIN);
+         Duration beginDur = parseDuration(begin);
+         if (beginDur != null) {
+            transition.setDelay(beginDur);
+         }
+      }
+      return transition;
    }
 
    private static Transition buildAnimateTransform(XMLNode xmlNode, XMLNode xmlAnim, Node node, ParallelTransition parallel, Viewport viewport) {
