@@ -44,6 +44,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.StrokeTransition;
+import javafx.animation.FillTransition;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
@@ -54,9 +56,13 @@ import javafx.scene.Node;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -72,6 +78,8 @@ public class AnimationBuilder implements SVGTags {
    private static final short TYPE_SKEW_Y = 4;
    private static final short ANIMATE_DEFAULT = 0;
    private static final short ANIMATE_VISIBILITY = 1;
+   private static final short ANIMATE_STROKE = 2;
+   private static final short ANIMATE_FILL = 3;
    private static final Pattern DURATION_PAT = Pattern.compile("(\\d+)(\\w+)");
 
    private AnimationBuilder() {
@@ -196,6 +204,14 @@ public class AnimationBuilder implements SVGTags {
                   value = rect.opacityProperty();
                   animateType = ANIMATE_VISIBILITY;
                   break;
+               case FILL:
+                  value = rect.fillProperty();
+                  animateType = ANIMATE_FILL;
+                  break;
+               case STROKE:
+                  value = rect.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
             }
             break;
          case IMAGE:
@@ -241,6 +257,14 @@ public class AnimationBuilder implements SVGTags {
                   value = circle.opacityProperty();
                   animateType = ANIMATE_VISIBILITY;
                   break;
+               case FILL:
+                  value = circle.fillProperty();
+                  animateType = ANIMATE_FILL;
+                  break;
+               case STROKE:
+                  value = circle.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
             }
             break;
          case ELLIPSE:
@@ -264,6 +288,14 @@ public class AnimationBuilder implements SVGTags {
                case VISIBILITY:
                   value = ellipse.opacityProperty();
                   animateType = ANIMATE_VISIBILITY;
+                  break;
+               case FILL:
+                  value = ellipse.fillProperty();
+                  animateType = ANIMATE_FILL;
+                  break;
+               case STROKE:
+                  value = ellipse.strokeProperty();
+                  animateType = ANIMATE_STROKE;
                   break;
             }
             break;
@@ -289,21 +321,71 @@ public class AnimationBuilder implements SVGTags {
                   value = line.opacityProperty();
                   animateType = ANIMATE_VISIBILITY;
                   break;
+               case STROKE:
+                  value = line.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
+            }
+            break;
+         case POLYGON:
+            Polygon polygon = (Polygon) node;
+            switch (attrName) {
+               case OPACITY:
+                  value = polygon.opacityProperty();
+                  break;
+               case VISIBILITY:
+                  value = polygon.opacityProperty();
+                  animateType = ANIMATE_VISIBILITY;
+                  break;
+               case FILL:
+                  value = polygon.fillProperty();
+                  animateType = ANIMATE_FILL;
+                  break;
+               case STROKE:
+                  value = polygon.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
+            }
+            break;
+         case POLYLINE:
+            Polyline polyline = (Polyline) node;
+            switch (attrName) {
+               case OPACITY:
+                  value = polyline.opacityProperty();
+                  break;
+               case VISIBILITY:
+                  value = polyline.opacityProperty();
+                  animateType = ANIMATE_VISIBILITY;
+                  break;
+               case STROKE:
+                  value = polyline.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
+            }
+         case PATH:
+            SVGPath thePath = (SVGPath) node;
+            switch (attrName) {
+               case OPACITY:
+                  value = thePath.opacityProperty();
+                  break;
+               case VISIBILITY:
+                  value = thePath.opacityProperty();
+                  animateType = ANIMATE_VISIBILITY;
+                  break;
+               case STROKE:
+                  value = thePath.strokeProperty();
+                  animateType = ANIMATE_STROKE;
+                  break;
             }
             break;
       }
       List<Double> fromArgs = null;
       List<Double> toArgs = null;
-      boolean fromVisible = true;
-      boolean toVisible = true;
-      if (animateType == ANIMATE_VISIBILITY) {
-         fromVisible = getFromVisibilityArgument(xmlAnim);
-         toVisible = getToVisibilityArgument(xmlAnim);
-      } else {
+      if (animateType == ANIMATE_DEFAULT) {
          fromArgs = getFromArguments(xmlAnim, viewport);
          toArgs = getToArguments(xmlAnim, viewport);
       }
-      if (animateType != ANIMATE_VISIBILITY && (fromArgs == null || toArgs == null || fromArgs.isEmpty() || toArgs.isEmpty())) {
+      if (animateType == ANIMATE_DEFAULT && (fromArgs == null || toArgs == null || fromArgs.isEmpty() || toArgs.isEmpty())) {
          return null;
       }
       if (value != null) {
@@ -318,12 +400,44 @@ public class AnimationBuilder implements SVGTags {
             duration = parseDuration(xmlAnim.getAttributeValue(DUR));
          }
          if (animateType == ANIMATE_VISIBILITY) {
+            boolean fromVisible = getFromVisibilityArgument(xmlAnim);
+            boolean toVisible = getToVisibilityArgument(xmlAnim);
             KeyValue fromValue = new KeyValue(value, fromVisible ? 1 : 0, Interpolator.DISCRETE);
             KeyValue toValue = new KeyValue(value, toVisible ? 1 : 0, Interpolator.DISCRETE);
             KeyFrame fromFrame = new KeyFrame(beginDur, fromValue);
             KeyFrame toFrame = new KeyFrame(duration, toValue);
             Timeline timeline = new Timeline(fromFrame, toFrame);
             animation = timeline;
+         } else if (animateType == ANIMATE_STROKE) {
+            Color fromColor = getFromColorArgument(xmlAnim);
+            Color toColor = getToColorArgument(xmlAnim);
+            if (fromColor == null || toColor == null) {
+               return null;
+            }
+            StrokeTransition transition;
+            if (parallel != null) {
+               transition = new StrokeTransition(duration);
+            } else {
+               transition = new StrokeTransition(duration, (Shape) node);
+            }
+            transition.setFromValue(fromColor);
+            transition.setToValue(toColor);
+            animation = transition;
+         } else if (animateType == ANIMATE_FILL) {
+            Color fromColor = getFromColorArgument(xmlAnim);
+            Color toColor = getToColorArgument(xmlAnim);
+            if (fromColor == null || toColor == null) {
+               return null;
+            }
+            FillTransition transition;
+            if (parallel != null) {
+               transition = new FillTransition(duration);
+            } else {
+               transition = new FillTransition(duration, (Shape) node);
+            }
+            transition.setFromValue(fromColor);
+            transition.setToValue(toColor);
+            animation = transition;
          } else {
             Timeline timeline = new Timeline();
             animation = timeline;
@@ -509,6 +623,24 @@ public class AnimationBuilder implements SVGTags {
          } else {
             return transition;
          }
+      } else {
+         return null;
+      }
+   }
+
+   private static Color getFromColorArgument(XMLNode xmlAnim) {
+      if (xmlAnim.hasAttribute(FROM)) {
+         String content = xmlAnim.getAttributeValue(FROM);
+         return ParserUtils.getColor(content);
+      } else {
+         return null;
+      }
+   }
+
+   private static Color getToColorArgument(XMLNode xmlAnim) {
+      if (xmlAnim.hasAttribute(TO)) {
+         String content = xmlAnim.getAttributeValue(TO);
+         return ParserUtils.getColor(content);
       } else {
          return null;
       }
