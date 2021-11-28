@@ -11,7 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class TimelineTest extends Application {
+public class TestTimeline extends Application {
 
    public static void main(String[] args) {
       launch(args);

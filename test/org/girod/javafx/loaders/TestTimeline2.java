@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class TimelineTest2 extends Application {
+public class TestTimeline2 extends Application {
    @Override
    public void start(Stage stage) {
       Label label = new Label("Blinking");
