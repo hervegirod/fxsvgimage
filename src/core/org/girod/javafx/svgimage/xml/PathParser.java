@@ -90,7 +90,7 @@ public class PathParser {
     *
     * @param content the path content
     * @param viewport the viewport
-    * @return
+    * @return the path taking into account the viewport and the units
     */
    public static String parsePathContent(String content, Viewport viewport) {
       short type = PATH_NONE;
