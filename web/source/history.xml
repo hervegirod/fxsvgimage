@@ -133,7 +133,7 @@
       <li>Fix the position of the svg content which was not correctly translated if scaled during the loading</li> 
       <li>Take into account the viewport and the units in the path element</li>
       <li>Take into account rotate transforms with only one parameter</li>
-      <li>Start support for svg animations: animateTransfrom and animate are partially suppported</li>      
+      <li>Start support for svg animations: animateTransform, animateMotion, and animate are partially suppported</li>      
    </ul>                                                                                                                                                                                                                                                                                                                                                                                             
             
    <cat id="general" />

@@ -7,12 +7,83 @@
       <li>
          <code>animate</code>: This element is used to animate a single attribute or property over time</li>
       <li>
-         <code>animateTransform</code>: This element  animates a transformation attribute on a target element, thereby allowing
-         animations to control translation, scaling, or rotation</li>         
+         <code>animateTransform</code>: This element animates a transformation attribute on a target element, thereby allowing
+         animations to control translation, scaling, or rotation</li>  
+      <li>
+         <code>animateMotion</code>: This element causes a referenced element to move along a motion path.</li>                   
    </ul>
+   
+   <title title="supported attributes for the animateTransform animation" />
+   The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>type</code>
+      </li>          
+   </ul>   
+   
+   <title title="supported attributes for the animateMotion animation" />
+   The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>path</code>
+      </li>          
+   </ul>     
    
    <title title="supported attributes for the animate animation" />
    The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>attributeName</code>
+      </li>          
+   </ul>
+   
+   <title level="2" title="supported values for the attributeName atribute" />
+   The following values are supported for the <code>attributeName</code> attribute:
    <ul>
       <li>
          <code>x</code> and <code>y</code> for <code>rect</code>, <code>image</code>, and <code>g</code> elements</li>      
@@ -30,9 +101,8 @@
    
    <title title="limitations" />
    <ul>
-      <li>For the moment, animating the position of an element, or translating an element, does not work correctly</li>
-      <li>For the moment, animating the visibility of an element does not work correctly</li>  
-      <li>The <code>set</code> and <code>animateMotion</code> animations are currently not supported</li>    
+      <li>For the moment, animating the position of an element, or translating an element, does not work correctly in the
+         browser. It works in the general case</li> 
       <li>The <code>skewX</code> and <code>skewY</code> transformations are currently not supported</li>     
    </ul>
             
