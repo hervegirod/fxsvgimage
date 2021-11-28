@@ -92,6 +92,12 @@
       <li>
          <code>width</code> and <code>height</code> for <code>rect</code> and <code>image</code> elements</li>
       <li>
+         <code>fill</code> for <code>rect</code>, <code>circle</code>, <code>ellipse</code>,
+         and <code>polygon</code> elements</li>   
+      <li>
+         <code>stroke</code> for <code>rect</code>, <code>circle</code>, <code>ellipse</code>,
+         and <code>polygon</code>,<code>line</code>, <code>path</code>, and <code>polyline</code> elements</li>                   
+      <li>
          <code>r</code> for <code>circle</code> elements</li>       
       <li>
          <code>rx</code> and <code>ry</code> for <code>ellipse</code> elements</li>   
