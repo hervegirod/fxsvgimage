@@ -7,10 +7,7 @@ Note that contrary to other existing libraries, this library has no external dep
 ## Using fxsvgimage as a maven/gradle dependency
 
 fxsvgimage is not yet available in maven central. Until it is you can still use a release as a maven or gradle dependency 
-through [jitpack](https://jitpack.io/). 
-
-[![Release](https://jitpack.io/v/hervegirod/fxsvgimage.svg)]
-https://jitpack.io/#hervegirod/fxsvgimage
+through [![Release](https://jitpack.io/v/hervegirod/fxsvgimage.svg)](https://jitpack.io/#hervegirod/fxsvgimage)
 
 For maven do the following:
 1. Add jitpack to your list of repositories i.e. in the `<repositories>` section add:
