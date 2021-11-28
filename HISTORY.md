@@ -97,7 +97,7 @@
 - Support the symbol element
 - Support the "viewBox", "width", "height", and "preserveAspectRatio" attributes for the symbol element
 
-## 0.6  (in progress)
+## 0.6
  - Support the "preserveAspectRatio" attribute for the svg root element
  - Allow to load a SVG from a String
  - Specifies a global configuration for the handling of exceptions during parsing
