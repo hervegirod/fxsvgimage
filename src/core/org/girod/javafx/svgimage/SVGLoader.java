@@ -38,11 +38,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import javafx.animation.Animation;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -53,6 +56,7 @@ import javafx.scene.text.Text;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import org.girod.javafx.svgimage.xml.AnimationBuilder;
 import org.girod.javafx.svgimage.xml.FilterSpec;
 import org.girod.javafx.svgimage.xml.ParserUtils;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
@@ -149,6 +153,23 @@ public class SVGLoader implements SVGTags {
       try {
          URL url = file.toURI().toURL();
          return load(url, styleSheets);
+      } catch (MalformedURLException ex) {
+         throw new SVGParsingException(ex);
+      }
+   }
+
+   /**
+    * Load a svg File.
+    *
+    * @param file the file
+    * @param params the loader parameters
+    * @return the SVGImage
+    * @throws SVGParsingException if the file cannot be converted to a URL
+    */
+   public static SVGImage load(File file, LoaderParameters params) throws SVGParsingException {
+      try {
+         URL url = file.toURI().toURL();
+         return load(url, params);
       } catch (MalformedURLException ex) {
          throw new SVGParsingException(ex);
       }
@@ -476,7 +497,16 @@ public class SVGLoader implements SVGTags {
             InputStream stream = new ByteArrayInputStream(content.getBytes());
             parser.parse(stream, handler);
          }
-         return walk(handler.getRoot());
+         SVGImage img = walk(handler.getRoot());
+         if (img != null) {
+            if (!context.animations.isEmpty()) {
+               img.setAnimations(context.animations);
+               if (context.params.autoStartAnimations) {
+                  context.playAnimations();
+               }
+            }
+         }
+         return img;
       } catch (ParserConfigurationException | SAXException ex) {
          GlobalConfig.getInstance().handleParsingException(ex);
          return null;
@@ -524,10 +554,32 @@ public class SVGLoader implements SVGTags {
       }
    }
 
+   private List<XMLNode> lookForAnimations(XMLNode xmlNode, Node node, Viewport viewport) {
+      if (node == null) {
+         return new ArrayList<>();
+      }
+      List<XMLNode> animations = new ArrayList<>();
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode childNode = it.next();
+         String name = childNode.getName();
+         switch (name) {
+            case ANIMATE:
+            case ANIMATE_MOTION:
+            case ANIMATE_TRANSFORM:
+            case SET:
+               animations.add(childNode);
+               break;
+         }
+      }
+      return animations;
+   }
+
    private void buildNode(XMLNode xmlNode, Group group, boolean acceptDefs) {
       if (group == null) {
          group = new Group();
       }
+      List<XMLNode> animations = new ArrayList<>();
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
@@ -541,30 +593,37 @@ public class SVGLoader implements SVGTags {
             case RECT:
                node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case CIRCLE:
                node = SVGShapeBuilder.buildCircle(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case ELLIPSE:
                node = SVGShapeBuilder.buildEllipse(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case PATH:
                node = SVGShapeBuilder.buildPath(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case POLYGON:
                node = SVGShapeBuilder.buildPolygon(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case LINE:
                node = SVGShapeBuilder.buildLine(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case POLYLINE:
                node = SVGShapeBuilder.buildPolyline(childNode, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case USE:
                node = SVGShapeBuilder.buildUse(childNode, context, null, viewport);
@@ -574,13 +633,16 @@ public class SVGLoader implements SVGTags {
                if (node == null) {
                   spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, null, viewport);
                   addNamedNode(childNode, spanGroup.getTextGroup());
+                  animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                } else {
                   addNamedNode(childNode, node);
+                  animations = lookForAnimations(childNode, node, viewport);
                }
                break;
             case IMAGE:
                node = SVGShapeBuilder.buildImage(childNode, url, null, null, viewport);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case SVG:
                if (viewport == null) {
@@ -592,6 +654,7 @@ public class SVGLoader implements SVGTags {
             case G:
                node = buildGroup(childNode);
                addNamedNode(childNode, node);
+               animations = lookForAnimations(childNode, node, viewport);
                break;
             case SYMBOL:
                addSymbol(childNode);
@@ -621,6 +684,12 @@ public class SVGLoader implements SVGTags {
          if (node != null) {
             addStyles(node, childNode);
             group.getChildren().add(node);
+            if (!animations.isEmpty()) {
+               List<Animation> animationsList = AnimationBuilder.buildAnimations(childNode, node, animations, viewport);
+               if (animationsList != null) {
+                  context.addAnimations(animationsList);
+               }
+            }
          } else if (spanGroup != null) {
             TransformUtils.setTransforms(spanGroup.getTextGroup(), childNode, viewport);
             Map<String, String> theStylesMap = ParserUtils.getStyles(childNode);
@@ -652,6 +721,7 @@ public class SVGLoader implements SVGTags {
 
    private void addStyles(Node node, XMLNode xmlNode) {
       setNodeStyle(node, xmlNode);
+      ParserUtils.setVisibility(node, xmlNode);
       ParserUtils.setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
       TransformUtils.setTransforms(node, xmlNode, viewport);

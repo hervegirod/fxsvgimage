@@ -60,6 +60,10 @@ public class LoaderParameters {
     */
    public double width = -1;
    /**
+    * True if animations should be auto-started. The default is true.
+    */
+   public boolean autoStartAnimations = true;
+   /**
     * True if the resulting image must be centered. The default is false.
     */
    public boolean centerImage = false;

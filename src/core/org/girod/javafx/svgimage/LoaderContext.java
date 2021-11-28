@@ -33,8 +33,13 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import javafx.animation.Animation;
+import javafx.animation.Transition;
 import javafx.scene.paint.Paint;
 import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.FilterSpec;
@@ -88,6 +93,11 @@ public class LoaderContext {
    public final Map<String, Paint> gradients = new HashMap<>();
    private Map<String, XMLNode> namedNodes = new HashMap<>();
    private Map<String, SymbolSpec> symbols = new HashMap<>();
+   /**
+    * The animations.
+    */
+   List<Animation> animations = new ArrayList<>();
+
    /**
     * True if the effects are supported.
     */
@@ -181,5 +191,36 @@ public class LoaderContext {
     */
    public SymbolSpec getSymbol(String id) {
       return symbols.get(id);
+   }
+
+   /**
+    * Add an animation.
+    *
+    * @param animation the animation.
+    */
+   public void addTransition(Animation animation) {
+      animations.add(animation);
+   }
+
+   /**
+    * Add a list of animations.
+    *
+    * @param theAnimations the animations.
+    */
+   public void addAnimations(List<Animation> theAnimations) {
+      animations.addAll(theAnimations);
+   }
+
+   /**
+    * Play the transitions.
+    */
+   public void playAnimations() {
+      if (!animations.isEmpty()) {
+         Iterator<Animation> it = animations.iterator();
+         while (it.hasNext()) {
+            Animation tr = it.next();
+            tr.play();
+         }
+      }
    }
 }

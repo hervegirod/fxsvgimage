@@ -41,7 +41,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
@@ -51,7 +50,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.GlobalConfig;
 import static org.girod.javafx.svgimage.xml.SVGTags.CLASS;
 import static org.girod.javafx.svgimage.xml.SVGTags.FILL;
@@ -158,6 +156,14 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   public static boolean parseVisibility(String value) {
+      if (value.equals(HIDDEN)) {
+         return false;
+      } else {
+         return true;
+      }
+   }
+
    public static double parseOpacity(String value) {
       boolean isPercent = false;
       if (value.endsWith("%")) {
@@ -191,6 +197,21 @@ public class ParserUtils implements SVGTags {
    public static String parseFirstArgument(String value) {
       StringTokenizer tok = new StringTokenizer(value, " ");
       return tok.nextToken().trim();
+   }
+
+   public static int parseIntProtected(String valueS) {
+      Matcher m = ZERO.matcher(valueS);
+      if (m.matches()) {
+         return 0;
+      } else {
+         try {
+            int valueI = Integer.parseInt(valueS);
+            return valueI;
+         } catch (NumberFormatException e) {
+            GlobalConfig.getInstance().handleParsingError("Value " + valueS + " is not a number");
+            return 0;
+         }
+      }
    }
 
    public static double parseDoubleProtected(String valueS) {
@@ -444,6 +465,14 @@ public class ParserUtils implements SVGTags {
                   childNode.addAttribute(entry.getKey(), entry.getValue());
                }
          }
+      }
+   }
+
+   public static void setVisibility(Node node, XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(VISIBILITY)) {
+         String visibilityS = xmlNode.getAttributeValue(VISIBILITY);
+         boolean visible = ParserUtils.parseVisibility(visibilityS);
+         node.setVisible(visible);
       }
    }
 

@@ -33,10 +33,15 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import javafx.animation.Animation;
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -55,6 +60,7 @@ import org.girod.javafx.svgimage.xml.SVGLibraryException;
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
+   private List<Animation> animations = new ArrayList<>();
 
    /**
     * Set the default SnapshotParameters to use when creating a snapshot. The default is null, which means that a
@@ -97,6 +103,71 @@ public class SVGImage extends Group {
     */
    public Node getNode(String id) {
       return nodes.get(id);
+   }
+
+   /**
+    * Set the list of animations.
+    *
+    * @param animations the animations.
+    */
+   void setAnimations(List<Animation> animations) {
+      this.animations = animations;
+   }
+
+   /**
+    * Play the animations.
+    */
+   public void playAnimations() {
+      if (Platform.isFxApplicationThread()) {
+         playAnimationsImpl();
+      } else {
+         // the next instruction is only there to initialize the JavaFX platform
+         new JFXPanel();
+         Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+               playAnimationsImpl();
+            }
+         });
+      }
+   }
+
+   private void playAnimationsImpl() {
+      if (!animations.isEmpty()) {
+         Iterator<Animation> it = animations.iterator();
+         while (it.hasNext()) {
+            Animation tr = it.next();
+            tr.play();
+         }
+      }
+   }
+
+   /**
+    * Stop the animations.
+    */
+   public void stopAnimations() {
+      if (Platform.isFxApplicationThread()) {
+         stopAnimationsImpl();
+      } else {
+         // the next instruction is only there to initialize the JavaFX platform
+         new JFXPanel();
+         Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+               stopAnimationsImpl();
+            }
+         });
+      }
+   }
+
+   private void stopAnimationsImpl() {
+      if (!animations.isEmpty()) {
+         Iterator<Animation> it = animations.iterator();
+         while (it.hasNext()) {
+            Animation tr = it.next();
+            tr.stop();
+         }
+      }
    }
 
    /**

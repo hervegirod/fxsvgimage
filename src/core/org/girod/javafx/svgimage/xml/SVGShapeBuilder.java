@@ -911,6 +911,7 @@ public class SVGShapeBuilder implements SVGTags {
    private static void addStyles(LoaderContext context, Node node, XMLNode xmlNode, Viewport viewport) {
       SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
       ParserUtils.setOpacity(node, xmlNode);
+      ParserUtils.setVisibility(node, xmlNode);
       TransformUtils.setTransforms(node, xmlNode, viewport);
    }
 
