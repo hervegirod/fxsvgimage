@@ -107,4 +107,4 @@
  - Take into account rotate transforms with only one parameter
  - Add a parameter to allow to center the resulting svg
  - Support the visibility attribute
- - Start support for svg animations: animateTransform and animate are partially suppported
+ - Start support for svg animations: animateTransform, animateMotion, and animate are partially suppported
