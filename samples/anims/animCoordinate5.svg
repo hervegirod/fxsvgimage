@@ -1,0 +1,12 @@
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <rect x="10" y="10" width="40" height="20"
+         style="stroke: #000000; fill: none;">
+      <animate attributeName="width"
+               attributeType="XML"
+               from="40" to="400"
+               begin="0s" dur="10s"
+               repeatCount="indefinite"
+      />
+   </rect>
+</svg>
+
