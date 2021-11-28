@@ -105,3 +105,6 @@
  - Fix the position of the svg content which was not correctly translated if scaled during the loading 
  - Take into account the viewport and the units in the path element
  - Take into account rotate transforms with only one parameter
+ - Add a parameter to allow to center the resulting svg
+ - Support the visibility attribute
+ - Start support for svg animations: animateTransfrom and animate are partially suppported
