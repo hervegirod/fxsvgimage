@@ -54,6 +54,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 /**
@@ -187,6 +188,30 @@ public class AnimationBuilder implements SVGTags {
                   break;
                case VISIBILITY:
                   value = rect.opacityProperty();
+                  animateType = ANIMATE_VISIBILITY;
+                  break;
+            }
+            break;
+         case IMAGE:
+            ImageView imgView = (ImageView) node;
+            switch (attrName) {
+               case X:
+                  value = imgView.xProperty();
+                  break;
+               case Y:
+                  value = imgView.yProperty();
+                  break;
+               case WIDTH:
+                  value = imgView.fitWidthProperty();
+                  break;
+               case HEIGHT:
+                  value = imgView.fitHeightProperty();
+                  break;
+               case OPACITY:
+                  value = imgView.opacityProperty();
+                  break;
+               case VISIBILITY:
+                  value = imgView.opacityProperty();
                   animateType = ANIMATE_VISIBILITY;
                   break;
             }

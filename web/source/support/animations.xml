@@ -15,13 +15,17 @@
    The following attributes are supported for the <code>animate</code> animation:
    <ul>
       <li>
-         <code>opacity</code> for all elements</li>
+         <code>x</code> and <code>y</code> for <code>rect</code>, <code>image</code>, and <code>g</code> elements</li>      
       <li>
-         <code>width</code> and <code>height</code> for <code>rect</code> elements</li>
+         <code>opacity</code> and <code>visibility</code> for all elements</li>
+      <li>
+         <code>width</code> and <code>height</code> for <code>rect</code> and <code>image</code> elements</li>
       <li>
          <code>r</code> for <code>circle</code> elements</li>       
       <li>
-         <code>rx</code> and <code>ry</code> for <code>ellipse</code> elements</li>                    
+         <code>rx</code> and <code>ry</code> for <code>ellipse</code> elements</li>   
+      <li>
+         <code>x1</code>, <code>y1</code>, <code>x2</code>, <code>y2</code> for <code>line</code> elements</li>                            
    </ul>
    
    <title title="limitations" />

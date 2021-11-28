@@ -35,6 +35,7 @@ package org.girod.javafx.loaders;
 import java.io.File;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
@@ -70,11 +71,9 @@ public class TestSVGLoaderFX extends Application {
       if (file != null) {
          try {
             SVGImage svgImg = SVGLoader.load(file);
-            stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
-
-            StackPane root = new StackPane();
-            root.getChildren().add(svgImg);
-            stage.setScene(new Scene(root, 300, 250));
+            Group group = new Group();
+            group.getChildren().add(svgImg);
+            stage.setScene(new Scene(group, 300, 250));
             stage.show();
          } catch (SVGParsingException e) {
             Throwable th = e.getCause();
