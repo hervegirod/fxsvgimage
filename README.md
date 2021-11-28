@@ -44,6 +44,7 @@ This library support:
 - rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan
 - use, symbol
 - fill, stroke, style, class, transform attributes
+- animations (partial)
 
 # Limitations
 - Radial gradients which use absolute values for their definitions do not work correctly for the moment
