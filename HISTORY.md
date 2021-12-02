@@ -108,3 +108,6 @@
  - Add a parameter to allow to center the resulting svg
  - Support the visibility attribute
  - Start support for svg animations: animateTransform, animateMotion, and animate are partially suppported
+
+## 0.6.1 (in progress)
+ - Fix the browser not showing some animations correctly
