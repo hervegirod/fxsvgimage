@@ -65,7 +65,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * A sample browser.
  *
- * @version 0.5.3
+ * @version 0.6.1
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
@@ -207,8 +207,8 @@ public class SVGBrowser extends Application {
       try {
          SVGImage image = SVGLoader.load(file.toURI().toURL());
 
-         Group group = new Group(outerNode(image));
-         StackPane content = new StackPane(group);
+         Group group = new Group(image);
+         MyStackPane content = new MyStackPane(group);
          group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
             // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
@@ -220,6 +220,7 @@ public class SVGBrowser extends Application {
          scrollPane.setFitToWidth(true);
          scrollPane.setPrefSize(500, 500);
          Tab tab = new Tab(file.getName(), scrollPane);
+         content.allowLayoutChildren(false);
          content.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent event) {
@@ -264,5 +265,25 @@ public class SVGBrowser extends Application {
       } catch (IOException ex) {
          ex.printStackTrace();
       }
+   }
+
+   private class MyStackPane extends StackPane {
+      private boolean allowLayoutChildren = true;
+
+      private MyStackPane(Node root) {
+         super(root);
+      }
+
+      private void allowLayoutChildren(boolean allow) {
+         this.allowLayoutChildren = allow;
+      }
+
+      @Override
+      public void layoutChildren() {
+         if (allowLayoutChildren) {
+            super.layoutChildren();
+         }
+      }
+
    }
 }
