@@ -111,3 +111,6 @@
 
 ## 0.6.1 (in progress)
  - Fix the browser not showing some animations correctly
+ - Protect the browser against invalid SVG files
+ - Fix the scale transform not working with only one argument
+ - Fix the skewX and skewY transforms
