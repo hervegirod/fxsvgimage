@@ -45,7 +45,7 @@ import javafx.scene.transform.Transform;
 /**
  * Parser utilities for transforms.
  *
- * @since 0.6
+ * @version 0.6.1
  */
 public class TransformUtils implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
@@ -138,6 +138,9 @@ public class TransformUtils implements SVGTags {
             if (args.size() == 2) {
                Transform transform = Transform.scale(args.get(0), args.get(1));
                transformList.add(transform);
+            } else if (args.size() == 1) {
+               Transform transform = Transform.scale(args.get(0), args.get(0));
+               transformList.add(transform);
             }
          } else if (transformTxt.startsWith("scaleX(")) {
             List<Double> args = getTransformArguments(transformTxt, viewport);
@@ -163,13 +166,13 @@ public class TransformUtils implements SVGTags {
          } else if (transformTxt.startsWith("skewX(")) {
             List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               Transform transform = Transform.shear(args.get(0), 1);
+               Transform transform = Transform.shear(Math.tan(Math.toRadians(args.get(0))), 0);
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewY(")) {
             List<Double> args = getTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               Transform transform = Transform.shear(1, args.get(0));
+               Transform transform = Transform.shear(0, Math.tan(Math.toRadians(args.get(0))));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("matrix(")) {
