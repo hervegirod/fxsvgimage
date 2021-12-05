@@ -46,6 +46,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -57,6 +61,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.girod.javafx.svgimage.SVGImage;
@@ -206,6 +211,14 @@ public class SVGBrowser extends Application {
 
       try {
          SVGImage image = SVGLoader.load(file.toURI().toURL());
+         if (image == null) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Invalid SVG file");
+            alert.setContentText("The file appear not to be a valid SVG file");
+            alert.showAndWait();
+            return;
+         }
 
          Group group = new Group(image);
          MyStackPane content = new MyStackPane(group);
