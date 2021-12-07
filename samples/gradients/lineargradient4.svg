@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"> 
+   <defs>
+      <linearGradient id="grad-ucgg-generated" gradientUnits="userSpaceOnUse" 
+                      x1="0%" y1="0%" x2="100%" y2="0%" gradientTransform="rotate(65)">
+         <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+         <stop offset="100%" stop-color="#ff0000" stop-opacity="1"/>
+      </linearGradient>
+   </defs>  
+   <rect x="0" y="0" width="100" height="100" fill="url(#grad-ucgg-generated)" />
+</svg>
