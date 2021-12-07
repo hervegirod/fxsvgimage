@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="250" height="170" viewBox="-125 -25 250 170">
+   <style>.translate {
+  stroke: green;
+  stroke-width: 2;
+  fill: none;
+  }
+  
+.rotate {
+  stroke: red;
+  stroke-width: 2;
+  fill: none;
+  }
+  
+.reference {
+  stroke: blue;
+  border: solid 1px blue;
+  }</style>   
+  <rect x="0" y="0" width="100" height="100" fill="none" stroke="black"/>
+  <path class="rotate" d="M -100 100 A 141.1 141.1 0 0 0 100 100"/>
+  <line class="translate" x1="0" x2="-100" y1="0" y2="100"/>
+  <text text-anchor="middle" class="reference">0,0</text>
+  <text text-anchor="middle" transform="rotate(90) translate(100,100)">RT</text>
+</svg>
