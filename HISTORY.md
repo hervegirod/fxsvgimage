@@ -117,5 +117,5 @@
  - Support the "none" color
  - Handle the cases where the viewPort position is not at 0,0
  - Add a LoaderParameter property to specify if the viewPort position is taken into account
- - Fix the gradients href parameter only been token into account if the referecned gradient was defined before the one which referred to it
- - Fix the gradients gradientTransform parameter not takne into account in the majority of cases
+ - Fix the gradients href parameter only been taken into account if the referecned gradient was defined before the one which referred to it
+ - Fix the gradients gradientTransform parameter not taken into account in the majority of cases
