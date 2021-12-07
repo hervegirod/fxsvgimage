@@ -18,8 +18,11 @@
    <title level="2" title="scale" keepCase="true"/>
    The <code>scale</code> parameter allows to scale the SVG result. Note that:
    <ul>
-      <li>An alternate way to define a scaling is to use the <code>width</code> parameter</li>      
+      <li>An alternate way to define a scaling is to use the <code>width</code> parameter. These two parameters are
+         mutually exclusive. If the <code>scale</code> and <code>width</code> are both present, the <code>scale</code> will
+         be applied and <code>width</code> will be ignored</li>      
    </ul>
+   By default the SVG result is not scaled.
       
    For example:
    <pre syntax="java">
@@ -34,18 +37,19 @@
       <pre syntax="xml">
          &lt;line x1="0" y1="0" x2="200" y2="200" /&gt;
       </pre>
-      and you apply the previous parmaters during the loading, the rsult will be as if you had:
+      and you apply the previous parmaters during the loading, the result will be as if you had:
       <pre syntax="xml">
          &lt;line x1="0" y1="0" x2="100" y2="100" /&gt;
       </pre>      
    </messageBox>
    
    <title level="2" title="width" keepCase="true"/>
-   The <code>width</code> parameter allows to scale the SVG result by specifying the desiredwidth of the result. Note that:
+   The <code>width</code> parameter allows to scale the SVG result by specifying the desired width of the result. Note that:
    <ul>
       <li>An alternate way to define a scaling is to use the <code>scale</code> parameter</li>      
       <li>The parser will not apply a transform on the result of the parsing but will scale each coordinate during the parsing</li>
    </ul>
+   By default the SVG result with will not be scaled.
       
    For example:
    <pre syntax="java">
@@ -57,6 +61,8 @@
    <title level="2" title="scaleLineWidth" keepCase="true"/>
    The <code>scaleLineWidth</code> parameter specifies if line widths will also be scaled if the <code>scale</code> or 
    <code>width</code> parameter is used to scale the SVG result.
+   
+   By default the line widths will also be scaled.   
          
    For example:
    <pre syntax="java">
@@ -69,13 +75,27 @@
    <title level="2" title="centerImage" keepCase="true"/>
    The <code>centerImage</code> parameter specifies if the resulting SVG Node position must be centered.
          
+   By default the SVG Node position will not be centered.   
+                  
    For example:
    <pre syntax="java">
       LoaderParameters params = new LoaderParameters();
-      params.scale = 0.5d;
       params.centerImage = true;
       SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
-   </pre>             
+   </pre> 
+   
+   <title level="2" title="applyViewportPosition" keepCase="true"/>
+   The <code>applyViewportPosition</code> parameter specifies if the x and x coordinates of the viewPort position must
+   be taken into account in the result.
+
+   By default the SVG viewPort position will be taken into account.    
+   
+   For example:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.applyViewportPosition = false;
+      SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
+   </pre>                                  
                
    <see id="SVGLoader" />               
    <cat id="general" />
