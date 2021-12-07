@@ -11,6 +11,7 @@
    The <ref id="SVGImage" /> result is a JavaFX Group. 
    
    <title title="parameters"/>
+   <moreInfo id="LoaderParameters" />
    By default the result has the same size as the input SVG image. However several parameters allow to 
    configure the result:
    <ul>
