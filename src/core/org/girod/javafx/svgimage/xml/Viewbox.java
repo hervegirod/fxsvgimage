@@ -37,7 +37,7 @@ import javafx.scene.Node;
 /**
  * Represents a viewbox for a symbol.
  *
- * @version 0.6
+ * @version 0.6.1
  */
 public class Viewbox {
    /**
@@ -48,6 +48,14 @@ public class Viewbox {
     * The height attribute.
     */
    protected double height = 0;
+   /**
+    * The x position of the viewBox attribute.
+    */
+   protected double viewboxX = 0;
+   /**
+    * The y position of the viewBox attribute.
+    */
+   protected double viewboxY = 0;
    /**
     * The width of the viewBox attribute.
     */
@@ -89,10 +97,14 @@ public class Viewbox {
    /**
     * Set the width and height of the viewBox
     *
+    * @param viewboxX the viewBox X coordinate
+    * @param viewboxY the viewBox y coordinate
     * @param viewboxWidth the viewBox width
     * @param viewboxHeight the viewBox height
     */
-   public void setViewbox(double viewboxWidth, double viewboxHeight) {
+   public void setViewbox(double viewboxX, double viewboxY, double viewboxWidth, double viewboxHeight) {
+      this.viewboxX = viewboxX;
+      this.viewboxY = viewboxY;
       this.viewboxWidth = viewboxWidth;
       this.viewboxHeight = viewboxHeight;
    }
@@ -125,6 +137,24 @@ public class Viewbox {
       } else {
          return value;
       }
+   }
+
+   /**
+    * Return the viewBox x position.
+    *
+    * @return the x position
+    */
+   public double getViewboxX() {
+      return viewboxX;
+   }
+
+   /**
+    * Return the viewBox y position.
+    *
+    * @return the y position
+    */
+   public double getViewboxY() {
+      return viewboxY;
    }
 
    /**

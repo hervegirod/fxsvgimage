@@ -33,36 +33,158 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage.xml;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.Paint;
+import javafx.scene.paint.Stop;
+import javafx.scene.transform.Transform;
 
 /**
  * Contains the specification for a radial or linear gradient.
  *
- * @version 0.5.4
+ * @version 0.6.1
  */
-public class GradientSpec {
-   private final List<Stop> stops = new ArrayList<>();
+public abstract class GradientSpec implements SVGTags {
+   protected String href = null;
+   protected XMLNode xmlNode = null;
+   protected boolean isResolved = false;
+   protected List<StopSpec> specStops = new ArrayList<>();
+   protected List<Transform> transformList = null;
 
-   public GradientSpec() {
+   public GradientSpec(XMLNode node) {
+      this.xmlNode = node;
    }
 
-   public Stop addStop(double offset, double opacity, Color color) {
-      Stop stop = new Stop(offset, opacity, color);
-      stops.add(stop);
+   public GradientSpec(XMLNode node, String href) {
+      this.xmlNode = node;
+      this.href = href;
+   }
+
+   public XMLNode getNode() {
+      return xmlNode;
+   }
+
+   public boolean isResolved() {
+      return isResolved;
+   }
+
+   public abstract Paint getPaint();
+
+   public abstract void resolve(Map<String, GradientSpec> gradients, Viewport viewport);
+
+   public void setTransformList(List<Transform> transformList) {
+      this.transformList = transformList;
+   }
+
+   public List<Transform> getTransformList() {
+      return transformList;
+   }
+
+   protected static double getGradientPos(XMLNode xmlNode, String id) {
+      String attrvalue = xmlNode.getAttributeValue(id);
+      if (attrvalue.endsWith("%") && attrvalue.length() > 1) {
+         attrvalue = attrvalue.substring(0, attrvalue.length() - 1);
+         return ParserUtils.parseDoubleProtected(attrvalue) / 100;
+      } else {
+         return ParserUtils.parseDoubleProtected(attrvalue);
+      }
+   }
+
+   protected static CycleMethod getCycleMethod(String value) {
+      if (value.equals(SPREAD_REFLECT)) {
+         return CycleMethod.REFLECT;
+      } else if (value.equals(SPREAD_REPEAT)) {
+         return CycleMethod.REPEAT;
+      } else {
+         return CycleMethod.NO_CYCLE;
+      }
+   }
+
+   public StopSpec addStop(double offset, double opacity, Color color) {
+      StopSpec stop = new StopSpec(offset, opacity, color);
+      specStops.add(stop);
       return stop;
    }
 
-   public List<Stop> getStops() {
+   public List<StopSpec> getStops() {
+      return specStops;
+   }
+
+   protected List<Stop> convertStops(List<GradientSpec.StopSpec> specstops) {
+      List<Stop> stops = new ArrayList<>();
+      Iterator<GradientSpec.StopSpec> it = specstops.iterator();
+      while (it.hasNext()) {
+         GradientSpec.StopSpec theStop = it.next();
+         Stop stop = new Stop(theStop.offset, theStop.color);
+         stops.add(stop);
+      }
       return stops;
    }
 
-   public static class Stop {
+   protected List<GradientSpec.StopSpec> buildStops(GradientSpec spec, XMLNode xmlNode, String kindOfGradient) {
+      List<GradientSpec.StopSpec> stops = new ArrayList<>();
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode childNode = it.next();
+         if (!childNode.getName().equals(STOP)) {
+            continue;
+         }
+         double offset = 0d;
+         String color = null;
+         double opacity = 1.0;
+
+         Iterator<String> it2 = childNode.getAttributes().keySet().iterator();
+         while (it2.hasNext()) {
+            String attrname = it2.next();
+            switch (attrname) {
+               case OFFSET:
+                  offset = PercentParser.parseValue(childNode, attrname);
+                  break;
+               case STOP_COLOR:
+                  color = childNode.getAttributeValue(attrname);
+                  break;
+               case STOP_OPACITY:
+                  opacity = ParserUtils.parseDoubleProtected(childNode.getAttributeValue(attrname));
+                  break;
+               case STYLE:
+                  String style = childNode.getAttributeValue(attrname);
+                  StringTokenizer tokenizer = new StringTokenizer(style, ";");
+                  while (tokenizer.hasMoreTokens()) {
+                     String item = tokenizer.nextToken().trim();
+                     if (item.startsWith(STOP_COLOR)) {
+                        color = item.substring(11);
+                     } else if (item.startsWith(STOP_OPACITY)) {
+                        opacity = ParserUtils.parseDoubleProtected(item.substring(13));
+                     } else if (item.startsWith(OFFSET)) {
+                        offset = PercentParser.parseValue(item.substring(7));
+                     }
+                  }
+                  break;
+               default:
+                  break;
+            }
+         }
+
+         if (color != null) {
+            Color colour = Color.web(color, opacity);
+            GradientSpec.StopSpec stop = spec.addStop(offset, opacity, colour);
+            stops.add(stop);
+         }
+      }
+
+      return stops;
+   }
+
+   public static class StopSpec {
       public final double offset;
       public final double opacity;
       public final Color color;
 
-      private Stop(double offset, double opacity, Color color) {
+      private StopSpec(double offset, double opacity, Color color) {
          this.offset = offset;
          this.opacity = opacity;
          this.color = color;

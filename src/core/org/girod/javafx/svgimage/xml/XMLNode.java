@@ -514,10 +514,10 @@ public class XMLNode {
             double d = LengthParser.parsePosition(attrvalue, isWidth, bounds, viewport);
             return d;
          } catch (NumberFormatException e) {
-            return defaultValue;
+            return viewport.getDefaultPosition(defaultValue, isWidth);
          }
       } else {
-         return defaultValue;
+         return viewport.getDefaultPosition(defaultValue, isWidth);
       }
    }
 

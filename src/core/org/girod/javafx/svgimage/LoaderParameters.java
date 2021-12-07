@@ -38,11 +38,14 @@ package org.girod.javafx.svgimage;
  * <li>No styleSheets is used</li>
  * <li>No scaling is applied</li>
  * <li>No width setting is applied</li>
+ * <li>The animations are auto started</li>
+ * <li>The resulting image is not centered</li>
+ * <li>Ther viewPort position is taken into account</li>
  * </ul>
  *
- * @version 0.6
+ * @version 0.6.1
  */
-public class LoaderParameters {
+public class LoaderParameters implements Cloneable {
    /**
     * The styleSheets. The default is null, which means that no styleSheets is used.
     */
@@ -67,4 +70,48 @@ public class LoaderParameters {
     * True if the resulting image must be centered. The default is false.
     */
    public boolean centerImage = false;
+   /**
+    * True if the x and y position of the viewPort is applied. The default is true.
+    */
+   public boolean applyViewportPosition = true;
+
+   /**
+    * Create a clone of the parameters.
+    *
+    * @return the cloned parameters
+    */
+   @Override
+   public LoaderParameters clone() {
+      try {
+         LoaderParameters params = (LoaderParameters) super.clone();
+         return params;
+      } catch (CloneNotSupportedException ex) {
+         // we should never go there
+         return this;
+      }
+   }
+
+   /**
+    * Create parameters with a width property.
+    *
+    * @param width the width
+    * @return the LoaderParameters
+    */
+   public static LoaderParameters createWidthParameters(double width) {
+      LoaderParameters params = new LoaderParameters();
+      params.width = width;
+      return params;
+   }
+
+   /**
+    * Create a parameters with a scale property.
+    *
+    * @param scale the scale
+    * @return the LoaderParameters
+    */
+   public static LoaderParameters createScaleParameters(double scale) {
+      LoaderParameters params = new LoaderParameters();
+      params.scale = scale;
+      return params;
+   }
 }

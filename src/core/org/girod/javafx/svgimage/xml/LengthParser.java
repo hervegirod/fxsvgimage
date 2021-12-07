@@ -140,11 +140,11 @@ public class LengthParser {
       Matcher m = NUMBER.matcher(lengthValue);
       if (m.matches()) {
          if (bounds == null) {
-            return viewport.scaleLength(Double.parseDouble(lengthValue));
+            return viewport.scalePosition(Double.parseDouble(lengthValue), isWidth);
          } else if (isWidth) {
-            return viewport.scaleLength(bounds.getMinX() + Double.parseDouble(lengthValue) * bounds.getWidth());
+            return viewport.scalePosition(bounds.getMinX() + Double.parseDouble(lengthValue) * bounds.getWidth(), isWidth);
          } else {
-            return viewport.scaleLength(bounds.getMinY() + Double.parseDouble(lengthValue) * bounds.getHeight());
+            return viewport.scalePosition(bounds.getMinY() + Double.parseDouble(lengthValue) * bounds.getHeight(), isWidth);
          }
       }
       m = NUMBER_UNIT.matcher(lengthValue);
@@ -163,22 +163,22 @@ public class LengthParser {
          }
          switch (unitS) {
             case "px":
-               return viewport.scaleLength(parsedValue);
+               return viewport.scalePosition(parsedValue, isWidth);
             case "pt":
-               return viewport.scaleLength(parsedValue / INCH * 72d / 96d);
+               return viewport.scalePosition(parsedValue / INCH * 72d / 96d, isWidth);
             case "in":
-               return viewport.scaleLength(parsedValue / INCH);
+               return viewport.scalePosition(parsedValue / INCH, isWidth);
             case "cm":
-               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d));
+               return viewport.scalePosition(parsedValue / INCH * 72d / (96d * 2.54d), isWidth);
             case "mm":
-               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d * 10));
+               return viewport.scalePosition(parsedValue / INCH * 72d / (96d * 2.54d * 10), isWidth);
             case "%":
                if (viewport == null) {
                   return 0;
                } else if (isWidth) {
-                  return viewport.scaleLength(parsedValue * viewport.getBestWidth() / 100);
+                  return viewport.scalePosition(parsedValue * viewport.getBestWidth() / 100, isWidth);
                } else {
-                  return viewport.scaleLength(parsedValue * viewport.getBestHeight() / 100);
+                  return viewport.scalePosition(parsedValue * viewport.getBestHeight() / 100, isWidth);
                }
             default:
                return parsedValue;

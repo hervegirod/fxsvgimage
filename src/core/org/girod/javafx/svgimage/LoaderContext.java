@@ -39,7 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.animation.Animation;
-import javafx.animation.Transition;
 import javafx.scene.paint.Paint;
 import org.girod.javafx.svgimage.xml.ClippingFactory;
 import org.girod.javafx.svgimage.xml.FilterSpec;
@@ -52,7 +51,7 @@ import org.girod.javafx.svgimage.xml.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 0.6
+ * @version 0.6.1
  */
 public class LoaderContext {
    /**

@@ -48,10 +48,7 @@ import javafx.scene.effect.Light;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
-import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
@@ -66,8 +63,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
 import org.girod.javafx.svgimage.LoaderContext;
@@ -289,6 +284,9 @@ public class SVGShapeBuilder implements SVGTags {
          switch (name) {
             case TSPAN: {
                text = buildTspan(group, text, childNode, bounds, viewbox, viewport);
+               if (xmlNode.hasAttribute(TEXT_DECORATION)) {
+                  SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+               }
                break;
             }
          }
@@ -415,143 +413,31 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
-   private static List<Stop> convertStops(List<GradientSpec.Stop> specstops) {
+   private static List<Stop> convertStops(List<GradientSpec.StopSpec> specstops) {
       List<Stop> stops = new ArrayList<>();
-      Iterator<GradientSpec.Stop> it = specstops.iterator();
+      Iterator<GradientSpec.StopSpec> it = specstops.iterator();
       while (it.hasNext()) {
-         GradientSpec.Stop theStop = it.next();
+         GradientSpec.StopSpec theStop = it.next();
          Stop stop = new Stop(theStop.offset, theStop.color);
          stops.add(stop);
       }
       return stops;
    }
 
-   private static boolean isPercent(XMLNode xmlNode, String attrname) {
-      if (xmlNode.hasAttribute(attrname)) {
-         String value = xmlNode.getAttributeValue(attrname);
-         return value.endsWith("%");
-      } else {
-         return true;
-      }
-   }
-
    public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
-      String id = null;
-      Double fx = null;
-      Double fy = null;
-      Double cx = null;
-      Double cy = null;
-      Double r = null;
-      List<Transform> transformList = null;
-      String href = null;
-      CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
-
-      boolean isAbsolute = false;
-      Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
-      while (it.hasNext()) {
-         String attrname = it.next();
-         switch (attrname) {
-            case ID:
-               id = xmlNode.getAttributeValue(attrname);
-               break;
-            case XLINK_HREF:
-               href = xmlNode.getAttributeValue(attrname);
-               if (href.startsWith("#")) {
-                  href = href.substring(1);
-               } else {
-                  href = null;
-               }
-               break;
-            case GRADIENT_UNITS:
-               String gradientUnits = xmlNode.getAttributeValue(attrname);
-               if (!gradientUnits.equals(USERSPACE_ON_USE)) {
-                  return;
-               }
-               break;
-            case SPREAD_METHOD:
-               String methodS = xmlNode.getAttributeValue(attrname);
-               cycleMethod = getCycleMethod(methodS);
-               break;
-            case FX:
-               fx = PercentParser.parseValue(xmlNode, attrname, true);
-               break;
-            case FY:
-               fy = PercentParser.parseValue(xmlNode, attrname, true);
-               break;
-            case CX:
-               cx = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
-               break;
-            case CY:
-               cy = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
-               break;
-            case R:
-               r = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
-               break;
-            case GRADIENT_TRANSFORM:
-               transformList = TransformUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
-               break;
-            default:
-               break;
+      if (xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         String href = null;
+         if (xmlNode.hasAttribute(XLINK_HREF)) {
+            href = xmlNode.getAttributeValue(XLINK_HREF);
+            if (href.startsWith("#")) {
+               href = href.substring(1);
+            } else {
+               href = null;
+            }
          }
-      }
-
-      GradientSpec spec = new GradientSpec();
-      if (id != null) {
+         RadialGradientSpec spec = new RadialGradientSpec(xmlNode, href);
          gradientSpecs.put(id, spec);
-      }
-      List<GradientSpec.Stop> specstops = SVGShapeBuilder.buildStops(spec, xmlNode, RADIAL_GRADIENT);
-      if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
-         specstops = gradientSpecs.get(href).getStops();
-      }
-      List<Stop> stops = convertStops(specstops);
-
-      if (id != null && cx != null && cy != null && r != null) {
-         double fDistance = 0.0;
-         double fAngle = 0.0;
-
-         if (transformList != null && !transformList.isEmpty()) {
-            Transform concatTransform = null;
-            Iterator<Transform> it2 = transformList.iterator();
-            while (it2.hasNext()) {
-               Transform theTransform = it2.next();
-               if (concatTransform == null) {
-                  concatTransform = theTransform;
-               } else {
-                  concatTransform = concatTransform.createConcatenation(theTransform);
-               }
-            }
-
-            if (concatTransform != null && concatTransform instanceof Affine) {
-               double tempCx = cx;
-               double tempCy = cy;
-               double tempR = r;
-               Affine affine = (Affine) concatTransform;
-               cx = tempCx * affine.getMxx() + tempCy * affine.getMxy() + affine.getTx();
-               cy = tempCx * affine.getMyx() + tempCy * affine.getMyy() + affine.getTy();
-
-               r = Math.sqrt(tempR * affine.getMxx() * tempR * affine.getMxx() + tempR * affine.getMyx() * tempR * affine.getMyx());
-
-               if (fx != null && fy != null) {
-                  double tempFx = fx;
-                  double tempFy = fy;
-                  fx = tempFx * affine.getMxx() + tempFy * affine.getMxy() + affine.getTx();
-                  fy = tempFx * affine.getMyx() + tempFy * affine.getMyy() + affine.getTy();
-               } else {
-                  fAngle = Math.asin(affine.getMyx()) * 180.0 / Math.PI;
-                  fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
-               }
-            }
-         }
-         if (fx != null && fy != null) {
-            fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
-            fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
-         }
-
-         RadialGradient gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, !isAbsolute, cycleMethod, stops);
-         gradients.put(id, gradient);
       }
    }
 
@@ -563,165 +449,21 @@ public class SVGShapeBuilder implements SVGTags {
       return ParserUtils.parseDoubleProtected(attrvalue) / 100;
    }
 
-   private static CycleMethod getCycleMethod(String value) {
-      if (value.equals(SPREAD_REFLECT)) {
-         return CycleMethod.REFLECT;
-      } else if (value.equals(SPREAD_REPEAT)) {
-         return CycleMethod.REPEAT;
-      } else {
-         return CycleMethod.NO_CYCLE;
-      }
-   }
-
    public static void buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
-      String id = null;
-      double x1 = 0;
-      double y1 = 0;
-      double x2 = 1d;
-      double y2 = 0d;
-      List<Transform> transformList = null;
-      String href = null;
-      CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
-
-      Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
-      while (it.hasNext()) {
-         String attrname = it.next();
-         switch (attrname) {
-            case ID:
-               id = xmlNode.getAttributeValue(attrname);
-               break;
-            case XLINK_HREF:
-               href = xmlNode.getAttributeValue(attrname);
-               if (href.startsWith("#")) {
-                  href = href.substring(1);
-               } else {
-                  href = null;
-               }
-               break;
-            case GRADIENT_UNITS:
-               String gradientUnits = xmlNode.getAttributeValue(attrname);
-               if (!gradientUnits.equals(USERSPACE_ON_USE)) {
-                  return;
-               }
-               break;
-            case SPREAD_METHOD:
-               String methodS = xmlNode.getAttributeValue(attrname);
-               cycleMethod = getCycleMethod(methodS);
-               break;
-            case X1:
-               x1 = getGradientPos(xmlNode, X1);
-               break;
-            case Y1:
-               y1 = getGradientPos(xmlNode, Y1);
-               break;
-            case X2:
-               x2 = getGradientPos(xmlNode, X2);
-               break;
-            case Y2:
-               y2 = getGradientPos(xmlNode, Y2);
-               break;
-            case GRADIENT_TRANSFORM:
-               transformList = TransformUtils.extractTransforms(xmlNode.getAttributeValue(attrname), viewport);
-               break;
-            default:
-               break;
+      if (xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         String href = null;
+         if (xmlNode.hasAttribute(XLINK_HREF)) {
+            href = xmlNode.getAttributeValue(XLINK_HREF);
+            if (href.startsWith("#")) {
+               href = href.substring(1);
+            } else {
+               href = null;
+            }
          }
-      }
-
-      GradientSpec spec = new GradientSpec();
-      if (id != null) {
+         LinearGradientSpec spec = new LinearGradientSpec(xmlNode, href);
          gradientSpecs.put(id, spec);
       }
-      List<GradientSpec.Stop> specstops = SVGShapeBuilder.buildStops(spec, xmlNode, LINEAR_GRADIENT);
-      if (specstops.isEmpty() && href != null && gradientSpecs.containsKey(href)) {
-         specstops = gradientSpecs.get(href).getStops();
-      }
-      List<Stop> stops = convertStops(specstops);
-
-      if (id != null && !(x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)) {
-
-         if (transformList != null && !transformList.isEmpty()) {
-            Transform concatTransform = null;
-            Iterator<Transform> it2 = transformList.iterator();
-            while (it2.hasNext()) {
-               Transform theTransform = it2.next();
-               if (concatTransform == null) {
-                  concatTransform = theTransform;
-               } else {
-                  concatTransform = concatTransform.createConcatenation(theTransform);
-               }
-            }
-
-            if (concatTransform != null && concatTransform instanceof Affine) {
-               double x1d = x1;
-               double y1d = y1;
-               double x2d = x2;
-               double y2d = y2;
-               Affine affine = (Affine) concatTransform;
-               x1 = x1d * affine.getMxx() + y1d * affine.getMxy() + affine.getTx();
-               y1 = x1d * affine.getMyx() + y1d * affine.getMyy() + affine.getTy();
-               x2 = x2d * affine.getMxx() + y2d * affine.getMxy() + affine.getTx();
-               y2 = x2d * affine.getMyx() + y2d * affine.getMyy() + affine.getTy();
-            }
-         }
-
-         LinearGradient gradient = new LinearGradient(x1, y1, x2, y2, true, cycleMethod, stops);
-         gradients.put(id, gradient);
-      }
-   }
-
-   public static List<GradientSpec.Stop> buildStops(GradientSpec spec, XMLNode xmlNode, String kindOfGradient) {
-      List<GradientSpec.Stop> stops = new ArrayList<>();
-      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
-      while (it.hasNext()) {
-         XMLNode childNode = it.next();
-         if (!childNode.getName().equals(STOP)) {
-            continue;
-         }
-         double offset = 0d;
-         String color = null;
-         double opacity = 1.0;
-
-         Iterator<String> it2 = childNode.getAttributes().keySet().iterator();
-         while (it2.hasNext()) {
-            String attrname = it2.next();
-            switch (attrname) {
-               case OFFSET:
-                  offset = PercentParser.parseValue(childNode, attrname);
-                  break;
-               case STOP_COLOR:
-                  color = childNode.getAttributeValue(attrname);
-                  break;
-               case STOP_OPACITY:
-                  opacity = ParserUtils.parseDoubleProtected(childNode.getAttributeValue(attrname));
-                  break;
-               case STYLE:
-                  String style = childNode.getAttributeValue(attrname);
-                  StringTokenizer tokenizer = new StringTokenizer(style, ";");
-                  while (tokenizer.hasMoreTokens()) {
-                     String item = tokenizer.nextToken().trim();
-                     if (item.startsWith(STOP_COLOR)) {
-                        color = item.substring(11);
-                     } else if (item.startsWith(STOP_OPACITY)) {
-                        opacity = ParserUtils.parseDoubleProtected(item.substring(13));
-                     } else if (item.startsWith(OFFSET)) {
-                        offset = PercentParser.parseValue(item.substring(7));
-                     }
-                  }
-                  break;
-               default:
-                  break;
-            }
-         }
-
-         if (color != null) {
-            Color colour = Color.web(color, opacity);
-            GradientSpec.Stop stop = spec.addStop(offset, opacity, colour);
-            stops.add(stop);
-         }
-      }
-
-      return stops;
    }
 
    /**

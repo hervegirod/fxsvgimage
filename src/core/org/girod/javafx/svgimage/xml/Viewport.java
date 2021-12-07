@@ -37,7 +37,7 @@ import javafx.scene.shape.Shape;
 /**
  * Represents the viewport.
  *
- * @since 0.6
+ * @version 0.6.1
  */
 public class Viewport extends Viewbox {
    private final boolean hasWidthAndHeight;
@@ -90,6 +90,32 @@ public class Viewport extends Viewbox {
       if (isScaled) {
          shape.setScaleX(scale);
          shape.setScaleY(scale);
+      }
+   }
+
+   /**
+    * Return a default position. Note that for the moment, this method returns the input value.
+    *
+    * @param defaultValue the default position value
+    * @param isWidth true for a width
+    * @return the default position
+    */
+   public double getDefaultPosition(double defaultValue, boolean isWidth) {
+      return defaultValue;
+   }
+
+   /**
+    * Scale a position value.
+    *
+    * @param value the position
+    * @param isWidth true for a widgdth coordinate
+    * @return the scaled position
+    */
+   public double scalePosition(double value, boolean isWidth) {
+      if (isScaled) {
+         return value * scale;
+      } else {
+         return value;
       }
    }
 

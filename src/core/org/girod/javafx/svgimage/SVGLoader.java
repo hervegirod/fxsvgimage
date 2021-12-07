@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -53,11 +54,13 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.Effect;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.girod.javafx.svgimage.xml.AnimationBuilder;
 import org.girod.javafx.svgimage.xml.FilterSpec;
+import org.girod.javafx.svgimage.xml.GradientSpec;
 import org.girod.javafx.svgimage.xml.ParserUtils;
 import org.girod.javafx.svgimage.xml.SVGParsingException;
 import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
@@ -505,6 +508,10 @@ public class SVGLoader implements SVGTags {
                   context.playAnimations();
                }
             }
+            if (context.params.applyViewportPosition) {
+               Transform transform = Transform.translate(-viewport.getViewboxX(), -viewport.getViewboxY());
+               img.getTransforms().add(transform);
+            }
          }
          return img;
       } catch (ParserConfigurationException | SAXException ex) {
@@ -682,7 +689,7 @@ public class SVGLoader implements SVGTags {
                break;
          }
          if (node != null) {
-            addStyles(node, childNode);
+            addStyles(node, childNode, false);
             group.getChildren().add(node);
             if (!animations.isEmpty()) {
                List<Animation> animationsList = AnimationBuilder.buildAnimations(childNode, node, animations, viewport);
@@ -700,7 +707,7 @@ public class SVGLoader implements SVGTags {
                Text tspanText = tspan.text;
                String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
                tspan.node.addAttribute(STYLE, theStyles);
-               addStyles(tspanText, tspan.node);
+               addStyles(tspanText, tspan.node, true);
                if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
@@ -719,12 +726,14 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void addStyles(Node node, XMLNode xmlNode) {
+   private void addStyles(Node node, XMLNode xmlNode, boolean isTextSpan) {
       setNodeStyle(node, xmlNode);
       ParserUtils.setVisibility(node, xmlNode);
       ParserUtils.setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
-      TransformUtils.setTransforms(node, xmlNode, viewport);
+      if (!isTextSpan) {
+         TransformUtils.setTransforms(node, xmlNode, viewport);
+      }
    }
 
    private void manageSVGStyle(XMLNode xmlNode) {
@@ -738,6 +747,20 @@ public class SVGLoader implements SVGTags {
 
    private void buildDefs(XMLNode xmlNode) {
       buildNode(xmlNode, null, true);
+      if (!context.gradientSpecs.isEmpty()) {
+         Map<String, GradientSpec> specs = context.gradientSpecs;
+         Iterator<GradientSpec> it = specs.values().iterator();
+         while (it.hasNext()) {
+            GradientSpec spec = it.next();
+            spec.resolve(specs, viewport);
+         }
+         Iterator<Entry<String, GradientSpec>> it2 = specs.entrySet().iterator();
+         while (it2.hasNext()) {
+            Entry<String, GradientSpec> entry = it2.next();
+            GradientSpec spec = entry.getValue();
+            context.gradients.put(entry.getKey(), spec.getPaint());
+         }
+      }
    }
 
    private Group buildGroup(XMLNode xmlNode) {

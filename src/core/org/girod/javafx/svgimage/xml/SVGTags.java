@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 0.5.6
+ * @version 0.6.1
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";

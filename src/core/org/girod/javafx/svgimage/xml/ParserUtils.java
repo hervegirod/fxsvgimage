@@ -60,7 +60,7 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.6
+ * @version 0.6.1
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -71,6 +71,9 @@ public class ParserUtils implements SVGTags {
    }
 
    public static Color getColor(String value) {
+      if (value.equals(NONE)) {
+         return null;
+      }
       try {
          return Color.web(value);
       } catch (IllegalArgumentException ex) {
@@ -494,6 +497,8 @@ public class ParserUtils implements SVGTags {
    }
 
    public static Viewport parseViewport(XMLNode xmlNode) {
+      double viewboxX = 0;
+      double viewboxY = 0;
       double width = 0;
       double height = 0;
       double viewboxWidth = 0;
@@ -503,8 +508,8 @@ public class ParserUtils implements SVGTags {
          String box = xmlNode.getAttributeValue(VIEWBOX);
          StringTokenizer tok = new StringTokenizer(box, " ,");
          if (tok.countTokens() >= 4) {
-            tok.nextToken();
-            tok.nextToken();
+            viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
+            viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
             viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
             viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
          }
@@ -524,7 +529,7 @@ public class ParserUtils implements SVGTags {
          boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
          theViewport.setPreserveAspectRatio(preserve);
       }
-      theViewport.setViewbox(viewboxWidth, viewboxHeight);
+      theViewport.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
       return theViewport;
    }
 
@@ -545,12 +550,12 @@ public class ParserUtils implements SVGTags {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");
             if (tok.countTokens() >= 4) {
-               tok.nextToken();
-               tok.nextToken();
+               double viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
                double viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
                double viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
                Viewbox theViewbox = new Viewbox(width, height);
-               theViewbox.setViewbox(viewboxWidth, viewboxHeight);
+               theViewbox.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
                return theViewbox;
             } else {
                return null;
