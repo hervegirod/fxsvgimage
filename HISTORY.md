@@ -109,7 +109,7 @@
  - Support the visibility attribute
  - Start support for svg animations: animateTransform, animateMotion, and animate are partially suppported
 
-## 0.6.1 (in progress)
+## 0.6.1
  - Fix the browser not showing some animations correctly
  - Protect the browser against invalid SVG files
  - Fix the scale transform not working with only one argument
