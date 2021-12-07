@@ -114,3 +114,8 @@
  - Protect the browser against invalid SVG files
  - Fix the scale transform not working with only one argument
  - Fix the skewX and skewY transforms
+ - Support the "none" color
+ - Handle the cases where the viewPort position is not at 0,0
+ - Add a LoaderParameter property to specify if the viewPort position is taken into account
+ - Fix the gradients href parameter only been token into account if the referecned gradient was defined before the one which referred to it
+ - Fix the gradients gradientTransform parameter not takne into account in the majority of cases
