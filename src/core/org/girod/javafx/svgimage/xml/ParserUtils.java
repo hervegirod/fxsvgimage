@@ -497,6 +497,7 @@ public class ParserUtils implements SVGTags {
    }
 
    public static Viewport parseViewport(XMLNode xmlNode) {
+      // note: this is slightly incorrect. see http://tutorials.jenkov.com/svg/svg-viewport-view-box.html
       double viewboxX = 0;
       double viewboxY = 0;
       double width = 0;
@@ -517,6 +518,12 @@ public class ParserUtils implements SVGTags {
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
          width = xmlNode.getDoubleValue(WIDTH, 0);
          height = xmlNode.getDoubleValue(HEIGHT, 0);
+         if (ParserUtils.isPercent(xmlNode, WIDTH)) {
+            width = viewboxWidth * width / 100;
+         }
+         if (ParserUtils.isPercent(xmlNode, HEIGHT)) {
+            height = viewboxHeight * height / 100;
+         }
          hasWidthAndHeight = true;
       }
       Viewport theViewport;
@@ -567,5 +574,14 @@ public class ParserUtils implements SVGTags {
          return null;
       }
 
+   }
+
+   public static boolean isPercent(XMLNode xmlNode, String attrname) {
+      if (xmlNode.hasAttribute(attrname)) {
+         String value = xmlNode.getAttributeValue(attrname);
+         return value.endsWith("%");
+      } else {
+         return true;
+      }
    }
 }

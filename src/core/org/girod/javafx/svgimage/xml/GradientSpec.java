@@ -84,7 +84,7 @@ public abstract class GradientSpec implements SVGTags {
       return transformList;
    }
 
-   protected static double getGradientPos(XMLNode xmlNode, String id) {
+   protected double getGradientPos(XMLNode xmlNode, String id) {
       String attrvalue = xmlNode.getAttributeValue(id);
       if (attrvalue.endsWith("%") && attrvalue.length() > 1) {
          attrvalue = attrvalue.substring(0, attrvalue.length() - 1);
@@ -94,7 +94,7 @@ public abstract class GradientSpec implements SVGTags {
       }
    }
 
-   protected static CycleMethod getCycleMethod(String value) {
+   protected CycleMethod getCycleMethod(String value) {
       if (value.equals(SPREAD_REFLECT)) {
          return CycleMethod.REFLECT;
       } else if (value.equals(SPREAD_REPEAT)) {
@@ -188,6 +188,21 @@ public abstract class GradientSpec implements SVGTags {
          this.offset = offset;
          this.opacity = opacity;
          this.color = color;
+      }
+   }
+
+   protected static class Coord {
+      protected final double value;
+      protected final boolean isProportional;
+
+      private Coord(double value) {
+         this.value = value;
+         this.isProportional = false;
+      }
+
+      private Coord(double value, boolean isProportional) {
+         this.value = value;
+         this.isProportional = true;
       }
    }
 }

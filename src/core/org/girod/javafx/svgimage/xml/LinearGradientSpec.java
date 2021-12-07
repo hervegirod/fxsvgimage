@@ -81,6 +81,7 @@ public class LinearGradientSpec extends GradientSpec {
       CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
       boolean hasPos = false;
       boolean hasSpread = false;
+      boolean isProportional = false;
 
       Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
       while (it.hasNext()) {
@@ -99,18 +100,22 @@ public class LinearGradientSpec extends GradientSpec {
                break;
             case X1:
                x1 = getGradientPos(xmlNode, X1);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case Y1:
                y1 = getGradientPos(xmlNode, Y1);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case X2:
                x2 = getGradientPos(xmlNode, X2);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case Y2:
                y2 = getGradientPos(xmlNode, Y2);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case GRADIENT_TRANSFORM:
@@ -133,6 +138,7 @@ public class LinearGradientSpec extends GradientSpec {
          y1 = refGradient.getStartY();
          x2 = refGradient.getEndX();
          y2 = refGradient.getEndY();
+         isProportional = refGradient.isProportional();
       }
       if (!hasSpread && linearSpec != null) {
          LinearGradient refGradient = linearSpec.gradient;
@@ -165,7 +171,7 @@ public class LinearGradientSpec extends GradientSpec {
       }
 
       List<Stop> stops = convertStops(specStops);
-      gradient = new LinearGradient(x1, y1, x2, y2, true, cycleMethod, stops);
+      gradient = new LinearGradient(x1, y1, x2, y2, isProportional, cycleMethod, stops);
       isResolved = true;
    }
 

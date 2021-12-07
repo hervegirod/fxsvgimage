@@ -39,7 +39,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.transform.Affine;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.transform.Transform;
 
 /**
@@ -85,7 +85,7 @@ public class RadialGradientSpec extends GradientSpec {
       boolean hasPos = false;
       boolean hasSpread = false;
 
-      boolean isAbsolute = false;
+      boolean isProportional = false;
       Iterator<String> it = xmlNode.getAttributes().keySet().iterator();
       while (it.hasNext()) {
          String attrname = it.next();
@@ -111,17 +111,17 @@ public class RadialGradientSpec extends GradientSpec {
                break;
             case CX:
                cx = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case CY:
                cy = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case R:
                r = PercentParser.parseValue(xmlNode, attrname, true);
-               isAbsolute = isAbsolute || !isPercent(xmlNode, attrname);
+               isProportional = isProportional || ParserUtils.isPercent(xmlNode, attrname);
                hasPos = true;
                break;
             case GRADIENT_TRANSFORM:
@@ -145,7 +145,7 @@ public class RadialGradientSpec extends GradientSpec {
          cx = refGradient.getCenterX();
          cy = refGradient.getCenterY();
          r = refGradient.getRadius();
-         isAbsolute = !refGradient.isProportional();
+         isProportional = refGradient.isProportional();
       }
       if (!hasSpread && radialSpec != null) {
          RadialGradient refGradient = radialSpec.gradient;
@@ -168,23 +168,21 @@ public class RadialGradientSpec extends GradientSpec {
                }
             }
 
-            if (concatTransform != null && concatTransform instanceof Affine) {
+            if (concatTransform != null) {
                double tempCx = cx;
                double tempCy = cy;
                double tempR = r;
-               Affine affine = (Affine) concatTransform;
-               cx = tempCx * affine.getMxx() + tempCy * affine.getMxy() + affine.getTx();
-               cy = tempCx * affine.getMyx() + tempCy * affine.getMyy() + affine.getTy();
+               cx = tempCx * concatTransform.getMxx() + tempCy * concatTransform.getMxy() + concatTransform.getTx();
+               cy = tempCx * concatTransform.getMyx() + tempCy * concatTransform.getMyy() + concatTransform.getTy();
 
-               r = Math.sqrt(tempR * affine.getMxx() * tempR * affine.getMxx() + tempR * affine.getMyx() * tempR * affine.getMyx());
-
+               r = Math.sqrt(tempR * concatTransform.getMxx() * tempR * concatTransform.getMxx() + tempR * concatTransform.getMyx() * tempR * concatTransform.getMyx());
                if (fx != null && fy != null) {
                   double tempFx = fx;
                   double tempFy = fy;
-                  fx = tempFx * affine.getMxx() + tempFy * affine.getMxy() + affine.getTx();
-                  fy = tempFx * affine.getMyx() + tempFy * affine.getMyy() + affine.getTy();
+                  fx = tempFx * concatTransform.getMxx() + tempFy * concatTransform.getMxy() + concatTransform.getTx();
+                  fy = tempFx * concatTransform.getMyx() + tempFy * concatTransform.getMyy() + concatTransform.getTy();
                } else {
-                  fAngle = Math.asin(affine.getMyx()) * 180.0 / Math.PI;
+                  fAngle = Math.asin(concatTransform.getMyx()) * 180.0 / Math.PI;
                   fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
                }
             }
@@ -193,19 +191,9 @@ public class RadialGradientSpec extends GradientSpec {
             fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
             fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
          }
-
          List<Stop> stops = convertStops(specStops);
-         gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, !isAbsolute, cycleMethod, stops);
+         gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, isProportional, cycleMethod, stops);
          isResolved = true;
-      }
-   }
-
-   private static boolean isPercent(XMLNode xmlNode, String attrname) {
-      if (xmlNode.hasAttribute(attrname)) {
-         String value = xmlNode.getAttributeValue(attrname);
-         return value.endsWith("%");
-      } else {
-         return true;
       }
    }
 
