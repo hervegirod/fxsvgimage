@@ -119,3 +119,5 @@
  - Add a LoaderParameter property to specify if the viewPort position is taken into account
  - Fix the gradients href parameter only been taken into account if the referenced gradient was defined before the one which referred to it
  - Fix the gradients gradientTransform parameter not taken into account in the majority of cases
+ - Handle proportional coordinates for linear gradients
+ - Handle width and height specified in % in the svg root
