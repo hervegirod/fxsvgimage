@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: org.girod.javafx.svgimage.browser.SVGBrowser
+Automatic-Module-Name: org.girod.javafx.svgimage.browser
 Class-Path: fxsvgImage.jar
