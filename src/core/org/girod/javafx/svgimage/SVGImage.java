@@ -316,6 +316,7 @@ public class SVGImage extends Group {
          return false;
       }
    }
+   
    /**
     * Saves a snapshot of the image.
     *

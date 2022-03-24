@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ import javafx.scene.transform.Transform;
 /**
  * Parser utilities for transforms.
  *
- * @version 0.6.1
+ * @version 1.0
  */
 public class TransformUtils implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
@@ -63,7 +63,7 @@ public class TransformUtils implements SVGTags {
       return args;
    }
 
-   private static List<Double> getTransformArguments(String transformTxt, Viewport viewport) {
+   private static List<Double> getTranslateTransformArguments(String transformTxt, Viewport viewport) {
       List<Double> args = new ArrayList<>();
       Matcher m = TRANSFORM_PAT.matcher(transformTxt);
       if (m.matches()) {
@@ -71,6 +71,89 @@ public class TransformUtils implements SVGTags {
          StringTokenizer tok = new StringTokenizer(content, ", ");
          while (tok.hasMoreTokens()) {
             String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
+         }
+      } else {
+         return null;
+      }
+      return args;
+   }
+
+   private static List<Double> getScaleTransformArguments(String transformTxt, Viewport viewport) {
+      List<Double> args = new ArrayList<>();
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
+      if (m.matches()) {
+         String content = m.group(1);
+         StringTokenizer tok = new StringTokenizer(content, ", ");
+         while (tok.hasMoreTokens()) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+         }
+      } else {
+         return null;
+      }
+      return args;
+   }
+
+   private static List<Double> getRotateTransformArguments(String transformTxt, Viewport viewport) {
+      List<Double> args = new ArrayList<>();
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
+      if (m.matches()) {
+         String content = m.group(1);
+         StringTokenizer tok = new StringTokenizer(content, ", ");
+         int countTokens = tok.countTokens();
+         if (countTokens == 1) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+         } else if (countTokens == 3) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
+         }
+      } else {
+         return null;
+      }
+      return args;
+   }
+
+   private static List<Double> getSkewTransformArguments(String transformTxt, Viewport viewport) {
+      List<Double> args = new ArrayList<>();
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
+      if (m.matches()) {
+         String content = m.group(1);
+         StringTokenizer tok = new StringTokenizer(content, ", ");
+         while (tok.hasMoreTokens()) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+         }
+      } else {
+         return null;
+      }
+      return args;
+   }
+
+   private static List<Double> getMatrixTransformArguments(String transformTxt, Viewport viewport) {
+      List<Double> args = new ArrayList<>();
+      Matcher m = TRANSFORM_PAT.matcher(transformTxt);
+      if (m.matches()) {
+         String content = m.group(1);
+         StringTokenizer tok = new StringTokenizer(content, ", ");
+         int countTokens = tok.countTokens();
+         if (countTokens == 6) {
+            String argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, null);
+            argumentS = tok.nextToken();
+            ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
+            argumentS = tok.nextToken();
             ParserUtils.parseLengthValue(args, argumentS, true, null, viewport);
          }
       } else {
@@ -116,25 +199,25 @@ public class TransformUtils implements SVGTags {
          String transformTxt = tokenizer.nextToken() + ")";
          transformTxt = transformTxt.trim();
          if (transformTxt.startsWith("translate(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
             if (args.size() == 2) {
                Transform transform = Transform.translate(args.get(0), args.get(1));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("translateX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(args.get(0), 0);
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("translateY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(0, args.get(0));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("scale(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
             if (args.size() == 2) {
                Transform transform = Transform.scale(args.get(0), args.get(1));
                transformList.add(transform);
@@ -143,19 +226,19 @@ public class TransformUtils implements SVGTags {
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("scaleX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(args.get(0), 1);
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("scaleY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(1, args.get(0));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("rotate(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getRotateTransformArguments(transformTxt, viewport);
             if (args.size() == 3) {
                Transform transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
                transformList.add(transform);
@@ -164,19 +247,19 @@ public class TransformUtils implements SVGTags {
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewX(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.shear(Math.tan(Math.toRadians(args.get(0))), 0);
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewY(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.shear(0, Math.tan(Math.toRadians(args.get(0))));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("matrix(")) {
-            List<Double> args = getTransformArguments(transformTxt, viewport);
+            List<Double> args = getMatrixTransformArguments(transformTxt, viewport);
             if (args.size() == 6) {
                Transform transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
                transformList.add(transform);
