@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="clipPath support">
+   <meta desc="This article presents the support for SVG clipPath specification" />
+            
+   The library support the <code>clip-path</code> attribute for all elements<note>See
+      <a href="https://www.w3.org/TR/SVG11/masking.html">Clipping, Masking and Compositing</a>
+   </note>.
+   
+   The following attributes are supported at the <code>clipPath</code> declaration level:
+   <ul>
+      <li>
+         <code>id</code>: the id of the clipping path</li>
+      <li>
+         <code>transform</code>: the optional transform to apply to the clipping path</li>     
+      <li>
+         <code>clipPathUnits</code>: the optional units for the specification of the clipping path</li>                   
+   </ul>   
+   
+   <title title="supported shapes" />
+   All basic shapes are supported to construct the clips:
+   <ul>
+      <li>
+         <code>rect</code>
+      </li>
+      <li>
+         <code>circle</code>
+      </li>   
+      <li>
+         <code>ellipse</code>
+      </li>   
+      <li>
+         <code>polyline</code>
+      </li>  
+      <li>
+         <code>polygon</code>
+      </li>                            
+      <li>
+         <code>path</code>
+      </li>     
+      <li>
+         <code>text</code>
+      </li>        
+   </ul>
+   
+   <title title="example"/> 
+   <pre syntax="xml">
+      &lt;svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"&gt;
+         &lt;defs&gt;
+            &lt;clipPath id="cut-off-bottom"&gt;
+               &lt;rect x="0" y="0" width="200" height="100" /&gt;
+            &lt;/clipPath&gt;
+         &lt;/defs&gt;
+         &lt;circle cx="100" cy="100" r="100" clip-path="url(#cut-off-bottom)" /&gt;
+      &lt;/svg&gt;
+   </pre> 
+   Will have the following result:
+   <img id="clippath" />
+   
+   <title title="limitations"/>  
+   <ul>
+      <li>The <code>clipPathUnits</code> attribute is not supported</li>
+      <li>The <code>clip-rule</code> attribute is supported only for the <code>path</code> element</li>      
+   </ul>
+   
+   <cat id="fromsvgsupport" />
+</article>

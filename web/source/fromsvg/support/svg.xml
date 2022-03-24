@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SVG root support">
+   <meta desc="This article presents the support for SVG root element" />
+   The SVG root following attributes are supported<note>See <a href="https://www.w3.org/TR/SVG11/struct.html#SVGElement">The svg element</a></note>:
+   <ul>          
+      <li>The <code>width</code> and <code>height</code> attributes</li>
+      <li>The <code>viewBox</code> attribute</li>  
+      <li>The <code>preserveAspectRatio</code> attribute</li>         
+   </ul>      
+
+   <cat id="fromsvgsupport" />
+</article>

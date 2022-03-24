@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="JavaFX to svg conversion usage">
+   <altTitle desc="SVGConverter" />
+   <meta desc="This article presents the usage of the library which converts a JavaFX tree to svg" />
+   You use the library by calling one of the <code>SVGConverter.convert</code> methods. For example:
+   <pre syntax="java">
+      SVGConverter converter = new SVGConverter();
+      converter.convert(&lt;my JavaFX root&gt;, &lt;my SVG file&gt;);
+   </pre>   
+   
+   <title title="parameters"/>
+   <moreInfo id="ConverterParameters" />
+   By default the width and the height of the resulting svg document are those of the root node bounds. However several parameters allow to 
+   configure the result. For example:
+   <pre syntax="java">
+      ConverterParameters params = new ConverterParameters();
+      params.width = 150;
+      params.height = 150;      
+      SVGConverter converter = new SVGConverter();
+      converter.convert(&lt;my JavaFX root&gt;, params, &lt;my SVG file&gt;);
+   </pre>     
+   
+   <cat id="tosvg" />
+</article>

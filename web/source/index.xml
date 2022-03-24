@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <index>
-   The fxsvgImage library allows to convert a SVG file to a JavaFX Node tree or an Image.
+   The fxsvgImage library allows to:
+   <ul>
+      <li>Convert a SVG file to a JavaFX Node tree or an Image</li>
+      <li>Convert a JavaFX Node tree to a SVG file</li>      
+   </ul>
 
    Note that contrary to other existing libraries, this library has no external dependencies (including Batik).
    
-   <title title="usage"/>
-   <moreInfo id="usage" />
-   The most simple way to use the library is just by calling the <code>SVGLoader.load</code> static method:
+   <title title="SVG to JavaFX conversion usage"/>
+   <moreInfo id="SVG to JavaFX conversion Usage" />
+   The most simple way to use the library is just by calling one of the <code>SVGLoader.load</code> static methods. For example:
    <pre syntax="java">
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
    </pre>
 
    The <code>SVGImage</code> class is a JavaFX <code>Group</code>.      
+   
+   <title title="JavaFX to svg conversion usage"/>
+   <moreInfo id="JavaFX to svg conversion usage" />
+   You use the library by calling the <code>SVGConverter.convert</code> methods. For example:
+   <pre syntax="java">
+      SVGConverter converter = new SVGConverter();
+      converter.convert(&lt;my javaFX root&gt;, &lt;my SVG file&gt;);
+   </pre>
+   
+   <title title="distribution" />
+   <moreInfo id="distribution" />
    
    <title title="SVG support"/>
    <moreInfo id="SVG support" /> 
@@ -21,15 +36,15 @@
       <li>filters. See also <ref id="filters support" /></li>      
       <li>clip paths. See also <ref id="clipPath support" /></li>
       <li>linear and radial gradients. See also <ref id="Gradients support" /></li>    
-      <li>the style element. See also <ref id="styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
+      <li>the style element. See also <ref id="svg styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
       <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
          See also <ref id="SVG shapes support" />
       </li>     
       <li>the symbol element. See also <ref id="symbol element support" /></li> 
       <li>the use element. See also <ref id="use element support" /></li>
-      <li>fill, stroke, style, class attributes. See also <ref id="styling support" /></li>
-      <li>transform attributes. See also <ref id="transform support" /></li>
-      <li>animations. See also <ref id="animations support" /></li>
+      <li>fill, stroke, style, class attributes. See also <ref id="svg styling support" /></li>
+      <li>transform attributes. See also <ref id="svg transform support" /></li>
+      <li>animations. See also <ref id="svg animations support" /></li>
       <li>The viewport on the SVG root. See also <ref id="SVG root support" /></li>
    </ul>   
    

@@ -134,7 +134,27 @@
       <li>Take into account the viewport and the units in the path element</li>
       <li>Take into account rotate transforms with only one parameter</li>
       <li>Start support for svg animations: animateTransform, animateMotion, and animate are partially suppported</li>      
-   </ul>                                                                                                                                                                                                                                                                                                                                                                                             
+   </ul>       
+   
+   <title title="Version 0.6.1" /> 
+   <ul>    
+      <li>Fix the browser not showing some animations correctly</li>
+      <li>Protect the browser against invalid SVG files</li>
+      <li>Fix the scale transform not working with only one argument</li>
+      <li>Fix the skewX and skewY transforms</li>
+      <li>Support the "none" color</li>      
+      <li>Handle the cases where the viewPort position is not at 0,0</li>   
+      <li>Add a LoaderParameter property to specify if the viewPort position is taken into account</li>   
+      <li>Fix the gradients href parameter only been taken into account if the referenced gradient was defined before the one which referred to it</li>
+      <li>Fix the gradients gradientTransform parameter not taken into account in the majority of cases</li>
+      <li>Handle proportional coordinates for linear gradients</li>
+      <li>Handle width and height specified in % in the svg root </li>
+   </ul>    
+   
+   <title title="Version 1.0b1" /> 
+   <ul>    
+      <li>Add a converter which is able to convert a JavaFX node tree to a svg file</li>
+   </ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
             
    <cat id="general" />
 </article>

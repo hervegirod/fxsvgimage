@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Strokes support">
+   <altTitle desc="stroke properties" />
+   <meta desc="This article presents the support for strokes" />
+   The following attributes are supported for strokes<note>See <a href="https://www.w3.org/TR/SVG11/painting.html#StrokeProperties">Stroke Properties</a></note>:
+   <ul>
+      <li>
+         <code>stroke-width</code>
+      </li>         
+      <li>
+         <code>stroke-dasharray</code>
+      </li>
+      <li>
+         <code>stroke-linecap</code>
+      </li>     
+      <li>
+         <code>stroke-linejoin</code>
+      </li>                     
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>                                              
+   </ul>
+   
+   <title title="example"/>
+   <pre syntax="xml">
+      &lt;svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200" viewBox="0 0 200 200"&gt;
+         &lt;g&gt;
+            &lt;rect style="stroke-width:4;stroke-dasharray:5 5;" height="100" x="50" y="50" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt; 
+   </pre>     
+            
+   <see id="svg styling support" />
+   <cat id="fromsvgsupport" />
+</article>

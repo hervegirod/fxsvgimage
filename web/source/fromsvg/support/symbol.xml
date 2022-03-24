@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="symbol element support">
+   <meta desc="This article presents the support for the symbol element" />
+   The library support the <code>symbol</code> element<note>See <a href="https://www.w3.org/TR/SVG11/struct.html#SymbolElement">The symbol element</a></note>. 
+   
+   Contrary to a regular element, a symbol is only shown for its usages (see <ref id="use element support" />).
+   
+   The following attributes are supported:
+   <ul>
+      <li>The <code>id</code> attribute</li>           
+      <li>The <code>width</code> and <code>height</code> attributes</li>
+      <li>The <code>viewBox</code> attribute</li>
+      <li>The <code>preserveAspectRatio</code> attribute</li>        
+   </ul>
+   
+   <title title="handling of the viewbox"/>  
+   If one of the <code>width</code>, <code>height</code>, and <code>viewBox</code> attributes is not present, the 
+   symbol will be rendered without scaling.
+   
+   If all of the  <code>width</code>, <code>height</code>, and <code>viewBox</code> attributes are present:
+   <ul>
+      <li>The symbol will be scaled according to the <code>width</code> and <code>height</code> attributes, and
+         the viewBox width and height</li>
+      <li>If the <code>preserveAspectRatio</code> attribute is not present or is different to <code>none</code>, then
+         the coordinates of the symbol will be scaled with the same value for both X and Y axis<note>Which means that no
+            scaling will be applied to the resulting JavaFX Node</note>
+      </li>
+      <li>Else a scaling will be applied to the resulting JavaFX Node, which will be different for X and Y axis</li>
+   </ul>
+   
+   <title level="2" title="handling of the preserveAspectRatio attribute"/>
+   Only two states are considered for the <code>preserveAspectRatio</code> attribute:
+   <ul>
+      <li>A value of <code>none</code> means that the scaling for the X and Y axis is independant</li>
+      <li>All other values means that the scaling for the X and Y axis will be identical</li>      
+   </ul>
+   Note that the second <code>meetOrSlice</code> optional parameter of the <code>preserveAspectRatio</code> attribute
+   is not taken into account.
+   
+   <title title="examples"/>
+   <title level="2" title="basic example"/>
+   The following specifiation:
+   <pre syntax="xml">
+      &lt;svg viewBox="0 0 80 20" xmlns="http://www.w3.org/2000/svg"&gt;
+         &lt;symbol id="myDot"&gt;
+            &lt;circle cx="5" cy="5" r="5" /&gt;
+         &lt;/symbol&gt;
+         &lt;use href="#myDot" x="20" y="5" style="opacity:0.8" /&gt;
+      &lt;/svg&gt;
+   </pre>
+   
+   <title level="2" title="example with scaling"/>
+   The following specifiation:
+   <pre syntax="xml">
+      &lt;svg viewBox="0 0 80 20" xmlns="http://www.w3.org/2000/svg"&gt;
+         &lt;symbol id="myDot" width="10" height="10" viewBox="0 0 2 2"&gt;
+            &lt;circle cx="1" cy="1" r="1" /&gt;
+         &lt;/symbol&gt;
+         &lt;use href="#myDot" x="5"  y="5" style="opacity:1.0" /&gt;
+         &lt;use href="#myDot" x="20" y="5" style="opacity:0.8" /&gt;
+         &lt;use href="#myDot" x="35" y="5" style="opacity:0.6" /&gt;
+         &lt;use href="#myDot" x="50" y="5" style="opacity:0.4" /&gt;
+         &lt;use href="#myDot" x="65" y="5" style="opacity:0.2" /&gt;
+      &lt;/svg&gt;
+   </pre>
+   In this example, the coordinates will be scaled from a 5 = 10 / 2 factor on both the X and Y axis.   
+   
+   <title title="limitations"/>  
+   <ul>
+      <li>For the moment all values for the <code>preserveAspectRatio</code> attribute different from <code>none</code>
+         are considered identically</li>
+   </ul>
+      
+   <see id="use element support" />
+   <cat id="fromsvgsupport" />
+</article>

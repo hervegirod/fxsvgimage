@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="svg animations support">
+   <meta desc="This article presents the support for SVG animations specification" />
+   The following animations are supported in the library
+   <note>See <a href="https://www.w3.org/TR/SVG11/animate.html">Animation</a></note>:
+   <ul>
+      <li>
+         <code>animate</code>: This element is used to animate a single attribute or property over time</li>
+      <li>
+         <code>animateTransform</code>: This element animates a transformation attribute on a target element, thereby allowing
+         animations to control translation, scaling, or rotation</li>  
+      <li>
+         <code>animateMotion</code>: This element causes a referenced element to move along a motion path.</li>                   
+   </ul>
+   
+   <title title="supported attributes for the animateTransform animation" />
+   The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>type</code>
+      </li>          
+   </ul>   
+   
+   <title title="supported attributes for the animateMotion animation" />
+   The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>path</code>
+      </li>          
+   </ul>     
+   
+   <title title="supported attributes for the animate animation" />
+   The following attributes are supported for the <code>animate</code> animation:
+   <ul>
+      <li>
+         <code>dur</code>
+      </li>
+      <li>
+         <code>begin</code>
+      </li>   
+      <li>
+         <code>repeatCount</code>
+      </li>    
+      <li>
+         <code>from</code>
+      </li>    
+      <li>
+         <code>to</code>
+      </li>                 
+      <li>
+         <code>attributeName</code>
+      </li>          
+   </ul>
+   
+   <title level="2" title="supported values for the attributeName atribute" />
+   The following values are supported for the <code>attributeName</code> attribute:
+   <ul>
+      <li>
+         <code>x</code> and <code>y</code> for <code>rect</code>, <code>image</code>, and <code>g</code> elements</li>      
+      <li>
+         <code>opacity</code> and <code>visibility</code> for all elements</li>
+      <li>
+         <code>width</code> and <code>height</code> for <code>rect</code> and <code>image</code> elements</li>
+      <li>
+         <code>fill</code> for <code>rect</code>, <code>circle</code>, <code>ellipse</code>,
+         and <code>polygon</code> elements</li>   
+      <li>
+         <code>stroke</code> for <code>rect</code>, <code>circle</code>, <code>ellipse</code>,
+         and <code>polygon</code>,<code>line</code>, <code>path</code>, and <code>polyline</code> elements</li>                   
+      <li>
+         <code>r</code> for <code>circle</code> elements</li>       
+      <li>
+         <code>rx</code> and <code>ry</code> for <code>ellipse</code> elements</li>   
+      <li>
+         <code>x1</code>, <code>y1</code>, <code>x2</code>, <code>y2</code> for <code>line</code> elements</li>                            
+   </ul>
+   
+   <title title="limitations" />
+   <ul>
+      <li>For the moment, animating the position of an element, or translating an element, does not work correctly in the
+         browser. It works in the general case</li> 
+      <li>The <code>skewX</code> and <code>skewY</code> transformations are currently not supported</li>     
+   </ul>
+            
+   <cat id="fromsvgsupport" />
+</article>

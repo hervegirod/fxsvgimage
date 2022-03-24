@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="filters support">
+   <meta desc="This article presents the support for SVG filters specification" />
+   The following filters are supported in the library
+   <note>See <a href="https://www.w3.org/TR/SVG11/filters.html">Filter Effects</a></note>:
+   <ul>
+      <li>
+         <code>feFlood</code>: This filter primitive creates a rectangle filled with color and opacity values</li>
+      <li>
+         <code>feImage</code>: This filter primitive refers to a graphic external to this filter element</li>         
+      <li>
+         <code>feGaussianBlur</code>: This filter primitive performs a Gaussian blur on the input image</li>                  
+      <li>
+         <code>feDiffuseLighting</code>: This filter primitive lights an image using the alpha channel as a bump map.
+         The resulting image depends on the light color, light position and surface geometry of the input bump map.</li>                           
+      <li>
+         <code>feSpecularLighting</code>: This filter primitive lights a source graphic using the alpha channel as a bump map. 
+         The resulting image depends on the light color, light position and surface geometry of the input bump map</li>                                    
+      <li>
+         <code>feDropShadow</code>: This filter creates a drop shadow of the input image. Note
+         that it is a filter specified in SVG 1.2<note>See <a href="https://www.w3.org/TR/SVGFilter12/#feDropShadowElement">SVG Filters 1.2, Part 2</a></note>
+      </li>                           
+      <li>
+         <code>feOffset</code>: This filter primitive offsets the input image relative to its current position in the image space by the specified vector.</li>                        
+      <li>
+         <code>feMerge</code>: This filter primitive composites input image layers on top of each other</li>                                 
+      <li>
+         <code>feComposite</code>: This filter performs the combination of the two input images pixel-wise in image space using one of the Porter-Duff compositing operations</li>                                          
+   </ul>
+   
+   <title title="supported lights" />
+   The following lights elements are supported under the <code>feDiffuseLighting</code> and <code>feSpecularLighting</code>
+   elements:
+   <ul>
+      <li>
+         <code>feDistantLight</code>
+      </li>
+      <li>
+         <code>fePointLight</code>
+      </li>      
+      <li>
+         <code>feSpotLight</code>
+      </li>          
+   </ul>
+   
+   <title title="limitations" />
+   <ul>
+      <li>For the moment, the light effects are not correctly handled in a some of the cases</li>
+      <li>A lot of the Porter-Duff compositing operations used in the <code>feComposite</code> filter are not converted correctly to the
+         JavaFX equivalent</li>
+   </ul>
+            
+   <cat id="fromsvgsupport" />
+</article>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <categories>
    <category id="general" desc="General informations" />
+   <category id="fromsvg" desc="Concerns the built-in library allowing to convert a SVG file to a JavaFX tree" />   
    <category id="support" desc="Informations about the support for the SVG standard specification" />
    <category id="browser" desc="Concerns the built-in svg browser" />
+   <category id="tosvg" desc="Concerns the built-in library allowing to convert a JavaFX trre to a SVG file" />
 </categories>

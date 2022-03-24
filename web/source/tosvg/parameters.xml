@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Converter Parameters">
+   <altTitle desc="ConverterParameters" />
+   <meta desc="This article presents the usage of the SVGConverter parameters" />
+   The <code>ConverterParameters</code> class allows to configure the exporting of the JavaFX tree to a svg file with the <ref id="SVGConverter" />.
+   
+   <title title="parameters" />
+   <title level="2" title="width" keepCase="true"/>
+   The <code>width</code> parameter allows to set the width of the resulting svg document. If not set, by default the width will be the width
+   of the root node bounds.
+   
+   <title level="2" title="height" keepCase="true"/>
+   The <code>height</code> parameter allows to set the height of the resulting svg document. If not set, by default the width will be the height
+   of the root node bounds.
+   
+   <title title="example" />
+   For example:
+   <pre syntax="java">
+      ConverterParameters params = new ConverterParameters();
+      params.width = 150;
+      params.height = 150;      
+      SVGConverter converter = new SVGConverter();
+      converter.convert(&lt;my JavaFX root&gt;, params, &lt;my SVG file&gt;);
+   </pre>     
+               
+   <see id="SVGConverter" />               
+   <cat id="tosvg" />
+</article>

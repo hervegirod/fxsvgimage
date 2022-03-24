@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="distribution" >
+   <meta desc="This article is about the distribution of the tool" />
+
+   <title title="SVG to JavaFX conversion usage" />
+   The <code>fxsvgImage.jar</code> jar file contains the code to convert a svg file to a JavaFX Node tree.
+   
+   <title title="SVG browser" />
+   The <code>fxsvgBrowser.jar</code> jar file contains the browser. It depends on the <code>fxsvgImage.jar</code> jar file which must be on the Classpath, or
+   in the same directory.   
+   
+   <title title="JavaFX to svg conversion usage" />
+   The <code>fxsvgConverter.jar</code> jar file contains the code to convert a JavaFX Node tree to a svg file.   
+
+   <cat id="general" />
+</article>
