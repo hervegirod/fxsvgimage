@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -61,7 +59,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.girod.javafx.svgimage.SVGImage;
@@ -70,7 +67,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * A sample browser.
  *
- * @version 0.6.1
+ * @version 1.0
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
