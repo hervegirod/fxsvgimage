@@ -45,7 +45,18 @@
       </condition>    
       <condition property="docgenerator.exists">
          <available file="web/soft/docGenerator.jar" type="file"/>
-      </condition>                 
+      </condition>   
+      <property name="groovyDirURL" value="https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/" />      
+      <property name="groovyURL" value="${groovyDirURL}/apache-groovy-binary-4.0.1.zip" />      
+      <property name="testlib" value="testlib"/>       
+      <condition property="groovy.notexists">
+         <not>
+            <available file="testlib/groovy-4.0.1.jar" type="file"/>
+         </not>
+      </condition>    
+      <condition property="groovy.exists">
+         <available file="testlib/groovy-4.0.1.jar" type="file"/>
+      </condition>                    
       <property name="j2seapi" value="http://docs.oracle.com/javase/7/docs/api/"/>        
       <!-- To set with your location of Java 8 JDK -->
       <property name="javadocDir" value="${jdk.home}/docs/api"/>
@@ -97,7 +108,7 @@
          <fileset description="docs" dir=".">
             <include name="LICENSE"/>
             <include name="README.md"/>
-            <include name="CHANGES.txt"/>
+            <include name="HISTORY.md"/>    
          </fileset>    
          <fileset description="samples" dir=".">
             <include name="samples/**/*.*"/>
@@ -113,6 +124,7 @@
             <include name="src/**/*.java"/>
             <include name="src/**/*.properties"/>
             <include name="src/**/*.html"/>
+            <include name="src/**/*.mf"/>
             <include name="src/**/*.xml"/>            
             <include name="src/manifest*.mf"/>
          </fileset>
@@ -123,6 +135,9 @@
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
          </fileset>
+         <fileset description="testlib" dir=".">
+            <include name="testlib/**/*.*"/>
+         </fileset>         
          <fileset description="project" dir="${dist.dir}/..">
             <include name="nbproject/**/*.*"/>
          </fileset>         
@@ -138,7 +153,7 @@
          <fileset description="misc" dir=".">
             <include name="LICENSE"/>
             <include name="README.md"/>
-            <include name="CHANGES.txt"/>            
+            <include name="HISTORY.md"/>            
             <include name="build.xml"/>
             <include name="pom.xml"/>            
          </fileset>
@@ -171,15 +186,29 @@
          <!-- the Xdoclint argument avoid to get javadoc errors when the documentation format is not compliant for HTML 4, which was the case before
          Java 8. It would also not be a good idea, because empty tags like br are very useful -->
          <arg line="-Xdoclint:none"/> 
-         <fileset dir="${src.core.dir}" defaultexcludes="yes">
-            <include name="org/girod/javafx/svgimage/**/*.java"/>
-         </fileset>         
+         <fileset dir="${src.core.dir}/.." defaultexcludes="yes">
+            <include name="core/org/girod/javafx/svgimage/**/*.java"/>
+            <include name="browser/org/girod/javafx/svgimage//browser/**/*.java"/>
+            <include name="tosvg/org/girod/javafx/svgimage//tosvg/**/*.java"/>
+         </fileset>                    
          <classpath>
             <path path="${javac.classpath}"/>
-         </classpath>                     
+         </classpath>         
+         <group title="Core API">
+            <package name="org.girod.javafx.svgimage" />
+            <package name="org.girod.javafx.svgimage.xml" />
+         </group>         
+         <group title="Browser API" packages="org.girod.javafx.svgimage.browser" />   
+         <group title="toSVG API">
+            <package name="org.girod.javafx.svgimage.tosvg" />
+            <package name="org.girod.javafx.svgimage.tosvg.converters" />
+            <package name="org.girod.javafx.svgimage.tosvg.utils" />
+            <package name="org.girod.javafx.svgimage.tosvg.wrappers" />
+            <package name="org.girod.javafx.svgimage.tosvg.xml" />
+         </group>                            
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
          <bottom>
-            <![CDATA[<i>Copyright &#169; 2021 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
+            <![CDATA[<i>Copyright &#169; 2021, 2022 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
          </bottom>         
       </javadoc>
    </target>                     
@@ -200,20 +229,57 @@
             <include name="org/girod/**/*.class"/>
             <include name="org/girod/**/*.xml"/>                   
             <include name="org/girod/**/*.properties"/>  
-            <exclude name="org/girod/javafx/svgimage/browser/**/*.*"/>         
+            <exclude name="org/girod/javafx/svgimage/browser/**/*.*"/>       
+            <exclude name="org/girod/javafx/svgimage/tosvg/**/*.*"/>      
          </fileset>
       </jar>
       <!-- browser Jar construction -->
       <jar description="browser jar binary file" compress="true" jarfile="${dist.dir}/fxsvgBrowser.jar" 
            manifest="${src.dir}/browser/manifest.mf" >
          <fileset defaultexcludes="yes" dir="${build.classes.dir}">
-            <include name="org/girod/javafx/svgimage/browser/**/*.*"/>         
+            <include name="org/girod/javafx/svgimage/browser/**/*.class"/>     
+         </fileset>
+      </jar>      
+      <!-- converter Jar construction -->
+      <jar description="converter jar binary file" compress="true" jarfile="${dist.dir}/fxsvgConverter.jar" 
+           manifest="${src.dir}/tosvg/manifest.mf" >
+         <fileset defaultexcludes="yes" dir="${build.classes.dir}">
+            <include name="org/girod/javafx/svgimage/tosvg/**/*.class"/>         
          </fileset>
       </jar>      
    </target>   
    
    <!-- =================================================================== -->
-   <!-- NB overwrite targets : wiki                                     -->
+   <!-- NB overwrite targets : download tests library                       -->
+   <!-- =================================================================== -->  
+   <target name="download groovy"  description="download groovy" 
+           depends="init, -post-init" if="groovy.notexists" >
+      <get src="${groovyURL}" dest="${testlib}/groovy.zip" verbose="false" usetimestamp="false"/>
+      <unzip src="${testlib}/groovy.zip" dest="${testlib}"/>
+      <move file="${testlib}/groovy-4.0.1/lib/groovy-4.0.1.jar" tofile="${testlib}/groovy-4.0.1.jar"/>      
+      <delete includeEmptyDirs="true">
+         <fileset dir="${testlib}/groovy-4.0.1"  >
+            <include name="**/*"/>
+         </fileset>	    
+         <fileset dir="${testlib}/"  >
+            <include name="groovy.zip"/>
+         </fileset>	                                            	        
+      </delete>
+      <delete dir="${testlib}/groovy-4.0.1"/>                                              	            	      
+   </target>  
+   
+   <target name="delete groovy"  description="delete groovy" 
+           depends="init, -post-init" if="groovy.exists" >
+      <delete includeEmptyDirs="true">
+         <fileset dir="${testlib}"  >
+            <include name="groovy-4.0.1.jar"/>
+         </fileset>	     
+      </delete>	      
+   </target>       
+     
+   
+   <!-- =================================================================== -->
+   <!-- NB overwrite targets : wiki                                         -->
    <!-- =================================================================== -->   
    <target name="download docJGenerator"  description="download docJGenerator" 
            depends="init, -post-init" if="docgenerator.notexists" >

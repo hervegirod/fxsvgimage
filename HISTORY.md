@@ -121,3 +121,7 @@
  - Fix the gradients gradientTransform parameter not taken into account in the majority of cases
  - Handle proportional coordinates for linear gradients
  - Handle width and height specified in % in the svg root
+
+## 1.0
+ - Add a converter which is able to convert a JavaFX node tree to a svg file
+ - Fix the transformations on nodes which were sometime wrong when using a scale in the LoaderParameters
