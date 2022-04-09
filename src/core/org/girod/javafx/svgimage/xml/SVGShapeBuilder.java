@@ -677,24 +677,16 @@ public class SVGShapeBuilder implements SVGTags {
          hrefAttribute = xmlNode.getAttributeValue(XLINK_HREF);
       }
 
-      URL imageUrl = null;
-      try {
-         imageUrl = new URL(hrefAttribute);
-      } catch (MalformedURLException ex) {
-         try {
-            imageUrl = new URL(url, hrefAttribute);
-         } catch (MalformedURLException ex1) {
-            GlobalConfig.getInstance().handleParsingError("URL " + hrefAttribute + " is not well formed");
-         }
-      }
-      if (imageUrl != null) {
+      if (hrefAttribute != null) {
          if (viewbox != null) {
             width = viewbox.scaleValue(true, width);
             height = viewbox.scaleValue(false, height);
             x = viewbox.scaleValue(true, x);
             y = viewbox.scaleValue(false, y);
          }
-         Image image = new Image(imageUrl.toString(), width, height, true, true);
+      }
+      Image image = ParserUtils.getImage(url, hrefAttribute, width, height);
+      if (image != null) {
          ImageView view = new ImageView(image);
          view.setX(x);
          view.setY(y);

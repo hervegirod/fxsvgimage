@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,13 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +51,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.FillRule;
@@ -60,16 +67,23 @@ import static org.girod.javafx.svgimage.xml.SVGTags.STYLE;
 /**
  * Several utilities for shape parsing.
  *
- * @version 0.6.1
+ * @version 1.0
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
    private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
    private static final Pattern URL_PAT = Pattern.compile("url\\('?([^']+)'?\\)");
+   private static final Pattern IMG_URL = Pattern.compile("data:image/(\\w+);base64,([^ ]+)\\s*");
 
    private ParserUtils() {
    }
 
+   /**
+    * Return the color with a specified String value. Color specified as "none" will return a null color.
+    *
+    * @param value the color value
+    * @return the color
+    */
    public static Color getColor(String value) {
       if (value.equals(NONE)) {
          return null;
@@ -82,6 +96,43 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   public static Image getImage(URL url, String href, double width, double height) {
+      Matcher m = IMG_URL.matcher(href);
+      if (m.matches()) {
+         String content = m.group(2);
+         byte[] imgarray = Base64.getDecoder().decode(content);
+         Image image;
+         try (InputStream stream = new ByteArrayInputStream(imgarray)) {
+            image = new Image(stream, width, height, true, true);
+            return image;
+         } catch (IOException e) {
+            GlobalConfig.getInstance().handleParsingError("Image base64 " + href + " is invalid");
+            return null;
+         }
+
+      } else {
+         URL imageUrl;
+         try {
+            imageUrl = new URL(href);
+         } catch (MalformedURLException ex) {
+            try {
+               imageUrl = new URL(url, href);
+            } catch (MalformedURLException ex1) {
+               GlobalConfig.getInstance().handleParsingError("URL " + href + " is not well formed");
+               return null;
+            }
+         }
+         Image image = new Image(imageUrl.toString(), width, height, true, true);
+         return image;
+      }
+   }
+
+   /**
+    * Return the color with a specified String value.
+    *
+    * @param value the color value
+    * @return the color
+    */
    public static String getURL(String value) {
       Matcher m = URL_PAT.matcher(value);
       if (m.matches()) {
