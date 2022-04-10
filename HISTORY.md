@@ -126,3 +126,4 @@
  - Add a converter which is able to convert a JavaFX node tree to a svg file
  - Fix the transformations on nodes which were sometime wrong when using a scale in the LoaderParameters
  - Support images embedded the svg file as base64
+ - Support images embedded the svg file as base64
