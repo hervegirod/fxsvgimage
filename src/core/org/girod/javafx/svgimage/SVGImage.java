@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -41,9 +41,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import javafx.animation.Animation;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -55,7 +55,7 @@ import org.girod.javafx.svgimage.xml.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 0.6
+ * @version 1.0
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -224,11 +224,24 @@ public class SVGImage extends Group {
     * @return the Image
     */
    public Image toImageScaled(double scaleX, double scaleY) {
+      double initialWidth = this.getLayoutBounds().getWidth();
+      double initialHeight = this.getLayoutBounds().getHeight();
       this.setScaleX(scaleX);
       this.setScaleY(scaleY);
+      double finalWidth = initialWidth * scaleX;
+      double finalHeight = initialHeight * scaleY;
       SnapshotParameters params = SNAPSHOT_PARAMS;
+      Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
       if (params == null) {
          params = new SnapshotParameters();
+         params.setViewport(viewport);
+      } else {
+         params = new SnapshotParameters();
+         params.setCamera(SNAPSHOT_PARAMS.getCamera());
+         params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
+         params.setTransform(SNAPSHOT_PARAMS.getTransform());
+         params.setFill(SNAPSHOT_PARAMS.getFill());
+         params.setViewport(viewport);
       }
       WritableImage image = snapshotImpl(params);
       return image;
@@ -247,9 +260,20 @@ public class SVGImage extends Group {
       double scaleY = initialHeight * scaleX;
       this.setScaleX(scaleX);
       this.setScaleY(scaleY);
+      double finalWidth = width;
+      double finalHeight = initialHeight * scaleY;
       SnapshotParameters params = SNAPSHOT_PARAMS;
+      Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
       if (params == null) {
          params = new SnapshotParameters();
+         params.setViewport(viewport);
+      } else {
+         params = new SnapshotParameters();
+         params.setCamera(SNAPSHOT_PARAMS.getCamera());
+         params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
+         params.setTransform(SNAPSHOT_PARAMS.getTransform());
+         params.setFill(SNAPSHOT_PARAMS.getFill());
+         params.setViewport(viewport);
       }
       WritableImage image = snapshotImpl(params);
       return image;
@@ -316,7 +340,7 @@ public class SVGImage extends Group {
          return false;
       }
    }
-   
+
    /**
     * Saves a snapshot of the image.
     *
