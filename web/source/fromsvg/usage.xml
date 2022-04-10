@@ -25,6 +25,7 @@
    SVG content by using the <ref id="LoaderParameters" /> class.
    
    <title title="Converting to an image"/>
+   <moreInfo id="SVGImage#producing a JavaFX image" desc="Producing a JavaFX image" />
    The <code>SVGImage</code> result can be converted to a JavaFX Image. The simplest way to perform the
    conversion is by using the <code>toImage</code> method. For example:
    <pre syntax="java">
@@ -38,6 +39,7 @@
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
       Image fxImg = img.toImage(100); // the resulting image will have a width of 100 pixels
       Image fxImg2 = img.toImageScaled(0.5d); // the resulting image will be scaled by a 0.5 factor    
+      Image fxImg2 = img.toImage(ScaleQuality.RENDER_QUALITY, 50); // the resulting image will have a width of 50 pixels
    </pre>  
    
    It is also possible to use the JavaFX <code>SnapshotParameters</code> to customize the resulting image.

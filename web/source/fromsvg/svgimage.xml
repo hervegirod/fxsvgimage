@@ -10,7 +10,8 @@
    which allows you to:
    <ul>
       <li>Get the JavaFX implementations of named SVG nodes</li>
-      <li>Convert the Node content to a JavaFX Image</li>      
+      <li>Convert the resulting <code>SVGImage</code> to a JavaFX Image</li>      
+      <li>Scale a <code>SVGImage</code></li>      
       <li>Produce a snapshot in a File in an ImageIO supported output format</li>            
    </ul>  
    
@@ -21,8 +22,51 @@
    <title title="threading usage"/>
    As for the <code>SVGLoader</code> class, you can use this class in the JavaFX Platform Thread or in any other Thread. 
    The library will make sure that the conversion will be performed in the JavaFX Platform Thread, and will return the result in 
-   the calling Thread.    
-               
+   the calling Thread.   
+   
+   <title title="scaling a SVGImage" />
+   To scale a <code>SVGImage</code>, you can use one of the following methods:
+   <ul>
+      <li>The <source syntax="java">scale(double scale)</source> methods creates a new <code>SVGImage</code> scaled compared to the
+         initial image</li>
+      <li>The <source syntax="java">scaleTo(double with)</source> method creates a new <code>SVGImage</code> scaled with a new width compared to the
+         initial image</li>         
+   </ul>
+   Note that these two methods will no just call <code>setScaleX</code> and <code>setScaleY</code> on the initial image, but 
+   will create a new SVGImage with the same SVG input and a <ref id="LoaderParameters#scale" desc="scale"/> parameter.
+            
+   <title title="producing a snapshot" />
+   The <source syntax="java">snapshot(String format, File file)</source> method allows to save a snapshot of the initial image.
+   
+   <title title="producing a JavaFX image" />
+   The <source syntax="java">toImage()</source> allows to create a JavaFX image from the initial image. It is possible to
+   specify the width of the result by using one of the following methods:
+   <ul>
+      <li>The <source syntax="java">toImage(double width)</source> will create a scaled JavaFX image from the initial image, using the
+         <code>width</code> parameter as the width of the resulting image</li>
+      <li>The <source syntax="java">toImage(short quality, double width)</source> does the same thing, and allows to specify the
+      quality of the result</li>               
+      <li>The <source syntax="java">toImageScaled(double scaleX, double scaleY)</source> will create a scaled JavaFX image from the initial image</li>      
+      <li>The <source syntax="java">toImageScaled(short quality, double scaleX, double scaleY)</source> will create a scaled JavaFX image from the initial image, and allows to specify the
+      quality of the result</li>                          
+   </ul>
+   <messageBox type="info">
+      If you use the <code>ScaleQuality.RENDER_QUALITY</code> value for the quality parameter, the result will be scaled at the
+      SVG level <b>before</b> being converted to a JavaFX image.
+   </messageBox>
+   
+   <title level="2" title="example" />
+      <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      // the resulting image will have a width of 100 pixels
+      Image fxImg = img.toImage(100); 
+      // the resulting image will be scaled by a 0.5 factor    
+      Image fxImg2 = img.toImageScaled(0.5d); 
+      // the resulting image will have a width of 50 pixels, but the image will be scaled at the SVG level before creating
+      // the image
+      Image fxImg2 = img.toImage(ScaleQuality.RENDER_QUALITY, 50); 
+   </pre>  
+   
    <see id="SVGLoader" />               
    <cat id="fromsvg" />
 </article>
