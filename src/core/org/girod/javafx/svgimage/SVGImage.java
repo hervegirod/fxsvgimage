@@ -61,6 +61,32 @@ public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
    private List<Animation> animations = new ArrayList<>();
+   private final SVGContent content;
+
+   /**
+    * Constructor.
+    */
+   public SVGImage() {
+      this.content = null;
+   }
+
+   /**
+    * Constructor.
+    *
+    * @param content the SVG content
+    */
+   public SVGImage(SVGContent content) {
+      this.content = content;
+   }
+
+   /**
+    * Return the SVG content origin.
+    *
+    * @return the SVG content
+    */
+   public SVGContent getSVGContent() {
+      return content;
+   }
 
    /**
     * Set the default SnapshotParameters to use when creating a snapshot. The default is null, which means that a
@@ -219,32 +245,89 @@ public class SVGImage extends Group {
    /**
     * Convert the Node tree to a scaled image.
     *
+    * @param quality the scaling quality
+    * @param scaleX the X scale
+    * @param scaleY the Y scale
+    * @return the Image
+    * @see ScaleQuality
+    */
+   public Image toImageScaled(short quality, double scaleX, double scaleY) {
+      if (quality == ScaleQuality.RENDER_QUALITY && scaleX == scaleY) {
+         SVGImage image = this.scale(scaleX);
+         return image.toImage();
+      } else {
+         double initialWidth = this.getLayoutBounds().getWidth();
+         double initialHeight = this.getLayoutBounds().getHeight();
+         this.setScaleX(scaleX);
+         this.setScaleY(scaleY);
+         double finalWidth = initialWidth * scaleX;
+         double finalHeight = initialHeight * scaleY;
+         SnapshotParameters params = SNAPSHOT_PARAMS;
+         Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
+         if (params == null) {
+            params = new SnapshotParameters();
+            params.setViewport(viewport);
+         } else {
+            params = new SnapshotParameters();
+            params.setCamera(SNAPSHOT_PARAMS.getCamera());
+            params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
+            params.setTransform(SNAPSHOT_PARAMS.getTransform());
+            params.setFill(SNAPSHOT_PARAMS.getFill());
+            params.setViewport(viewport);
+         }
+         WritableImage image = snapshotImpl(params);
+         return image;
+      }
+   }
+
+   /**
+    * Convert the Node tree to a scaled image.
+    *
     * @param scaleX the X scale
     * @param scaleY the Y scale
     * @return the Image
     */
    public Image toImageScaled(double scaleX, double scaleY) {
-      double initialWidth = this.getLayoutBounds().getWidth();
-      double initialHeight = this.getLayoutBounds().getHeight();
-      this.setScaleX(scaleX);
-      this.setScaleY(scaleY);
-      double finalWidth = initialWidth * scaleX;
-      double finalHeight = initialHeight * scaleY;
-      SnapshotParameters params = SNAPSHOT_PARAMS;
-      Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
-      if (params == null) {
-         params = new SnapshotParameters();
-         params.setViewport(viewport);
+      return toImageScaled(ScaleQuality.RENDER_SPEED, scaleX, scaleY);
+   }
+
+   /**
+    * Convert the Node tree to an image, specifying the resulting width and preserving the image ratio.
+    *
+    * @param quality the scaling quality
+    * @param width the resulting width
+    * @return the Image
+    * @see ScaleQuality
+    */
+   public Image toImage(short quality, double width) {
+      if (quality == ScaleQuality.RENDER_QUALITY) {
+         SVGImage image = this.scaleTo(width);
+         return image.toImage();
       } else {
-         params = new SnapshotParameters();
-         params.setCamera(SNAPSHOT_PARAMS.getCamera());
-         params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
-         params.setTransform(SNAPSHOT_PARAMS.getTransform());
-         params.setFill(SNAPSHOT_PARAMS.getFill());
-         params.setViewport(viewport);
+         double initialWidth = this.getLayoutBounds().getWidth();
+         double initialHeight = this.getLayoutBounds().getHeight();
+         double scaleX = width / initialWidth;
+         double scaleY = initialHeight * scaleX;
+         this.setScaleX(scaleX);
+         this.setScaleY(scaleY);
+         double finalWidth = width;
+         double finalHeight = initialHeight * scaleY;
+         SnapshotParameters params = SNAPSHOT_PARAMS;
+         Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
+         if (params == null) {
+            params = new SnapshotParameters();
+            params.setViewport(viewport);
+         } else {
+            params = new SnapshotParameters();
+            params.setCamera(SNAPSHOT_PARAMS.getCamera());
+            params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
+            params.setTransform(SNAPSHOT_PARAMS.getTransform());
+            params.setFill(SNAPSHOT_PARAMS.getFill());
+            params.setViewport(viewport);
+         }
+         WritableImage image = snapshotImpl(params);
+         return image;
       }
-      WritableImage image = snapshotImpl(params);
-      return image;
    }
 
    /**
@@ -254,29 +337,7 @@ public class SVGImage extends Group {
     * @return the Image
     */
    public Image toImage(double width) {
-      double initialWidth = this.getLayoutBounds().getWidth();
-      double initialHeight = this.getLayoutBounds().getHeight();
-      double scaleX = width / initialWidth;
-      double scaleY = initialHeight * scaleX;
-      this.setScaleX(scaleX);
-      this.setScaleY(scaleY);
-      double finalWidth = width;
-      double finalHeight = initialHeight * scaleY;
-      SnapshotParameters params = SNAPSHOT_PARAMS;
-      Rectangle2D viewport = new Rectangle2D(0, 0, finalWidth, finalHeight);
-      if (params == null) {
-         params = new SnapshotParameters();
-         params.setViewport(viewport);
-      } else {
-         params = new SnapshotParameters();
-         params.setCamera(SNAPSHOT_PARAMS.getCamera());
-         params.setDepthBuffer(SNAPSHOT_PARAMS.isDepthBuffer());
-         params.setTransform(SNAPSHOT_PARAMS.getTransform());
-         params.setFill(SNAPSHOT_PARAMS.getFill());
-         params.setViewport(viewport);
-      }
-      WritableImage image = snapshotImpl(params);
-      return image;
+      return toImage(ScaleQuality.RENDER_SPEED, width);
    }
 
    /**
@@ -307,6 +368,51 @@ public class SVGImage extends Group {
    private WritableImage snapshotImplInJFX(SnapshotParameters params) {
       WritableImage image = this.snapshot(params, null);
       return image;
+   }
+
+   /**
+    * Scale the image.
+    *
+    * @param scale the scale factor
+    * @return the new image
+    */
+   public SVGImage scale(double scale) {
+      if (content == null) {
+         this.setScaleX(scale);
+         this.setScaleY(scale);
+         return this;
+      } else {
+         SVGImage image;
+         if (content.params != null) {
+            LoaderParameters params = content.params.clone();
+            params.width = -1;
+            params.scale = scale;
+            if (content.isFromURL()) {
+               image = SVGLoader.load(content.url, params);
+            } else {
+               image = SVGLoader.load(content.content, params);
+            }
+         } else {
+            if (content.isFromURL()) {
+               image = SVGLoader.loadScaled(content.url, scale);
+            } else {
+               image = SVGLoader.loadScaled(content.content, scale);
+            }
+         }
+         return image;
+      }
+   }
+
+   /**
+    * Scale the image to a specified width.
+    *
+    * @param width the width of the scaled image
+    * @return the new image
+    */
+   public SVGImage scaleTo(double width) {
+      double initialWidth = this.getLayoutBounds().getWidth();
+      double scale = width / initialWidth;
+      return scale(scale);
    }
 
    /**

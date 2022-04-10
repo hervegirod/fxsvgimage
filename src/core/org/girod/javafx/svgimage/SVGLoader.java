@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -79,27 +79,24 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 0.6
+ * @version 1.0
  */
 public class SVGLoader implements SVGTags {
-   private final URL url;
-   private final String content;
+   private final SVGContent content;
    private final SVGImage root;
    private Viewport viewport = null;
    private final LoaderContext context;
 
    private SVGLoader(URL url, LoaderParameters params) {
-      this.url = url;
-      this.content = null;
-      this.root = new SVGImage();
+      this.content = new SVGContent(url, params);
+      this.root = new SVGImage(content);
       this.context = new LoaderContext(root, params, url);
    }
 
    private SVGLoader(String content, LoaderParameters params) {
-      this.url = null;
-      this.content = content;
-      this.root = new SVGImage();
-      this.context = new LoaderContext(root, params, url);
+      this.content = new SVGContent(content, params);
+      this.root = new SVGImage(this.content);
+      this.context = new LoaderContext(root, params, this.content.url);
    }
 
    /**
@@ -494,10 +491,10 @@ public class SVGLoader implements SVGTags {
          saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
          SAXParser parser = saxfactory.newSAXParser();
          XMLTreeHandler handler = new XMLTreeHandler();
-         if (url != null) {
-            parser.parse(url.openStream(), handler);
+         if (content.url != null) {
+            parser.parse(content.url.openStream(), handler);
          } else {
-            InputStream stream = new ByteArrayInputStream(content.getBytes());
+            InputStream stream = new ByteArrayInputStream(content.content.getBytes());
             parser.parse(stream, handler);
          }
          SVGImage img = walk(handler.getRoot());
@@ -647,7 +644,7 @@ public class SVGLoader implements SVGTags {
                }
                break;
             case IMAGE:
-               node = SVGShapeBuilder.buildImage(childNode, url, null, null, viewport);
+               node = SVGShapeBuilder.buildImage(childNode, content.url, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
                break;
@@ -795,7 +792,7 @@ public class SVGLoader implements SVGTags {
                SVGShapeBuilder.buildFEFlood(spec, childNode, viewport);
                break;
             case FE_IMAGE:
-               SVGShapeBuilder.buildFEImage(spec, url, childNode, viewport);
+               SVGShapeBuilder.buildFEImage(spec, content.url, childNode, viewport);
                break;
             case FE_OFFSET:
                SVGShapeBuilder.buildFEOffset(spec, childNode, viewport);
