@@ -43,13 +43,11 @@ import org.junit.Test;
 import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
-import javafx.scene.shape.SVGPath;
 
 /**
- * Unit tests for a polygon.
+ * Unit tests for a polygon or polyline.
  *
  * @since 1.0
  */

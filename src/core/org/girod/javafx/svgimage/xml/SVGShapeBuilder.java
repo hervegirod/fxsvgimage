@@ -833,26 +833,34 @@ public class SVGShapeBuilder implements SVGTags {
     * @return the shape
     */
    public static Line buildLine(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      if (xmlNode.hasAttribute(X1) && xmlNode.hasAttribute(Y1) && xmlNode.hasAttribute(X2) && xmlNode.hasAttribute(Y2)) {
-         double x1 = xmlNode.getPositionValue(X1, true, bounds, viewport);
-         double y1 = xmlNode.getPositionValue(Y1, false, bounds, viewport);
-         double x2 = xmlNode.getPositionValue(X2, true, bounds, viewport);
-         double y2 = xmlNode.getPositionValue(Y2, false, bounds, viewport);
-
-         if (viewbox != null) {
-            x1 = viewbox.scaleValue(true, x1);
-            y1 = viewbox.scaleValue(false, y1);
-            x2 = viewbox.scaleValue(true, x2);
-            y2 = viewbox.scaleValue(false, y2);
-         }
-         Line line = new Line(x1, y1, x2, y2);
-         if (viewbox != null) {
-            viewbox.scaleNode(line);
-         }
-         return line;
-      } else {
-         return null;
+      double x1 = 0;
+      double y1 = 0;
+      double x2 = 0;
+      double y2 = 0;
+      if (xmlNode.hasAttribute(X1)) {
+         x1 = xmlNode.getPositionValue(X1, true, bounds, viewport);
       }
+      if (xmlNode.hasAttribute(Y1)) {
+         y1 = xmlNode.getPositionValue(Y1, false, bounds, viewport);
+      }
+      if (xmlNode.hasAttribute(X2)) {
+         x2 = xmlNode.getPositionValue(X2, true, bounds, viewport);
+      }
+      if (xmlNode.hasAttribute(Y2)) {
+         y2 = xmlNode.getPositionValue(Y2, false, bounds, viewport);
+      }
+
+      if (viewbox != null) {
+         x1 = viewbox.scaleValue(true, x1);
+         y1 = viewbox.scaleValue(false, y1);
+         x2 = viewbox.scaleValue(true, x2);
+         y2 = viewbox.scaleValue(false, y2);
+      }
+      Line line = new Line(x1, y1, x2, y2);
+      if (viewbox != null) {
+         viewbox.scaleNode(line);
+      }
+      return line;
    }
 
    /**

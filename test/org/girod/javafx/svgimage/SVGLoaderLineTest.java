@@ -43,17 +43,17 @@ import org.junit.Test;
 import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 /**
- * Unit tests for several basic shapes.
+ * Unit tests for a line.
  *
  * @since 1.0
  */
-public class SVGLoaderUnitsTest {
+public class SVGLoaderLineTest {
    private static double DELTA = 0.001d;
 
-   public SVGLoaderUnitsTest() {
+   public SVGLoaderLineTest() {
    }
 
    @BeforeClass
@@ -73,55 +73,24 @@ public class SVGLoaderUnitsTest {
    }
 
    /**
-    * Test of load method, of class SVGLoader. Test with a rect.
+    * Test of load method, of class SVGLoader. Test with a line.
     */
    @Test
-   public void testLoadRect() throws Exception {
-      System.out.println("SVGLoaderUnitsTest : testLoadRect");
-      URL url = this.getClass().getResource("no-rendered-units.svg");
+   public void testLoadLine() throws Exception {
+      System.out.println("SVGLoaderLineTest : testLoadLine");
+      URL url = this.getClass().getResource("line-default.svg");
       SVGImage result = SVGLoader.load(url);
       assertNotNull("SVGImage should not be null", result);
 
       ObservableList<Node> children = result.getChildren();
-      assertEquals("Must have one child", 8, children.size());
+      assertEquals("Must have one child", 1, children.size());
       Node child = children.get(0);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      Circle circle = (Circle) child;
-      assertEquals("Circle radius", 16, circle.getRadius(), DELTA);
-
-      child = children.get(1);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 15.874, circle.getRadius(), DELTA);
-
-      child = children.get(2);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 16, circle.getRadius(), DELTA);
-
-      child = children.get(3);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 13.6, circle.getRadius(), DELTA);
-
-      child = children.get(4);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 15.84, circle.getRadius(), DELTA);
-
-      child = children.get(5);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 15.874, circle.getRadius(), DELTA);
-
-      child = children.get(6);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 16, circle.getRadius(), DELTA);
-
-      child = children.get(7);
-      assertTrue("Child must be a Circle", child instanceof Circle);
-      circle = (Circle) child;
-      assertEquals("Circle radius", 16, circle.getRadius(), DELTA);
+      assertTrue("Child must be a Line", child instanceof Line);
+      Line line = (Line) child;
+      assertEquals("x1", 0, line.getStartX(), DELTA);
+      assertEquals("y1", 0, line.getStartY(), DELTA);
+      assertEquals("x2", 32, line.getEndX(), DELTA);;
+      assertEquals("y2", 32, line.getEndY(), DELTA);
+      line.getStartX();
    }
 }
