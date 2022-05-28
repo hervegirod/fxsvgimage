@@ -130,3 +130,4 @@
  - Keep the URL or String origin of the SVG in the resulting JavaFX SVGImage
  - Fix the computation of some lengths units, and add support for the em and ex units
  - Accept transforms declarations with optional spaces
+ - Support text-anchor for text elements
