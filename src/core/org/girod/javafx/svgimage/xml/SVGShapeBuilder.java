@@ -558,6 +558,7 @@ public class SVGShapeBuilder implements SVGTags {
                break;
          }
          if (nodeFromUse != null) {
+            SVGStyleBuilder.setNodeStyle(nodeFromUse, namedNode, context, viewport);
             if (xmlNode.hasAttribute(X)) {
                double x = xmlNode.getPositionValue(X, true, viewport);
                nodeFromUse.setLayoutX(x);

@@ -43,21 +43,19 @@ import org.junit.Test;
 import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 /**
- * Unit tests for several basic shapes.
+ * Unit tests for the use element.
  *
  * @since 1.0
  */
-public class SVGLoaderTransformsTest {
+public class SVGLoaderUseTest {
    private static double DELTA = 0.001d;
 
-   public SVGLoaderTransformsTest() {
+   public SVGLoaderUseTest() {
    }
 
    @BeforeClass
@@ -77,39 +75,25 @@ public class SVGLoaderTransformsTest {
    }
 
    /**
-    * Test of load method, of class SVGLoader. Test with a rect.
+    * Test of load method, of class SVGLoader. Test with a use.
     */
    @Test
-   public void testLoadRect() throws Exception {
-      System.out.println("SVGLoaderTransformsTest : testLoadRect");
-      URL url = this.getClass().getResource("space-transforms.svg");
+   public void testLoadUse() throws Exception {
+      System.out.println("SVGLoaderUseTest : testLoadUse");
+      URL url = this.getClass().getResource("use-lost.svg");
       SVGImage result = SVGLoader.load(url);
       assertNotNull("SVGImage should not be null", result);
 
       ObservableList<Node> children = result.getChildren();
       assertEquals("Must have one child", 1, children.size());
       Node child = children.get(0);
-      assertTrue("Child must be a Rectangle", child instanceof Rectangle);
-      Rectangle rect = (Rectangle) child;
-      ObservableList<Transform> transforms = rect.getTransforms();
-      assertEquals("Must have 3 transforms", 3, transforms.size());
-      Transform tr = transforms.get(0);
-      assertTrue("Transform must be a Scale", tr instanceof Scale);
-      Scale scale = (Scale) tr;
-      assertEquals("Scale value", 0.5d, DELTA, scale.getX());
-      assertEquals("Scale value", 0.5d, DELTA, scale.getY());
-
-      tr = transforms.get(1);
-      assertTrue("Transform must be a Translate", tr instanceof Translate);
-      Translate translate = (Translate) tr;
-      assertEquals("Translate value", 16d, DELTA, translate.getX());
-      assertEquals("Translate value", 16d, DELTA, translate.getY());
-
-      tr = transforms.get(2);
-      assertTrue("Transform must be a Rotate", tr instanceof Rotate);
-      Rotate rotate = (Rotate) tr;
-      assertEquals("Rotate value", 16d, DELTA, rotate.getPivotX());
-      assertEquals("Rotate value", 16d, DELTA, rotate.getPivotY());
-      assertEquals("Rotate value", 45d, DELTA, rotate.getAngle());
+      assertTrue("Child must be a Circle", child instanceof Circle);
+      Circle circle = (Circle) child;
+      assertEquals("Circle radius", 16, DELTA, circle.getRadius());
+      Paint fill = circle.getFill();
+      assertNotNull("fill should not be null", fill);
+      assertTrue("fill should be a Color", fill instanceof Color);
+      Color col = (Color) fill;
+      assertEquals("fill color", Color.GREEN, col);
    }
 }
