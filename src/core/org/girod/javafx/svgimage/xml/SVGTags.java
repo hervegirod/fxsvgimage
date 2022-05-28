@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 0.6.1
+ * @version 1.0
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -172,6 +172,10 @@ public interface SVGTags {
    public static String FONT_SIZE = "font-size";
    public static String FONT_WEIGHT = "font-weight";
    public static String TEXT_DECORATION = "text-decoration";
+   public static String TEXT_ANCHOR = "text-anchor";
+   public static String START = "start";
+   public static String MIDDLE = "middle";
+   public static String END = "end";
    public static String NORMAL = "normal";
    public static String BOLD = "bold";
    public static String BOLDER = "bolder";

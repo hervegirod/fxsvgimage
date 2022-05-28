@@ -63,6 +63,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import org.girod.javafx.svgimage.xml.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.FilterSpec.FESpecularLighting;
 import org.girod.javafx.svgimage.LoaderContext;
@@ -71,7 +72,7 @@ import org.girod.javafx.svgimage.GlobalConfig;
 /**
  * The shape builder.
  *
- * @version 0.6
+ * @version 1.0
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -154,6 +155,28 @@ public class SVGShapeBuilder implements SVGTags {
       } else {
          style = style + addStyle;
          text.setStyle(style);
+      }
+   }
+
+   public static void applyTextAnchor(Text text, String value) {
+      switch (value) {
+         case START:
+            text.setTextAlignment(TextAlignment.LEFT);
+            break;
+         case MIDDLE: {
+            text.setTextAlignment(TextAlignment.CENTER);
+            text.applyCss();
+            double width = text.getLayoutBounds().getWidth();
+            text.setX(text.getX() - width / 2);
+            break;
+         }
+         case END: {
+            text.setTextAlignment(TextAlignment.RIGHT);
+            text.applyCss();
+            double width = text.getLayoutBounds().getWidth();
+            text.setX(text.getX() - width);
+            break;
+         }
       }
    }
 
@@ -335,6 +358,9 @@ public class SVGShapeBuilder implements SVGTags {
          Text text = new Text(x, y, cdata);
          if (xmlNode.hasAttribute(TEXT_DECORATION)) {
             SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+         }
+         if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
+            SVGShapeBuilder.applyTextAnchor(text, xmlNode.getAttributeValue(TEXT_ANCHOR));
          }
          if (font != null) {
             text.setFont(font);
