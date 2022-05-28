@@ -133,3 +133,4 @@
  - Support text-anchor for text elements
  - Fix the style and color for use elements not taken into account 
  - Fix some cases where Polygon or Polylines would not be correctly parsed
+ - Take correctly into account Line elements with default values
