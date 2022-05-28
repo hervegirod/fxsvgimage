@@ -231,7 +231,10 @@
       </li>
       <li>
          <code>text-decoration</code>
-      </li>                        
+      </li>      
+      <li>
+         <code>text-anchor</code>
+      </li>                           
    </ul>   
    
    Note: only the <code>underline</code> and <code>line-through</code> values are supported for the <code>text-decoration</code>
