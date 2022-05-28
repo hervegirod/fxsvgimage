@@ -128,3 +128,4 @@
  - Support images embedded the svg file as base64
  - Fix the width and height of the resulting image when writing a Node which could be off by one pixel, when using a scale
  - Keep the URL or String origin of the SVG in the resulting JavaFX SVGImage
+ - Fix the computation of some lengths units, and add support for the em and ex units
