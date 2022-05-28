@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import javafx.geometry.Bounds;
 /**
  * This utility class parse a length value.
  *
- * @version 0.6
+ * @version 1.0
  */
 public class LengthParser {
    private static final Pattern NUMBER = Pattern.compile("\\-?\\d*(\\.\\d+)?");
@@ -281,19 +281,25 @@ public class LengthParser {
          if (endDigit == null) {
             parsedValue = Double.parseDouble(startDigits);
          } else {
-            parsedValue = Double.parseDouble(startDigits + "." + endDigit);
+            parsedValue = Double.parseDouble(startDigits + endDigit);
          }
          switch (unitS) {
             case "px":
                return viewport.scaleLength(parsedValue);
             case "pt":
-               return viewport.scaleLength(parsedValue / INCH * 72d / 96d);
+               return viewport.scaleLength(parsedValue * 96d / 72d);
+            case "em":
+               return viewport.scaleLength(parsedValue * 16);
+            case "ex":
+               // this is an approximation
+               // see https://stackoverflow.com/questions/918612/what-is-the-value-of-the-css-ex-unit
+               return viewport.scaleLength(parsedValue * 16 * (1.5d / 3d));
             case "in":
                return viewport.scaleLength(parsedValue / INCH);
             case "cm":
-               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d));
+               return viewport.scaleLength(parsedValue * (96 / 2.54));
             case "mm":
-               return viewport.scaleLength(parsedValue / INCH * 72d / (96d * 2.54d * 10));
+               return viewport.scaleLength(parsedValue * (96 / (10 * 2.54)));
             case "%":
                if (isWidth) {
                   return viewport.scaleLength(parsedValue * viewport.getBestWidth() / 100);
