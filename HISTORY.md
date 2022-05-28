@@ -131,3 +131,4 @@
  - Fix the computation of some lengths units, and add support for the em and ex units
  - Accept transforms declarations with optional spaces
  - Support text-anchor for text elements
+ - Fix the style and color for use elements not taken into account 
