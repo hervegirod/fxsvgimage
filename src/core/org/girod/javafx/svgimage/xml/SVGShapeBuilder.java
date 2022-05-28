@@ -262,18 +262,23 @@ public class SVGShapeBuilder implements SVGTags {
       if (value == null) {
          return weight;
       }
-      if (value.equals(BOLD)) {
-         weight = FontWeight.BOLD;
-      } else if (value.equals(BOLDER)) {
-         weight = FontWeight.EXTRA_BOLD;
-      } else if (value.equals(LIGHTER)) {
-         weight = FontWeight.LIGHT;
-      } else {
-         Matcher m = NUMBER.matcher(value);
-         if (m.matches()) {
-            int weightNumber = Integer.parseInt(value);
-            weight = FontWeight.findByWeight(weightNumber);
-         }
+      switch (value) {
+         case BOLD:
+            weight = FontWeight.BOLD;
+            break;
+         case BOLDER:
+            weight = FontWeight.EXTRA_BOLD;
+            break;
+         case LIGHTER:
+            weight = FontWeight.LIGHT;
+            break;
+         default:
+            Matcher m = NUMBER.matcher(value);
+            if (m.matches()) {
+               int weightNumber = Integer.parseInt(value);
+               weight = FontWeight.findByWeight(weightNumber);
+            }
+            break;
       }
 
       return weight;
@@ -793,19 +798,24 @@ public class SVGShapeBuilder implements SVGTags {
       String pointsAttribute = xmlNode.getAttributeValue(POINTS);
       Polygon polygon = new Polygon();
 
-      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
+      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ,");
+      boolean isX = true;
       while (tokenizer.hasMoreTokens()) {
          String point = tokenizer.nextToken();
-
-         StringTokenizer tokenizer2 = new StringTokenizer(point, ",");
-         double x = ParserUtils.parsePositionValue(tokenizer2.nextToken(), true, bounds, viewport);
-         double y = ParserUtils.parsePositionValue(tokenizer2.nextToken(), false, bounds, viewport);
-         if (viewbox != null) {
-            x = viewbox.scaleValue(true, x);
-            y = viewbox.scaleValue(false, y);
+         if (isX) {
+            double x = ParserUtils.parsePositionValue(point, true, bounds, viewport);
+            if (viewbox != null) {
+               x = viewbox.scaleValue(true, x);
+            }
+            polygon.getPoints().add(x);
+         } else {
+            double y = ParserUtils.parsePositionValue(point, false, bounds, viewport);
+            if (viewbox != null) {
+               y = viewbox.scaleValue(false, y);
+            }
+            polygon.getPoints().add(y);
          }
-         polygon.getPoints().add(x);
-         polygon.getPoints().add(y);
+         isX = !isX;
       }
       if (viewbox != null) {
          viewbox.scaleNode(polygon);
@@ -858,18 +868,24 @@ public class SVGShapeBuilder implements SVGTags {
       Polyline polyline = new Polyline();
       String pointsAttribute = xmlNode.getAttributeValue(POINTS);
 
-      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ");
+      StringTokenizer tokenizer = new StringTokenizer(pointsAttribute, " ,");
+      boolean isX = true;
       while (tokenizer.hasMoreTokens()) {
-         String points = tokenizer.nextToken();
-         StringTokenizer tokenizer2 = new StringTokenizer(points, ",");
-         double x = ParserUtils.parsePositionValue(tokenizer2.nextToken(), true, bounds, viewport);
-         double y = ParserUtils.parsePositionValue(tokenizer2.nextToken(), false, bounds, viewport);
-         if (viewbox != null) {
-            x = viewbox.scaleValue(true, x);
-            y = viewbox.scaleValue(false, y);
+         String point = tokenizer.nextToken();
+         if (isX) {
+            double x = ParserUtils.parsePositionValue(point, true, bounds, viewport);
+            if (viewbox != null) {
+               x = viewbox.scaleValue(true, x);
+            }
+            polyline.getPoints().add(x);
+         } else {
+            double y = ParserUtils.parsePositionValue(point, false, bounds, viewport);
+            if (viewbox != null) {
+               y = viewbox.scaleValue(false, y);
+            }
+            polyline.getPoints().add(y);
          }
-         polyline.getPoints().add(x);
-         polyline.getPoints().add(y);
+         isX = !isX;
       }
 
       return polyline;
