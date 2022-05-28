@@ -48,7 +48,7 @@ import javafx.scene.transform.Transform;
  * @version 1.0
  */
 public class TransformUtils implements SVGTags {
-   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\((.*)\\)");
+   private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\s*\\((.*)\\)");
 
    private TransformUtils() {
    }
@@ -198,25 +198,37 @@ public class TransformUtils implements SVGTags {
       while (tokenizer.hasMoreTokens()) {
          String transformTxt = tokenizer.nextToken() + ")";
          transformTxt = transformTxt.trim();
-         if (transformTxt.startsWith("translate(")) {
-            List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
-            if (args.size() == 2) {
-               Transform transform = Transform.translate(args.get(0), args.get(1));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("translateX(")) {
+         if (transformTxt.startsWith("translateX")) {
             List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(args.get(0), 0);
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("translateY(")) {
+         } else if (transformTxt.startsWith("translateY")) {
             List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.translate(0, args.get(0));
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("scale(")) {
+         } else if (transformTxt.startsWith("translate")) {
+            List<Double> args = getTranslateTransformArguments(transformTxt, viewport);
+            if (args.size() == 2) {
+               Transform transform = Transform.translate(args.get(0), args.get(1));
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("scaleX")) {
+            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(args.get(0), 1);
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("scaleY")) {
+            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
+            if (args.size() == 1) {
+               Transform transform = Transform.translate(1, args.get(0));
+               transformList.add(transform);
+            }
+         } else if (transformTxt.startsWith("scale")) {
             List<Double> args = getScaleTransformArguments(transformTxt, viewport);
             if (args.size() == 2) {
                Transform transform = Transform.scale(args.get(0), args.get(1));
@@ -225,19 +237,7 @@ public class TransformUtils implements SVGTags {
                Transform transform = Transform.scale(args.get(0), args.get(0));
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("scaleX(")) {
-            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(args.get(0), 1);
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("scaleY(")) {
-            List<Double> args = getScaleTransformArguments(transformTxt, viewport);
-            if (args.size() == 1) {
-               Transform transform = Transform.translate(1, args.get(0));
-               transformList.add(transform);
-            }
-         } else if (transformTxt.startsWith("rotate(")) {
+         } else if (transformTxt.startsWith("rotate")) {
             List<Double> args = getRotateTransformArguments(transformTxt, viewport);
             if (args.size() == 3) {
                Transform transform = Transform.rotate(args.get(0), args.get(1), args.get(2));
@@ -246,19 +246,19 @@ public class TransformUtils implements SVGTags {
                Transform transform = Transform.rotate(args.get(0), 0, 0);
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("skewX(")) {
+         } else if (transformTxt.startsWith("skewX")) {
             List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.shear(Math.tan(Math.toRadians(args.get(0))), 0);
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("skewY(")) {
+         } else if (transformTxt.startsWith("skewY")) {
             List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
                Transform transform = Transform.shear(0, Math.tan(Math.toRadians(args.get(0))));
                transformList.add(transform);
             }
-         } else if (transformTxt.startsWith("matrix(")) {
+         } else if (transformTxt.startsWith("matrix")) {
             List<Double> args = getMatrixTransformArguments(transformTxt, viewport);
             if (args.size() == 6) {
                Transform transform = Transform.affine(args.get(0), args.get(1), args.get(2), args.get(3), args.get(4), args.get(5));
