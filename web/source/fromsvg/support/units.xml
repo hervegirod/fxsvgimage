@@ -4,8 +4,14 @@
    The library support the following length and position units
    <note>See <a href="https://www.w3.org/TR/SVG11/coords.html">Coordinate Systems, Transformations and Units</a></note>:
    <ul>
-      <li>The <code>px</code>, <code>pt</code>, <code>in</code>, <code>cm</code>, and <code>mm</code> units</li>
+      <li>The <code>px</code>, <code>pt</code>, <code>in</code>, <code>cm</code>, <code>mm</code>, <code>em</code>, and <code>ex</code> units</li>
       <li>The <code>%</code> unit</li>
+   </ul>
+   
+   <title title="behavior for the non relative units" />
+   <ul>
+      <li>The computation for the <code>ex</code> unit is an approximation, considering one 1/2 of the <code>em</code> unit</li>
+      <li>The computation for the <code>em</code> unit does not take inot account for the moment the height of the fonts</li>      
    </ul>
    
    <title title="behavior for the % unit" />
