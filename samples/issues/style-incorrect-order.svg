@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="64" width="128">
+  <defs>
+    <style>
+      .st-1 {
+      }
+      .st-2, .st-4 {
+        fill:green;
+      }
+      .st-3, .st-4 {
+        stroke:yellow;
+      }
+    </style>
+  </defs>
+  <circle cx="16" cy="16" r="16"/>
+  <circle cx="48" cy="16" r="16" fill="green" />
+  <circle cx="80" cy="16" r="16" stroke="yellow" />
+  <circle cx="112" cy="16" r="16" fill="green" stroke="yellow" />
+  <circle cx="16" cy="48" r="16" class="st-1" />
+  <circle cx="48" cy="48" r="16" class="st-2"/>
+  <circle cx="80" cy="48" r="16" class="st-3"/>
+  <circle cx="112" cy="48" r="16" class="st-4"/>
+</svg>
