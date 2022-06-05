@@ -125,6 +125,7 @@
             <include name="src/**/*.properties"/>
             <include name="src/**/*.html"/>
             <include name="src/**/*.mf"/>
+            <include name="src/**/*.png"/>            
             <include name="src/**/*.xml"/>            
             <include name="src/manifest*.mf"/>
          </fileset>
@@ -238,6 +239,7 @@
            manifest="${src.dir}/browser/manifest.mf" >
          <fileset defaultexcludes="yes" dir="${build.classes.dir}">
             <include name="org/girod/javafx/svgimage/browser/**/*.class"/>     
+            <include name="org/girod/javafx/svgimage/browser/**/*.png"/>   
          </fileset>
       </jar>      
       <!-- converter Jar construction -->

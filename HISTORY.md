@@ -128,9 +128,10 @@
  - Support images embedded the svg file as base64
  - Fix the width and height of the resulting image when writing a Node which could be off by one pixel, when using a scale
  - Keep the URL or String origin of the SVG in the resulting JavaFX SVGImage
- - Fix the computation of some lengths units, and add support for the em and ex units
- - Accept transforms declarations with optional spaces
- - Support text-anchor for text elements
- - Fix the style and color for use elements not taken into account 
- - Fix some cases where Polygon or Polylines would not be correctly parsed
- - Take correctly into account Line elements with default values
+ - Fix #22: Fix the computation of some lengths units, and add support for the em and ex units
+ - Fix #17: Accept transforms declarations with optional spaces
+ - Fix #19: Support text-anchor for text elements
+ - Fix #20: Fix the style and color for use elements not taken into account 
+ - Fix #24: Fix some cases where Polygon or Polylines would not be correctly parsed
+ - Fix #23: Take correctly into account Line elements with default values
+ - Fix #25: By default scaling an SVGImage scale the initial SVGImage rather than creating another one
