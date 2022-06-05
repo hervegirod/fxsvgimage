@@ -373,7 +373,7 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Scale the image.
+    * Scale the image. Return the initial SVGImage.
     *
     * @param scale the scale factor
     * @return the new image
@@ -383,10 +383,10 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Scale the image.
+    * Scale the image. If <code>createNew</code> is <code>true</code>, then return the initial SVGImage.
     *
     * @param scale the scale factor
-    * @param createNew true to creata a new image
+    * @param createNew true to create a new image
     * @return the new image
     */
    public SVGImage scale(double scale, boolean createNew) {
@@ -439,7 +439,7 @@ public class SVGImage extends Group {
       }
    }
    /**
-    * Scale the image to a specified width.
+    * Scale the image to a specified width. Return the initial SVGImage.
     *
     * @param width the width of the scaled image
     * @return the new image
@@ -449,7 +449,7 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Scale the image to a specified width.
+    * Scale the image to a specified width. If <code>createNew</code> is <code>true</code>, then return the initial SVGImage.
     *
     * @param width the width of the scaled image
     * @param createNew true to creata a new image
