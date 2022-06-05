@@ -42,6 +42,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import javafx.animation.Animation;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -62,6 +63,7 @@ public class SVGImage extends Group {
    private final Map<String, Node> nodes = new HashMap<>();
    private List<Animation> animations = new ArrayList<>();
    private final SVGContent content;
+   private double currentScale = 1d;
 
    /**
     * Constructor.
@@ -377,32 +379,65 @@ public class SVGImage extends Group {
     * @return the new image
     */
    public SVGImage scale(double scale) {
+      return scale(scale, false);
+   }
+
+   /**
+    * Scale the image.
+    *
+    * @param scale the scale factor
+    * @param createNew true to creata a new image
+    * @return the new image
+    */
+   public SVGImage scale(double scale, boolean createNew) {
       if (content == null) {
          this.setScaleX(scale);
          this.setScaleY(scale);
+         this.currentScale = this.currentScale * scale;
          return this;
       } else {
          SVGImage image;
          if (content.params != null) {
             LoaderParameters params = content.params.clone();
             params.width = -1;
-            params.scale = scale;
+            this.currentScale = this.currentScale * scale;
+            params.scale = this.currentScale;
             if (content.isFromURL()) {
                image = SVGLoader.load(content.url, params);
             } else {
                image = SVGLoader.load(content.content, params);
             }
          } else {
+            this.currentScale = this.currentScale * scale;
             if (content.isFromURL()) {
-               image = SVGLoader.loadScaled(content.url, scale);
+               image = SVGLoader.loadScaled(content.url, this.currentScale);
             } else {
-               image = SVGLoader.loadScaled(content.content, scale);
+               image = SVGLoader.loadScaled(content.content, this.currentScale);
+            }
+         }
+         if (!createNew) {
+            ObservableList<Node> _nodes = this.getChildren();
+            _nodes.clear();
+            _nodes = image.getChildren();
+            List<Node> listToAdd = new ArrayList<>();
+            Iterator<Node> it = _nodes.iterator();
+            while (it.hasNext()) {
+               listToAdd.add(it.next());
+            }
+            _nodes.clear();
+            this.nodes.clear();
+            this.nodes.putAll(image.nodes);
+            this.animations.clear();
+            this.animations.addAll(image.animations);
+            _nodes = this.getChildren();
+            it = listToAdd.iterator();
+            while (it.hasNext()) {
+               _nodes.add(it.next());
             }
          }
          return image;
       }
    }
-
    /**
     * Scale the image to a specified width.
     *
@@ -410,9 +445,20 @@ public class SVGImage extends Group {
     * @return the new image
     */
    public SVGImage scaleTo(double width) {
+      return scaleTo(width, true);
+   }
+
+   /**
+    * Scale the image to a specified width.
+    *
+    * @param width the width of the scaled image
+    * @param createNew true to creata a new image
+    * @return the new image
+    */
+   public SVGImage scaleTo(double width, boolean createNew) {
       double initialWidth = this.getLayoutBounds().getWidth();
       double scale = width / initialWidth;
-      return scale(scale);
+      return scale(scale, createNew);
    }
 
    /**

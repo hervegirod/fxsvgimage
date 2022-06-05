@@ -34,6 +34,7 @@ package org.girod.javafx.svgimage.browser;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
@@ -48,12 +49,16 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -122,12 +127,52 @@ public class SVGBrowser extends Application {
          }
       });
 
+      ToolBar toolBar = new ToolBar();
+      URL url = this.getClass().getResource("zoomIn.png");
+      Image img = new Image(url.toString());
+      Button zoomIn = new Button("", new ImageView(img));
+      toolBar.getItems().add(zoomIn);
+
+      zoomIn.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+            zoomIn();
+         }
+      });
+
+      url = this.getClass().getResource("zoomOut.png");
+      img = new Image(url.toString());
+      Button zoomOut = new Button("", new ImageView(img));
+      toolBar.getItems().add(zoomOut);
+
+      zoomOut.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+            zoomOut();
+         }
+      });
+
       VBox vBox = new VBox();
       vBox.getChildren().add(menuBar);
+      vBox.getChildren().add(toolBar);
       vBox.getChildren().add(tabPane);
 
       stage.setScene(new Scene(vBox, 600, 600));
       stage.show();
+   }
+
+   private void zoomIn() {
+      SVGImage image = getSelectedImage();
+      if (image != null) {
+         image.scale(1.2d);
+      }
+   }
+
+   private void zoomOut() {
+      SVGImage image = getSelectedImage();
+      if (image != null) {
+         image.scale(0.8d);
+      }
    }
 
    private Node outerNode(Node node) {
