@@ -53,6 +53,7 @@ public interface SVGTags {
    public static String D = "d";
    public static String SVG = "svg";
    public static String USE = "use";
+   public static String MARKER = "marker";
    public static String G = "g";
    public static String SYMBOL = "symbol";
    public static String DEFS = "defs";

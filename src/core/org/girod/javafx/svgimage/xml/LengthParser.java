@@ -220,13 +220,13 @@ public class LengthParser {
          if (endDigit == null) {
             parsedValue = Double.parseDouble(startDigits);
          } else {
-            parsedValue = Double.parseDouble(startDigits + "." + endDigit);
+            parsedValue = Double.parseDouble(startDigits + endDigit);
          }
          switch (unitS) {
             case "px":
                return viewport.scaleLineWidth(parsedValue);
             case "pt":
-               return viewport.scaleLineWidth(parsedValue / INCH * 72d / 96d);
+               return viewport.scaleLineWidth(parsedValue * 96d / 72d);
             case "in":
                return viewport.scaleLineWidth(parsedValue / INCH);
             case "cm":
