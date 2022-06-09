@@ -136,3 +136,5 @@
  - Fix #23: Take correctly into account Line elements with default values
  - Fix #25: By default scaling an SVGImage scale the initial SVGImage rather than creating another one
  - Add zoom commands in the browser
+ - Fix #27; The pt unit is not converted correctly
+ - Fix #28: The conversion of length values with dots and dots throw an internal exception 
