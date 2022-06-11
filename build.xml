@@ -146,7 +146,7 @@
             <include name="samples/*"/>
          </fileset> 
          <fileset description="web" dir=".">
-            <include name="web/source"/>
+            <include name="web/source/**/*.*"/>
             <include name="web/soft/INTENTIONALLY_EMPTY"/>
             <include name="web/wiki/INTENTIONALLY_EMPTY"/>
             <include name="web/sourceforge/INTENTIONALLY_EMPTY"/>
