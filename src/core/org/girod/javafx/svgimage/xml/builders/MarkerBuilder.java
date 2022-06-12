@@ -105,16 +105,16 @@ public class MarkerBuilder implements SVGTags {
          MarkerSpec spec = markerContext.getMarkerStart();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(points.get(0) + spec.getRefX());
-            markerNode.setLayoutY(points.get(1) + spec.getRefY());
+            markerNode.setLayoutX(points.get(0) + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(points.get(1) + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerEnd() && countPoints >= 4) {
          MarkerSpec spec = markerContext.getMarkerEnd();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(points.get(points.size() - 2) + spec.getRefX());
-            markerNode.setLayoutY(points.get(points.size() - 1) + spec.getRefY());
+            markerNode.setLayoutX(points.get(points.size() - 2) + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(points.get(points.size() - 1) + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerMid() && countPoints >= 6) {
@@ -122,8 +122,8 @@ public class MarkerBuilder implements SVGTags {
          for (int i = 2; i < countPoints - 2; i += 2) {
             Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
             if (markerNode != null) {
-               markerNode.setLayoutX(points.get(i) + spec.getRefX());
-               markerNode.setLayoutY(points.get(i + 1) + spec.getRefY());
+               markerNode.setLayoutX(points.get(i) + getLength(spec, spec.getRefX(), true));
+               markerNode.setLayoutY(points.get(i + 1) + getLength(spec, spec.getRefY(), false));
             }
          }
       }
@@ -138,16 +138,16 @@ public class MarkerBuilder implements SVGTags {
          MarkerSpec spec = markerContext.getMarkerStart();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(points.get(0) + spec.getRefX());
-            markerNode.setLayoutY(points.get(1) + spec.getRefY());
+            markerNode.setLayoutX(points.get(0) + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(points.get(1) + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerEnd() && countPoints >= 4) {
          MarkerSpec spec = markerContext.getMarkerEnd();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(points.get(points.size() - 2) + spec.getRefX());
-            markerNode.setLayoutY(points.get(points.size() - 1) + spec.getRefY());
+            markerNode.setLayoutX(points.get(points.size() - 2) + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(points.get(points.size() - 1) + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerMid() && countPoints >= 6) {
@@ -155,8 +155,8 @@ public class MarkerBuilder implements SVGTags {
          for (int i = 2; i < countPoints - 2; i += 2) {
             Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
             if (markerNode != null) {
-               markerNode.setLayoutX(points.get(i) + spec.getRefX());
-               markerNode.setLayoutY(points.get(i + 1) + spec.getRefY());
+               markerNode.setLayoutX(points.get(i) + getLength(spec, spec.getRefX(), true));
+               markerNode.setLayoutY(points.get(i + 1) + getLength(spec, spec.getRefY(), false));
             }
          }
       }
@@ -168,17 +168,25 @@ public class MarkerBuilder implements SVGTags {
          MarkerSpec spec = markerContext.getMarkerStart();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(line.getStartX() + spec.getRefX());
-            markerNode.setLayoutY(line.getStartY() + spec.getRefY());
+            markerNode.setLayoutX(line.getStartX() + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(line.getStartY() + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerEnd()) {
          MarkerSpec spec = markerContext.getMarkerEnd();
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
-            markerNode.setLayoutX(line.getEndX() + spec.getRefX());
-            markerNode.setLayoutY(line.getEndY() + spec.getRefY());
+            markerNode.setLayoutX(line.getEndX() + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(line.getEndY() + getLength(spec, spec.getRefY(), false));
          }
+      }
+   }
+
+   private static double getLength(MarkerSpec spec, double length, boolean isWidth) {
+      if (!spec.hasViewbox()) {
+         return length;
+      } else {
+         return spec.getViewbox().scaleValue(isWidth, length);
       }
    }
 
@@ -190,8 +198,8 @@ public class MarkerBuilder implements SVGTags {
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
             MoveTo start = getStart(path);
-            markerNode.setLayoutX(start.getX() + spec.getRefX());
-            markerNode.setLayoutY(start.getY() + spec.getRefY());
+            markerNode.setLayoutX(start.getX() + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(start.getY() + getLength(spec, spec.getRefY(), false));
          }
       }
       if (markerContext.hasMarkerEnd()) {
@@ -199,8 +207,8 @@ public class MarkerBuilder implements SVGTags {
          Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
          if (markerNode != null) {
             MoveTo end = getEnd(path);
-            markerNode.setLayoutX(end.getX() + spec.getRefX());
-            markerNode.setLayoutY(end.getY() + spec.getRefY());
+            markerNode.setLayoutX(end.getX() + getLength(spec, spec.getRefX(), true));
+            markerNode.setLayoutY(end.getY() + getLength(spec, spec.getRefY(), false));
          }
       }
    }
