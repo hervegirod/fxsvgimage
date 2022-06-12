@@ -30,59 +30,55 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.loaders;
+package org.girod.javafx.svgimage.xml.parsers;
 
-import java.io.File;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.girod.javafx.svgimage.SVGImage;
-import org.girod.javafx.svgimage.SVGLoader;
-import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
  *
- * @since 0.3
+ * @since 1.0
  */
-public class TestSVGLoaderFX2 extends Application {
-   public static void main(String[] args) {
-      launch(args);
-   }
+public abstract class AbstractPathParser {
+   public static final short PATH_NONE = -1;
+   public static final short MOVE_TO = 0;
+   public static final short CLOSE_PATH = 1;
+   public static final short LINE_TO = 2;
+   public static final short HORIZONTAL_LINE_TO = 3;
+   public static final short VERTICAL_LINE_TO = 4;
+   public static final short CUBIC_CURVE = 5;
+   public static final short SMOOTH_CUBIC_CURVE = 6;
+   public static final short QUADRATIC_CURVE = 7;
+   public static final short SMOOTH_QUADRATIC_CURVE = 8;
+   public static final short ELLIPTICAL_CURVE = 9;
+   public static final Pattern LETTER = Pattern.compile("[sSlLhHvVmMcCqQtTaAzZ]");
+   public static final Pattern PLUSMINUS = Pattern.compile("[+-]?\\d*([eE][+-]\\d+)?(\\.\\d+)?");
 
-   @Override
-   public void start(Stage stage) {
-      stage.setTitle("TestSVGLoaderFX2");
-
-      stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-         @Override
-         public void handle(WindowEvent t) {
-            System.exit(0);
+   protected void decomposePart(List<String> list, String token) {
+      int offset = 0;
+      Matcher m = PLUSMINUS.matcher(token);
+      String part = token;
+      while (true) {
+         boolean found = m.find(offset);
+         if (!found) {
+            list.add(part);
+            break;
+         } else {
+            int start = m.start();
+            int end = m.end();
+            String value = token.substring(start, end);
+            list.add(value);
+            offset = end;
+            if (offset < token.length()) {
+               part = token.substring(offset);
+            } else {
+               break;
+            }
          }
-      });
-
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-      File file = fileChooser.showOpenDialog(stage);
-      if (file != null) {
-         try {
-            SVGImage svgImg = SVGLoader.load(file, 20);
-            System.out.println(svgImg.getBoundsInParent().getWidth());
-            stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
-
-            StackPane root = new StackPane();
-            root.getChildren().add(svgImg);
-            stage.setScene(new Scene(root, 300, 250));
-            stage.show();
-         } catch (SVGParsingException e) {
-            e.printStackTrace();
-         }
-      } else {
-         System.exit(0);
       }
    }
-
 }

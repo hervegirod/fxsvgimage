@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,13 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
-import org.girod.javafx.svgimage.xml.SVGLibraryException;
-import org.girod.javafx.svgimage.xml.SVGParsingException;
+import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
+import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
 
 /**
  * The global configuration.
  *
- * @since 0.6
+ * @version 1.0
  */
 public class GlobalConfig implements ExceptionsHandling {
    private static GlobalConfig config = null;

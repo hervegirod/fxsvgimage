@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,59 +30,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.loaders;
+package org.girod.javafx.svgimage.xml.specs;
 
-import java.io.File;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.girod.javafx.svgimage.SVGImage;
-import org.girod.javafx.svgimage.SVGLoader;
-import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
+import javafx.scene.text.FontPosture;
 
 /**
+ * Aa font posture which allows for oblique fonts.
  *
- * @since 0.3
+ * @version 1.0
  */
-public class TestSVGLoaderFX2 extends Application {
-   public static void main(String[] args) {
-      launch(args);
+public class ExtendedFontPosture {
+   public final FontPosture posture;
+   public final boolean isOblique;
+
+   public ExtendedFontPosture(FontPosture posture) {
+      this.posture = posture;
+      this.isOblique = false;
    }
 
-   @Override
-   public void start(Stage stage) {
-      stage.setTitle("TestSVGLoaderFX2");
-
-      stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-         @Override
-         public void handle(WindowEvent t) {
-            System.exit(0);
-         }
-      });
-
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-      File file = fileChooser.showOpenDialog(stage);
-      if (file != null) {
-         try {
-            SVGImage svgImg = SVGLoader.load(file, 20);
-            System.out.println(svgImg.getBoundsInParent().getWidth());
-            stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
-
-            StackPane root = new StackPane();
-            root.getChildren().add(svgImg);
-            stage.setScene(new Scene(root, 300, 250));
-            stage.show();
-         } catch (SVGParsingException e) {
-            e.printStackTrace();
-         }
-      } else {
-         System.exit(0);
-      }
+   public ExtendedFontPosture(boolean isOblique) {
+      this.posture = FontPosture.REGULAR;
+      this.isOblique = isOblique;
    }
-
 }

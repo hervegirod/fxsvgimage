@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,18 +40,19 @@ import java.util.List;
 import java.util.Map;
 import javafx.animation.Animation;
 import javafx.scene.paint.Paint;
-import org.girod.javafx.svgimage.xml.ClippingFactory;
-import org.girod.javafx.svgimage.xml.FilterSpec;
-import org.girod.javafx.svgimage.xml.GradientSpec;
-import org.girod.javafx.svgimage.xml.Styles;
-import org.girod.javafx.svgimage.xml.SymbolSpec;
-import org.girod.javafx.svgimage.xml.Viewport;
-import org.girod.javafx.svgimage.xml.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.ClippingFactory;
+import org.girod.javafx.svgimage.xml.specs.FilterSpec;
+import org.girod.javafx.svgimage.xml.specs.GradientSpec;
+import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
+import org.girod.javafx.svgimage.xml.specs.Styles;
+import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
+import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 0.6.1
+ * @version 1.0
  */
 public class LoaderContext {
    /**
@@ -90,8 +91,9 @@ public class LoaderContext {
     * The gradients.
     */
    public final Map<String, Paint> gradients = new HashMap<>();
-   private Map<String, XMLNode> namedNodes = new HashMap<>();
-   private Map<String, SymbolSpec> symbols = new HashMap<>();
+   public final Map<String, MarkerSpec> markers = new HashMap<>();
+   private final Map<String, XMLNode> namedNodes = new HashMap<>();
+   private final Map<String, SymbolSpec> symbols = new HashMap<>();
    /**
     * The animations.
     */
@@ -116,6 +118,45 @@ public class LoaderContext {
     */
    public void addNamedNode(String id, XMLNode xmlNode) {
       namedNodes.put(id, xmlNode);
+   }
+
+   /**
+    * Add a marker node.
+    *
+    * @param id the node id
+    * @param xmlNode the node
+    */
+   public void addMarker(String id, MarkerSpec xmlNode) {
+      markers.put(id, xmlNode);
+   }
+
+   /**
+    * Return true if there is at least one marker.
+    *
+    * @return true if there is at least one marker
+    */
+   public boolean hasMarkers() {
+      return !markers.isEmpty();
+   }
+
+   /**
+    * Return true if there is a marker with a specified id.
+    *
+    * @param id the marker id
+    * @return true if there is a marker with the specified id
+    */
+   public boolean hasMarker(String id) {
+      return markers.containsKey(id);
+   }
+
+   /**
+    * Return the marker of a specified id.
+    *
+    * @param id the marker id
+    * @return the node
+    */
+   public MarkerSpec getMarker(String id) {
+      return markers.get(id);
    }
 
    /**

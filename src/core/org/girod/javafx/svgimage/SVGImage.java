@@ -51,7 +51,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import org.girod.javafx.svgimage.xml.SVGLibraryException;
+import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
@@ -464,7 +464,7 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.SVGLibraryException} if the
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the
     * snapshot generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
     * {@link ExceptionsHandling#RETROW_EXCEPTION}.
     * It means that by default the method will simply return false if it could not save the snapshot.
@@ -496,7 +496,7 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.SVGLibraryException} if the
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the
     * snapshot generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
     * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by
     * default the method will simply return false if it could not save the snapshot.

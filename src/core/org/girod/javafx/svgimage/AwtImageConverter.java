@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -47,12 +47,12 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
-import org.girod.javafx.svgimage.xml.SVGLibraryException;
+import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 
 /**
  * Converts a JPG image to handle the transparent background.
  *
- * @version 0.6
+ * @version 1.0
  */
 class AwtImageConverter {
    private static Object colorModel = null;

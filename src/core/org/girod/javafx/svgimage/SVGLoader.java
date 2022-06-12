@@ -58,22 +58,25 @@ import javafx.scene.transform.Transform;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.girod.javafx.svgimage.xml.AnimationBuilder;
-import org.girod.javafx.svgimage.xml.FilterSpec;
-import org.girod.javafx.svgimage.xml.GradientSpec;
-import org.girod.javafx.svgimage.xml.ParserUtils;
-import org.girod.javafx.svgimage.xml.SVGParsingException;
-import org.girod.javafx.svgimage.xml.SVGShapeBuilder;
-import org.girod.javafx.svgimage.xml.SVGStyleBuilder;
-import org.girod.javafx.svgimage.xml.SVGTags;
-import org.girod.javafx.svgimage.xml.SpanGroup;
-import org.girod.javafx.svgimage.xml.SymbolSpec;
-import org.girod.javafx.svgimage.xml.TransformUtils;
-import org.girod.javafx.svgimage.xml.Viewbox;
-import org.girod.javafx.svgimage.xml.Viewport;
-import org.girod.javafx.svgimage.xml.XMLNode;
-import org.girod.javafx.svgimage.xml.XMLRoot;
-import org.girod.javafx.svgimage.xml.XMLTreeHandler;
+import org.girod.javafx.svgimage.xml.builders.AnimationBuilder;
+import org.girod.javafx.svgimage.xml.specs.FilterSpec;
+import org.girod.javafx.svgimage.xml.specs.GradientSpec;
+import org.girod.javafx.svgimage.xml.builders.MarkerBuilder;
+import org.girod.javafx.svgimage.xml.specs.MarkerContext;
+import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
+import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
+import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
+import org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder;
+import org.girod.javafx.svgimage.xml.builders.SVGStyleBuilder;
+import org.girod.javafx.svgimage.xml.parsers.SVGTags;
+import org.girod.javafx.svgimage.xml.specs.SpanGroup;
+import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
+import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
+import org.girod.javafx.svgimage.xml.specs.Viewbox;
+import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.XMLRoot;
+import org.girod.javafx.svgimage.xml.parsers.XMLTreeHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -537,6 +540,17 @@ public class SVGLoader implements SVGTags {
       buildNode(xmlNode, group, false);
    }
 
+   private void addMarker(XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(ID)) {
+         String id = xmlNode.getAttributeValue(ID);
+         MarkerSpec marker = new MarkerSpec(xmlNode);
+         Viewbox viewbox = ParserUtils.parseViewbox(xmlNode, viewport);
+         marker.computeRefPosition(viewport);
+         marker.setViewbox(viewbox);
+         context.addMarker(id, marker);
+      }
+   }
+
    private void addSymbol(XMLNode xmlNode) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
@@ -663,6 +677,9 @@ public class SVGLoader implements SVGTags {
             case SYMBOL:
                addSymbol(childNode);
                break;
+            case MARKER:
+               addMarker(childNode);
+               break;
             case DEFS:
                if (!acceptDefs) {
                   buildDefs(childNode);
@@ -686,8 +703,8 @@ public class SVGLoader implements SVGTags {
                break;
          }
          if (node != null) {
-            addStyles(node, childNode, false);
             group.getChildren().add(node);
+            addStyles(group, node, childNode, false);
             if (!animations.isEmpty()) {
                List<Animation> animationsList = AnimationBuilder.buildAnimations(childNode, node, animations, viewport);
                if (animationsList != null) {
@@ -704,7 +721,7 @@ public class SVGLoader implements SVGTags {
                Text tspanText = tspan.text;
                String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
                tspan.node.addAttribute(STYLE, theStyles);
-               addStyles(tspanText, tspan.node, true);
+               addStyles(group, tspanText, tspan.node, true);
                if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
@@ -723,13 +740,16 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void addStyles(Node node, XMLNode xmlNode, boolean isTextSpan) {
-      setNodeStyle(node, xmlNode);
-      ParserUtils.setVisibility(node, xmlNode);
+   private void addStyles(Group parent, Node node, XMLNode xmlNode, boolean isTextSpan) {
+      MarkerContext markerContext = setNodeStyle(node, xmlNode);
+      boolean visible = ParserUtils.setVisibility(node, xmlNode);
       ParserUtils.setOpacity(node, xmlNode);
       setFilter(node, xmlNode);
       if (!isTextSpan) {
          TransformUtils.setTransforms(node, xmlNode, viewport);
+      }
+      if (markerContext != null) {
+         MarkerBuilder.buildMarkers(parent, node, xmlNode, markerContext, context, viewport, visible);
       }
    }
 
@@ -833,7 +853,8 @@ public class SVGLoader implements SVGTags {
       return effect;
    }
 
-   private void setNodeStyle(Node node, XMLNode xmlNode) {
-      SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
+   private MarkerContext setNodeStyle(Node node, XMLNode xmlNode) {
+      MarkerContext markerContext = SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
+      return markerContext;
    }
 }

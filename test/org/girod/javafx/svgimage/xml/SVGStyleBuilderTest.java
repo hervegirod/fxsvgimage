@@ -32,6 +32,8 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import org.girod.javafx.svgimage.xml.specs.Styles;
+import org.girod.javafx.svgimage.xml.builders.SVGStyleBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

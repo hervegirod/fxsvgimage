@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2022 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,59 +30,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.loaders;
-
-import java.io.File;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.girod.javafx.svgimage.SVGImage;
-import org.girod.javafx.svgimage.SVGLoader;
-import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
+package org.girod.javafx.svgimage.xml.parsers;
 
 /**
+ * The exception which can be thrown by the library.
  *
- * @since 0.3
+ * @version 1.0
  */
-public class TestSVGLoaderFX2 extends Application {
-   public static void main(String[] args) {
-      launch(args);
+public class SVGParsingException extends SVGLibraryException {
+   public SVGParsingException(String message) {
+      super(message);
    }
 
-   @Override
-   public void start(Stage stage) {
-      stage.setTitle("TestSVGLoaderFX2");
-
-      stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-         @Override
-         public void handle(WindowEvent t) {
-            System.exit(0);
-         }
-      });
-
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-      File file = fileChooser.showOpenDialog(stage);
-      if (file != null) {
-         try {
-            SVGImage svgImg = SVGLoader.load(file, 20);
-            System.out.println(svgImg.getBoundsInParent().getWidth());
-            stage.setScene(new Scene(svgImg, svgImg.getWidth(), svgImg.getHeight()));
-
-            StackPane root = new StackPane();
-            root.getChildren().add(svgImg);
-            stage.setScene(new Scene(root, 300, 250));
-            stage.show();
-         } catch (SVGParsingException e) {
-            e.printStackTrace();
-         }
-      } else {
-         System.exit(0);
-      }
+   public SVGParsingException(String message, Throwable cause) {
+      super(message, cause);
    }
 
+   public SVGParsingException(Throwable cause) {
+      super(cause);
+   }
 }

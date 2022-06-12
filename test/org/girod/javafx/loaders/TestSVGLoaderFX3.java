@@ -43,7 +43,7 @@ import javafx.stage.WindowEvent;
 import org.girod.javafx.svgimage.LoaderParameters;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
-import org.girod.javafx.svgimage.xml.SVGParsingException;
+import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
 
 /**
  *
