@@ -118,6 +118,9 @@ public class Viewbox {
       if (!preserveAspectRatio) {
          node.setScaleX(width / viewboxWidth);
          node.setScaleY(height / viewboxHeight);
+      } else {
+         node.setScaleX(width / viewboxWidth);
+         node.setScaleY(width / viewboxWidth);
       }
    }
 

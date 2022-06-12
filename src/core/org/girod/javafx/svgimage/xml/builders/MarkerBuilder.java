@@ -66,6 +66,7 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.PATH;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYGON;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYLINE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.RECT;
+import org.girod.javafx.svgimage.xml.specs.Viewbox;
 
 /**
  *
@@ -262,6 +263,7 @@ public class MarkerBuilder implements SVGTags {
    private static Node createMarker(Group parent, MarkerSpec spec, MarkerContext markerContext, LoaderContext context, Viewport viewport) {
       XMLNode xmlNode = spec.getXMLNode();
       Group group = new Group();
+      Viewbox viewbox = spec.getViewbox();
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
@@ -269,25 +271,25 @@ public class MarkerBuilder implements SVGTags {
          String name = childNode.getName();
          switch (name) {
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildRect(childNode, null, viewbox, viewport);
                break;
             case CIRCLE:
-               node = SVGShapeBuilder.buildCircle(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildCircle(childNode, null, viewbox, viewport);
                break;
             case ELLIPSE:
-               node = SVGShapeBuilder.buildEllipse(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildEllipse(childNode, null, viewbox, viewport);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildPath(childNode, null, viewbox, viewport);
                break;
             case POLYGON:
-               node = SVGShapeBuilder.buildPolygon(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildPolygon(childNode, null, viewbox, viewport);
                break;
             case LINE:
-               node = SVGShapeBuilder.buildLine(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildLine(childNode, null, viewbox, viewport);
                break;
             case POLYLINE:
-               node = SVGShapeBuilder.buildPolyline(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildPolyline(childNode, null, viewbox, viewport);
                break;
          }
          if (node != null) {

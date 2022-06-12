@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.specs;
 
+import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 
@@ -85,6 +86,11 @@ public class MarkerSpec implements SVGTags {
 
    public void setViewbox(Viewbox viewbox) {
       this.viewbox = viewbox;
+      if (node.hasAttribute(PRESERVE_ASPECT_RATIO)) {
+         String value = node.getAttributeValue(PRESERVE_ASPECT_RATIO);
+         boolean preserveAspectRatio = ParserUtils.getPreserveAspectRatio(value);
+         viewbox.setPreserveAspectRatio(preserveAspectRatio);
+      }
    }
 
    public boolean hasViewbox() {
@@ -100,18 +106,10 @@ public class MarkerSpec implements SVGTags {
    }
 
    public double scaleWidth(double coord) {
-      if (width == -1) {
-         return width;
-      } else {
-         return width / viewbox.getWidth();
-      }
+      return coord * 1;
    }
 
    public double scaleHeight(double coord) {
-      if (height == -1) {
-         return height;
-      } else {
-         return height / viewbox.getHeight();
-      }
+      return coord * 1;
    }
 }

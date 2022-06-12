@@ -611,6 +611,12 @@ public class ParserUtils implements SVGTags {
       return theViewport;
    }
 
+   /**
+    * Return true if the aspect ratio is preserved. It corresponds to a value different from NONE.
+    *
+    * @param value the attribute value
+    * @return true if the aspect ratio is preserved
+    */
    public static boolean getPreserveAspectRatio(String value) {
       if (!value.contains(" ")) {
          return !value.equals(NONE);
@@ -644,7 +650,32 @@ public class ParserUtils implements SVGTags {
       } else {
          return null;
       }
+   }
 
+   public static Viewbox parseMarkerViewbox(XMLNode xmlNode, Viewport viewport) {
+      if (xmlNode.hasAttribute(MARKER_WIDTH) && xmlNode.hasAttribute(MARKER_HEIGHT)) {
+         double width = xmlNode.getLengthValue(MARKER_WIDTH, viewport, 0);
+         double height = xmlNode.getLengthValue(MARKER_HEIGHT, viewport, 0);
+         if (xmlNode.hasAttribute(VIEWBOX)) {
+            String box = xmlNode.getAttributeValue(VIEWBOX);
+            StringTokenizer tok = new StringTokenizer(box, " ,");
+            if (tok.countTokens() >= 4) {
+               double viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
+               Viewbox theViewbox = new Viewbox(width, height);
+               theViewbox.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
+               return theViewbox;
+            } else {
+               return null;
+            }
+         } else {
+            return null;
+         }
+      } else {
+         return null;
+      }
    }
 
    public static boolean isPercent(XMLNode xmlNode, String attrname) {

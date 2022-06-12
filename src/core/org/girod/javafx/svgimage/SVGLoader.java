@@ -544,7 +544,7 @@ public class SVGLoader implements SVGTags {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          MarkerSpec marker = new MarkerSpec(xmlNode);
-         Viewbox viewbox = ParserUtils.parseViewbox(xmlNode, viewport);
+         Viewbox viewbox = ParserUtils.parseMarkerViewbox(xmlNode, viewport);
          marker.computeRefPosition(viewport);
          marker.setViewbox(viewbox);
          context.addMarker(id, marker);
