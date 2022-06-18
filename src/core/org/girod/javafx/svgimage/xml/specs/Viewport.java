@@ -40,7 +40,6 @@ import javafx.scene.shape.Shape;
  * @version 1.0
  */
 public class Viewport extends Viewbox {
-   private final boolean hasWidthAndHeight;
    private double scale = -1;
    private boolean isScaled = false;
    private boolean scaleLineWidth = true;

@@ -42,7 +42,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import javafx.animation.Animation;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -309,7 +308,7 @@ public class SVGImage extends Group {
          double initialWidth = this.getLayoutBounds().getWidth();
          double initialHeight = this.getLayoutBounds().getHeight();
          double scaleX = width / initialWidth;
-         double scaleY = initialHeight * scaleX;
+         double scaleY = scaleX;
          this.setScaleX(scaleX);
          this.setScaleY(scaleY);
          double finalWidth = width;
@@ -416,24 +415,10 @@ public class SVGImage extends Group {
             }
          }
          if (!createNew) {
-            ObservableList<Node> _nodes = this.getChildren();
-            _nodes.clear();
-            _nodes = image.getChildren();
-            List<Node> listToAdd = new ArrayList<>();
-            Iterator<Node> it = _nodes.iterator();
-            while (it.hasNext()) {
-               listToAdd.add(it.next());
-            }
-            _nodes.clear();
             this.nodes.clear();
             this.nodes.putAll(image.nodes);
             this.animations.clear();
             this.animations.addAll(image.animations);
-            _nodes = this.getChildren();
-            it = listToAdd.iterator();
-            while (it.hasNext()) {
-               _nodes.add(it.next());
-            }
          }
          return image;
       }

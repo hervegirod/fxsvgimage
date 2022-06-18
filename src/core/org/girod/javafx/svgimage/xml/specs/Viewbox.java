@@ -49,6 +49,10 @@ public class Viewbox {
     */
    protected double height = 0;
    /**
+    * True if the viewbox has a width and height.
+    */
+   protected boolean hasWidthAndHeight = false;
+   /**
     * The x position of the viewBox attribute.
     */
    protected double viewboxX = 0;
@@ -72,6 +76,7 @@ public class Viewbox {
    public Viewbox(double width, double height) {
       this.width = width;
       this.height = height;
+      this.hasWidthAndHeight = true;
    }
 
    /**
@@ -115,12 +120,16 @@ public class Viewbox {
     * @param node the node
     */
    public void scaleNode(Node node) {
-      if (!preserveAspectRatio) {
-         node.setScaleX(width / viewboxWidth);
-         node.setScaleY(height / viewboxHeight);
-      } else {
-         node.setScaleX(width / viewboxWidth);
-         node.setScaleY(width / viewboxWidth);
+      if (hasWidthAndHeight) {
+         if (!preserveAspectRatio) {
+            if (viewboxWidth != 0 && viewboxHeight != 0) {
+               node.setScaleX(width / viewboxWidth);
+               node.setScaleY(height / viewboxHeight);
+            }
+         } else if (viewboxWidth != 0) {
+            node.setScaleX(width / viewboxWidth);
+            node.setScaleY(width / viewboxWidth);
+         }
       }
    }
 

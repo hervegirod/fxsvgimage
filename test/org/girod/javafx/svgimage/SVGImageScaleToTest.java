@@ -74,7 +74,7 @@ public class SVGImageScaleToTest {
    @Test
    public void testScaledImage() {
       System.out.println("SVGImageScaled2Test : testScaledImage");
-      URL url = this.getClass().getResource("rect200.svg");
+      URL url = this.getClass().getResource("rect200_1.svg");
       SVGImage result = SVGLoader.load(url);
       result = result.scaleTo(25);
       Image img = result.toImage();

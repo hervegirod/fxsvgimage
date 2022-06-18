@@ -79,7 +79,7 @@ public class SVGImageScaledTest {
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
-      double height = img.getWidth();
+      double height = img.getHeight();
       assertEquals("width", 50, width, DELTA);
       assertEquals("height", 50, height, DELTA);
    }
@@ -95,7 +95,7 @@ public class SVGImageScaledTest {
       Image img = result.toImage(25);
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
-      double height = img.getWidth();
+      double height = img.getHeight();
       assertEquals("width", 25, width, DELTA);
       assertEquals("height", 25, height, DELTA);
    }
@@ -111,7 +111,7 @@ public class SVGImageScaledTest {
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
-      double height = img.getWidth();
+      double height = img.getHeight();
       assertEquals("width", 25, width, DELTA);
       assertEquals("height", 25, height, DELTA);
    }

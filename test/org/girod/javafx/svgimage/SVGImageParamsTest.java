@@ -42,14 +42,14 @@ import java.net.URL;
 import javafx.scene.image.Image;
 
 /**
- * Unit tests for generating scaled images.
+ * Unit tests for generating images.
  *
  * @since 1.0
  */
-public class SVGImageScaled2Test {
+public class SVGImageParamsTest {
    private static double DELTA = 0.001d;
 
-   public SVGImageScaled2Test() {
+   public SVGImageParamsTest() {
    }
 
    @BeforeClass
@@ -69,14 +69,14 @@ public class SVGImageScaled2Test {
    }
 
    /**
-    * Test of generating a scaled image.
+    * Test of generating an image.
     */
    @Test
-   public void testScaledImage() {
-      System.out.println("SVGImageScaled2Test : testScaledImage");
+   public void testParamsImage() {
+      System.out.println("SVGImageParamsTest : testParamsImage");
       URL url = this.getClass().getResource("rect50.svg");
-      SVGImage result = SVGLoader.load(url);
-      result = result.scaleTo(25);
+      LoaderParameters params = LoaderParameters.createScaleParameters(0.5d);
+      SVGImage result = SVGLoader.load(url, params);
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
@@ -86,19 +86,19 @@ public class SVGImageScaled2Test {
    }
 
    /**
-    * Test of generating a scaled image.
+    * Test of generating an image.
     */
    @Test
-   public void testScaledImage2() {
-      System.out.println("SVGImageScaled2Test : testScaledImage2");
-      URL url = this.getClass().getResource("rect50.svg");
-      SVGImage result = SVGLoader.load(url);
-      result = result.scale(0.5d);
+   public void testParamsImage2() {
+      System.out.println("SVGImageParamsTest : testParamsImage2");
+      URL url = this.getClass().getResource("rect200_1.svg");
+      LoaderParameters params = LoaderParameters.createWidthParameters(25);
+      SVGImage result = SVGLoader.load(url, params);
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
       double height = img.getHeight();
-      assertEquals("width", 25, width, DELTA);
-      assertEquals("height", 25, height, DELTA);
+      assertEquals("width", 26, width, DELTA);
+      assertEquals("height", 26, height, DELTA);
    }
 }
