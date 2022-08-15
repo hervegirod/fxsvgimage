@@ -519,6 +519,12 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   private static List<Node> createNodeList(Node node) {
+      List<Node> list = new ArrayList<>(1);
+      list.add(node);
+      return list;
+   }
+
    /**
     * Build a "use" element.
     *
@@ -528,7 +534,7 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static Node buildUse(XMLNode xmlNode, LoaderContext context, Bounds bounds, Viewport viewport) {
+   public static List<? extends Node> buildUse(XMLNode xmlNode, LoaderContext context, Bounds bounds, Viewport viewport) {
       String id = null;
       if (xmlNode.hasAttribute(HREF)) {
          id = xmlNode.getAttributeValue(HREF);
@@ -541,7 +547,7 @@ public class SVGShapeBuilder implements SVGTags {
 
       if (id != null && context.hasNamedNode(id)) {
          XMLNode namedNode = context.getNamedNode(id);
-         Node nodeFromUse = null;
+         List<? extends Node> nodesFromUse = null;
          Viewbox viewbox = null;
          String name = namedNode.getName();
          SpanGroup spanGroup = null;
@@ -550,52 +556,65 @@ public class SVGShapeBuilder implements SVGTags {
          }
          switch (name) {
             case RECT:
-               nodeFromUse = buildRect(namedNode, null, viewbox, viewport);
+               Node node = buildRect(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case CIRCLE:
-               nodeFromUse = buildCircle(namedNode, null, viewbox, viewport);
+               node = buildCircle(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case ELLIPSE:
-               nodeFromUse = buildEllipse(namedNode, null, viewbox, viewport);
+               node = buildEllipse(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case PATH:
-               nodeFromUse = buildPath(namedNode, null, viewbox, viewport);
+               boolean hasFill = SVGStyleBuilder.hasFill(namedNode);
+               nodesFromUse = buildPath(namedNode, null, viewbox, viewport, hasFill);
                break;
             case POLYGON:
-               nodeFromUse = buildPolygon(namedNode, null, viewbox, viewport);
+               node = buildPolygon(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case LINE:
-               nodeFromUse = buildLine(namedNode, null, viewbox, viewport);
+               node = buildLine(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case POLYLINE:
-               nodeFromUse = buildPolyline(namedNode, null, viewbox, viewport);
+               node = buildPolyline(namedNode, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case IMAGE:
-               nodeFromUse = buildImage(namedNode, context.url, null, viewbox, viewport);
+               node = buildImage(namedNode, context.url, null, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case G:
             case SYMBOL:
-               nodeFromUse = buildGroupForUse(context, namedNode, viewbox, viewport);
+               node = buildGroupForUse(context, namedNode, viewbox, viewport);
+               nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case TEXT:
-               nodeFromUse = buildText(namedNode, null, viewbox, viewport);
-               if (nodeFromUse == null) {
+               node = buildText(namedNode, null, viewbox, viewport);
+               if (node == null) {
                   spanGroup = buildTSpanGroup(namedNode, null, viewbox, viewport);
                }
                break;
          }
-         if (nodeFromUse != null) {
-            SVGStyleBuilder.setNodeStyle(nodeFromUse, namedNode, context, viewport);
-            if (xmlNode.hasAttribute(X)) {
-               double x = xmlNode.getPositionValue(X, true, viewport);
-               nodeFromUse.setLayoutX(x);
+         if (nodesFromUse != null) {
+            Iterator<? extends Node> it2 = nodesFromUse.iterator();
+            while (it2.hasNext()) {
+               Node node = it2.next();
+               SVGStyleBuilder.setNodeStyle(node, namedNode, context, viewport);
+               if (xmlNode.hasAttribute(X)) {
+                  double x = xmlNode.getPositionValue(X, true, viewport);
+                  node.setLayoutX(x);
+               }
+               if (xmlNode.hasAttribute(Y)) {
+                  double y = xmlNode.getPositionValue(Y, true, viewport);
+                  node.setLayoutY(y);
+               }
+               SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
             }
-            if (xmlNode.hasAttribute(Y)) {
-               double y = xmlNode.getPositionValue(Y, true, viewport);
-               nodeFromUse.setLayoutY(y);
-            }
-            SVGStyleBuilder.setNodeStyle(nodeFromUse, xmlNode, context, viewport);
-            return nodeFromUse;
+            return nodesFromUse;
          } else if (spanGroup != null) {
             Map<String, String> theStylesMap = ParserUtils.getStyles(namedNode);
             Iterator<SpanGroup.TSpan> it2 = spanGroup.getSpans().iterator();
@@ -619,7 +638,7 @@ public class SVGShapeBuilder implements SVGTags {
                }
                previous = tspan;
             }
-            return spanGroup.getTextGroup();
+            return ParserUtils.createNodeList(spanGroup.getTextGroup());
          } else {
             return null;
          }
@@ -633,33 +652,41 @@ public class SVGShapeBuilder implements SVGTags {
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
-         Node node = null;
+         List<? extends Node> nodes = null;
          SpanGroup spanGroup = null;
          String name = childNode.getName();
          switch (name) {
             case RECT:
-               node = buildRect(childNode, null, viewbox, viewport);
+               Node node = buildRect(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case CIRCLE:
                node = buildCircle(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case ELLIPSE:
                node = buildEllipse(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case PATH:
-               node = buildPath(childNode, null, viewbox, viewport);
+               boolean hasFill = SVGStyleBuilder.hasFill(childNode);
+               nodes = buildPath(childNode, null, viewbox, viewport, hasFill);
                break;
             case POLYGON:
                node = buildPolygon(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case LINE:
                node = buildLine(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case POLYLINE:
                node = buildPolyline(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case IMAGE:
                node = buildImage(childNode, context.url, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case TEXT:
                node = buildText(childNode, null, viewbox, viewport);
@@ -669,11 +696,16 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             case G:
                node = buildGroupForUse(context, childNode, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
          }
-         if (node != null) {
-            addStyles(context, group, node, childNode, viewport);
-            group.getChildren().add(node);
+         if (nodes != null) {
+            Iterator<? extends Node> it2 = nodes.iterator();
+            while (it2.hasNext()) {
+               Node node = it2.next();
+               addStyles(context, group, node, childNode, viewport);
+               group.getChildren().add(node);
+            }
          } else if (spanGroup != null) {
             Map<String, String> theStylesMap = ParserUtils.getStyles(childNode);
             Iterator<SpanGroup.TSpan> it2 = spanGroup.getSpans().iterator();
@@ -791,24 +823,29 @@ public class SVGShapeBuilder implements SVGTags {
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewbox the viewbox of the element (may be null)
     * @param viewport the viewport
+    * @param hasFill true if the parsed shaped are filled
     * @return the shape
     */
-   public static SVGPath buildPath(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      SVGPath path = new SVGPath();
+   public static List<SVGPath> buildPath(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport, boolean hasFill) {
       String content = xmlNode.getAttributeValue(D);
       FillRule rule = ParserUtils.getFillRule(xmlNode);
-      if (rule != null) {
-         path.setFillRule(rule);
-      }
+
       content = content.replace('−', '-');
       PathParser pathParser = new PathParser();
-      content = pathParser.parsePathContent(content, viewport);
-      path.setContent(content);
-
-      if (viewbox != null) {
-         viewbox.scaleNode(path);
+      List<SVGPath> list = pathParser.parsePathContent(content, viewport, hasFill);
+      if (list != null) {
+         Iterator<SVGPath> it = list.iterator();
+         while (it.hasNext()) {
+            SVGPath path = it.next();
+            if (rule != null) {
+               path.setFillRule(rule);
+            }
+            if (viewbox != null) {
+               viewbox.scaleNode(path);
+            }
+         }
       }
-      return path;
+      return list;
    }
 
    /**

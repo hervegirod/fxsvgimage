@@ -36,6 +36,7 @@ import org.girod.javafx.svgimage.xml.specs.Viewport;
 import org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -91,10 +92,13 @@ public class ClippingFactory implements SVGTags {
                   shape = SVGShapeBuilder.buildCircle(childNode, objectBoundingBox, null, viewport);
                   break;
                case PATH:
-                  shape = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, null, viewport);
-                  FillRule rule = ParserUtils.getClipRule(childNode);
-                  if (rule != null) {
-                     ((SVGPath) shape).setFillRule(rule);
+                  List<? extends Shape> shapes = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, null, viewport, true);
+                  if (shape != null) {
+                     shape = shapes.get(0);
+                     FillRule rule = ParserUtils.getClipRule(childNode);
+                     if (rule != null) {
+                        ((SVGPath) shape).setFillRule(rule);
+                     }
                   }
                   break;
                case POLYLINE:

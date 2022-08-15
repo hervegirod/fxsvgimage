@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
+import javafx.scene.shape.SVGPath;
 import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
@@ -53,9 +54,11 @@ public class PathParser extends AbstractPathParser {
     *
     * @param content the path content
     * @param viewport the viewport
+    * @param hasFill true if the paths are filled
     * @return the path taking into account the viewport and the units
     */
-   public String parsePathContent(String content, Viewport viewport) {
+   public List<SVGPath> parsePathContent(String content, Viewport viewport, boolean hasFill) {
+      List<SVGPath> listPath = new ArrayList<>();
       short type = PATH_NONE;
       int index = 0;
       boolean isFirst = true;
@@ -94,6 +97,12 @@ public class PathParser extends AbstractPathParser {
          switch (tk) {
             case "m":
             case "M":
+               if (!isFirst) {
+                  SVGPath path = new SVGPath();
+                  path.setContent(buf.toString());
+                  listPath.add(path);
+                  buf = new StringBuilder();
+               }
                type = MOVE_TO;
                index = -1;
                addPathCommand(buf, tk, isFirst);
@@ -257,7 +266,16 @@ public class PathParser extends AbstractPathParser {
          }
          isFirst = false;
       }
-      return buf.toString();
+      content = buf.toString();
+      if (!content.isEmpty()) {
+         SVGPath path = new SVGPath();
+         path.setContent(content);
+         listPath.add(path);
+      }
+      if (listPath.isEmpty()) {
+         listPath = null;
+      }
+      return listPath;
    }
 
    private static void addPathCommand(StringBuilder buf, double value) {

@@ -480,13 +480,12 @@ public class AnimationBuilder implements SVGTags {
       String content = xmlAnim.getAttributeValue(PATH);
       content = content.replace('−', '-');
       PathParser pathParser = new PathParser();
-      content = pathParser.parsePathContent(content, viewport);
+      List<SVGPath> list = pathParser.parsePathContent(content, viewport, false);
       Duration duration = Duration.ZERO;
       if (xmlAnim.hasAttribute(DUR)) {
          duration = parseDuration(xmlAnim.getAttributeValue(DUR));
       }
-      SVGPath path = new SVGPath();
-      path.setContent(content);
+      SVGPath path = list.get(0);
       PathTransition transition;
       if (parallel != null) {
          transition = new PathTransition(duration, path);

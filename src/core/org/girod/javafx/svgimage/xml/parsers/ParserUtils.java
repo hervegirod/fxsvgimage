@@ -686,4 +686,10 @@ public class ParserUtils implements SVGTags {
          return true;
       }
    }
+
+   public static List<Node> createNodeList(Node node) {
+      List<Node> list = new ArrayList<>(1);
+      list.add(node);
+      return list;
+   }
 }

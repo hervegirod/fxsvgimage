@@ -32,11 +32,13 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
+import java.util.ArrayList;
 import org.girod.javafx.svgimage.xml.specs.MarkerContext;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
 import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import java.util.Iterator;
+import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -275,36 +277,47 @@ public class MarkerBuilder implements SVGTags {
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
-         Node node = null;
+         List<? extends Node> nodes = null;
          String name = childNode.getName();
          switch (name) {
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode, null, viewbox, viewport);
+               Node node = SVGShapeBuilder.buildRect(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case CIRCLE:
                node = SVGShapeBuilder.buildCircle(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case ELLIPSE:
                node = SVGShapeBuilder.buildEllipse(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode, null, viewbox, viewport);
+               boolean hasFill = SVGStyleBuilder.hasFill(childNode);
+               nodes = SVGShapeBuilder.buildPath(childNode, null, viewbox, viewport, hasFill);
                break;
             case POLYGON:
                node = SVGShapeBuilder.buildPolygon(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case LINE:
                node = SVGShapeBuilder.buildLine(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case POLYLINE:
                node = SVGShapeBuilder.buildPolyline(childNode, null, viewbox, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
          }
-         if (node != null) {
-            group.getChildren().add(node);
-            SVGStyleBuilder.setNodeStyle(markerContext, node, childNode, context, viewport);
-            ParserUtils.setOpacity(node, xmlNode);
-            TransformUtils.setTransforms(node, childNode, viewport);
+         if (nodes != null) {
+            Iterator<? extends Node> it2 = nodes.iterator();
+            while (it2.hasNext()) {
+               Node node = it2.next();
+               group.getChildren().add(node);
+               SVGStyleBuilder.setNodeStyle(markerContext, node, childNode, context, viewport);
+               ParserUtils.setOpacity(node, xmlNode);
+               TransformUtils.setTransforms(node, childNode, viewport);
+            }
          }
       }
       if (!group.getChildren().isEmpty()) {
