@@ -22,7 +22,7 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.0b2</version>
+      <version>1.1</version>
     </dependency>
 ```
 See https://jitpack.io/ for info on the syntax for other build systems such as gradle, svt etc.
