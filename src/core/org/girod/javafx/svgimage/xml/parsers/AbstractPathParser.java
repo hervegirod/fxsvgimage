@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2023 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,14 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
+ * An abstract path parser.
  *
- * @since 1.0
+ * @version 1.1
  */
 public abstract class AbstractPathParser {
    public static final short PATH_NONE = -1;

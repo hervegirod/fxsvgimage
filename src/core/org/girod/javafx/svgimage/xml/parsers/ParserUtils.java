@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2023 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -58,19 +58,19 @@ import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import org.girod.javafx.svgimage.GlobalConfig;
-import org.girod.javafx.svgimage.xml.specs.FilterSpec;
-import org.girod.javafx.svgimage.xml.specs.Viewbox;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.CLASS;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.FILL;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STROKE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STROKE_WIDTH;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STYLE;
+import org.girod.javafx.svgimage.xml.specs.FilterSpec;
+import org.girod.javafx.svgimage.xml.specs.Viewbox;
+import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.0
+ * @version 1.1
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -688,6 +688,9 @@ public class ParserUtils implements SVGTags {
    }
 
    public static List<Node> createNodeList(Node node) {
+      if (node == null) {
+         return null;
+      }
       List<Node> list = new ArrayList<>(1);
       list.add(node);
       return list;

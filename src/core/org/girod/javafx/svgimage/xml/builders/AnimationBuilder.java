@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2023 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,49 +32,49 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
-import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
-import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.animation.Animation;
+import javafx.animation.FillTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.StrokeTransition;
-import javafx.animation.FillTransition;
 import javafx.animation.Timeline;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
-import javafx.animation.PathTransition;
 import javafx.beans.value.WritableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
+import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
+import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
  * The animation builder.
  *
- * @version 1.0
+ * @version 1.1
  */
 public class AnimationBuilder implements SVGTags {
    private static final short TYPE_TRANSLATE = 0;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2023 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,15 +34,13 @@ package org.girod.javafx.svgimage.xml.parsers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
 import javafx.scene.shape.SVGPath;
 import org.girod.javafx.svgimage.xml.specs.Viewport;
 
 /**
  * This class parse a path content specification.
  *
- * @version 1.0
+ * @version 1.1
  */
 public class PathParser extends AbstractPathParser {
 
@@ -64,34 +62,7 @@ public class PathParser extends AbstractPathParser {
       boolean isFirst = true;
       StringBuilder buf = new StringBuilder();
       List<String> list = new ArrayList<>();
-      StringTokenizer tok = new StringTokenizer(content, " ,");
-      while (tok.hasMoreTokens()) {
-         String tk = tok.nextToken();
-         Matcher m = LETTER.matcher(tk);
-         int offset = 0;
-         String part = tk;
-         while (true) {
-            boolean found = m.find(offset);
-            if (!found) {
-               decomposePart(list, part);
-               break;
-            }
-            int start = m.start();
-            int end = m.end();
-            if (start > 0) {
-               String previousPart = tk.substring(offset, start);
-               decomposePart(list, previousPart);
-            }
-            String letter = tk.substring(start, end);
-            list.add(letter);
-            offset = end;
-            if (offset < tk.length()) {
-               part = tk.substring(offset);
-            } else {
-               break;
-            }
-         }
-      }
+      list.add(content);
       for (int i = 0; i < list.size(); i++) {
          String tk = list.get(i);
          switch (tk) {
@@ -266,7 +237,7 @@ public class PathParser extends AbstractPathParser {
          }
          isFirst = false;
       }
-      content = buf.toString();
+      //content = buf.toString();
       if (!content.isEmpty()) {
          SVGPath path = new SVGPath();
          path.setContent(content);
