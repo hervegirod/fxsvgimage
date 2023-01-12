@@ -1,7 +1,8 @@
 # History
 
 ## 1.1
- - Fix some cases where the resulting paths are null
+ - Fix #32: Fix some cases where the resulting paths are null
+ - Fix #30: Fix some paths rendering issues 
 
 ## 1.0
  - Add a converter which is able to convert a JavaFX node tree to a svg file
