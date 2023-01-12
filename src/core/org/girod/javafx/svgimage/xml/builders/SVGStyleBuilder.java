@@ -179,6 +179,40 @@ public class SVGStyleBuilder implements SVGTags {
       return setNodeStyle(null, node, xmlNode, context, viewport);
    }
 
+   public static boolean hasFill(XMLNode xmlNode) {
+      if (xmlNode.hasAttribute(FILL)) {
+         return true;
+      } else if (xmlNode.hasAttribute(CLIP_PATH)) {
+         return true;
+      } else if (xmlNode.hasAttribute(STYLE)) {
+         String styles = xmlNode.getAttributeValue(STYLE);
+         StringTokenizer tokenizer = new StringTokenizer(styles, ";");
+         while (tokenizer.hasMoreTokens()) {
+            String style = tokenizer.nextToken();
+
+            StringTokenizer tokenizer2 = new StringTokenizer(style, ":");
+            String styleName = tokenizer2.nextToken().trim();
+            String styleValue = null;
+            if (tokenizer2.hasMoreTokens()) {
+               styleValue = tokenizer2.nextToken().trim();
+            }
+            if (styleValue == null) {
+               continue;
+            }
+
+            switch (styleName) {
+               case CLIP_PATH:
+                  return true;
+               case FILL:
+                  return true;
+            }
+         }
+         return false;
+      } else {
+         return false;
+      }
+   }
+
    public static MarkerContext setNodeStyle(MarkerContext markerContext, Node node, XMLNode xmlNode, LoaderContext context, Viewport viewport) {
       MarkerContext markerContextR = null;
       Node contextNode = null;

@@ -601,7 +601,7 @@ public class SVGLoader implements SVGTags {
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
-         Node node = null;
+         List<? extends Node> nodes = null;
          SpanGroup spanGroup = null;
          String name = childNode.getName();
          switch (name) {
@@ -609,42 +609,55 @@ public class SVGLoader implements SVGTags {
                manageSVGStyle(childNode);
                break;
             case RECT:
-               node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
+               Node node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case CIRCLE:
                node = SVGShapeBuilder.buildCircle(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case ELLIPSE:
                node = SVGShapeBuilder.buildEllipse(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case PATH:
-               node = SVGShapeBuilder.buildPath(childNode, null, null, viewport);
-               addNamedNode(childNode, node);
-               animations = lookForAnimations(childNode, node, viewport);
+               boolean hasFill = SVGStyleBuilder.hasFill(childNode);
+               nodes = SVGShapeBuilder.buildPath(childNode, null, null, viewport, hasFill);
+               if (nodes != null) {
+                  Iterator<? extends Node> it2 = nodes.iterator();
+                  while (it2.hasNext()) {
+                     node = it2.next();
+                     addNamedNode(childNode, node);
+                     animations = lookForAnimations(childNode, node, viewport);
+                  }
+               }
                break;
             case POLYGON:
                node = SVGShapeBuilder.buildPolygon(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case LINE:
                node = SVGShapeBuilder.buildLine(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case POLYLINE:
                node = SVGShapeBuilder.buildPolyline(childNode, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case USE:
-               node = SVGShapeBuilder.buildUse(childNode, context, null, viewport);
+               nodes = SVGShapeBuilder.buildUse(childNode, context, null, viewport);
                break;
             case TEXT:
                node = SVGShapeBuilder.buildText(childNode, null, null, viewport);
@@ -656,11 +669,13 @@ public class SVGLoader implements SVGTags {
                   addNamedNode(childNode, node);
                   animations = lookForAnimations(childNode, node, viewport);
                }
+               nodes = ParserUtils.createNodeList(node);
                break;
             case IMAGE:
                node = SVGShapeBuilder.buildImage(childNode, content.url, null, null, viewport);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case SVG:
                if (viewport == null) {
@@ -668,11 +683,13 @@ public class SVGLoader implements SVGTags {
                   context.viewport = viewport;
                }
                node = buildGroup(childNode);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case G:
                node = buildGroup(childNode);
                addNamedNode(childNode, node);
                animations = lookForAnimations(childNode, node, viewport);
+               nodes = ParserUtils.createNodeList(node);
                break;
             case SYMBOL:
                addSymbol(childNode);
@@ -702,13 +719,17 @@ public class SVGLoader implements SVGTags {
                buildFilter(childNode);
                break;
          }
-         if (node != null) {
-            group.getChildren().add(node);
-            addStyles(group, node, childNode, false);
-            if (!animations.isEmpty()) {
-               List<Animation> animationsList = AnimationBuilder.buildAnimations(childNode, node, animations, viewport);
-               if (animationsList != null) {
-                  context.addAnimations(animationsList);
+         if (nodes != null) {
+            Iterator<? extends Node> it2 = nodes.iterator();
+            while (it2.hasNext()) {
+               Node node = it2.next();
+               group.getChildren().add(node);
+               addStyles(group, node, childNode, false);
+               if (!animations.isEmpty()) {
+                  List<Animation> animationsList = AnimationBuilder.buildAnimations(childNode, node, animations, viewport);
+                  if (animationsList != null) {
+                     context.addAnimations(animationsList);
+                  }
                }
             }
          } else if (spanGroup != null) {

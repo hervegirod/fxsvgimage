@@ -1,5 +1,9 @@
 # History
 
+## 1.1
+ - Fix #32: Fix some cases where the resulting paths are null
+ - Fix #30: Fix some paths rendering issues 
+
 ## 1.0
  - Add a converter which is able to convert a JavaFX node tree to a svg file
  - Fix the transformations on nodes which were sometime wrong when using a scale in the LoaderParameters
@@ -16,7 +20,7 @@
  - Add zoom commands in the browser
  - Fix #27: The pt unit is not converted correctly
  - Fix #28: The conversion of length values with dots and dots throw an internal exception 
- - Fix #31: Fixed several unit tests which failed after faixing issue #25
+ - Fix #31: Fixed several unit tests which failed after fixing issue #25
 
 ## 0.6.1
  - Fix the browser not showing some animations correctly
