@@ -44,7 +44,7 @@ It also allows to convert a JavaFX Node tree to a SVG file. For example:
       params.width = 150;
       params.height = 150;
       SVGConverter converter = new SVGConverter();
-      converter.convert(&lt;my JavaFX root&gt;, params, &lt;my SVG file&gt;);
+      converter.convert(<my JavaFX root>, params, <my SVG file>);
 ~~~~
 
 # Supported SVG constructs
