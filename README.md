@@ -6,7 +6,7 @@ Note that contrary to other existing libraries, this library has no external dep
 
 ## Using fxsvgimage as a maven/gradle dependency
 
-fxsvgimage is not yet available in maven central. Until it is you can still use a release as a maven or gradle dependency 
+fxsvgimage is not yet available in maven central. Until it is you can still use a release as a maven or gradle dependency
 through [![Release](https://jitpack.io/v/hervegirod/fxsvgimage.svg)](https://jitpack.io/#hervegirod/fxsvgimage)
 
 For maven do the following:
@@ -32,11 +32,20 @@ See https://jitpack.io/ for info on the syntax for other build systems such as g
 See [HISTORY.md](HISTORY.md)
 
 # Usage
-Just calls one of the static `load` methods, for example:
+This tools allows to allows to convert a SVG file to a JavaFX Node tree or an Image. Just calls one of the static `load` methods, for example:
 ~~~~
 SVGImage img = SVGLoader.load(<my SVG file>);
 ~~~~
 The `SVGImage` class is a `Group`.
+
+It also allows to convert a JavaFX Node tree to a SVG file. For example:
+~~~~
+      ConverterParameters params = new ConverterParameters();
+      params.width = 150;
+      params.height = 150;
+      SVGConverter converter = new SVGConverter();
+      converter.convert(&lt;my JavaFX root&gt;, params, &lt;my SVG file&gt;);
+~~~~
 
 # Supported SVG constructs
 This library support:
