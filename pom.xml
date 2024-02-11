@@ -4,7 +4,7 @@
 
    <groupId>org.girod</groupId>
    <artifactId>fxsvgimage</artifactId>
-   <version>1.1-SNAPSHOT</version>
+   <version>1.1.1-SNAPSHOT</version>
 
    <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
@@ -45,7 +45,7 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.5.0</version>
             <executions>
                <execution>
                   <phase>generate-sources</phase>
@@ -62,7 +62,7 @@
          </plugin>
          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>3.0.0</version>
+            <version>3.1.0</version>
             <executions>
                <execution>
                   <id>copy_images</id>
@@ -84,7 +84,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>3.3.0</version>
             <executions>
                <execution>
                   <id>attach-sources</id>
@@ -97,7 +97,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>3.2.2</version>
+            <version>3.3.0</version>
             <configuration>
                <archive>
                   <manifestFile>${project.basedir}/src/core/manifest.mf</manifestFile>
@@ -107,7 +107,7 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.3.1</version>
+            <version>3.6.3</version>
             <executions>
                <execution>
                   <id>attach-javadocs</id>
@@ -156,7 +156,7 @@
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-gpg-plugin</artifactId>
-                  <version>1.6</version>
+                  <version>3.1.0</version>
                   <executions>
                      <execution>
                         <id>sign-artifacts</id>

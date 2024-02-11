@@ -39,7 +39,7 @@ import javafx.scene.paint.Paint;
 /**
  * Wraps the definition for a JavaFX Border around a Region.
  *
- * <h1>Limitations</h1>
+ * <h2>Limitations</h2>
  * For the moment we only support Borders with Paint, and with only one Paint and width for all the Region.
  *
  * @version 0.21
