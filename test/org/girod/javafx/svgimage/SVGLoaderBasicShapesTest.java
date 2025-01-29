@@ -45,11 +45,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * Unit tests for several basic shapes.
@@ -194,5 +197,9 @@ public class SVGLoaderBasicShapesTest {
       Node child = children.get(0);
       assertTrue("Child must be a Path", child instanceof SVGPath);
       SVGPath path = (SVGPath) child;
+      assertEquals(FillRule.NON_ZERO, path.getFillRule());
+      assertEquals(StrokeLineJoin.MITER, path.getStrokeLineJoin());
+      assertEquals(StrokeLineCap.BUTT, path.getStrokeLineCap());
+      assertEquals(4.0, path.getStrokeMiterLimit(), 0);
    }
 }
