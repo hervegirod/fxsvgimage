@@ -1,5 +1,16 @@
 # History
 
+# 1.2
+ - Use docJGenerator 1.6.10
+ - Use groovy 4.0.26 (only uses for tests, the binaries have no dependencies
+ - Fix #47: Add a parameter for the Color of the svg background in the JavaFX to SVG parameters
+ - Fix #48: Add a parameter to generate the viewbox in the JavaFX to SVG parameters
+ - Fix #49: Add a parameter to not allow the transform on the root of the svg document in the JavaFX to SVG parameters
+ - Fix #42: Failed to render text with tspan in some cases
+ - Fix #45: Mask not working
+ - Fix #37: SVGImage's scaleTo doesn't seem to override svg width height parameters
+ - Fix #50: The default LineCap, LineJoin, and miterlimit on Shapes are incorrect
+
 ## 1.1
  - Fix #32: Fix some cases where the resulting paths are null
  - Fix #30: Fix some paths rendering issues 
