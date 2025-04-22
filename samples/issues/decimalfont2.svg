@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<svg height="1000.0" version="1.1" viewBox="0 0 5.0 5.0" width="1000" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+   <g>
+      <g fill="none" stroke="none" />
+      <g stroke-width="0.005" stroke="black">
+         <line x1="0.50" x2="0.50" y1="5.00" y2="4.90" />
+         <line x1="1.50" x2="1.50" y1="5.00" y2="4.90" />
+         <line x1="2.50" x2="2.50" y1="5.00" y2="4.90" />
+         <line x1="3.50" x2="3.50" y1="5.00" y2="4.90" />
+         <line x1="4.50" x2="4.50" y1="5.00" y2="4.90" />
+         <g fill="black" font-family="Arial, sans-serif" font-size="0.05" stroke="none" text-anchor="start" transform="translate(0.0125 -0.025)">
+            <text x="0.50" y="5.00">97°</text>
+            <text x="1.50" y="5.00">98°</text>
+            <text x="2.50" y="5.00">99°</text>
+            <text x="3.50" y="5.00">100°</text>
+            <text x="4.50" y="5.00">101°</text>
+         </g>
+         <line x1="0.00" x2="5.00" y1="5.00" y2="5.00" />
+      </g>
+      <g stroke-width="0.005" stroke="black">
+         <line x1="0.00" x2="0.10" y1="5.00" y2="5.00" />
+         <line x1="0.00" x2="0.10" y1="4.00" y2="4.00" />
+         <line x1="0.00" x2="0.10" y1="3.00" y2="3.00" />
+         <line x1="0.00" x2="0.10" y1="2.00" y2="2.00" />
+         <line x1="0.00" x2="0.10" y1="1.00" y2="1.00" />
+         <line x1="0.00" x2="0.10" y1="0.00" y2="0.00" />
+         <g fill="black" font-family="Arial, sans-serif" font-size="0.05" stroke="none" text-anchor="start" transform="translate(0.025 0.00625)">
+            <text x="-0.00" y="5.05">6°</text>
+            <text x="-0.00" y="4.05">7°</text>
+            <text x="-0.00" y="3.05">8°</text>
+            <text x="-0.00" y="2.05">9°</text>
+            <text x="-0.00" y="1.05">10°</text>
+            <text x="-0.00" y="0.05">11°</text>
+         </g>
+         <line x1="0.00" x2="0.00" y1="5.00" y2="0.00" />
+      </g>
+   </g>
+</svg>
