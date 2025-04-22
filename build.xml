@@ -36,7 +36,7 @@
          </not>
       </condition>
       <property name="docGeneratorDirURL" value="https://downloads.sourceforge.net/project/docjgenerator/" />      
-      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.5.6.1/docGenerator-bin-1.5.6.1.zip" />
+      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.6.10/docGenerator-bin-1.6.10.zip" />
       <property name="docGeneratorDir" value="web/soft/"/>       
       <condition property="docgenerator.notexists">
          <not>
@@ -47,15 +47,15 @@
          <available file="web/soft/docGenerator.jar" type="file"/>
       </condition>   
       <property name="groovyDirURL" value="https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/" />      
-      <property name="groovyURL" value="${groovyDirURL}/apache-groovy-binary-4.0.1.zip" />      
+      <property name="groovyURL" value="${groovyDirURL}/apache-groovy-binary-4.0.26.zip" />      
       <property name="testlib" value="testlib"/>       
       <condition property="groovy.notexists">
          <not>
-            <available file="testlib/groovy-4.0.1.jar" type="file"/>
+            <available file="testlib/groovy-4.0.26.jar" type="file"/>
          </not>
       </condition>    
       <condition property="groovy.exists">
-         <available file="testlib/groovy-4.0.1.jar" type="file"/>
+         <available file="testlib/groovy-4.0.26.jar" type="file"/>
       </condition>                    
       <property name="j2seapi" value="http://docs.oracle.com/javase/7/docs/api/"/>        
       <!-- To set with your location of Java 8 JDK -->
@@ -209,7 +209,7 @@
          </group>                            
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
          <bottom>
-            <![CDATA[<i>Copyright &#169; 2021, 2022 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
+            <![CDATA[<i>Copyright &#169; 2021, 2022, 2025 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
          </bottom>         
       </javadoc>
    </target>                     
@@ -258,23 +258,23 @@
            depends="init, -post-init" if="groovy.notexists" >
       <get src="${groovyURL}" dest="${testlib}/groovy.zip" verbose="false" usetimestamp="false"/>
       <unzip src="${testlib}/groovy.zip" dest="${testlib}"/>
-      <move file="${testlib}/groovy-4.0.1/lib/groovy-4.0.1.jar" tofile="${testlib}/groovy-4.0.1.jar"/>      
+      <move file="${testlib}/groovy-4.0.26/lib/groovy-4.0.26.jar" tofile="${testlib}/groovy-4.0.26.jar"/>      
       <delete includeEmptyDirs="true">
-         <fileset dir="${testlib}/groovy-4.0.1"  >
+         <fileset dir="${testlib}/groovy-4.0.26"  >
             <include name="**/*"/>
          </fileset>	    
          <fileset dir="${testlib}/"  >
             <include name="groovy.zip"/>
          </fileset>	                                            	        
       </delete>
-      <delete dir="${testlib}/groovy-4.0.1"/>                                              	            	      
+      <delete dir="${testlib}/groovy-4.0.26"/>                                              	            	      
    </target>  
    
    <target name="delete groovy"  description="delete groovy" 
            depends="init, -post-init" if="groovy.exists" >
       <delete includeEmptyDirs="true">
          <fileset dir="${testlib}"  >
-            <include name="groovy-4.0.1.jar"/>
+            <include name="groovy-4.0.26.jar"/>
          </fileset>	     
       </delete>	      
    </target>       
@@ -287,16 +287,7 @@
            depends="init, -post-init" if="docgenerator.notexists" >
       <get src="${docGeneratorURL}" dest="${docGeneratorDir}/docGenerator.zip" verbose="false" usetimestamp="false"/>
       <unzip src="${docGeneratorDir}/docGenerator.zip" dest="${docGeneratorDir}"/>
-      <delete includeEmptyDirs="true">
-         <fileset dir="${docGeneratorDir}/doc"  >
-            <include name="**"/>
-         </fileset>	 
-         <fileset dir="${docGeneratorDir}/tutorial"  >
-            <include name="**"/>
-         </fileset>	 
-         <fileset dir="${docGeneratorDir}/samples"  >
-            <include name="**"/>
-         </fileset>
+      <delete includeEmptyDirs="true">  
          <fileset dir="${docGeneratorDir}"  >
             <include name="docGenerator.zip"/>
          </fileset>	         	        
