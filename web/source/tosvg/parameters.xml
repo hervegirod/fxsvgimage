@@ -13,6 +13,17 @@
    The <code>height</code> parameter allows to set the height of the resulting svg document. If not set, by default the width will be the height
    of the root node bounds.
    
+   <title level="2" title="hasViewbox" keepCase="true"/>
+   The <code>hasViewbox</code> parameter allows to set the viewbox of the resulting svg document. The viewbox will have the width and height of the svg document It is 
+   <code>false</code> by default.   
+   
+   <title level="2" title="allowTransformForRoot" keepCase="true"/>
+   The <code>allowTransformForRoot</code> parameter allows to allow transformations on the root of the svg document. It is <code>true</code> by default.   
+   
+   <title level="2" title="background" keepCase="true"/>
+   The <code>background</code> parameter allows to set the background color of the resulting svg document. The converter will generate a rectangle with the width and height of
+   the svg document as the first child.
+   
    <title title="example" />
    For example:
    <pre syntax="java">

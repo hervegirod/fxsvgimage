@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="tspan element support" keepCase="true">
+   <meta desc="This article presents the support for the tspan element" />
+   The library support the <code>tspan</code> element<note>See <a href="https://www.w3.org/TR/SVG11/text.html#TSpanElement">The tspan element</a></note>. 
+   
+   The following attributes are supported:
+   <ul>
+      <li>
+         <code>x</code> for an absolute x position</li>
+      <li>
+         <code>y</code> for an absolute y position</li>     
+      <li>
+         <code>dx</code> for a relative x position (relative to the previous tspan)</li>
+      <li>
+         <code>dy</code> for a relative y position (relative to the previous tspan)</li>        
+      <li>
+         <code>font-family</code>
+      </li>
+      <li>
+         <code>font-size</code>
+      </li>  
+      <li>
+         <code>font-style</code>
+      </li>
+      <li>
+         <code>text-decoration</code>
+      </li>    
+      <li>
+         <code>baseline-shift</code>
+      </li>        
+      <li>
+         <code>stroke</code> (see <ref id="svg styling support" />)
+      </li>    
+      <li>
+         <code>style</code> (see <ref id="svg styling support" />)
+      </li>                                        
+   </ul> 
+   
+   <title title="tspan structures" />
+   <code>tspan</code> elements are under <code>text</code> elements. There are several ways to put them under text:
+   <ul>
+      <li>Under an empty <code>text</code> element:
+         <pre syntax="xml">
+      &lt;g&gt;
+         &lt;text style="font-size:40px;font-family:sans-serif;"&gt;
+            &lt;tspan&gt;Hello&lt;/tspan&gt;
+            &lt;tspan stroke="red"&gt;World&lt;/tspan&gt;
+         &lt;/text&gt;
+      &lt;/g&gt;  
+         </pre>  
+      </li>
+      <li>Under a not empty <code>text</code> element:
+         <pre syntax="xml">
+      &lt;g&gt;
+         &lt;text style="font-size:40px;font-family:sans-serif;"&gt;Hello
+            &lt;tspan stroke="red"&gt;World&lt;/tspan&gt;
+         &lt;/text&gt;
+      &lt;/g&gt;  
+         </pre>  
+      </li>
+   </ul>
+   
+   <title title="tspan coordinates" />       
+   If the <code>x</code>, <code>y</code>, <code>dx</code>, and <code>dy</code> attributes are not present for a <code>tspan</code>, the position of the
+   <code>tspan</code> follows the previous <code>tspan</code> element.
+      
+   <cat id="fromsvgsupport" />
+</article>
