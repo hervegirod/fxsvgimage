@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 1.0
+ * @version 1.2
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -441,7 +441,9 @@ public class SVGImage extends Group {
     * @return the new image
     */
    public SVGImage scaleTo(double width, boolean createNew) {
-      double initialWidth = this.getLayoutBounds().getWidth();
+      // take the width and height iof the image into account
+      // previously it was initialWidth = getScaledWidth();
+      double initialWidth = getScaledWidth();
       double scale = width / initialWidth;
       return scale(scale, createNew);
    }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -43,13 +43,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.Shape3D;
+import org.girod.javafx.svgimage.tosvg.ConverterParameters;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 import org.girod.javafx.svgimage.tosvg.xml.XMLRoot;
 
 /**
  * The ConverterDelegate class allows handle the effective conversion.
  *
- * @since 1.0
+ * @version 1.2
  */
 public class ConverterDelegate {
    private File file = null;
@@ -122,6 +123,18 @@ public class ConverterDelegate {
     * @param xmlRoot the xml root
     */
    public void convertRoot(Node root, XMLRoot xmlRoot) {
+      ConverterParameters params = new ConverterParameters();
+      convertRoot(root, xmlRoot, params);
+   }
+
+   /**
+    * Convert a JavaFX Node hierarchy to a svg tree.
+    *
+    * @param root the root Node
+    * @param xmlRoot the xml root
+    * @param params the converter parameters
+    */
+   public void convertRoot(Node root, XMLRoot xmlRoot, ConverterParameters params) {
       this.root = root;
 
       defsNode = new XMLNode("defs");
@@ -129,7 +142,9 @@ public class ConverterDelegate {
 
       AbstractConverter conv = getConverter(root, xmlRoot);
       if (conv != null) {
-         conv.applyTransforms(xmlRoot);
+         if (params.allowTransformForRoot) {
+            conv.applyTransforms(xmlRoot);
+         }
          XMLNode xmlNode = conv.convert();
          if (xmlNode != null) {
             String clipID = applyClip(root);

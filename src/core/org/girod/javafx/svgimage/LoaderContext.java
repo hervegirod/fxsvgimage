@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 1.0
+ * @version 1.2
  */
 public class LoaderContext {
    /**
@@ -97,7 +97,7 @@ public class LoaderContext {
    /**
     * The animations.
     */
-   List<Animation> animations = new ArrayList<>();
+   private final List<Animation> animations = new ArrayList<>();
 
    /**
     * True if the effects are supported.
@@ -118,7 +118,7 @@ public class LoaderContext {
     */
    public void addNamedNode(String id, XMLNode xmlNode) {
       namedNodes.put(id, xmlNode);
-   }
+   }  
 
    /**
     * Add a marker node.
@@ -231,7 +231,25 @@ public class LoaderContext {
     */
    public SymbolSpec getSymbol(String id) {
       return symbols.get(id);
-   }
+   }   
+   
+   /**
+    * Return true if there are animations.
+    *
+    * @return true if there are animations
+    */
+   public boolean hasAnimations() {
+      return !animations.isEmpty();
+   }   
+   
+   /**
+    * Return the animations.
+    *
+    * @return the animations
+    */
+   public List<Animation> getAnimations() {
+      return animations;
+   }      
 
    /**
     * Add an animation.

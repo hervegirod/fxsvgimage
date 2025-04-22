@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,12 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.tosvg;
 
+import javafx.scene.paint.Color;
+
 /**
  * The parameters used for saving a node hierarchy.
  *
- * @since 1.0
+ * @version 1.2
  */
 public class ConverterParameters {
    /**
@@ -45,5 +47,17 @@ public class ConverterParameters {
    /**
     * The height.
     */
-   public double height = -1;   
+   public double height = -1; 
+   /** 
+    * Checked to add a viewBox.
+    */
+   public boolean hasViewbox = false;   
+   /** 
+    * Checked if transformation is allowed for the root.
+    */
+   public boolean allowTransformForRoot = true;      
+   /** 
+    * The background Color.
+    */
+   public Color background = null;
 }

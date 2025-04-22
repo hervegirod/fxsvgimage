@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,17 +36,20 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import org.girod.javafx.svgimage.tosvg.converters.ConverterDelegate;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNodeUtilities;
 import org.girod.javafx.svgimage.tosvg.xml.XMLRoot;
 
 /**
+ * The JavaFX to SVg converter.
  *
- * @since 1.0
+ * @version 1.2
  */
 public class SVGConverter {
    private ConverterDelegate delegate = null;
+   private ConverterParameters params = null;
 
    public SVGConverter() {
       delegate = new ConverterDelegate();
@@ -71,6 +74,44 @@ public class SVGConverter {
       convert(root, file, new ConverterParameters());
    }
 
+   private String encodeBackground(Color color) {
+      int r = (int) (255 * color.getRed());
+      int g = (int) (255 * color.getGreen());
+      int b = (int) (255 * color.getBlue());
+      return "rgb(" + r + "," + g + "," + b + ")";
+   }
+   
+   private void addRootAttributes(Node root, XMLRoot xmlRoot, ConverterParameters params) {
+      double width;
+      double height;
+      if (params.width > 0) {
+         width = params.width;
+         xmlRoot.addAttribute("width", params.width);
+      } else {
+         width = root.getBoundsInLocal().getWidth();
+         xmlRoot.addAttribute("width", width);
+      }
+      if (params.height > 0) {
+         height = params.height;
+         xmlRoot.addAttribute("height", params.height);
+      } else {
+         height = root.getBoundsInLocal().getHeight();
+         xmlRoot.addAttribute("height", height);
+      }
+      if (params.hasViewbox) {
+         String viewBox = "0 0 " + width + " " + height;
+         xmlRoot.addAttribute("viewBox", viewBox);
+      }
+      if (params.background != null) {
+         XMLNode rectNode = new XMLNode("rect");
+         rectNode.addAttribute("width", "100%");
+         rectNode.addAttribute("height", "100%");
+         String background = encodeBackground(params.background);
+         rectNode.addAttribute("fill", background);
+         xmlRoot.addChild(rectNode);
+      }
+   }
+
    /**
     * Convert a JavaFX Node hierarchy.
     *
@@ -80,20 +121,10 @@ public class SVGConverter {
     */
    public void convert(Node root, File file, ConverterParameters params) throws IOException {
       delegate.setSVGFile(file);
+      this.params = params;
       XMLRoot xmlRoot = new XMLRoot("svg");
-      if (params.width > 0) {
-         xmlRoot.addAttribute("width", params.width);
-      } else {
-         double width = root.getBoundsInLocal().getWidth();
-         xmlRoot.addAttribute("width", width);
-      }
-      if (params.height > 0) {
-         xmlRoot.addAttribute("height", params.height);
-      } else {
-         double height = root.getBoundsInLocal().getHeight();
-         xmlRoot.addAttribute("height", height);
-      }
-      delegate.convertRoot(root, xmlRoot);
+      addRootAttributes(root, xmlRoot, params);
+      delegate.convertRoot(root, xmlRoot, params);
 
       XMLNodeUtilities.print(xmlRoot, 2, file);
    }
@@ -117,14 +148,10 @@ public class SVGConverter {
     */
    public void convert(Node root, URL url, ConverterParameters params) throws IOException {
       delegate.setSVGFile(new File(url.getFile()));
+      this.params = params;
       XMLRoot xmlRoot = new XMLRoot("svg");
-      if (params.width > 0) {
-         xmlRoot.addAttribute("width", params.width);
-      }
-      if (params.height > 0) {
-         xmlRoot.addAttribute("height", params.height);
-      }    
-      delegate.convertRoot(root, xmlRoot);
+      addRootAttributes(root, xmlRoot, params);
+      delegate.convertRoot(root, xmlRoot, params);
 
       XMLNodeUtilities.print(xmlRoot, 2, url);
    }

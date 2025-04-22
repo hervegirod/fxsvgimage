@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ import org.girod.javafx.svgimage.xml.specs.Viewport;
 /**
  * This class parse a style declaration.
  *
- * @version 1.0
+ * @version 1.2
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -259,16 +259,22 @@ public class SVGStyleBuilder implements SVGTags {
          if (xmlNode.hasAttribute(STROKE_LINEJOIN)) {
             String lineJoin = xmlNode.getAttributeValue(STROKE_LINEJOIN);
             applyLineJoin(shape, lineJoin);
+         } else {
+            shape.setStrokeLineJoin(StrokeLineJoin.MITER);
          }
 
          if (xmlNode.hasAttribute(STROKE_LINECAP)) {
             String lineCap = xmlNode.getAttributeValue(STROKE_LINECAP);
             applyLineCap(shape, lineCap);
+         } else {
+            shape.setStrokeLineCap(StrokeLineCap.BUTT);
          }
 
          if (xmlNode.hasAttribute(STROKE_MITERLIMIT)) {
             String miterLimit = xmlNode.getAttributeValue(STROKE_MITERLIMIT);
             applyMiterLimit(shape, miterLimit, viewport);
+         } else {
+            shape.setStrokeMiterLimit(4d);
          }
       }
 
@@ -498,7 +504,7 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }
 
-   private static void setClipPath(Node node, String spec, ClippingFactory clippingFactory, Viewport viewport) {
+   public static void setClipPath(Node node, String spec, ClippingFactory clippingFactory, Viewport viewport) {
       if (spec.startsWith("url(#")) {
          String clipID = ParserUtils.getURL(spec);
          if (clippingFactory.hasClip(clipID)) {

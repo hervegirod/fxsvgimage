@@ -308,6 +308,20 @@ public class SVGShapeBuilder implements SVGTags {
     * @return the Text
     */
    public static SpanGroup buildTSpanGroup(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
+      return buildTSpanGroup(null, xmlNode, bounds, viewbox, viewport);
+   }
+
+   /**
+    * Build a "text" element with tspan children.
+    *
+    * @param theText the initial text
+    * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
+    * @param viewbox the viewbox of the element (may be null)
+    * @param viewport the viewport
+    * @return the Text
+    */
+   public static SpanGroup buildTSpanGroup(Text theText, XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       Group group = new Group();
       double x = xmlNode.getLengthValue(X, true, bounds, viewport, 0);
       double y = xmlNode.getLengthValue(Y, false, bounds, viewport, 0);
@@ -318,8 +332,15 @@ public class SVGShapeBuilder implements SVGTags {
       group.setLayoutX(x);
       group.setLayoutY(y);
       SpanGroup spanGroup = new SpanGroup(group);
-      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       Text previous = null;
+      if (theText != null) {
+         XMLNode textNode = xmlNode.getParent();
+         group.getChildren().add(theText);
+         spanGroup.addTSpan(textNode, theText);
+         previous = theText;
+      }
+
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
          XMLNode childNode = it.next();
          String name = childNode.getName();
@@ -426,7 +447,12 @@ public class SVGShapeBuilder implements SVGTags {
       size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
       FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
-      Font font = Font.font(family, weight, posture, size);
+      Font font;
+      if (previous != null && family == null) {
+         font = previous.getFont();
+      } else {
+         font = Font.font(family, weight, posture, size);
+      }
 
       String cdata = xmlNode.getCDATA();
       if (cdata != null) {
@@ -442,6 +468,7 @@ public class SVGShapeBuilder implements SVGTags {
             x = _x - group.getLayoutX();
          } else if (previous != null) {
             x = previous.getLayoutX() + previous.getLayoutBounds().getWidth();
+            x = x - group.getLayoutX();
          }
          if (xmlNode.hasAttribute(DY)) {
             y = xmlNode.getPositionValue(DY, false, bounds, viewport, 0);
@@ -451,9 +478,16 @@ public class SVGShapeBuilder implements SVGTags {
                _y = viewbox.scaleValue(false, _y);
             }
             y = _y - group.getLayoutY();
+         } else if (previous != null) {
+            y = previous.getLayoutY();
+            y = y + group.getLayoutY();
          }
          Text text = new Text(x, y, cdata);
          tspans.add(text);
+         if (xmlNode.hasAttribute(STROKE)) {
+            Paint stroke = ParserUtils.getColor(xmlNode.getAttributeValue(STROKE));
+            text.setFill(stroke);
+         }
          if (xmlNode.hasAttribute(TEXT_DECORATION)) {
             SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
          }

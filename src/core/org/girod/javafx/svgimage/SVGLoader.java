@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 1.0
+ * @version 1.2
  */
 public class SVGLoader implements SVGTags {
    private final SVGContent content;
@@ -502,8 +502,8 @@ public class SVGLoader implements SVGTags {
          }
          SVGImage img = walk(handler.getRoot());
          if (img != null) {
-            if (!context.animations.isEmpty()) {
-               img.setAnimations(context.animations);
+            if (context.hasAnimations()) {
+               img.setAnimations(context.getAnimations());
                if (context.params.autoStartAnimations) {
                   context.playAnimations();
                }
@@ -666,10 +666,23 @@ public class SVGLoader implements SVGTags {
                   addNamedNode(childNode, spanGroup.getTextGroup());
                   animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                } else {
-                  addNamedNode(childNode, node);
-                  animations = lookForAnimations(childNode, node, viewport);
-               }
-               nodes = ParserUtils.createNodeList(node);
+                  if (childNode.hasChildren()) {
+                     XMLNode childNode1 = childNode.getFirstChild();
+                     if (childNode1.getName().equals(TSPAN)) {
+                        spanGroup = SVGShapeBuilder.buildTSpanGroup((Text) node, childNode, null, null, viewport);
+                        addNamedNode(childNode, spanGroup.getTextGroup());
+                        animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
+                     } else {
+                        addNamedNode(childNode, node);
+                        animations = lookForAnimations(childNode, node, viewport);
+                        nodes = ParserUtils.createNodeList(node);
+                     }
+                  } else {
+                     addNamedNode(childNode, node);
+                     animations = lookForAnimations(childNode, node, viewport);
+                     nodes = ParserUtils.createNodeList(node);
+                  }
+               }               
                break;
             case IMAGE:
                node = SVGShapeBuilder.buildImage(childNode, content.url, null, null, viewport);
@@ -703,6 +716,7 @@ public class SVGLoader implements SVGTags {
                   break;
                }
             case CLIP_PATH_SPEC:
+            case MASK:
                buildClipPath(childNode);
                break;
             case LINEAR_GRADIENT:
@@ -731,6 +745,10 @@ public class SVGLoader implements SVGTags {
                      context.addAnimations(animationsList);
                   }
                }
+            }
+            if (xmlNode.hasAttribute(MASK)) {
+               String clipSpec = xmlNode.getAttributeValue(MASK);
+               SVGStyleBuilder.setClipPath(group, clipSpec, context.clippingFactory, viewport);
             }
          } else if (spanGroup != null) {
             TransformUtils.setTransforms(spanGroup.getTextGroup(), childNode, viewport);

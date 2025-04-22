@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml.parsers;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 1.0
+ * @version 1.2
  */
 public interface SVGTags {
    public static String VIEWBOX = "viewBox";
@@ -47,6 +47,7 @@ public interface SVGTags {
    public static String CIRCLE = "circle";
    public static String ELLIPSE = "ellipse";
    public static String PATH = "path";
+   public static String MASK = "mask";
    public static String POLYGON = "polygon";
    public static String LINE = "line";
    public static String POLYLINE = "polyline";
