@@ -124,6 +124,7 @@
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
+            <include name="fxsvgConverter.jar"/>
          </fileset>
       </zip>
       <!-- zip source files  -->
@@ -143,6 +144,7 @@
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
+            <include name="fxsvgConverter.jar"/>
          </fileset>
          <fileset description="testlib" dir=".">
             <include name="testlib/**/*.*"/>
