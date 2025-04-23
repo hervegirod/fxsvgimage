@@ -28,7 +28,7 @@
          <available file="${dist.javadoc.dir}" type="dir"/>
       </condition>
       <property name="javadocIn" value="${dist.javadoc.dir}" />
-      <property name="javadocOut" value="web/iki/javadoc" />
+      <property name="javadocOut" value="web/wiki/javadoc" />
       <property name="javadocSourceforgeOut" value="web/sourceforge/javadoc" />      
       <condition property="wiki.exists">
          <available file="${wikiDir}/index.html" type="file"/>
