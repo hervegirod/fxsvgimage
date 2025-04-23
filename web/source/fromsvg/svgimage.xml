@@ -104,13 +104,13 @@
    The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="getViewport()" /> return the viewport of the <code>SVGImage</code>. The 
    most useful methods of the <code>Viewport</code> are:
    <ul>
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getWidth()" /> return the width of the <code>SVGImage</code> (can be -1 if 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getWidth()" /> return the width of the <code>SVGImage</code> (can be -1 if 
          the width is not specified in the SVG file</li>
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getHeight()" /> return the height of the <code>SVGImage</code> (can be -1 if 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getHeight()" /> return the height of the <code>SVGImage</code> (can be -1 if 
          the height is not specified in the SVG file</li>
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getViewboxWidth()" /> return the width of the viewport (can be -1 if 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getViewboxWidth()" /> return the width of the viewport (can be -1 if 
          the viewport is not specified in the SVG file</li>
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getViewboxHeight()" /> return the height of the viewport (can be -1 if 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getViewboxHeight()" /> return the height of the viewport (can be -1 if 
          the viewport is not specified in the SVG file</li>
       <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getBestWidth()" /> return the width if it exists, else it will be the viewBox width</li>
       <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getBestHeight()" /> return the height if it exists, else it will be the viewBox height</li>      
