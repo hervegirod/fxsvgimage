@@ -15,6 +15,11 @@
    <!-- =================================================================== -->
 
    <target name="-post-init">
+      <!-- JDK definition -->
+      <property name="jdk" value="C:\Program Files\Java\jdk1.8.0_202"/>   
+      <!-- To set with your location of Java 8 JDK -->
+      <property name="javadocDir" value="${jdk}/docs/api"/>
+      <property name="javadocEXE" value="${jdk}/bin/javadoc.exe"/>
       <!-- general properties definition -->
       <property name="archiveName" value="fxsvgImage"/>
       <property name="src.dir" value="${src.core.dir}/.." />
