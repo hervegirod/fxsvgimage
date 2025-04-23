@@ -69,7 +69,7 @@ import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.xml.parsers.XMLNode;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * The animation builder.

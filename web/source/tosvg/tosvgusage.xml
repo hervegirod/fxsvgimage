@@ -2,7 +2,10 @@
 <article desc="JavaFX to svg conversion usage">
    <altTitle desc="SVGConverter" />
    <meta desc="This article presents the usage of the library which converts a JavaFX tree to svg" />
-   You use the library by calling one of the <code>SVGConverter.convert</code> methods. For example:
+   You use the library by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.SVGConverter" /> 
+   class. 
+   
+   For example:
    <pre syntax="java">
       SVGConverter converter = new SVGConverter();
       converter.convert(&lt;my JavaFX root&gt;, &lt;my SVG file&gt;);
@@ -20,5 +23,6 @@
       converter.convert(&lt;my JavaFX root&gt;, params, &lt;my SVG file&gt;);
    </pre>     
    
+   <see id="convert to SVG" />
    <cat id="tosvg" />
 </article>

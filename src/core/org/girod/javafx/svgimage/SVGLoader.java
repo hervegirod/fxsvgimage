@@ -72,8 +72,6 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
-import org.girod.javafx.svgimage.xml.specs.Viewbox;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
 import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.XMLRoot;
 import org.girod.javafx.svgimage.xml.parsers.XMLTreeHandler;
@@ -530,6 +528,7 @@ public class SVGLoader implements SVGTags {
             if (viewport != null) {
                viewport.scaleNode(root);
             }
+            root.setViewport(viewport);
          }
       }
       buildNode(xmlRoot, root);
@@ -682,7 +681,7 @@ public class SVGLoader implements SVGTags {
                      animations = lookForAnimations(childNode, node, viewport);
                      nodes = ParserUtils.createNodeList(node);
                   }
-               }               
+               }
                break;
             case IMAGE:
                node = SVGShapeBuilder.buildImage(childNode, content.url, null, null, viewport);

@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml.parsers;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.shape.SVGPath;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * This class parse a path content specification.

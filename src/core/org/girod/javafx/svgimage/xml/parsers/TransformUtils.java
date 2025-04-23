@@ -32,7 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

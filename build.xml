@@ -22,6 +22,9 @@
       <condition property="javadoc.exists">
          <available file="${dist.javadoc.dir}" type="dir"/>
       </condition>
+      <property name="javadocIn" value="${dist.javadoc.dir}" />
+      <property name="javadocOut" value="web/iki/javadoc" />
+      <property name="javadocSourceforgeOut" value="web/sourceforge/javadoc" />      
       <condition property="wiki.exists">
          <available file="${wikiDir}/index.html" type="file"/>
       </condition>      
@@ -278,8 +281,39 @@
          </fileset>	     
       </delete>	      
    </target>       
-     
    
+   <!-- =================================================================== -->
+   <!-- copy javadoc -->
+   <!-- =================================================================== -->
+   <target name="copyjavadoc" description="copy javadoc" depends="init, -post-init, version, deletejavadoc" >
+      <mkdir dir="${javadocOut}" />
+      <mkdir dir="${javadocSourceforgeOut}" />
+      <copy todir="${javadocOut}">
+         <fileset defaultexcludes="yes" dir="${javadocIn}" >
+            <include name="**"/>
+         </fileset>
+      </copy>
+      <copy todir="${javadocSourceforgeOut}">
+         <fileset defaultexcludes="yes" dir="${javadocIn}" >
+            <include name="**"/>
+         </fileset>
+      </copy>
+   </target>
+
+   <target name="deletejavadoc" depends="-deletewikijavadoc, -deleteSourceforgejavadoc" />
+
+   <target name="-deletewikijavadoc" depends="init, -post-init, version" if="${wikijavadoc.exists}">
+      <delete includeEmptyDirs="true">
+         <fileset dir="${javadocOut}" includes="**/*" />
+      </delete>
+   </target>
+
+   <target name="-deleteSourceforgejavadoc" depends="init, -post-init, version" if="${sourceforgejavadoc.exists}">
+      <delete includeEmptyDirs="true">
+         <fileset dir="${javadocSourceforgeOut}" includes="**/*" />
+      </delete>
+   </target>
+     
    <!-- =================================================================== -->
    <!-- NB overwrite targets : wiki                                         -->
    <!-- =================================================================== -->   
@@ -316,6 +350,7 @@
          <arg value="-$version=${version}"/>
          <arg value="-search=titles"/>
          <arg value="-fullTextSearch=true"/>
+         <arg value="-config=web/source/config.properties"/>
          <classpath>
             <pathelement path="web/soft/docGenerator.jar"/>        
          </classpath>
@@ -331,6 +366,7 @@
          <arg value="-config=web/source/sourceforge.properties"/>         
          <arg value="-search=titles"/>
          <arg value="-fullTextSearch=true"/>
+         <arg value="-config=web/source/config.properties"/>
          <classpath>
             <pathelement path="web/soft/docGenerator.jar"/>        
          </classpath>

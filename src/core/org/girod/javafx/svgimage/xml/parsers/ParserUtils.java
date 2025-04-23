@@ -64,8 +64,8 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STROKE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STROKE_WIDTH;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STYLE;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
-import org.girod.javafx.svgimage.xml.specs.Viewbox;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewbox;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * Several utilities for shape parsing.

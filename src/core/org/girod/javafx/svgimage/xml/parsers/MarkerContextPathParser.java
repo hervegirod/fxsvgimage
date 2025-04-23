@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * This class parse a path content specification.

@@ -2,7 +2,8 @@
 <article desc="Converter Parameters">
    <altTitle desc="ConverterParameters" />
    <meta desc="This article presents the usage of the SVGConverter parameters" />
-   The <code>ConverterParameters</code> class allows to configure the exporting of the JavaFX tree to a svg file with the <ref id="SVGConverter" />.
+   The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.ConverterParameters" /> class allows to configure the exporting of the JavaFX tree to a SVG file 
+   with the <ref id="SVGConverter" />.
    
    <title title="parameters" />
    <title level="2" title="width" keepCase="true"/>

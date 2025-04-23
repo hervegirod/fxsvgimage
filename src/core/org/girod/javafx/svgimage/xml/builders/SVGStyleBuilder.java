@@ -64,7 +64,7 @@ import org.girod.javafx.svgimage.xml.parsers.ClippingFactory;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * This class parse a style declaration.

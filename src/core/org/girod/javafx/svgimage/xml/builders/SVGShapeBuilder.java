@@ -80,8 +80,8 @@ import org.girod.javafx.svgimage.GlobalConfig;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
-import org.girod.javafx.svgimage.xml.specs.Viewbox;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewbox;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * The shape builder.
