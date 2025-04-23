@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article desc="SVG to JavaFX conversion Usage">
    <altTitle desc="from svg usage" />
+   <altTitle desc="convert from SVG" />
    <altTitle desc="SVGLoader" />
    <meta desc="This article presents the usage of the library which converts svg to a JavaFX tree" />
-   The most simple way to use the library is just by calling one of the <code>SVGLoader.load</code> static methods. For example:
+   The most simple way to use the library is just by calling one of the <javadoc api="api" path="org.girod.javafx.svgimage.SVGLoader" member="load" /> 
+   static methods. 
+   
+   For example:
    <pre syntax="java">
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
    </pre>
-
-   The <ref id="SVGImage" /> result is a JavaFX Group. 
+   The <ref id="SVGImage" /> result is a JavaFX <code>Group</code>. 
    
    <title title="parameters"/>
    <moreInfo id="LoaderParameters" />

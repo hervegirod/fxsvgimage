@@ -1,0 +1,5 @@
+<svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+ <text x="15" y="35" fill="black" font-size="15">I Love
+   <tspan fill="none" stroke="red">SVG</tspan>!
+ </text>
+</svg>

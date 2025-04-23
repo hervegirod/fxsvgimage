@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import javafx.geometry.Bounds;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * A Node in an XML File.

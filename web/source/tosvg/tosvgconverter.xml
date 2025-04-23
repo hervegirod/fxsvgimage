@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<article desc="tosvg converter" >
+<article desc="convert to SVG" >
+   <altTitle desc="tosvg converter" />
    <meta desc="This article presents the buitl-in browser" />
    The <code>fxsvgConverter.jar</code> Jar file contains the library which allows to convert a JavaFX tree to a SVG file.
+   
+   <title title="usage" />
+   <moreInfo id="SVGConverter" />
+   To convert a JavaFX tree to a SVG file, you can use one of the <code>convert</code> methods of the 
+   <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.SVGConverter" /> class.
     
    <title title="example" />
    <pre syntax="java">
@@ -9,5 +15,6 @@
       converter.convert(&lt;my JavaFX root&gt;, &lt;my SVG file&gt;);
    </pre>   
 
+   <see id="SVGConverter"/>
    <cat id="tosvg" />
 </article>

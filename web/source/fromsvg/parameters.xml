@@ -2,7 +2,8 @@
 <article desc="LoaderParameters">
    <altTitle desc="SVGLoader parameters" />
    <meta desc="This article presents the usage of the SVGLoader parameters" />
-   The <code>LoaderParameters</code> class allows to specify how you want to load the SVG content by the <ref id="SVGLoader" />.
+   The<javadoc api="api" path="org.girod.javafx.svgimage.LoaderParameters" /> class allows to specify how you want to load the SVG content by the 
+   <ref id="SVGLoader" />.
    
    <title title="parameters" />
    <title level="2" title="styleSheets" keepCase="true"/>

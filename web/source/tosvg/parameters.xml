@@ -2,7 +2,8 @@
 <article desc="Converter Parameters">
    <altTitle desc="ConverterParameters" />
    <meta desc="This article presents the usage of the SVGConverter parameters" />
-   The <code>ConverterParameters</code> class allows to configure the exporting of the JavaFX tree to a svg file with the <ref id="SVGConverter" />.
+   The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.ConverterParameters" /> class allows to configure the exporting of the JavaFX tree to a SVG file 
+   with the <ref id="SVGConverter" />.
    
    <title title="parameters" />
    <title level="2" title="width" keepCase="true"/>
@@ -12,6 +13,17 @@
    <title level="2" title="height" keepCase="true"/>
    The <code>height</code> parameter allows to set the height of the resulting svg document. If not set, by default the width will be the height
    of the root node bounds.
+   
+   <title level="2" title="hasViewbox" keepCase="true"/>
+   The <code>hasViewbox</code> parameter allows to set the viewbox of the resulting svg document. The viewbox will have the width and height of the svg document It is 
+   <code>false</code> by default.   
+   
+   <title level="2" title="allowTransformForRoot" keepCase="true"/>
+   The <code>allowTransformForRoot</code> parameter allows to allow transformations on the root of the svg document. It is <code>true</code> by default.   
+   
+   <title level="2" title="background" keepCase="true"/>
+   The <code>background</code> parameter allows to set the background color of the resulting svg document. The converter will generate a rectangle with the width and height of
+   the svg document as the first child.
    
    <title title="example" />
    For example:

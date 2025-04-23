@@ -35,7 +35,7 @@ package org.girod.javafx.svgimage.xml.parsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.Bounds;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 
 /**
  * This utility class parse a length value.

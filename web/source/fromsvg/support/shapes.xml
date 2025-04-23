@@ -241,16 +241,19 @@
    attribute.
    
    <title level="2" title="tspan" />
+   <moreInfo id="tspan element support" />
    Text can contain <code>tspan</code> elements.
    
-   The following attributes are supported:
+   The following specific attributes are supported:
    <ul>
       <li>
-         <code>x</code>
-      </li>
+         <code>x</code> for an absolute x position</li>
       <li>
-         <code>y</code>
-      </li>        
+         <code>y</code> for an absolute y position</li>     
+      <li>
+         <code>dx</code> for a relative x position (relative to the previous tspan)</li>
+      <li>
+         <code>dy</code> for a relative y position (relative to the previous tspan)</li>        
       <li>
          <code>font-family</code>
       </li>
@@ -265,8 +268,8 @@
       </li>    
       <li>
          <code>baseline-shift</code>
-      </li>                                    
-   </ul>         
+      </li>                                               
+   </ul>   
             
    <cat id="fromsvgsupport" />
 </article>

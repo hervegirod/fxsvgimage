@@ -6,8 +6,8 @@
    <code>load</code> static method.
    
    <title title="overview" />   
-   The <code>SVGImage</code> can be used directly in any JavaFX node graph. This class has also several additional methods
-   which allows you to:
+   The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" /> can be used directly in any JavaFX node graph. This class has also several 
+   additional methods which allows you to:
    <ul>
       <li>Get the JavaFX implementations of named SVG nodes</li>
       <li>Convert the resulting <code>SVGImage</code> to a JavaFX Image</li>      
@@ -27,46 +27,108 @@
    <title title="scaling a SVGImage" />
    To scale a <code>SVGImage</code>, you can use one of the following methods:
    <ul>
-      <li>The <source syntax="java">scale(double scale)</source> methods creates a new <code>SVGImage</code> scaled compared to the
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="scale(double)" /> method creates a new <code>SVGImage</code> scaled compared to the
          initial image</li>
-      <li>The <source syntax="java">scaleTo(double with)</source> method creates a new <code>SVGImage</code> scaled with a new width compared to the
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="scale(double, boolean)" /> method allows to modify the <code>SVGImage</code>
+         rather than creating another one</li>         
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="scaleTo(double)" /> method creates a new <code>SVGImage</code> scaled with a new width compared to the
          initial image</li>         
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="scaleTo(double, boolean)" /> method allows to modify the <code>SVGImage</code>
+         rather than creating another one</li>          
    </ul>
    Note that these two methods will no just call <code>setScaleX</code> and <code>setScaleY</code> on the initial image, but 
    will create a new SVGImage with the same SVG input and a <ref id="LoaderParameters#scale" desc="scale"/> parameter.
-            
-   <title title="producing a snapshot" />
-   The <source syntax="java">snapshot(String format, File file)</source> method allows to save a snapshot of the initial image.
    
-   <title title="producing a JavaFX image" />
-   The <source syntax="java">toImage()</source> allows to create a JavaFX image from the initial image. It is possible to
-   specify the width of the result by using one of the following methods:
-   <ul>
-      <li>The <source syntax="java">toImage(double width)</source> will create a scaled JavaFX image from the initial image, using the
-         <code>width</code> parameter as the width of the resulting image</li>
-      <li>The <source syntax="java">toImage(short quality, double width)</source> does the same thing, and allows to specify the
-      quality of the result</li>               
-      <li>The <source syntax="java">toImageScaled(double scaleX, double scaleY)</source> will create a scaled JavaFX image from the initial image</li>      
-      <li>The <source syntax="java">toImageScaled(short quality, double scaleX, double scaleY)</source> will create a scaled JavaFX image from the initial image, and allows to specify the
-      quality of the result</li>                          
-   </ul>
-   <messageBox type="info">
-      If you use the <code>ScaleQuality.RENDER_QUALITY</code> value for the quality parameter, the result will be scaled at the
-      SVG level <b>before</b> being converted to a JavaFX image.
+   <messageBox type="warning">
+      These methods can be computationally intensive because what they are doing is loading the SVG file again with a scale parameter. If you don't want to modify the content of the image when scaling it, or you want to have a 
+      not computationally intensive method, you can also use the <source syntax="java">setScaleX(double scaleX)</source> and 
+      <source syntax="java">setScaleY(double scaleY)</source> to apply a scale transformation to the <code>SVGImage</code>. In that case the image 
+      content will not be modified.
    </messageBox>
    
-   <title level="2" title="example" />
-      <pre syntax="java">
+   <title level="2" title="examples" />
+   <pre syntax="java">
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      
+      // a new SVGImage will be created with a scale of 2
+      SVGImage newImg = img.scale(2); 
+      // the initial SVGImage will be scaled with a factor of 2
+      img.scale(2, false);  
+      
+      // a new SVGImage will be created with a width of 200
+      SVGImage newImg = img.scaleTo(200); 
+      // the initial SVGImage will have a new width of 200
+      img.scaleTo(200, false);        
+   </pre>     
+            
+   <title title="producing a snapshot" />
+   The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="snapshot(String, java.io.File)" /> method allows to save a snapshot of the initial image.
+   
+   For example:
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      img.snapshot("png", &lt;my PNG file&gt;));
+   </pre>  
+   
+   <title title="producing a JavaFX image" />
+   The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage()" /> method allows to create a JavaFX image from the initial image. It is possible to
+   specify the width of the result by using one of the following methods:
+   <ul>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(double)" /> method will create a scaled JavaFX image from the initial image, using the
+         <code>width</code> parameter as the width of the resulting image</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(short, double)" /> method does the same thing, and allows to specify the
+         quality of the result</li>       
+<li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImageScaled(double, double)" /> method will create a scaled JavaFX image from the initial image</li>      
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImageScaled(short, double, double)" /> method will create a scaled JavaFX image from the initial image, and allows to specify the
+         quality of the result</li>                          
+   </ul>
+   
+   <messageBox type="info">
+      If you use the <javadoc api="api" path="org.girod.javafx.svgimage.ScaleQuality" member="RENDER_QUALITY" /> value for the quality parameter, the result 
+      will be scaled at the SVG level <b>before</b> being converted to a JavaFX image.
+   </messageBox>
+   
+   <title level="2" title="examples" />
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+      
       // the resulting image will have a width of 100 pixels
       Image fxImg = img.toImage(100); 
       // the resulting image will be scaled by a 0.5 factor    
       Image fxImg2 = img.toImageScaled(0.5d); 
-      // the resulting image will have a width of 50 pixels, but the image will be scaled at the SVG level before creating
-      // the image
+      // the resulting image will have a width of 50 pixels, but the image will be scaled at the SVG level before creating the image
       Image fxImg2 = img.toImage(ScaleQuality.RENDER_QUALITY, 50); 
    </pre>  
    
-   <see id="SVGLoader" />               
+   <title title="SVGImage viewport" />
+   The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="getViewport()" /> return the viewport of the <code>SVGImage</code>. The 
+   most useful methods of the <code>Viewport</code> are:
+   <ul>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getWidth()" /> return the width of the <code>SVGImage</code> (can be -1 if 
+         the width is not specified in the SVG file</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getHeight()" /> return the height of the <code>SVGImage</code> (can be -1 if 
+         the height is not specified in the SVG file</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getViewboxWidth()" /> return the width of the viewport (can be -1 if 
+         the viewport is not specified in the SVG file</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewbox" member="getViewboxHeight()" /> return the height of the viewport (can be -1 if 
+         the viewport is not specified in the SVG file</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getBestWidth()" /> return the width if it exists, else it will be the viewBox width</li>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.Viewport" member="getBestHeight()" /> return the height if it exists, else it will be the viewBox height</li>      
+   </ul>
+   
+   <title title="integrating the SVGImage in a layout container" />
+   <moreInfo id="SVGImageRegion" />
+   The <code>SVGImage</code> is a <code>Group</code> class. As a <code>Group</code> has no size by itself, it can not be integrated efficiently in a Layout containers (such as
+   a <code>BorderPane</code>)<note>a <code>Group</code> is not directly resizable</note>.
+   
+   To overcomme this problem and allow to integrate a <code>SVGImage</code> in a Layout container, you can use the
+   <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="createRegion()" /> which will create a <ref id="SVGImageRegion" /> wrapping the
+   <code>SVGImage</code>. 
+   
+   As the <code>SVGImageRegion</code> is a <code>Region</code>, it can be resized and be fully integrated in a Layout container.
+   
+   <see id="SVGLoader" />     
+   <see id="SVGImageRegion" />  
+   <see id="convert from SVG" />         
    <cat id="fromsvg" />
 </article>

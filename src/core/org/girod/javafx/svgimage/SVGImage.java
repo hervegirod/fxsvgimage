@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 1.0
+ * @version 1.2
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -63,6 +63,8 @@ public class SVGImage extends Group {
    private List<Animation> animations = new ArrayList<>();
    private final SVGContent content;
    private double currentScale = 1d;
+   private Viewport viewport = null;
+   private SVGImageRegion region = null;
 
    /**
     * Constructor.
@@ -78,6 +80,38 @@ public class SVGImage extends Group {
     */
    public SVGImage(SVGContent content) {
       this.content = content;
+   }
+
+   /**
+    * Set the viewport of the SVG content.
+    *
+    * @param viewport the viewport
+    */
+   public void setViewport(Viewport viewport) {
+      this.viewport = viewport;
+   }
+
+   /**
+    * Return the viewport of the SVG content.
+    *
+    * @return the viewport
+    */
+   public Viewport getViewport() {
+      return viewport;
+   }
+
+   /**
+    * Create a region containing this image. Note that the region will only be created once. This region will allow to
+    * use the image in a layout (for example a BorderPane, or a StackPane), and redimension the image accordingly.
+    *
+    * @return the region
+    */
+   public SVGImageRegion createRegion() {
+      if (region == null) {
+         region = new SVGImageRegion(this);
+         region.setup();
+      }
+      return region;
    }
 
    /**
@@ -423,6 +457,7 @@ public class SVGImage extends Group {
          return image;
       }
    }
+
    /**
     * Scale the image to a specified width. Return the initial SVGImage.
     *
@@ -434,14 +469,17 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Scale the image to a specified width. If <code>createNew</code> is <code>true</code>, then return the initial SVGImage.
+    * Scale the image to a specified width. If <code>createNew</code> is <code>true</code>, then return the initial
+    * SVGImage.
     *
     * @param width the width of the scaled image
     * @param createNew true to creata a new image
     * @return the new image
     */
    public SVGImage scaleTo(double width, boolean createNew) {
-      double initialWidth = this.getLayoutBounds().getWidth();
+      // take the width and height of the image into account
+      // previously it was initialWidth = this.getWidth();
+      double initialWidth = getScaledWidth();
       double scale = width / initialWidth;
       return scale(scale, createNew);
    }
@@ -449,13 +487,13 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the
-    * snapshot generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
-    * {@link ExceptionsHandling#RETROW_EXCEPTION}.
-    * It means that by default the method will simply return false if it could not save the snapshot.
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot
+    * generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
+    * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the method will simply return false if it
+    * could not save the snapshot.
     *
-    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing
-    * not available.
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not
+    * available.
     *
     * @param params the parameters
     * @param format the format
@@ -481,13 +519,13 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the
-    * snapshot generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
-    * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by
-    * default the method will simply return false if it could not save the snapshot.
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot
+    * generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
+    * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the method will simply return false if it
+    * could not save the snapshot.
     *
-    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing
-    * not available.
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not
+    * available.
     *
     * @param format the format
     * @param file the file

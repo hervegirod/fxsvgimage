@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SVGImageRegion">
+   <altTitle desc="SVGImageRegion usage" />
+   <meta desc="This article presents the usage of the SVGImageRegion class" />
+   The <ref id="SVGImage" /> is a <code>Group</code> class. As a <code>Group</code> has no size by itself, it can not be integrated efficiently in a Layout containers (such as
+   a <code>BorderPane</code>)<note>a <code>Group</code> is not directly resizable</note>.
+   
+   To overcomme this problem and allow to integrate a <code>SVGImage</code> in a Layout container, you can use the
+   <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="createRegion()" /> which will create a 
+   <javadoc api="api" path="org.girod.javafx.svgimage.SVGImageRegion" /> wrapping the <code>SVGImage</code>. 
+   
+   As the <code>SVGImageRegion</code> is a <code>Region</code>, it can be resized and be fully integrated in a Layout container.
+   
+   <title title="image conformity" />
+   The only specific method of the <code>SVGImageRegion</code> is the <javadoc api="api" path="org.girod.javafx.svgimage.SVGImageRegion" member="setConform(boolean)"/>
+   which allow to force the result of the resize to always keep the SVH Image conform (by default the conformity of the result will not be enforced).
+   
+   <title title="example" />
+   The following example integrates the <code>SVGImage</code> in a <code>BorderPane</code>. The <code>SVGImage</code> will shrink or expand when the stage is resized:
+   <pre syntax="java">
+      SVGImage svgImg = SVGLoader.load(&lt;my SVG file&gt;);
+      SVGImageRegion region = svgImg.createRegion();
+      BorderPane borderPane = new BorderPane();
+      borderPane.setCenter(region);
+      stage.setScene(new Scene(borderPane, 300, 250));
+      stage.show();   
+   </pre>
+   
+   <see id="SVGImage" />               
+   <cat id="fromsvg" />
+</article>

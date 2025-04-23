@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<svg version="1.1" viewBox="0 0 1.0 1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+   <g>
+
+      <circle cx="0.25" cy="0.25" r="0.25" />
+      <circle cx="0.75" cy="0.25" r="0.25" />
+      <circle cx="0.25" cy="0.75" r="0.25" />
+      <circle cx="0.75" cy="0.75" r="0.25" />
+
+      <g>
+         <polyline fill="none" points="1.00,0.56 0.93,0.44 0.77,0.48 0.71,0.18 0.63,0.22 0.67,0.11 0.52,0.18 0.52,0.11 0.46,0.13 0.44,0.37 0.29,0.30 0.22,0.00 1.00,0.00 1.00,0.56" stroke-width="0.05px" stroke="black" />
+         <polyline fill="none" points="0.30,0.51 0.30,0.50 0.29,0.30 0.45,0.43 0.42,0.70 0.37,0.66 0.31,0.74 0.30,0.51" stroke-width="0.05px" stroke="black" />
+         <polyline fill="none" points="0.61,0.51 0.61,0.51 0.60,0.61 0.53,0.39 0.61,0.51" stroke-width="0.05px" stroke="black" />
+         <polyline fill="none" points="0.57,0.38 0.57,0.38 0.64,0.32 0.62,0.42 0.57,0.38" stroke-width="0.05px" stroke="black" />
+         <polyline fill="none" points="0.94,0.66 0.94,0.66 0.99,0.72 0.94,0.66" stroke-width="0.05px" stroke="black" />
+         <polyline fill="none" points="0.76,0.72 0.76,0.71 0.77,0.78 0.76,0.72" stroke-width="0.05px" stroke="black" />
+      </g>
+      <g fill="red" />
+   </g>
+</svg>

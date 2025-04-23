@@ -60,7 +60,7 @@ import javafx.scene.shape.VLineTo;
 import org.girod.javafx.svgimage.LoaderContext;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
-import org.girod.javafx.svgimage.xml.specs.Viewport;
+import org.girod.javafx.svgimage.Viewport;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.CIRCLE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.ELLIPSE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.LINE;
@@ -68,7 +68,7 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.PATH;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYGON;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYLINE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.RECT;
-import org.girod.javafx.svgimage.xml.specs.Viewbox;
+import org.girod.javafx.svgimage.Viewbox;
 
 /**
  *

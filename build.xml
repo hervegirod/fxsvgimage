@@ -15,6 +15,11 @@
    <!-- =================================================================== -->
 
    <target name="-post-init">
+      <!-- JDK definition -->
+      <property name="jdk" value="C:\Program Files\Java\jdk-1.8"/>   
+      <!-- To set with your location of Java 8 JDK -->
+      <property name="javadocDir" value="${jdk}/docs/api"/>
+      <property name="javadocEXE" value="${jdk}/bin/javadoc.exe"/>
       <!-- general properties definition -->
       <property name="archiveName" value="fxsvgImage"/>
       <property name="src.dir" value="${src.core.dir}/.." />
@@ -22,6 +27,9 @@
       <condition property="javadoc.exists">
          <available file="${dist.javadoc.dir}" type="dir"/>
       </condition>
+      <property name="javadocIn" value="${dist.javadoc.dir}" />
+      <property name="javadocOut" value="web/wiki/javadoc" />
+      <property name="javadocSourceforgeOut" value="web/sourceforge/javadoc" />      
       <condition property="wiki.exists">
          <available file="${wikiDir}/index.html" type="file"/>
       </condition>      
@@ -36,7 +44,7 @@
          </not>
       </condition>
       <property name="docGeneratorDirURL" value="https://downloads.sourceforge.net/project/docjgenerator/" />      
-      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.5.6.1/docGenerator-bin-1.5.6.1.zip" />
+      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.6.10/docGenerator-bin-1.6.10.zip" />
       <property name="docGeneratorDir" value="web/soft/"/>       
       <condition property="docgenerator.notexists">
          <not>
@@ -47,15 +55,15 @@
          <available file="web/soft/docGenerator.jar" type="file"/>
       </condition>   
       <property name="groovyDirURL" value="https://groovy.jfrog.io/artifactory/dist-release-local/groovy-zips/" />      
-      <property name="groovyURL" value="${groovyDirURL}/apache-groovy-binary-4.0.1.zip" />      
+      <property name="groovyURL" value="${groovyDirURL}/apache-groovy-binary-4.0.26.zip" />      
       <property name="testlib" value="testlib"/>       
       <condition property="groovy.notexists">
          <not>
-            <available file="testlib/groovy-4.0.1.jar" type="file"/>
+            <available file="testlib/groovy-4.0.26.jar" type="file"/>
          </not>
       </condition>    
       <condition property="groovy.exists">
-         <available file="testlib/groovy-4.0.1.jar" type="file"/>
+         <available file="testlib/groovy-4.0.26.jar" type="file"/>
       </condition>                    
       <property name="j2seapi" value="http://docs.oracle.com/javase/7/docs/api/"/>        
       <!-- To set with your location of Java 8 JDK -->
@@ -116,6 +124,7 @@
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
+            <include name="fxsvgConverter.jar"/>
          </fileset>
       </zip>
       <!-- zip source files  -->
@@ -135,6 +144,7 @@
          <fileset description="binaries" dir="${dist.dir}">
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
+            <include name="fxsvgConverter.jar"/>
          </fileset>
          <fileset description="testlib" dir=".">
             <include name="testlib/**/*.*"/>
@@ -195,9 +205,9 @@
          <classpath>
             <path path="${javac.classpath}"/>
          </classpath>         
-         <group title="Core API">
+         <group title="fromSVG API">
             <package name="org.girod.javafx.svgimage" />
-            <package name="org.girod.javafx.svgimage.xml" />
+            <package name="org.girod.javafx.svgimage.xml*" />
          </group>         
          <group title="Browser API" packages="org.girod.javafx.svgimage.browser" />   
          <group title="toSVG API">
@@ -209,7 +219,7 @@
          </group>                            
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
          <bottom>
-            <![CDATA[<i>Copyright &#169; 2021, 2022 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
+            <![CDATA[<i>Copyright &#169; 2021, 2022, 2025 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
          </bottom>         
       </javadoc>
    </target>                     
@@ -258,28 +268,59 @@
            depends="init, -post-init" if="groovy.notexists" >
       <get src="${groovyURL}" dest="${testlib}/groovy.zip" verbose="false" usetimestamp="false"/>
       <unzip src="${testlib}/groovy.zip" dest="${testlib}"/>
-      <move file="${testlib}/groovy-4.0.1/lib/groovy-4.0.1.jar" tofile="${testlib}/groovy-4.0.1.jar"/>      
+      <move file="${testlib}/groovy-4.0.26/lib/groovy-4.0.26.jar" tofile="${testlib}/groovy-4.0.26.jar"/>      
       <delete includeEmptyDirs="true">
-         <fileset dir="${testlib}/groovy-4.0.1"  >
+         <fileset dir="${testlib}/groovy-4.0.26"  >
             <include name="**/*"/>
          </fileset>	    
          <fileset dir="${testlib}/"  >
             <include name="groovy.zip"/>
          </fileset>	                                            	        
       </delete>
-      <delete dir="${testlib}/groovy-4.0.1"/>                                              	            	      
+      <delete dir="${testlib}/groovy-4.0.26"/>                                              	            	      
    </target>  
    
    <target name="delete groovy"  description="delete groovy" 
            depends="init, -post-init" if="groovy.exists" >
       <delete includeEmptyDirs="true">
          <fileset dir="${testlib}"  >
-            <include name="groovy-4.0.1.jar"/>
+            <include name="groovy-4.0.26.jar"/>
          </fileset>	     
       </delete>	      
    </target>       
-     
    
+   <!-- =================================================================== -->
+   <!-- copy javadoc -->
+   <!-- =================================================================== -->
+   <target name="copyjavadoc" description="copy javadoc" depends="init, -post-init, version, deletejavadoc" >
+      <mkdir dir="${javadocOut}" />
+      <mkdir dir="${javadocSourceforgeOut}" />
+      <copy todir="${javadocOut}">
+         <fileset defaultexcludes="yes" dir="${javadocIn}" >
+            <include name="**"/>
+         </fileset>
+      </copy>
+      <copy todir="${javadocSourceforgeOut}">
+         <fileset defaultexcludes="yes" dir="${javadocIn}" >
+            <include name="**"/>
+         </fileset>
+      </copy>
+   </target>
+
+   <target name="deletejavadoc" depends="-deletewikijavadoc, -deleteSourceforgejavadoc" />
+
+   <target name="-deletewikijavadoc" depends="init, -post-init, version" if="${wikijavadoc.exists}">
+      <delete includeEmptyDirs="true">
+         <fileset dir="${javadocOut}" includes="**/*" />
+      </delete>
+   </target>
+
+   <target name="-deleteSourceforgejavadoc" depends="init, -post-init, version" if="${sourceforgejavadoc.exists}">
+      <delete includeEmptyDirs="true">
+         <fileset dir="${javadocSourceforgeOut}" includes="**/*" />
+      </delete>
+   </target>
+     
    <!-- =================================================================== -->
    <!-- NB overwrite targets : wiki                                         -->
    <!-- =================================================================== -->   
@@ -287,16 +328,7 @@
            depends="init, -post-init" if="docgenerator.notexists" >
       <get src="${docGeneratorURL}" dest="${docGeneratorDir}/docGenerator.zip" verbose="false" usetimestamp="false"/>
       <unzip src="${docGeneratorDir}/docGenerator.zip" dest="${docGeneratorDir}"/>
-      <delete includeEmptyDirs="true">
-         <fileset dir="${docGeneratorDir}/doc"  >
-            <include name="**"/>
-         </fileset>	 
-         <fileset dir="${docGeneratorDir}/tutorial"  >
-            <include name="**"/>
-         </fileset>	 
-         <fileset dir="${docGeneratorDir}/samples"  >
-            <include name="**"/>
-         </fileset>
+      <delete includeEmptyDirs="true">  
          <fileset dir="${docGeneratorDir}"  >
             <include name="docGenerator.zip"/>
          </fileset>	         	        
@@ -325,6 +357,7 @@
          <arg value="-$version=${version}"/>
          <arg value="-search=titles"/>
          <arg value="-fullTextSearch=true"/>
+         <arg value="-config=web/source/config.properties"/>
          <classpath>
             <pathelement path="web/soft/docGenerator.jar"/>        
          </classpath>
@@ -340,6 +373,7 @@
          <arg value="-config=web/source/sourceforge.properties"/>         
          <arg value="-search=titles"/>
          <arg value="-fullTextSearch=true"/>
+         <arg value="-config=web/source/config.properties"/>
          <classpath>
             <pathelement path="web/soft/docGenerator.jar"/>        
          </classpath>

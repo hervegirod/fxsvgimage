@@ -53,7 +53,7 @@ public class LoaderParameters implements Cloneable {
    /**
     * The scale. The default is -1, which means that no scaling is applied.
     */
-   public double scale = -1;
+   public double scale = -1;   
    /**
     * True if line widths must also be scaled. The default is true, which means that line widths are also scaled.
     */
