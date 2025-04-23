@@ -203,7 +203,7 @@
          <classpath>
             <path path="${javac.classpath}"/>
          </classpath>         
-         <group title="Core API">
+         <group title="fromSVG API">
             <package name="org.girod.javafx.svgimage" />
             <package name="org.girod.javafx.svgimage.xml*" />
          </group>         
