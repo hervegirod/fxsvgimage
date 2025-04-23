@@ -2,7 +2,7 @@
 
 # 1.2
  - Use docJGenerator 1.6.10
- - Use groovy 4.0.26 (only uses for tests, the binaries have no dependencies
+ - Use groovy 4.0.26 (only used for tests, the binaries have no dependencies
  - Move the Viewport a ViewBox classes in the org.girod.javafx.svgimage package
  - Fix #47: Add a parameter for the Color of the svg background in the JavaFX to SVG parameters
  - Fix #48: Add a parameter to generate the viewbox in the JavaFX to SVG parameters
