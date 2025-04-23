@@ -77,9 +77,9 @@
       <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(double)" /> method will create a scaled JavaFX image from the initial image, using the
          <code>width</code> parameter as the width of the resulting image</li>
       <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(short, double)" /> method does the same thing, and allows to specify the
-         quality of the result</li>               
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(double, double)" /> method will create a scaled JavaFX image from the initial image</li>      
-      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImage(short, double, double)" /> method will create a scaled JavaFX image from the initial image, and allows to specify the
+         quality of the result</li>       
+<li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImageScaled(double, double)" /> method will create a scaled JavaFX image from the initial image</li>      
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" member="toImageScaled(short, double, double)" /> method will create a scaled JavaFX image from the initial image, and allows to specify the
          quality of the result</li>                          
    </ul>
    
