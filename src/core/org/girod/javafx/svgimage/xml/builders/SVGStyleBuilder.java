@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
+import java.util.ArrayList;
 import org.girod.javafx.svgimage.xml.specs.MarkerContext;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
@@ -69,32 +70,66 @@ import org.girod.javafx.svgimage.Viewport;
 /**
  * This class parse a style declaration.
  *
- * @version 1.2
+ * @version 1.3
  */
 public class SVGStyleBuilder implements SVGTags {
-   private static final Pattern STYLES = Pattern.compile("\\.[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
+   private static final Pattern STYLES = Pattern.compile("[^{]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
    private static final Pattern RULE_CONTENT = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_\\-]*\\s*:\\s*[a-zA-Z0-9_\\-+,\\.\\#\\.]*");
 
    private SVGStyleBuilder() {
    }
 
-   public static Styles parseStyle(String content, Viewport viewport) {
+   private static void addProperty(List<Styles.Rule> styleRules, String key, short type, Object value) {
+      Iterator<Styles.Rule> it = styleRules.iterator();
+      while (it.hasNext()) {
+         Styles.Rule rule = it.next();
+         rule.addProperty(key, type, value);
+      }
+   }
+
+   public static Styles parseStyle(Styles styles, String content, Viewport viewport) {
       Matcher m = STYLES.matcher(content);
-      Styles styles = null;
       while (m.find()) {
-         if (styles == null) {
-            styles = new Styles();
-         }
          String theRule = m.group();
+         theRule = theRule.trim();
          int parIndex = theRule.indexOf('{');
-         String styleClass = theRule.substring(1, parIndex).trim();
-         Styles.Rule rule = new Styles.Rule(styleClass);
+         String styleClass;
+         if (theRule.charAt(0) != '.') {
+            styleClass = theRule.substring(0, parIndex).trim();
+         } else {
+            styleClass = theRule.substring(1, parIndex).trim();
+         }
+         List<String> styleClasses = new ArrayList<>();
+         if (!styleClass.contains(",")) {
+            styleClasses.add(styleClass);
+         } else {
+            StringTokenizer tok = new StringTokenizer(styleClass, ",");
+            while (tok.hasMoreTokens()) {
+               String tk = tok.nextToken().trim();
+               if (tk.charAt(0) == '.') {
+                  tk = tk.substring(1);
+               }
+               styleClasses.add(tk);
+            }
+         }
+         List<Styles.Rule> styleRules = new ArrayList<>();
+         Iterator<String> it = styleClasses.iterator();
+         while (it.hasNext()) {
+            styleClass = it.next();
+            if (styles.hasRule(styleClass)) {
+               Styles.Rule theStyleRule = styles.getRule(styleClass);
+               styleRules.add(theStyleRule);
+            } else {
+               Styles.Rule theStyleRule = new Styles.Rule(styleClass);
+               styles.addRule(theStyleRule);
+               styleRules.add(theStyleRule);
+            }
+         }
          boolean isEmpty = true;
          String ruleContent = theRule.substring(parIndex + 1, theRule.length() - 2).trim();
          Matcher m2 = RULE_CONTENT.matcher(ruleContent);
          while (m2.find()) {
             if (isEmpty) {
-               styles.addRule(rule);
                isEmpty = false;
             }
             String theProperty = m2.group();
@@ -104,68 +139,68 @@ public class SVGStyleBuilder implements SVGTags {
             switch (key) {
                case FILL: {
                   Color col = ParserUtils.getColor(value);
-                  rule.addProperty(key, Styles.FILL, col);
+                  addProperty(styleRules, key, Styles.FILL, col);
                   break;
                }
                case STROKE: {
                   Color col = ParserUtils.getColor(value);
-                  rule.addProperty(key, Styles.STROKE, col);
+                  addProperty(styleRules, key, Styles.STROKE, col);
                   break;
                }
                case STROKE_WIDTH: {
                   double width = ParserUtils.parseLineWidth(value, viewport);
-                  rule.addProperty(key, Styles.STROKE_WIDTH, width);
+                  addProperty(styleRules, key, Styles.STROKE_WIDTH, width);
                   break;
                }
                case STROKE_DASHARRAY: {
                   List<Double> list = ParserUtils.parseDashArray(value, viewport);
                   if (list != null) {
-                     rule.addProperty(key, Styles.STROKE_DASHARRAY, list);
+                     addProperty(styleRules, key, Styles.STROKE_DASHARRAY, list);
                   }
                   break;
                }
                case FONT_FAMILY: {
                   String fontFamily = value.replace("'", "");
-                  rule.addProperty(key, Styles.FONT_FAMILY, fontFamily);
+                  addProperty(styleRules, key, Styles.FONT_FAMILY, fontFamily);
                   break;
                }
                case FONT_WEIGHT: {
                   FontWeight fontWeight = SVGShapeBuilder.getFontWeight(value);
-                  rule.addProperty(key, Styles.FONT_WEIGHT, fontWeight);
+                  addProperty(styleRules, key, Styles.FONT_WEIGHT, fontWeight);
                   break;
                }
                case FONT_STYLE: {
                   ExtendedFontPosture fontPosture = SVGShapeBuilder.getExtendedFontPosture(value);
-                  rule.addProperty(key, Styles.FONT_STYLE, fontPosture);
+                  addProperty(styleRules, key, Styles.FONT_STYLE, fontPosture);
                   break;
                }
                case FONT_SIZE: {
                   double size = ParserUtils.parseFontSize(value);
-                  rule.addProperty(key, Styles.FONT_SIZE, size);
+                  addProperty(styleRules, key, Styles.FONT_SIZE, size);
                   break;
                }
                case TEXT_DECORATION: {
-                  rule.addProperty(key, Styles.TEXT_DECORATION, value);
+                  addProperty(styleRules, key, Styles.TEXT_DECORATION, value);
                   break;
                }
                case OPACITY: {
                   double opacity = ParserUtils.parseOpacity(value);
                   if (opacity >= 0) {
-                     rule.addProperty(key, Styles.OPACITY, opacity);
+                     addProperty(styleRules, key, Styles.OPACITY, opacity);
                   }
                   break;
                }
                case FILL_OPACITY: {
                   double opacity = ParserUtils.parseOpacity(value);
                   if (opacity >= 0) {
-                     rule.addProperty(key, Styles.FILL_OPACITY, opacity);
+                     addProperty(styleRules, key, Styles.FILL_OPACITY, opacity);
                   }
                   break;
                }
                case TRANSFORM: {
                   List<Transform> transformList = TransformUtils.extractTransforms(value, viewport);
                   if (!transformList.isEmpty()) {
-                     rule.addProperty(key, Styles.TRANSFORM, transformList);
+                     addProperty(styleRules, key, Styles.TRANSFORM, transformList);
                   }
                   break;
                }
@@ -281,6 +316,8 @@ public class SVGStyleBuilder implements SVGTags {
       if (xmlNode.hasAttribute(CLASS)) {
          String styleClasses = xmlNode.getAttributeValue(CLASS);
          setStyleClass(node, styleClasses, context.svgStyle);
+      } else {
+         setDefaultStyleClass(xmlNode, node, context.svgStyle);
       }
 
       if (xmlNode.hasAttribute(CLIP_PATH) && context.clippingFactory != null) {
@@ -513,6 +550,14 @@ public class SVGStyleBuilder implements SVGTags {
                node.setClip(clipShape);
             }
          }
+      }
+   }
+
+   private static void setDefaultStyleClass(XMLNode xmlNode, Node node, Styles svgStyle) {
+      String styleClass = xmlNode.getName();
+      if (svgStyle != null && svgStyle.hasRule(styleClass)) {
+         Styles.Rule rule = svgStyle.getRule(styleClass);
+         rule.apply(node);
       }
    }
 

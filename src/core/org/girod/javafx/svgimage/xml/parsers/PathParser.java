@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2023 Hervé Girod
+Copyright (c) 2021, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,17 +34,57 @@ package org.girod.javafx.svgimage.xml.parsers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.scene.shape.SVGPath;
 import org.girod.javafx.svgimage.Viewport;
 
 /**
  * This class parse a path content specification.
  *
- * @version 1.1
+ * @version 1.3
  */
-public class PathParser extends AbstractPathParser {
+public class PathParser {
+   private static final short PATH_NONE = -1;
+   private static final short MOVE_TO = 0;
+   private static final short CLOSE_PATH = 1;
+   private static final short LINE_TO = 2;
+   private static final short HORIZONTAL_LINE_TO = 3;
+   private static final short VERTICAL_LINE_TO = 4;
+   private static final short CUBIC_CURVE = 5;
+   private static final short SMOOTH_CUBIC_CURVE = 6;
+   private static final short QUADRATIC_CURVE = 7;
+   private static final short SMOOTH_QUADRATIC_CURVE = 8;
+   private static final short ELLIPTICAL_CURVE = 9;
+   private static final Pattern LETTER = Pattern.compile("[sSlLhHvVmMcCqQtTaAzZ]");
+   private static final Pattern PLUSMINUS = Pattern.compile("[+-]?\\d*([eE][+-]\\d+)?(\\.\\d+)?");
 
    public PathParser() {
+   }
+
+   private static void decomposePart(List<String> list, String token) {
+      int offset = 0;
+      Matcher m = PLUSMINUS.matcher(token);
+      String part = token;
+      while (true) {
+         boolean found = m.find(offset);
+         if (!found) {
+            list.add(part);
+            break;
+         } else {
+            int start = m.start();
+            int end = m.end();
+            String value = token.substring(start, end);
+            list.add(value);
+            offset = end;
+            if (offset < token.length()) {
+               part = token.substring(offset);
+            } else {
+               break;
+            }
+         }
+      }
    }
 
    /**
@@ -52,28 +92,48 @@ public class PathParser extends AbstractPathParser {
     *
     * @param content the path content
     * @param viewport the viewport
-    * @param hasFill true if the paths are filled
     * @return the path taking into account the viewport and the units
     */
-   public List<SVGPath> parsePathContent(String content, Viewport viewport, boolean hasFill) {
+   public List<SVGPath> parsePathContent(String content, Viewport viewport) {
       List<SVGPath> listPath = new ArrayList<>();
       short type = PATH_NONE;
       int index = 0;
       boolean isFirst = true;
       StringBuilder buf = new StringBuilder();
       List<String> list = new ArrayList<>();
-      list.add(content);
+      StringTokenizer tok = new StringTokenizer(content, " ,");
+      while (tok.hasMoreTokens()) {
+         String tk = tok.nextToken();
+         Matcher m = LETTER.matcher(tk);
+         int offset = 0;
+         String part = tk;
+         while (true) {
+            boolean found = m.find(offset);
+            if (!found) {
+               decomposePart(list, part);
+               break;
+            }
+            int start = m.start();
+            int end = m.end();
+            if (start > 0) {
+               String previousPart = tk.substring(offset, start);
+               decomposePart(list, previousPart);
+            }
+            String letter = tk.substring(start, end);
+            list.add(letter);
+            offset = end;
+            if (offset < tk.length()) {
+               part = tk.substring(offset);
+            } else {
+               break;
+            }
+         }
+      }
       for (int i = 0; i < list.size(); i++) {
          String tk = list.get(i);
          switch (tk) {
             case "m":
             case "M":
-               if (!isFirst) {
-                  SVGPath path = new SVGPath();
-                  path.setContent(buf.toString());
-                  listPath.add(path);
-                  buf = new StringBuilder();
-               }
                type = MOVE_TO;
                index = -1;
                addPathCommand(buf, tk, isFirst);
@@ -140,24 +200,31 @@ public class PathParser extends AbstractPathParser {
                      if (index == 2) {
                         index = 0;
                      }
-                     if (index == 0) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 1) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else {
-                        addPathCommand(buf, tk);
+                     switch (index) {
+                        case 0: { // x
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 1: { // y
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        default:
+                           addPathCommand(buf, tk);
+                           break;
                      }
                      break;
+
                   case HORIZONTAL_LINE_TO: {
-                     index++;
+                     index++; // x
                      double d = LengthParser.parseLength(tk, true, viewport);
                      addPathCommand(buf, d);
                      break;
                   }
                   case VERTICAL_LINE_TO: {
-                     index++;
+                     index++; // y
                      double d = LengthParser.parseLength(tk, false, viewport);
                      addPathCommand(buf, d);
                      break;
@@ -167,85 +234,121 @@ public class PathParser extends AbstractPathParser {
                      if (index == 6) {
                         index = 0;
                      }
-                     if (index == 0 || index == 2 || index == 4) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 1 || index == 3 || index == 5) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else {
-                        addPathCommand(buf, tk);
+                     switch (index) {
+                        case 0:  // x1
+                        case 2: // x2 
+                        case 4: { // x
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 1: // y1
+                        case 3: // y2
+                        case 5: { // y
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        default:
+                           addPathCommand(buf, tk);
+                           break;
                      }
                      break;
+
                   case SMOOTH_CUBIC_CURVE:
                   case QUADRATIC_CURVE:
                      index++;
                      if (index == 4) {
                         index = 0;
                      }
-                     if (index == 0 || index == 2) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 1 || index == 3) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else {
-                        addPathCommand(buf, tk);
+                     switch (index) {
+                        case 0:  // x1
+                        case 2: { // x
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 1: // y1
+                        case 3: { // y
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        default:
+                           addPathCommand(buf, tk);
+                           break;
                      }
                      break;
+
                   case SMOOTH_QUADRATIC_CURVE:
                      index++;
                      if (index == 3) {
                         index = 0;
                      }
-                     if (index == 0) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 1) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else {
-                        addPathCommand(buf, tk);
+                     switch (index) {
+                        case 0: {
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 1: {
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        default:
+                           addPathCommand(buf, tk);
+                           break;
                      }
                      break;
+
                   case ELLIPTICAL_CURVE:
                      index++;
-                     if (index == 0) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 1) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 2) {
-                        double d = ParserUtils.parseDoubleProtected(tk);
-                        addPathCommand(buf, d);
-                     } else if (index == 3 || index == 4) {
-                        addPathCommand(buf, tk);
-                     } else if (index == 5) {
-                        double d = LengthParser.parseLength(tk, true, viewport);
-                        addPathCommand(buf, d);
-                     } else if (index == 6) {
-                        double d = LengthParser.parseLength(tk, false, viewport);
-                        addPathCommand(buf, d);
-                     } else {
-                        addPathCommand(buf, tk);
+                     switch (index) {
+                        case 0: { // rx
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 1: { // ry
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 2: { // axis-rotation
+                           double d = ParserUtils.parseDoubleProtected(tk);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 3: // large-arc-flag 
+                        case 4: // sweep-flag
+                           addPathCommand(buf, tk);
+                           break;
+                        case 5: { // x
+                           double d = LengthParser.parseLength(tk, true, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        case 6: { // y
+                           double d = LengthParser.parseLength(tk, false, viewport);
+                           addPathCommand(buf, d);
+                           break;
+                        }
+                        default:
+                           addPathCommand(buf, tk);
+                           break;
                      }
                      break;
+
                   default:
                      break;
                }
          }
          isFirst = false;
       }
-      //content = buf.toString();
-      if (!content.isEmpty()) {
-         SVGPath path = new SVGPath();
-         path.setContent(content);
-         listPath.add(path);
-      }
-      if (listPath.isEmpty()) {
-         listPath = null;
-      }
+      SVGPath path = new SVGPath();
+      path.setContent(buf.toString());
+      listPath.add(path);
       return listPath;
    }
 

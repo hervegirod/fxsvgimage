@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2023 Hervé Girod
+Copyright (c) 2021, 2022, 2023, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ import org.girod.javafx.svgimage.Viewport;
 /**
  * The animation builder.
  *
- * @version 1.1
+ * @version 1.3
  */
 public class AnimationBuilder implements SVGTags {
    private static final short TYPE_TRANSLATE = 0;
@@ -480,7 +480,7 @@ public class AnimationBuilder implements SVGTags {
       String content = xmlAnim.getAttributeValue(PATH);
       content = content.replace('−', '-');
       PathParser pathParser = new PathParser();
-      List<SVGPath> list = pathParser.parsePathContent(content, viewport, false);
+      List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       Duration duration = Duration.ZERO;
       if (xmlAnim.hasAttribute(DUR)) {
          duration = parseDuration(xmlAnim.getAttributeValue(DUR));

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,9 +40,10 @@ import org.girod.javafx.svgimage.Viewport;
 /**
  * This utility class parse a length value.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class LengthParser {
+   private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
    private static final Pattern NUMBER = Pattern.compile("\\-?\\d*(\\.\\d+)?");
    private static final Pattern NUMBER_UNIT = Pattern.compile("(\\-?\\d+)(\\.\\d*)?([a-z%A-Z]+)");
    private static final double INCH = 1 / 96d;
@@ -110,6 +111,18 @@ public class LengthParser {
    public static double parseLength(String lengthValue, Viewport viewport) {
       return parseLength(lengthValue, true, null, viewport);
    }
+   
+   /**
+    * Parse a length value, ensuring that a 0 length will return 0.
+    *
+    * @param lengthValue the value
+    * @param isWidth for a width unit
+    * @param viewport the viewport
+    * @return the value
+    */
+   public static double parseLengthProtected(String lengthValue, boolean isWidth, Viewport viewport) {
+      return parseLengthProtected(lengthValue, isWidth, null, viewport);
+   }   
 
    /**
     * Parse a length value.
@@ -241,6 +254,25 @@ public class LengthParser {
          }
       }
       return 0d;
+   }
+
+   /**
+    * Parse a length value, ensuring that a 0 length will return 0.
+    *
+    * @param lengthValue the value
+    * @param isWidth for a width unit
+    * @param bounds the optional bounds of the figure for which it is relative to
+    * @param viewport the viewport
+    * @return the value
+    */
+   public static double parseLengthProtected(String lengthValue, boolean isWidth, Bounds bounds, Viewport viewport) {
+      lengthValue = lengthValue.replace('−', '-');
+      Matcher m = ZERO.matcher(lengthValue);
+      if (m.matches()) {
+         return 0d;
+      } else {
+         return parseLength(lengthValue, isWidth, bounds, viewport);
+      }
    }
 
    /**

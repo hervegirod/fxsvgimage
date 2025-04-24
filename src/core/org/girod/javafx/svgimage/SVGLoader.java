@@ -75,6 +75,7 @@ import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.xml.parsers.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.XMLRoot;
 import org.girod.javafx.svgimage.xml.parsers.XMLTreeHandler;
+import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.xml.sax.SAXException;
 
 /**
@@ -518,6 +519,24 @@ public class SVGLoader implements SVGTags {
       }
    }
 
+   private void preparseStyles(XMLNode xmlNode) {
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode childNode = it.next();
+         String name = childNode.getName();
+         switch (name) {
+            case STYLE:
+               manageSVGStyle(childNode);
+               break;
+            case DEFS:   
+            case SVG:
+            case G:
+               preparseStyles(childNode);
+               break;
+         }
+      }
+   }
+
    private SVGImage walk(XMLRoot xmlRoot) {
       String name = xmlRoot.getName();
       if (name.equals(SVG)) {
@@ -531,6 +550,7 @@ public class SVGLoader implements SVGTags {
             root.setViewport(viewport);
          }
       }
+      preparseStyles(xmlRoot);
       buildNode(xmlRoot, root);
       return root;
    }
@@ -604,9 +624,6 @@ public class SVGLoader implements SVGTags {
          SpanGroup spanGroup = null;
          String name = childNode.getName();
          switch (name) {
-            case STYLE:
-               manageSVGStyle(childNode);
-               break;
             case RECT:
                Node node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
                addNamedNode(childNode, node);
@@ -793,10 +810,11 @@ public class SVGLoader implements SVGTags {
 
    private void manageSVGStyle(XMLNode xmlNode) {
       if (context.svgStyle == null) {
-         String cdata = xmlNode.getCDATA();
-         if (cdata != null) {
-            context.svgStyle = SVGStyleBuilder.parseStyle(cdata, viewport);
-         }
+         context.svgStyle = new Styles();
+      }
+      String cdata = xmlNode.getCDATA();
+      if (cdata != null) {
+         SVGStyleBuilder.parseStyle(context.svgStyle, cdata, viewport);
       }
    }
 

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ import org.girod.javafx.svgimage.Viewport;
 /**
  * The shape builder.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -866,7 +866,7 @@ public class SVGShapeBuilder implements SVGTags {
 
       content = content.replace('−', '-');
       PathParser pathParser = new PathParser();
-      List<SVGPath> list = pathParser.parsePathContent(content, viewport, hasFill);
+      List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       if (list != null) {
          Iterator<SVGPath> it = list.iterator();
          while (it.hasNext()) {

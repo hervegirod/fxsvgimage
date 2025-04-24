@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -72,13 +72,14 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * A sample browser.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
-   private MenuBar menuBar = new MenuBar();
-   private TabPane tabPane = new TabPane();
-   private Map<Integer, SVGImage> imagesByIndex = new HashMap<>();
+   private final MenuBar menuBar = new MenuBar();
+   private final TabPane tabPane = new TabPane();
+   private double scale = 1d;
+   private final Map<Integer, SVGImage> imagesByIndex = new HashMap<>();
 
    public static void main(String[] args) {
       launch(args);
@@ -164,14 +165,18 @@ public class SVGBrowser extends Application {
    private void zoomIn() {
       SVGImage image = getSelectedImage();
       if (image != null) {
-         image.scale(1.2d);
+         scale = scale * 1.2d;
+         image.setScaleX(scale);
+         image.setScaleY(scale);
       }
    }
 
    private void zoomOut() {
       SVGImage image = getSelectedImage();
       if (image != null) {
-         image.scale(0.8d);
+         scale = scale * 0.8d;
+         image.setScaleX(scale);
+         image.setScaleY(scale);
       }
    }
 
@@ -264,6 +269,14 @@ public class SVGBrowser extends Application {
 
          Group group = new Group(image);
          MyStackPane content = new MyStackPane(group);
+
+         content.setOnMouseDragged(e -> {
+            double x = e.getX();
+            double y = e.getY();
+            content.root.setLayoutX(x);
+            content.root.setLayoutY(y);            
+         });
+
          group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
             // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
@@ -287,17 +300,17 @@ public class SVGBrowser extends Application {
                int index = tabPane.getSelectionModel().getSelectedIndex();
                if (imagesByIndex.containsKey(index)) {
                   // https://stackoverflow.com/questions/38604780/javafx-zoom-scroll-in-scrollpane
-                  Node node = imagesByIndex.get(index);
-                  Bounds groupBounds = node.getBoundsInLocal();
+                  SVGImage svgImage = imagesByIndex.get(index);
+                  Bounds groupBounds = svgImage.getBoundsInLocal();
                   final Bounds viewportBounds = scrollPane.getViewportBounds();
 
                   double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
                   double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
-                  node.setScaleX(node.getScaleX() * zoomFactor);
-                  node.setScaleY(node.getScaleY() * zoomFactor);
+                  svgImage.setScaleX(svgImage.getScaleX() * zoomFactor);
+                  svgImage.setScaleY(svgImage.getScaleY() * zoomFactor);
 
-                  Point2D posInZoomTarget = node.parentToLocal(new Point2D(event.getX(), event.getY()));
-                  Point2D adjustment = node.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
+                  Point2D posInZoomTarget = svgImage.parentToLocal(new Point2D(event.getX(), event.getY()));
+                  Point2D adjustment = svgImage.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
                   scrollPane.layout();
                   scrollPane.setViewportBounds(groupBounds);
 
@@ -324,9 +337,11 @@ public class SVGBrowser extends Application {
 
    private class MyStackPane extends StackPane {
       private boolean allowLayoutChildren = true;
+      private Node root;
 
       private MyStackPane(Node root) {
          super(root);
+         this.root = root;
       }
 
       private void allowLayoutChildren(boolean allow) {
