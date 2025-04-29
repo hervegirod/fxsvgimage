@@ -7,6 +7,7 @@
  - Fix #54: The parser does not take into account multiple style declarations
  - Fix #55: The styles by element types names are not taken into account
  - Fix #21: Multiple styles don't get applied correctly
+ - Fix #34: Decimal font sizes don't work on the 0.0-1.0 range 
 
 # 1.2
  - Use docJGenerator 1.6.10
