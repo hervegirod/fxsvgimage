@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml;
 
+import org.girod.javafx.svgimage.Viewport;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.girod.javafx.svgimage.xml.builders.SVGStyleBuilder;
 import org.junit.After;
@@ -73,7 +74,9 @@ public class SVGStyleBuilderTest {
    public void testParseStyle() {
       System.out.println("SVGStyleBuilderTest : testParseStyle");
       String content = ".st0{fill:#DEDEDE;} .st1{fill:#3E295E;} .st2{fill:#FFFFFF;} .st3{fill:#429946;} .st4{fill:#F5EB30;}";
-      Styles styles = SVGStyleBuilder.parseStyle(content, null);
+      Viewport viewport = new Viewport(100, 100);
+      Styles styles = new Styles();
+      styles = SVGStyleBuilder.parseStyle(styles, content, viewport);
       assertNotNull("Styles must not be null", styles);
    }
    

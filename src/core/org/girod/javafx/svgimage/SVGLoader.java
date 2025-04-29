@@ -59,6 +59,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.girod.javafx.svgimage.xml.builders.AnimationBuilder;
+import org.girod.javafx.svgimage.xml.builders.BuilderUtils;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.GradientSpec;
 import org.girod.javafx.svgimage.xml.builders.MarkerBuilder;
@@ -81,7 +82,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 1.2
+ * @version 1.3
  */
 public class SVGLoader implements SVGTags {
    private final SVGContent content;
@@ -613,6 +614,7 @@ public class SVGLoader implements SVGTags {
    }
 
    private void buildNode(XMLNode xmlNode, Group group, boolean acceptDefs) {
+      double minTextSize = this.content.params.minTextSize;
       if (group == null) {
          group = new Group();
       }
@@ -673,19 +675,19 @@ public class SVGLoader implements SVGTags {
                nodes = ParserUtils.createNodeList(node);
                break;
             case USE:
-               nodes = SVGShapeBuilder.buildUse(childNode, context, null, viewport);
+               nodes = SVGShapeBuilder.buildUse(childNode, context, null, viewport, minTextSize);
                break;
             case TEXT:
-               node = SVGShapeBuilder.buildText(childNode, null, null, viewport);
+               node = SVGShapeBuilder.buildTextAsNode(childNode, null, null, viewport, minTextSize);
                if (node == null) {
-                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, null, viewport);
+                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, null, viewport, minTextSize);
                   addNamedNode(childNode, spanGroup.getTextGroup());
                   animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                } else {
                   if (childNode.hasChildren()) {
                      XMLNode childNode1 = childNode.getFirstChild();
                      if (childNode1.getName().equals(TSPAN)) {
-                        spanGroup = SVGShapeBuilder.buildTSpanGroup((Text) node, childNode, null, null, viewport);
+                        spanGroup = SVGShapeBuilder.buildTSpanGroup((Text) node, childNode, null, null, viewport, minTextSize);
                         addNamedNode(childNode, spanGroup.getTextGroup());
                         animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                      } else {
@@ -773,20 +775,20 @@ public class SVGLoader implements SVGTags {
             SpanGroup.TSpan previous = null;
             while (it2.hasNext()) {
                SpanGroup.TSpan tspan = it2.next();
-               Text tspanText = tspan.text;
-               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
-               tspan.node.addAttribute(STYLE, theStyles);
-               addStyles(group, tspanText, tspan.node, true);
-               if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
+               Node tspanText = tspan.node;
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.xmlNode);
+               tspan.xmlNode.addAttribute(STYLE, theStyles);
+               addStyles(group, tspanText, tspan.xmlNode, true);
+               if (tspan.xmlNode.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
-                  String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
+                  String shiftValue = tspan.xmlNode.getAttributeValue(BASELINE_SHIFT);
                   ParserUtils.setBaselineShift(tspanText, shiftValue);
                }
                // https://vanseodesign.com/web-design/svg-text-tspan-element/
-               if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
-                  double width = previous.text.getLayoutBounds().getWidth();
-                  tspanText.setLayoutX(width + previous.text.getLayoutX());
+               if (!ParserUtils.hasXPosition(tspan.xmlNode) && previous != null) {
+                  double width =  BuilderUtils.getTextWidth(previous.node);
+                  tspanText.setLayoutX(width + BuilderUtils.getTextX(previous.node));
                }
                previous = tspan;
             }

@@ -96,7 +96,17 @@
       LoaderParameters params = new LoaderParameters();
       params.applyViewportPosition = false;
       SVGImage image = SVGLoader.load(&lt;my svg&gt;, params);
-   </pre>                                  
+   </pre>   
+   
+   <title level="2" title="minTextSize" keepCase="true"/>  
+   The <code>minTextSize</code> parameter specifies the minimum font size the use complete Text nodes (default default is 1d).<note>Note that if you want to
+      always use text nodes regardless of the Font size, you can use a <code>minTextSize</code> smaller or equal to 0</note>
+   
+   <messageBox type="info">
+      JavaFX does not position correctly the characters of very small texts (smaller that 1 pt). A solution to fix this problem is to draw each character
+      separately.
+   </messageBox> 
+                         
                
    <see id="SVGLoader" />               
    <cat id="fromsvg" />

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2023 Hervé Girod
+Copyright (c) 2021, 2022, 2023, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -66,11 +66,12 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STYLE;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.builders.TextHBox;
 
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.1
+ * @version 1.3
  */
 public class ParserUtils implements SVGTags {
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
@@ -437,6 +438,18 @@ public class ParserUtils implements SVGTags {
 
       return lastEffect;
    }
+   
+   public static void setBaselineShift(Node node, String value) {
+      if (node instanceof Text) {
+         setBaselineShift((Text)node, value);
+      } else {
+         Iterator<Text> it = ((TextHBox)node).getTextChildren().iterator();
+         while (it.hasNext()) {
+            Text text = it.next();
+            setBaselineShift(text, value);
+         }
+      }
+   }   
 
    public static void setBaselineShift(Text text, String value) {
       // http://www.svgbasics.com/font_effects_italic.html
