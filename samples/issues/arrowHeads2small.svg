@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="1200.3588"
+   height="539.95343"
+   viewBox="0 0 1200.3587 539.95343"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <marker
+       style="overflow:visible"
+       id="marker6999"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="7"
+       markerHeight="5"
+       viewBox="0 0 5.3244081 6.1553851"
+       preserveAspectRatio="none">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path6997" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker6825"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="7"
+       markerHeight="5"
+       viewBox="0 0 5.3244081 6.1553851"
+       preserveAspectRatio="none">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path6823" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker6585"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="7"
+       markerHeight="5"
+       viewBox="0 0 5.3244081 6.1553851"
+       preserveAspectRatio="none">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path6583" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="TriangleStart"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="7"
+       markerHeight="5"
+       viewBox="0 0 5.3244081 6.1553851"
+       preserveAspectRatio="none"
+       markerUnits="strokeWidth">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+  </defs>
+  <g
+     id="g10"
+     transform="matrix(1.3333333,0,0,-1.3333333,-67.141059,529.57682)">
+    <g
+       id="g16"
+       clip-path="url(#clipPath20)"
+       transform="translate(39.574814,-19.905506)">
+      <g
+         id="g222"
+         transform="matrix(1,0,0,-1,-25.062983,580.50391)">
+        <path
+           d="m 525.62402,426.7048 104.1527,-77.96108 m 12.4265,-9.30157 90.21744,-67.53025"
+           style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker6585)"
+           id="path224" />
+      </g>
+      <g
+         id="path2575-9">
+        <path
+           style="color:#000000;fill:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;-inkscape-stroke:none"
+           d="m 281.36523,318.85156 a 0.75,0.75 0 0 0 -0.75,0.75 0.75,0.75 0 0 0 0.75,0.75 h 38.42188 a 0.75,0.75 0 0 0 0.75,-0.75 0.75,0.75 0 0 0 -0.75,-0.75 z"
+           id="path1837" />
+        <g
+           id="g1827">
+          <g
+             id="path1829">
+            <path
+               style="color:#000000;fill:#000000;fill-rule:evenodd;stroke-width:0.775054pt;-inkscape-stroke:none"
+               d="m 325.47677,319.6024 -8.52911,3.04611 v -6.09222 z"
+               id="path1833" />
+            <path
+               style="color:#000000;fill:#000000;fill-rule:evenodd;-inkscape-stroke:none"
+               d="m 316.43164,315.82227 v 7.55859 l 10.58203,-3.7793 -1.36328,-0.48633 z m 1.0332,1.46679 6.47461,2.3125 -6.47461,2.31446 z"
+               id="path1835" />
+          </g>
+        </g>
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker6825)"
+         d="m 281.37263,109.60878 h 38.41478"
+         id="path2575-9-5" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker6999)"
+         d="m 611.53742,214.60294 h 68.25"
+         id="path2575-9-89" />
+    </g>
+  </g>
+</svg>

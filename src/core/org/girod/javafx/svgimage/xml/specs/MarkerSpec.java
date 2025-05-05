@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,23 +36,58 @@ import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 
 /**
  * Represents a marker specifiation.
  *
- * @since 1.0
+ * @version 1.3
  */
 public class MarkerSpec implements SVGTags {
+   public final static short SPEC_ORIENT_NONE = 0;
+   public final static short SPEC_ORIENT_ANGLE = 1;
+   public final static short SPEC_ORIENT_AUTO = 2;
+   public final static short SPEC_ORIENT_AUTO_REVERSE = 3;
    private Viewbox viewbox = null;
    private final XMLNode node;
    private double refX = 0;
    private double refY = 0;
    private double width = -1;
    private double height = -1;
+   private short orient = SPEC_ORIENT_NONE;
+   private double orientAngle = 0;
 
    public MarkerSpec(XMLNode node) {
       this.node = node;
+      computeOrientation();
+   }
+   
+   public short getOrientType() {
+      return orient;
+   }
+   
+   public boolean hasOrientation() {
+      return orient != SPEC_ORIENT_NONE;
+   }
+   
+   public double getOrientationAngle() {
+      return orientAngle;
+   }   
+   
+   private void computeOrientation() {
+      if (node.hasAttribute(ORIENT)) {
+         String value = node.getAttributeValue(ORIENT);
+         switch (value) {
+            case ORIENT_AUTO:
+               orient = SPEC_ORIENT_AUTO;
+               break;
+            case SVGTags.ORIENT_AUTO_REVERSE:
+               orient = SPEC_ORIENT_AUTO_REVERSE;
+               break;      
+            default:
+               orientAngle = ParserUtils.getAngleDegrees(value);
+         }
+      }
    }
 
    public void computeRefPosition(Viewport viewport) {

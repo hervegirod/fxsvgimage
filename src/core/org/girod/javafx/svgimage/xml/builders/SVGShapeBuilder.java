@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ import org.girod.javafx.svgimage.xml.specs.RadialGradientSpec;
 import org.girod.javafx.svgimage.xml.specs.LinearGradientSpec;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.ExtendedFontPosture;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import java.net.MalformedURLException;
@@ -58,7 +58,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.FillRule;
@@ -70,9 +69,11 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec.FEDiffuseLighting;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec.FESpecularLighting;
 import org.girod.javafx.svgimage.LoaderContext;
@@ -82,11 +83,12 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * The shape builder.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -141,9 +143,9 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optinal bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the el
     * @param viewport the viewport
-    * @return the shape
+    * @return the shape true if the shape should be scaled according to the Viewport
     */
    public static Shape buildCircle(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       double cx = xmlNode.getPositionValue(CX, true, bounds, viewport, 0);
@@ -298,219 +300,6 @@ public class SVGShapeBuilder implements SVGTags {
       return weight;
    }
 
-   /**
-    * Build a "text" element with tspan children.
-    *
-    * @param xmlNode the node
-    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
-    * @param viewport the viewport
-    * @return the Text
-    */
-   public static SpanGroup buildTSpanGroup(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      return buildTSpanGroup(null, xmlNode, bounds, viewbox, viewport);
-   }
-
-   /**
-    * Build a "text" element with tspan children.
-    *
-    * @param theText the initial text
-    * @param xmlNode the node
-    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
-    * @param viewport the viewport
-    * @return the Text
-    */
-   public static SpanGroup buildTSpanGroup(Text theText, XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      Group group = new Group();
-      double x = xmlNode.getLengthValue(X, true, bounds, viewport, 0);
-      double y = xmlNode.getLengthValue(Y, false, bounds, viewport, 0);
-      if (viewbox != null) {
-         x = viewbox.scaleValue(true, x);
-         y = viewbox.scaleValue(false, y);
-      }
-      group.setLayoutX(x);
-      group.setLayoutY(y);
-      SpanGroup spanGroup = new SpanGroup(group);
-      Text previous = null;
-      if (theText != null) {
-         XMLNode textNode = xmlNode.getParent();
-         group.getChildren().add(theText);
-         spanGroup.addTSpan(textNode, theText);
-         previous = theText;
-      }
-
-      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
-      while (it.hasNext()) {
-         XMLNode childNode = it.next();
-         String name = childNode.getName();
-         List<Text> tspans = null;
-         switch (name) {
-            case TSPAN: {
-               tspans = buildTspan(group, previous, childNode, bounds, viewbox, viewport);
-               if (tspans.isEmpty()) {
-                  tspans = null;
-               } else {
-                  previous = tspans.get(tspans.size() - 1);
-               }
-               break;
-            }
-         }
-         if (tspans != null) {
-            Iterator<Text> it2 = tspans.iterator();
-            while (it2.hasNext()) {
-               Text text = it2.next();
-               group.getChildren().add(text);
-               spanGroup.addTSpan(childNode, text);
-            }
-         }
-      }
-
-      return spanGroup;
-   }
-
-   /**
-    * Build a "text" element.
-    *
-    * @param xmlNode the node
-    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
-    * @param viewport the viewport
-    * @return the Text
-    */
-   public static Text buildText(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
-      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
-      String family = null;
-      if (hasFamily) {
-         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
-      }
-      double size = 12d;
-      if (hasSize) {
-         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
-      }
-      size = viewport.scaleLength(size);
-      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
-      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
-      Font font = Font.font(family, weight, posture, size);
-
-      String cdata = xmlNode.getCDATA();
-      if (cdata != null) {
-         double x = xmlNode.getPositionValue(X, true, bounds, viewport, 0);
-         double y = xmlNode.getPositionValue(Y, false, bounds, viewport, 0);
-         if (viewbox != null) {
-            x = viewbox.scaleValue(true, x);
-            y = viewbox.scaleValue(false, y);
-         }
-         Text text = new Text(x, y, cdata);
-         if (xmlNode.hasAttribute(TEXT_DECORATION)) {
-            SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
-         }
-         if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
-            SVGShapeBuilder.applyTextAnchor(text, xmlNode.getAttributeValue(TEXT_ANCHOR));
-         }
-         if (font != null) {
-            text.setFont(font);
-         }
-         if (viewbox != null) {
-            viewbox.scaleNode(text);
-         }
-         return text;
-      } else {
-         return null;
-      }
-   }
-
-   /**
-    * Build a "tspan" element.
-    *
-    * @param group the parent group
-    * @param previous the previous node
-    * @param xmlNode the node
-    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
-    * @param viewport the viewport
-    * @return the Text
-    */
-   public static List<Text> buildTspan(Group group, Text previous, XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      List<Text> tspans = new ArrayList<>();
-      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
-      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
-      String family = null;
-      if (hasFamily) {
-         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
-      }
-      double size = 12d;
-      if (hasSize) {
-         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
-      }
-      size = viewport.scaleLength(size);
-      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
-      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
-      Font font;
-      if (previous != null && family == null) {
-         font = previous.getFont();
-      } else {
-         font = Font.font(family, weight, posture, size);
-      }
-
-      String cdata = xmlNode.getCDATA();
-      if (cdata != null) {
-         double x = 0;
-         double y = 0;
-         if (xmlNode.hasAttribute(DX)) {
-            x = xmlNode.getPositionValue(DX, true, bounds, viewport, 0);
-         } else if (xmlNode.hasAttribute(X)) {
-            double _x = xmlNode.getPositionValue(X, true, bounds, viewport, 0);
-            if (viewbox != null) {
-               _x = viewbox.scaleValue(true, _x);
-            }
-            x = _x - group.getLayoutX();
-         } else if (previous != null) {
-            x = previous.getLayoutX() + previous.getLayoutBounds().getWidth();
-            x = x - group.getLayoutX();
-         }
-         if (xmlNode.hasAttribute(DY)) {
-            y = xmlNode.getPositionValue(DY, false, bounds, viewport, 0);
-         } else if (xmlNode.hasAttribute(Y)) {
-            double _y = xmlNode.getPositionValue(Y, true, bounds, viewport, 0);
-            if (viewbox != null) {
-               _y = viewbox.scaleValue(false, _y);
-            }
-            y = _y - group.getLayoutY();
-         } else if (previous != null) {
-            y = previous.getLayoutY();
-            y = y + group.getLayoutY();
-         }
-         Text text = new Text(x, y, cdata);
-         tspans.add(text);
-         if (xmlNode.hasAttribute(STROKE)) {
-            Paint stroke = ParserUtils.getColor(xmlNode.getAttributeValue(STROKE));
-            text.setFill(stroke);
-         }
-         if (xmlNode.hasAttribute(TEXT_DECORATION)) {
-            SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
-         }
-         if (font != null) {
-            text.setFont(font);
-         }
-         return tspans;
-      } else {
-         return null;
-      }
-   }
-
-   private static List<Stop> convertStops(List<GradientSpec.StopSpec> specstops) {
-      List<Stop> stops = new ArrayList<>();
-      Iterator<GradientSpec.StopSpec> it = specstops.iterator();
-      while (it.hasNext()) {
-         GradientSpec.StopSpec theStop = it.next();
-         Stop stop = new Stop(theStop.offset, theStop.color);
-         stops.add(stop);
-      }
-      return stops;
-   }
-
    public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
@@ -568,7 +357,7 @@ public class SVGShapeBuilder implements SVGTags {
     * @param viewport the viewport
     * @return the shape
     */
-   public static List<? extends Node> buildUse(XMLNode xmlNode, LoaderContext context, Bounds bounds, Viewport viewport) {
+   public static List<? extends Node> buildUse(XMLNode xmlNode, LoaderContext context, Bounds bounds, Viewport viewport, double minTextSize) {
       String id = null;
       if (xmlNode.hasAttribute(HREF)) {
          id = xmlNode.getAttributeValue(HREF);
@@ -623,13 +412,13 @@ public class SVGShapeBuilder implements SVGTags {
                break;
             case G:
             case SYMBOL:
-               node = buildGroupForUse(context, namedNode, viewbox, viewport);
+               node = buildGroupForUse(context, namedNode, viewbox, viewport, minTextSize);
                nodesFromUse = ParserUtils.createNodeList(node);
                break;
             case TEXT:
-               node = buildText(namedNode, null, viewbox, viewport);
+               node = SVGTextBuilder.buildText(namedNode, null, viewbox, viewport);
                if (node == null) {
-                  spanGroup = buildTSpanGroup(namedNode, null, viewbox, viewport);
+                  spanGroup = SVGTextBuilder.buildTSpanGroup(namedNode, null, viewbox, viewport, minTextSize);
                }
                break;
          }
@@ -655,20 +444,20 @@ public class SVGShapeBuilder implements SVGTags {
             SpanGroup.TSpan previous = null;
             while (it2.hasNext()) {
                SpanGroup.TSpan tspan = it2.next();
-               Text tspanText = tspan.text;
-               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
-               tspan.node.addAttribute(STYLE, theStyles);
-               addStyles(context, null, tspanText, tspan.node, viewport);
-               if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
+               Node tspanText = tspan.node;
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.elementNode);
+               tspan.addAttribute(STYLE, theStyles);
+               addStyles(context, null, tspanText, tspan.elementNode, viewport);
+               if (tspan.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
-                  String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
+                  String shiftValue = tspan.getAttributeValue(BASELINE_SHIFT);
                   ParserUtils.setBaselineShift(tspanText, shiftValue);
                }
                // https://vanseodesign.com/web-design/svg-text-tspan-element/
-               if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
-                  double width = previous.text.getLayoutBounds().getWidth();
-                  tspanText.setLayoutX(width + previous.text.getLayoutX());
+               if (!ParserUtils.hasXPosition(tspan.elementNode) && previous != null) {
+                  double width = BuilderUtils.getTextWidth(previous.node);
+                  tspanText.setLayoutX(width + BuilderUtils.getTextX(previous.node));
                }
                previous = tspan;
             }
@@ -681,7 +470,7 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
-   private static Group buildGroupForUse(LoaderContext context, XMLNode xmlNode, Viewbox viewbox, Viewport viewport) {
+   private static Group buildGroupForUse(LoaderContext context, XMLNode xmlNode, Viewbox viewbox, Viewport viewport, double minTextSize) {
       Group group = new Group();
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
       while (it.hasNext()) {
@@ -723,13 +512,13 @@ public class SVGShapeBuilder implements SVGTags {
                nodes = ParserUtils.createNodeList(node);
                break;
             case TEXT:
-               node = buildText(childNode, null, viewbox, viewport);
+               node = SVGTextBuilder.buildText(childNode, null, viewbox, viewport);
                if (node == null) {
-                  spanGroup = buildTSpanGroup(childNode, null, viewbox, viewport);
+                  spanGroup = SVGTextBuilder.buildTSpanGroup(childNode, null, viewbox, viewport, minTextSize);
                }
                break;
             case G:
-               node = buildGroupForUse(context, childNode, viewbox, viewport);
+               node = buildGroupForUse(context, childNode, viewbox, viewport, minTextSize);
                nodes = ParserUtils.createNodeList(node);
                break;
          }
@@ -746,20 +535,20 @@ public class SVGShapeBuilder implements SVGTags {
             SpanGroup.TSpan previous = null;
             while (it2.hasNext()) {
                SpanGroup.TSpan tspan = it2.next();
-               Text tspanText = tspan.text;
-               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.node);
-               tspan.node.addAttribute(STYLE, theStyles);
-               addStyles(context, group, tspanText, tspan.node, viewport);
-               if (tspan.node.hasAttribute(BASELINE_SHIFT)) {
+               Node tspanText = tspan.node;
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.elementNode);
+               tspan.addAttribute(STYLE, theStyles);
+               addStyles(context, group, tspanText, tspan.elementNode, viewport);
+               if (tspan.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
-                  String shiftValue = tspan.node.getAttributeValue(BASELINE_SHIFT);
+                  String shiftValue = tspan.getAttributeValue(BASELINE_SHIFT);
                   ParserUtils.setBaselineShift(tspanText, shiftValue);
                }
                // https://vanseodesign.com/web-design/svg-text-tspan-element/
-               if (!ParserUtils.hasXPosition(tspan.node) && previous != null) {
-                  double width = previous.text.getLayoutBounds().getWidth();
-                  tspanText.setLayoutX(width + previous.text.getLayoutX());
+               if (!ParserUtils.hasXPosition(tspan.elementNode) && previous != null) {
+                  double width = BuilderUtils.getTextWidth(previous.node);
+                  tspanText.setLayoutX(width + BuilderUtils.getTextX(previous.node));
                }
                previous = tspan;
             }
@@ -770,13 +559,13 @@ public class SVGShapeBuilder implements SVGTags {
       return group;
    }
 
-   private static void addStyles(LoaderContext context, Group group, Node node, XMLNode xmlNode, Viewport viewport) {
-      MarkerContext markerContext = SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
-      ParserUtils.setOpacity(node, xmlNode);
-      boolean visible = ParserUtils.setVisibility(node, xmlNode);
-      TransformUtils.setTransforms(node, xmlNode, viewport);
+   private static void addStyles(LoaderContext context, Group group, Node node, ElementNode elementNode, Viewport viewport) {
+      MarkerContext markerContext = SVGStyleBuilder.setNodeStyle(node, elementNode, context, viewport);
+      ParserUtils.setOpacity(node, elementNode);
+      boolean visible = ParserUtils.setVisibility(node, elementNode);
+      List<Transform> transforms = TransformUtils.setTransforms(node, elementNode, viewport);
       if (markerContext != null) {
-         MarkerBuilder.buildMarkers(group, node, xmlNode, markerContext, context, viewport, visible);
+         MarkerBuilder.buildMarkers(group, node, transforms, elementNode, markerContext, context, viewport, visible);
       }
    }
 
@@ -827,7 +616,7 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox o
     * @param viewport the viewport
     * @return the shape
     */
@@ -848,7 +637,7 @@ public class SVGShapeBuilder implements SVGTags {
          viewbox.scaleNode(ellipse);
       }
       return ellipse;
-   }
+   } 
 
    /**
     * Build an "path" element.
@@ -866,7 +655,7 @@ public class SVGShapeBuilder implements SVGTags {
 
       content = content.replace('−', '-');
       PathParser pathParser = new PathParser();
-      List<SVGPath> list = pathParser.parsePathContent(content, viewport, hasFill);
+      List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       if (list != null) {
          Iterator<SVGPath> it = list.iterator();
          while (it.hasNext()) {
@@ -887,7 +676,7 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox
     * @param viewport the viewport
     * @return the shape
     */
@@ -918,7 +707,7 @@ public class SVGShapeBuilder implements SVGTags {
          viewbox.scaleNode(polygon);
       }
       return polygon;
-   }
+   }   
 
    /**
     * Build a "line" element.
@@ -992,6 +781,9 @@ public class SVGShapeBuilder implements SVGTags {
          }
          isX = !isX;
       }
+      if (viewbox != null) {
+         viewbox.scaleNode(polyline);
+      }      
 
       return polyline;
    }

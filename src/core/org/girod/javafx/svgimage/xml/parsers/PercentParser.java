@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,13 +32,14 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This utility class parse a percent value.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class PercentParser {
    private static final Pattern NUMBER = Pattern.compile("\\d+(\\.\\d+)?");

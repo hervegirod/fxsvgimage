@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,20 +32,21 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.specs;
 
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Group;
-import javafx.scene.text.Text;
+import javafx.scene.Node;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * Represents spans elements under a text element.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class SpanGroup {
-   private Group textGroup;
-   private List<TSpan> tspans = new ArrayList<>();
+   private final Group textGroup;
+   private final List<TSpan> tspans = new ArrayList<>();
 
    public SpanGroup(Group textGroup) {
       this.textGroup = textGroup;
@@ -58,19 +59,41 @@ public class SpanGroup {
    public List<TSpan> getSpans() {
       return tspans;
    }
-
-   public void addTSpan(XMLNode node, Text text) {
-      TSpan tspan = new TSpan(node, text);
+   
+   public void addTSpan(ElementNode elementNode, Node node) {
+      TSpan tspan = new TSpan(elementNode, node);
       tspans.add(tspan);
-   }
+   }   
 
    public class TSpan {
-      public final XMLNode node;
-      public final Text text;
+      public final ElementNode elementNode;
+      public final Node node;
 
-      private TSpan(XMLNode node, Text text) {
+      private TSpan(ElementNode theNode, Node node) {
+         this.elementNode = theNode;
          this.node = node;
-         this.text = text;
       }
+      
+      public void addAttribute(String name, String value) {
+         if (elementNode instanceof XMLNode) {
+            ((XMLNode)elementNode).addAttribute(name, value);
+         }
+      }
+      
+      public String getAttributeValue(String name) {
+         if (elementNode instanceof XMLNode) {
+            return ((XMLNode)elementNode).getAttributeValue(name);
+         } else {
+            return null;
+         }
+      }      
+      
+      public boolean hasAttribute(String name) {
+         if (elementNode instanceof XMLNode) {
+            return ((XMLNode)elementNode).hasAttribute(name);
+         } else {
+            return false;
+         }
+      }      
    }
 }

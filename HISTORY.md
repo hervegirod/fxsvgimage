@@ -1,9 +1,20 @@
 # History
 
+# 1.3
+ - Fix #10: Loader params work on some SVG but another, it doesn't. The problem was due to paths which were not scaled correctly
+ - Fix #53: Implement a drag gesture in the browser
+ - Fix #18: <style> elements are order-sensitive
+ - Fix #54: The parser does not take into account multiple style declarations
+ - Fix #55: The styles by element types names are not taken into account
+ - Fix #21: Multiple styles don't get applied correctly
+ - Fix #34: Decimal font sizes don't work on the 0.0-1.0 range 
+ - Fix #51: Failed to render text with tspan
+ - Fix #57: Add a refresh option for the browser
+
 # 1.2
  - Use docJGenerator 1.6.10
  - Use groovy 4.0.26 (only used for tests, the binaries have no dependencies
- - Move the Viewport a ViewBox classes in the org.girod.javafx.svgimage package
+ - Move the Viewport and ViewBox classes in the org.girod.javafx.svgimage package
  - Fix #47: Add a parameter for the Color of the svg background in the JavaFX to SVG parameters
  - Fix #48: Add a parameter to generate the viewbox in the JavaFX to SVG parameters
  - Fix #49: Add a parameter to not allow the transform on the root of the svg document in the JavaFX to SVG parameters

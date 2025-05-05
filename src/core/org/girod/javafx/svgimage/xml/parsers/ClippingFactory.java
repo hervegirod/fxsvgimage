@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.Viewport;
 import org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder;
 import java.util.HashMap;
@@ -43,11 +44,12 @@ import javafx.scene.Node;
 import javafx.scene.shape.FillRule;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import org.girod.javafx.svgimage.xml.builders.SVGTextBuilder;
 
 /**
  * This class handles the list of defined clipping paths.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
@@ -117,7 +119,7 @@ public class ClippingFactory implements SVGTags {
                   shape = SVGShapeBuilder.buildLine(childNode, objectBoundingBox, null, viewport);
                   break;
                case TEXT:
-                  shape = SVGShapeBuilder.buildText(childNode, objectBoundingBox, null, viewport);
+                  shape = SVGTextBuilder.buildText(childNode, objectBoundingBox, null, viewport);
                   break;
             }
             if (theShape == null) {

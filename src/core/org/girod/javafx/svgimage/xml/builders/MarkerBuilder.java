@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,10 +32,9 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
-import java.util.ArrayList;
 import org.girod.javafx.svgimage.xml.specs.MarkerContext;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +56,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.VLineTo;
+import javafx.scene.transform.Transform;
 import org.girod.javafx.svgimage.LoaderContext;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
@@ -69,36 +69,41 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYGON;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.POLYLINE;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.RECT;
 import org.girod.javafx.svgimage.Viewbox;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
+ * A builder for markers.
  *
- * @since 1.0
+ * @version 1.3
  */
 public class MarkerBuilder implements SVGTags {
    private MarkerBuilder() {
    }
 
-   public static void buildMarkers(Group parent, Node node, XMLNode xmlNode, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
-      if (parent == null || markerContext == null || markerContext.isEmpty()) {
-         return;
-      }
-      switch (xmlNode.getName()) {
-         case POLYGON:
-            buildMarkers(parent, (Polygon) node, markerContext, context, viewport, visible);
-            break;
-         case POLYLINE:
-            buildMarkers(parent, (Polyline) node, markerContext, context, viewport, visible);
-            break;
-         case LINE:
-            buildMarkers(parent, (Line) node, markerContext, context, viewport, visible);
-            break;
-         case PATH:
-            buildMarkers(parent, (SVGPath) node, markerContext, context, viewport, visible);
-            break;
+   public static void buildMarkers(Group parent, Node node, List<Transform> transforms, ElementNode elementNode, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
+      if (elementNode instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) elementNode;
+         if (parent == null || markerContext == null || markerContext.isEmpty()) {
+            return;
+         }
+         switch (xmlNode.getName()) {
+            case POLYGON:
+               buildMarkers(parent, (Polygon) node, transforms, markerContext, context, viewport, visible);
+               break;
+            case POLYLINE:
+               buildMarkers(parent, (Polyline) node, transforms, markerContext, context, viewport, visible);
+               break;
+            case LINE:
+               buildMarkers(parent, (Line) node, transforms, markerContext, context, viewport, visible);
+               break;
+            case PATH:
+               buildMarkers(parent, (SVGPath) node, transforms, markerContext, context, viewport, visible);
+               break;
+         }
       }
    }
 
-   private static void buildMarkers(Group parent, Polyline polyline, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
+   private static void buildMarkers(Group parent, Polyline polyline, List<Transform> transforms, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
       ObservableList<Double> points = polyline.getPoints();
       int countPoints = points.size();
 
@@ -109,6 +114,9 @@ public class MarkerBuilder implements SVGTags {
          if (markerNode != null) {
             markerNode.setLayoutX(points.get(0) + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(points.get(1) + getLength(spec, spec.getRefY(), false));
+            if (transforms != null) {
+               markerNode.getTransforms().addAll(transforms);
+            }
          }
       }
       if (markerContext.hasMarkerEnd() && countPoints >= 4) {
@@ -117,6 +125,10 @@ public class MarkerBuilder implements SVGTags {
          if (markerNode != null) {
             markerNode.setLayoutX(points.get(points.size() - 2) + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(points.get(points.size() - 1) + getLength(spec, spec.getRefY(), false));
+            if (spec.hasOrientation()) {
+               double angle = getOrientationAngle(spec, polyline);
+               markerNode.getTransforms().add(Transform.rotate(angle, 0, 0));
+            }
          }
       }
       if (markerContext.hasMarkerMid() && countPoints >= 6) {
@@ -131,7 +143,7 @@ public class MarkerBuilder implements SVGTags {
       }
    }
 
-   private static void buildMarkers(Group parent, Polygon polygon, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
+   private static void buildMarkers(Group parent, Polygon polygon, List<Transform> transforms, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
       ObservableList<Double> points = polygon.getPoints();
       int countPoints = points.size();
 
@@ -142,6 +154,9 @@ public class MarkerBuilder implements SVGTags {
          if (markerNode != null) {
             markerNode.setLayoutX(points.get(0) + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(points.get(1) + getLength(spec, spec.getRefY(), false));
+            if (transforms != null) {
+               markerNode.getTransforms().addAll(transforms);
+            }
          }
       }
       if (markerContext.hasMarkerEnd() && countPoints >= 4) {
@@ -164,7 +179,7 @@ public class MarkerBuilder implements SVGTags {
       }
    }
 
-   private static void buildMarkers(Group parent, Line line, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
+   private static void buildMarkers(Group parent, Line line, List<Transform> transforms, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
       markerContext.setContextNode(line);
       if (markerContext.hasMarkerStart()) {
          MarkerSpec spec = markerContext.getMarkerStart();
@@ -172,6 +187,9 @@ public class MarkerBuilder implements SVGTags {
          if (markerNode != null) {
             markerNode.setLayoutX(line.getStartX() + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(line.getStartY() + getLength(spec, spec.getRefY(), false));
+            if (transforms != null) {
+               markerNode.getTransforms().addAll(transforms);
+            }
          }
       }
       if (markerContext.hasMarkerEnd()) {
@@ -180,7 +198,33 @@ public class MarkerBuilder implements SVGTags {
          if (markerNode != null) {
             markerNode.setLayoutX(line.getEndX() + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(line.getEndY() + getLength(spec, spec.getRefY(), false));
+            if (spec.hasOrientation()) {
+               double angle = getOrientationAngle(spec, line);
+               markerNode.getTransforms().add(Transform.rotate(angle, 0, 0));
+            }
          }
+      }
+   }
+
+   private static double getOrientationAngle(MarkerSpec spec, Node node) {
+      switch (spec.getOrientType()) {
+         case MarkerSpec.SPEC_ORIENT_NONE:
+            return 0;
+         case MarkerSpec.SPEC_ORIENT_ANGLE:
+            return spec.getOrientationAngle();
+         case MarkerSpec.SPEC_ORIENT_AUTO:
+         case MarkerSpec.SPEC_ORIENT_AUTO_REVERSE:
+            if (node instanceof Line) {
+               return BuilderUtils.computeAngle((Line) node);
+            } else if (node instanceof Polyline) {
+               return BuilderUtils.computeAngle((Polyline) node);
+            } else if (node instanceof Path) {
+               return BuilderUtils.computeAngle((Path) node);
+            } else {
+               return 0;
+            }
+         default:
+            return 0;
       }
    }
 
@@ -192,7 +236,7 @@ public class MarkerBuilder implements SVGTags {
       }
    }
 
-   private static void buildMarkers(Group parent, SVGPath svgPath, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
+   private static void buildMarkers(Group parent, SVGPath svgPath, List<Transform> transforms, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
       markerContext.setContextNode(svgPath);
       Path path = getPath(svgPath);
       if (markerContext.hasMarkerStart()) {
@@ -202,6 +246,9 @@ public class MarkerBuilder implements SVGTags {
             MoveTo start = getStart(path);
             markerNode.setLayoutX(start.getX() + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(start.getY() + getLength(spec, spec.getRefY(), false));
+            if (transforms != null) {
+               markerNode.getTransforms().addAll(transforms);
+            }
          }
       }
       if (markerContext.hasMarkerEnd()) {
@@ -211,6 +258,13 @@ public class MarkerBuilder implements SVGTags {
             MoveTo end = getEnd(path);
             markerNode.setLayoutX(end.getX() + getLength(spec, spec.getRefX(), true));
             markerNode.setLayoutY(end.getY() + getLength(spec, spec.getRefY(), false));
+            if (transforms != null) {
+               markerNode.getTransforms().addAll(transforms);
+            }
+            if (spec.hasOrientation()) {
+               double angle = getOrientationAngle(spec, path);
+               markerNode.getTransforms().add(Transform.rotate(angle, 0, 0));
+            }
          }
       }
    }

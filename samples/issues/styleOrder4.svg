@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+  <defs>
+  </defs>
+  <rect height="32" width="32" x="0"/>
+  <circle cx="16" cy="16" r="8"/>
+  <style>
+    rect {
+      fill:red;
+    }
+    circle {
+      fill:yellow;
+    }     
+  </style>
+</svg>

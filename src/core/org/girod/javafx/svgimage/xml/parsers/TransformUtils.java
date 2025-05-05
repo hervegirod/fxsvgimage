@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.Viewport;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,11 +43,12 @@ import java.util.regex.Pattern;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.transform.Transform;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * Parser utilities for transforms.
  *
- * @version 1.0
+ * @version 1.3
  */
 public class TransformUtils implements SVGTags {
    private static final Pattern TRANSFORM_PAT = Pattern.compile("\\w+\\s*\\((.*)\\)");
@@ -167,22 +169,28 @@ public class TransformUtils implements SVGTags {
     * Set the transforms for a node if it has the {@link #TRANSFORM} attribute.
     *
     * @param node the node
-    * @param xmlNode the xml node
+    * @param elementNode the node
     * @param viewport the viewport
+    * @return the transforms
     */
-   public static void setTransforms(Node node, XMLNode xmlNode, Viewport viewport) {
-      if (xmlNode.hasAttribute(TRANSFORM)) {
-         String transforms = xmlNode.getAttributeValue(TRANSFORM);
-         List<Transform> transformList = extractTransforms(transforms, viewport);
-         if (!transformList.isEmpty()) {
-            ObservableList<Transform> nodeTransforms = node.getTransforms();
-            Iterator<Transform> it = transformList.iterator();
-            while (it.hasNext()) {
-               Transform theTransForm = it.next();
-               nodeTransforms.add(theTransForm);
+   public static List<Transform> setTransforms(Node node, ElementNode elementNode, Viewport viewport) {
+      if (elementNode instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) elementNode;
+         if (xmlNode.hasAttribute(TRANSFORM)) {
+            String transforms = xmlNode.getAttributeValue(TRANSFORM);
+            List<Transform> transformList = extractTransforms(transforms, viewport);
+            if (!transformList.isEmpty()) {
+               ObservableList<Transform> nodeTransforms = node.getTransforms();
+               Iterator<Transform> it = transformList.iterator();
+               while (it.hasNext()) {
+                  Transform theTransForm = it.next();
+                  nodeTransforms.add(theTransForm);
+               }
             }
+            return transformList;
          }
       }
+      return null;
    }
 
    /**

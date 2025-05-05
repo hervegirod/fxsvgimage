@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+  <defs>
+    <style>
+      .st-1 {
+        fill:red;
+      }
+      .st-2, .st-4 {
+        fill:green;
+      }
+      .st-3 {
+        fill:blue;
+      }
+    </style>
+  </defs>
+  <rect class="st-1" height="32" width="8"/>
+  <rect class="st-2" height="32" width="8" x="8"/>
+  <rect class="st-3" height="32" width="8" x="16"/>
+  <rect class="st-4" height="32" width="8" x="24"/>
+  <circle cx="16" cy="16" r="8"/>
+  <style>
+    circle {
+      fill:yellow;
+    }
+  </style>
+</svg>

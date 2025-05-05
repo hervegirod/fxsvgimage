@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -43,9 +43,10 @@ package org.girod.javafx.svgimage;
  * <li>Ther viewPort position is taken into account</li>
  * </ul>
  *
- * @version 0.6.1
+ * @version 1.3
  */
 public class LoaderParameters implements Cloneable {
+   private static final double DEFAULT_MIN_TEXT_SIZE = 1d;
    /**
     * The styleSheets. The default is null, which means that no styleSheets is used.
     */
@@ -74,6 +75,11 @@ public class LoaderParameters implements Cloneable {
     * True if the x and y position of the viewPort is applied. The default is true.
     */
    public boolean applyViewportPosition = true;
+   /**
+    * The minimum font size to create complete texts. The default is {@link #DEFAULT_MIN_TEXT_SIZE}. If the font of a text is smaller than this value, then
+    * the text will be crrated by concatenating a text primitive for each letter in the text.
+    */
+   public double minTextSize = DEFAULT_MIN_TEXT_SIZE;      
 
    /**
     * Create a clone of the parameters.

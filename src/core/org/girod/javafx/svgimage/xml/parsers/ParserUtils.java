@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2023 Hervé Girod
+Copyright (c) 2021, 2022, 2023, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,13 +67,16 @@ import static org.girod.javafx.svgimage.xml.parsers.SVGTags.STYLE;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.builders.TextHBox;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.1
+ * @version 1.3
  */
 public class ParserUtils implements SVGTags {
+   private static final Pattern ANGLE = Pattern.compile("(<value>?-?\\d+(\\.\\d+)?)(<unit>?[a-z]+)?");
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
    private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
    private static final Pattern URL_PAT = Pattern.compile("url\\('?([^']+)'?\\)");
@@ -96,6 +100,35 @@ public class ParserUtils implements SVGTags {
       } catch (IllegalArgumentException ex) {
          GlobalConfig.getInstance().handleParsingError("Color " + value + " is illegal");
          return null;
+      }
+   }
+
+   /** 
+    * Return an angle value in degrees.
+    * 
+    * @param value the angle value as a sgring
+    * @return the angle value in degrees
+    */
+   public static double getAngleDegrees(String value) {
+      Matcher m = ANGLE.matcher(value);
+      if (m.matches()) {
+         String numericValue = m.group("value");
+         double numValue = Double.parseDouble(numericValue);
+         String unit = m.group("unit");
+         if (unit == null) {
+            return numValue;
+         } else {
+            switch (unit) {
+               case "deg":
+                  return numValue;
+               case "rad":
+                  return Math.toDegrees(numValue);
+               default:
+                  return numValue;
+            }
+         }
+      } else {
+         return 0;
       }
    }
 
@@ -438,6 +471,18 @@ public class ParserUtils implements SVGTags {
       return lastEffect;
    }
 
+   public static void setBaselineShift(Node node, String value) {
+      if (node instanceof Text) {
+         setBaselineShift((Text) node, value);
+      } else {
+         Iterator<Text> it = ((TextHBox) node).getTextChildren().iterator();
+         while (it.hasNext()) {
+            Text text = it.next();
+            setBaselineShift(text, value);
+         }
+      }
+   }
+
    public static void setBaselineShift(Text text, String value) {
       // http://www.svgbasics.com/font_effects_italic.html
       // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
@@ -463,8 +508,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   public static boolean hasXPosition(XMLNode node) {
-      return node.hasAttribute(X) || node.hasAttribute(DX);
+   public static boolean hasXPosition(ElementNode node) {
+      if (node instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) node;
+         return xmlNode.hasAttribute(X) || xmlNode.hasAttribute(DX);
+      } else {
+         return false;
+      }
    }
 
    public static Map<String, String> getStyles(XMLNode node) {
@@ -490,22 +540,25 @@ public class ParserUtils implements SVGTags {
       return styles;
    }
 
-   public static String mergeStyles(Map<String, String> styles, XMLNode node) {
-      styles = new HashMap<>(styles);
-      if (node.hasAttribute(STYLE)) {
-         String styleValue = node.getAttributeValue(STYLE);
-         StringTokenizer tok = new StringTokenizer(styleValue, ";");
-         while (tok.hasMoreTokens()) {
-            String tk = tok.nextToken().trim();
-            if (tk.isEmpty()) {
-               continue;
-            }
-            int index = tk.indexOf(':');
-            if (index != -1) {
-               String key = tk.substring(0, index);
-               if (index < tk.length() - 1) {
-                  String value = tk.substring(index + 1);
-                  styles.put(key, value);
+   public static String mergeStyles(Map<String, String> styles, ElementNode node) {
+      if (node instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) node;
+         styles = new HashMap<>(styles);
+         if (xmlNode.hasAttribute(STYLE)) {
+            String styleValue = xmlNode.getAttributeValue(STYLE);
+            StringTokenizer tok = new StringTokenizer(styleValue, ";");
+            while (tok.hasMoreTokens()) {
+               String tk = tok.nextToken().trim();
+               if (tk.isEmpty()) {
+                  continue;
+               }
+               int index = tk.indexOf(':');
+               if (index != -1) {
+                  String key = tk.substring(0, index);
+                  if (index < tk.length() - 1) {
+                     String value = tk.substring(index + 1);
+                     styles.put(key, value);
+                  }
                }
             }
          }
@@ -523,7 +576,7 @@ public class ParserUtils implements SVGTags {
       if (childNode.getName().equals(TSPAN)) {
          return;
       }
-      Iterator<Map.Entry<String, String>> it = parentNode.attributes.entrySet().iterator();
+      Iterator<Map.Entry<String, String>> it = parentNode.getAttributes().entrySet().iterator();
       while (it.hasNext()) {
          Map.Entry<String, String> entry = it.next();
          switch (entry.getKey()) {
@@ -539,30 +592,38 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   public static boolean setVisibility(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(VISIBILITY)) {
-         String visibilityS = xmlNode.getAttributeValue(VISIBILITY);
-         boolean visible = ParserUtils.parseVisibility(visibilityS);
-         node.setVisible(visible);
-         return visible;
+   public static boolean setVisibility(Node node, ElementNode elementNode) {
+      if (elementNode instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) elementNode;
+         if (xmlNode.hasAttribute(VISIBILITY)) {
+            String visibilityS = xmlNode.getAttributeValue(VISIBILITY);
+            boolean visible = ParserUtils.parseVisibility(visibilityS);
+            node.setVisible(visible);
+            return visible;
+         } else {
+            return true;
+         }
       } else {
          return true;
       }
    }
 
-   public static void setOpacity(Node node, XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(OPACITY)) {
-         String opacityS = xmlNode.getAttributeValue(OPACITY);
-         double opacity = ParserUtils.parseOpacity(opacityS);
-         if (opacity >= 0) {
-            node.setOpacity(opacity);
+   public static void setOpacity(Node node, ElementNode elementNode) {
+      if (elementNode instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) elementNode;
+         if (xmlNode.hasAttribute(OPACITY)) {
+            String opacityS = xmlNode.getAttributeValue(OPACITY);
+            double opacity = ParserUtils.parseOpacity(opacityS);
+            if (opacity >= 0) {
+               node.setOpacity(opacity);
+            }
          }
-      }
-      if (xmlNode.hasAttribute(FILL_OPACITY) && node instanceof Shape) {
-         String fillOpacityS = xmlNode.getAttributeValue(FILL_OPACITY);
-         double fillOpacity = ParserUtils.parseOpacity(fillOpacityS);
-         if (fillOpacity >= 0) {
-            ParserUtils.setFillOpacity(node, fillOpacity);
+         if (xmlNode.hasAttribute(FILL_OPACITY) && node instanceof Shape) {
+            String fillOpacityS = xmlNode.getAttributeValue(FILL_OPACITY);
+            double fillOpacity = ParserUtils.parseOpacity(fillOpacityS);
+            if (fillOpacity >= 0) {
+               ParserUtils.setFillOpacity(node, fillOpacity);
+            }
          }
       }
    }

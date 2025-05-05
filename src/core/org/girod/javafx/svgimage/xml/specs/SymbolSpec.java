@@ -34,7 +34,7 @@ package org.girod.javafx.svgimage.xml.specs;
 
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 
 /**
  * Represents a symbol specifiation.

@@ -55,7 +55,7 @@ import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 1.2
+ * @version 1.3
  */
 public class SVGImage extends Group {
    private static SnapshotParameters SNAPSHOT_PARAMS = null;
@@ -64,6 +64,7 @@ public class SVGImage extends Group {
    private final SVGContent content;
    private double currentScale = 1d;
    private Viewport viewport = null;
+   private File file;
    private SVGImageRegion region = null;
 
    /**
@@ -80,6 +81,24 @@ public class SVGImage extends Group {
     */
    public SVGImage(SVGContent content) {
       this.content = content;
+   }
+
+   /** 
+    * Set the image associated file (can  be null).
+    * 
+    * @param file the file
+    */
+   public void setFile(File file) {
+      this.file = file;
+   }
+
+   /** 
+    * Return the image associated file (can  be null).
+    * 
+    * @return the file
+    */   
+   public File getFile() {
+      return file;
    }
 
    /**
