@@ -30,39 +30,40 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.xml.specs;
-
-import org.girod.javafx.svgimage.Viewbox;
-import org.girod.javafx.svgimage.xml.parsers.SVGTags;
-import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
+package org.girod.javafx.svgimage.xml.parsers.xmltree;
 
 /**
- * Represents a symbol specifiation.
+ * A text node in an xml content.
  *
- * @version 1.0
+ s* @since 1.3
  */
-public class SymbolSpec implements SVGTags {
-   private Viewbox viewbox = null;
-   private final XMLNode node;
+public class XMLTextNode implements ElementNode {
+   private final String text;
+   private XMLNode nodeParent = null;
 
-   public SymbolSpec(XMLNode node) {
-      this.node = node;
+   public XMLTextNode(XMLNode parent, String text) {
+      this.text = text;
+      this.nodeParent = parent;
    }
 
-   public void setViewbox(Viewbox viewbox) {
-      this.viewbox = viewbox;
+   /**
+    * Return the Node parent (or null if the Node is the root of the XML File).
+    *
+    * @return the Node parent (or null if the Node is the root of the XML File)
+    */
+   @Override
+   public XMLNode getParent() {
+      return nodeParent;
    }
 
-   public boolean hasViewbox() {
-      return viewbox != null;
-   }
-
-   public Viewbox getViewbox() {
-      return viewbox;
-   }
-
-   public XMLNode getXMLNode() {
-      return node;
+   /**
+    * Return the text content for the node.
+    *
+    * @return the text content
+    */   
+   @Override
+   public String getText() {
+      return text;
    }
 
 }

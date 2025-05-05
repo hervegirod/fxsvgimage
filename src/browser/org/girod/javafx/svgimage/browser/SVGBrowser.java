@@ -38,6 +38,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -50,6 +51,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -153,6 +155,16 @@ public class SVGBrowser extends Application {
          }
       });
 
+      ContextMenu contextMenu = new ContextMenu();
+      MenuItem refreshItem = new MenuItem("Refresh");
+      contextMenu.getItems().add(refreshItem);
+      tabPane.setContextMenu(contextMenu);
+      refreshItem.setOnAction(new EventHandler<ActionEvent>() {
+         public void handle(ActionEvent e) {
+            refresh();
+         }
+      });
+
       VBox vBox = new VBox();
       vBox.getChildren().add(menuBar);
       vBox.getChildren().add(toolBar);
@@ -160,6 +172,13 @@ public class SVGBrowser extends Application {
 
       stage.setScene(new Scene(vBox, 600, 600));
       stage.show();
+   }
+
+   private void refresh() {
+      SVGImage image = getSelectedImage();
+      if (image != null) {
+         this.open(image.getFile(), true);
+      }
    }
 
    private void zoomIn() {
@@ -214,7 +233,7 @@ public class SVGBrowser extends Application {
       }
       FileChooser fileChooser = new FileChooser();
       fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PNG Files", "*.png"),
-         new ExtensionFilter("JPEG Files", "*.jpg", ".jpeg"));
+              new ExtensionFilter("JPEG Files", "*.jpg", ".jpeg"));
       fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
       fileChooser.setTitle("Save as Image");
       File file = fileChooser.showSaveDialog(stage);
@@ -255,7 +274,10 @@ public class SVGBrowser extends Application {
       if (file == null) {
          return;
       }
+      open(file, false);
+   }
 
+   private void open(File file, boolean replace) {
       try {
          SVGImage image = SVGLoader.load(file.toURI().toURL());
          if (image == null) {
@@ -274,7 +296,7 @@ public class SVGBrowser extends Application {
             double x = e.getX();
             double y = e.getY();
             content.root.setLayoutX(x);
-            content.root.setLayoutY(y);            
+            content.root.setLayoutY(y);
          });
 
          group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
@@ -287,7 +309,13 @@ public class SVGBrowser extends Application {
          scrollPane.setFitToHeight(true);
          scrollPane.setFitToWidth(true);
          scrollPane.setPrefSize(500, 500);
-         Tab tab = new Tab(file.getName(), scrollPane);
+         Tab tab;
+         if (replace) {
+            tab = tabPane.getSelectionModel().getSelectedItem();
+            tab.setContent(scrollPane);
+         } else {
+            tab = new Tab(file.getName(), scrollPane);
+         }
          content.allowLayoutChildren(false);
          content.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
@@ -320,15 +348,28 @@ public class SVGBrowser extends Application {
                }
             }
          });
-         tabPane.getTabs().add(tab);
-         int tabIndex = tabPane.getTabs().size() - 1;
-         imagesByIndex.put(tabIndex, image);
-         tab.setOnClosed(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-               imagesByIndex.remove(tabIndex);
+         if (!replace) {
+            tabPane.getTabs().add(tab);
+            int tabIndex = tabPane.getTabs().size() - 1;
+            imagesByIndex.put(tabIndex, image);
+            tab.setOnClosed(new EventHandler<Event>() {
+               @Override
+               public void handle(Event event) {
+                  imagesByIndex.remove(tabIndex);
+               }
+            });
+         } else {
+            int tabIndex = -1;
+            ObservableList<Tab> theTabs = tabPane.getTabs();
+            for (int i = 0; i < theTabs.size(); i++) {
+               Tab theTab = theTabs.get(i);
+               if (theTab == tab) {
+                  tabIndex = i;
+                  break;
+               }
             }
-         });
+            imagesByIndex.put(tabIndex, image);
+         }
 
       } catch (IOException ex) {
          ex.printStackTrace();

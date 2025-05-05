@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.xml.parsers;
+package org.girod.javafx.svgimage.xml.parsers.xmltree;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,17 +40,19 @@ import java.util.Objects;
 import java.util.TreeMap;
 import javafx.geometry.Bounds;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.LengthParser;
 
 /**
- * A Node in an XML File.
+ * An XML Node in an XML File.
  *
- * @version 1.0
+ * @version 1.3
  */
-public class XMLNode {
+public class XMLNode implements ElementNode {
    /**
     * The node name.
     */
    protected String name = null;
+   
    /**
     * The node parent.
     */
@@ -63,6 +65,10 @@ public class XMLNode {
     * The children nodes.
     */
    protected final List<XMLNode> children = new ArrayList<>();
+   /**
+    * All the children nodes.
+    */
+   private final List<ElementNode> allChildren = new ArrayList<>();   
    /**
     * The attributes.
     */
@@ -132,6 +138,7 @@ public class XMLNode {
     *
     * @return the Node parent (or null if the Node is the root of the XML File)
     */
+   @Override
    public XMLNode getParent() {
       return nodeParent;
    }
@@ -142,7 +149,7 @@ public class XMLNode {
     * @param parent the Node parent
     * @param index the index in the parent
     */
-   private void setParent(XMLNode parent, int index) {
+   void setParent(XMLNode parent, int index) {
       this.nodeParent = parent;
       this.index = index;
    }
@@ -164,6 +171,15 @@ public class XMLNode {
    public List<XMLNode> getChildren() {
       return children;
    }
+   
+   /**
+    * Return the ordered list of all children of this Node.
+    *
+    * @return the ordered list of all children of this Node
+    */
+   public List<ElementNode> getAllChildren() {
+      return allChildren;
+   }   
 
    /**
     * Return the first child of the Node.
@@ -176,7 +192,7 @@ public class XMLNode {
       } else {
          return children.get(0);
       }
-   }
+   }   
 
    /**
     * Return the last child of the Node.
@@ -190,6 +206,32 @@ public class XMLNode {
          return children.get(children.size() - 1);
       }
    }
+   
+   /**
+    * Return the first element node child of the Node.
+    *
+    * @return the first element node child of the Node
+    */
+   public ElementNode getFirstChildElement() {
+      if (allChildren.isEmpty()) {
+         return null;
+      } else {
+         return allChildren.get(0);
+      }
+   }   
+   
+   /**
+    * Return the last element node child of the Node.
+    *
+    * @return the last element node child of the Node
+    */
+   public ElementNode getLastChildElement() {
+      if (allChildren.isEmpty()) {
+         return null;
+      } else {
+         return allChildren.get(allChildren.size() - 1);
+      }
+   }   
 
    /**
     * Return the next sibling of the Node.
@@ -242,9 +284,15 @@ public class XMLNode {
     *
     * @param child the Node child
     */
-   public void addChild(XMLNode child) {
-      child.setParent(this, children.size());
-      children.add(child);
+   public void addChild(ElementNode child) {
+      if (child instanceof XMLNode) {
+         XMLNode node = (XMLNode) child;
+         node.setParent(this, children.size());
+         children.add(node);
+         allChildren.add(child);
+      } else if (child instanceof XMLTextNode) {
+         allChildren.add(child);
+      }
    }
 
    /**
@@ -610,6 +658,16 @@ public class XMLNode {
    public String getCDATA() {
       return cData;
    }
+   
+   /**
+    * Return the text content for the node.
+    *
+    * @return the text content
+    */
+   @Override
+   public String getText() {
+      return cData;
+   }    
 
    /**
     * Return true if there is a the CDATA content for the node.

@@ -69,13 +69,15 @@ import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import org.girod.javafx.svgimage.xml.parsers.SVGParsingException;
 import org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder;
 import org.girod.javafx.svgimage.xml.builders.SVGStyleBuilder;
+import org.girod.javafx.svgimage.xml.builders.SVGTextBuilder;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
-import org.girod.javafx.svgimage.xml.parsers.XMLRoot;
-import org.girod.javafx.svgimage.xml.parsers.XMLTreeHandler;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLRoot;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLTreeHandler;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.xml.sax.SAXException;
 
@@ -128,6 +130,8 @@ public class SVGLoader implements SVGTags {
    public static SVGImage load(URL url) throws SVGParsingException {
       SVGLoader loader = new SVGLoader(url, new LoaderParameters());
       SVGImage img = loader.loadImpl();
+      File file = new File(url.getFile());
+      img.setFile(file);
       return img;
    }
 
@@ -529,7 +533,7 @@ public class SVGLoader implements SVGTags {
             case STYLE:
                manageSVGStyle(childNode);
                break;
-            case DEFS:   
+            case DEFS:
             case SVG:
             case G:
                preparseStyles(childNode);
@@ -678,16 +682,16 @@ public class SVGLoader implements SVGTags {
                nodes = SVGShapeBuilder.buildUse(childNode, context, null, viewport, minTextSize);
                break;
             case TEXT:
-               node = SVGShapeBuilder.buildTextAsNode(childNode, null, null, viewport, minTextSize);
+               node = SVGTextBuilder.buildTextAsNode(childNode, null, null, viewport, minTextSize);
                if (node == null) {
-                  spanGroup = SVGShapeBuilder.buildTSpanGroup(childNode, null, null, viewport, minTextSize);
+                  spanGroup = SVGTextBuilder.buildTSpanGroup(childNode, null, null, viewport, minTextSize);
                   addNamedNode(childNode, spanGroup.getTextGroup());
                   animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                } else {
                   if (childNode.hasChildren()) {
                      XMLNode childNode1 = childNode.getFirstChild();
                      if (childNode1.getName().equals(TSPAN)) {
-                        spanGroup = SVGShapeBuilder.buildTSpanGroup((Text) node, childNode, null, null, viewport, minTextSize);
+                        spanGroup = SVGTextBuilder.buildTSpanGroup((Text) node, childNode, null, null, viewport, minTextSize);
                         addNamedNode(childNode, spanGroup.getTextGroup());
                         animations = lookForAnimations(childNode, spanGroup.getTextGroup(), viewport);
                      } else {
@@ -776,18 +780,18 @@ public class SVGLoader implements SVGTags {
             while (it2.hasNext()) {
                SpanGroup.TSpan tspan = it2.next();
                Node tspanText = tspan.node;
-               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.xmlNode);
-               tspan.xmlNode.addAttribute(STYLE, theStyles);
-               addStyles(group, tspanText, tspan.xmlNode, true);
-               if (tspan.xmlNode.hasAttribute(BASELINE_SHIFT)) {
+               String theStyles = ParserUtils.mergeStyles(theStylesMap, tspan.elementNode);
+               tspan.addAttribute(STYLE, theStyles);
+               addStyles(group, tspanText, tspan.elementNode, true);
+               if (tspan.hasAttribute(BASELINE_SHIFT)) {
                   // http://www.svgbasics.com/font_effects_italic.html
                   // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
-                  String shiftValue = tspan.xmlNode.getAttributeValue(BASELINE_SHIFT);
+                  String shiftValue = tspan.getAttributeValue(BASELINE_SHIFT);
                   ParserUtils.setBaselineShift(tspanText, shiftValue);
                }
                // https://vanseodesign.com/web-design/svg-text-tspan-element/
-               if (!ParserUtils.hasXPosition(tspan.xmlNode) && previous != null) {
-                  double width =  BuilderUtils.getTextWidth(previous.node);
+               if (!ParserUtils.hasXPosition(tspan.elementNode) && previous != null) {
+                  double width = BuilderUtils.getTextWidth(previous.node);
                   tspanText.setLayoutX(width + BuilderUtils.getTextX(previous.node));
                }
                previous = tspan;
@@ -797,16 +801,17 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void addStyles(Group parent, Node node, XMLNode xmlNode, boolean isTextSpan) {
-      MarkerContext markerContext = setNodeStyle(node, xmlNode);
-      boolean visible = ParserUtils.setVisibility(node, xmlNode);
-      ParserUtils.setOpacity(node, xmlNode);
-      setFilter(node, xmlNode);
+   private void addStyles(Group parent, Node node, ElementNode elementNode, boolean isTextSpan) {
+      MarkerContext markerContext = setNodeStyle(node, elementNode);
+      boolean visible = ParserUtils.setVisibility(node, elementNode);
+      ParserUtils.setOpacity(node, elementNode);
+      setFilter(node, elementNode);
+      List<Transform> transforms = null;
       if (!isTextSpan) {
-         TransformUtils.setTransforms(node, xmlNode, viewport);
+         transforms = TransformUtils.setTransforms(node, elementNode, viewport);
       }
       if (markerContext != null) {
-         MarkerBuilder.buildMarkers(parent, node, xmlNode, markerContext, context, viewport, visible);
+         MarkerBuilder.buildMarkers(parent, node, transforms, elementNode, markerContext, context, viewport, visible);
       }
    }
 
@@ -897,11 +902,14 @@ public class SVGLoader implements SVGTags {
       }
    }
 
-   private void setFilter(Node node, XMLNode xmlNode) {
-      if (context.effectsSupported && xmlNode.hasAttribute(FILTER)) {
-         Effect effect = expressFilter(node, xmlNode.getAttributeValue(FILTER));
-         if (effect != null) {
-            node.setEffect(effect);
+   private void setFilter(Node node, ElementNode elementNode) {
+      if (elementNode instanceof XMLNode) {
+         XMLNode xmlNode = (XMLNode) elementNode;
+         if (context.effectsSupported && xmlNode.hasAttribute(FILTER)) {
+            Effect effect = expressFilter(node, xmlNode.getAttributeValue(FILTER));
+            if (effect != null) {
+               node.setEffect(effect);
+            }
          }
       }
    }
@@ -911,8 +919,12 @@ public class SVGLoader implements SVGTags {
       return effect;
    }
 
-   private MarkerContext setNodeStyle(Node node, XMLNode xmlNode) {
-      MarkerContext markerContext = SVGStyleBuilder.setNodeStyle(node, xmlNode, context, viewport);
-      return markerContext;
+   private MarkerContext setNodeStyle(Node node, ElementNode elementNode) {
+      if (elementNode instanceof XMLNode) {
+         MarkerContext markerContext = SVGStyleBuilder.setNodeStyle(node, elementNode, context, viewport);
+         return markerContext;
+      } else {
+         return null;
+      }
    }
 }

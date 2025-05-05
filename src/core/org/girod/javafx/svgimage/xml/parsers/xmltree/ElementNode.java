@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,39 +30,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.xml.specs;
-
-import org.girod.javafx.svgimage.Viewbox;
-import org.girod.javafx.svgimage.xml.parsers.SVGTags;
-import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
+package org.girod.javafx.svgimage.xml.parsers.xmltree;
 
 /**
- * Represents a symbol specifiation.
+ * A node in an XML content, which can be an XML element or a text node.
  *
- * @version 1.0
+ * @since 1.3
  */
-public class SymbolSpec implements SVGTags {
-   private Viewbox viewbox = null;
-   private final XMLNode node;
-
-   public SymbolSpec(XMLNode node) {
-      this.node = node;
-   }
-
-   public void setViewbox(Viewbox viewbox) {
-      this.viewbox = viewbox;
-   }
-
-   public boolean hasViewbox() {
-      return viewbox != null;
-   }
-
-   public Viewbox getViewbox() {
-      return viewbox;
-   }
-
-   public XMLNode getXMLNode() {
-      return node;
-   }
-
+public interface ElementNode {
+   /**
+    * Return the element parent.
+    *
+    * @return the element parent
+    */
+   public XMLNode getParent();
+   
+   /**
+    * Return the text content for the node.
+    *
+    * @return the text content
+    */
+   public String getText();   
 }

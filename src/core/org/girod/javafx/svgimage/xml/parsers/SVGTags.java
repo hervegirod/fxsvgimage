@@ -79,6 +79,9 @@ public interface SVGTags {
    public static String MARKER_END = "marker-end";
    public static String MARKER_WIDTH = "markerWidth";
    public static String MARKER_HEIGHT = "markerHeight";
+   public static String ORIENT = "orient";
+   public static String ORIENT_AUTO = "auto";
+   public static String ORIENT_AUTO_REVERSE = "auto-start-reverse";
    public static String REFX = "refX";
    public static String REFY = "refY";
    public static String TSPAN = "tspan";

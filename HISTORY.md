@@ -8,6 +8,8 @@
  - Fix #55: The styles by element types names are not taken into account
  - Fix #21: Multiple styles don't get applied correctly
  - Fix #34: Decimal font sizes don't work on the 0.0-1.0 range 
+ - Fix #51: Failed to render text with tspan
+ - Fix #57: Add a refresh option for the browser
 
 # 1.2
  - Use docJGenerator 1.6.10

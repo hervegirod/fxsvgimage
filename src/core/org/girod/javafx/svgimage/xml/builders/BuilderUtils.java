@@ -32,10 +32,21 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
+import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
+import javafx.scene.shape.Polyline;
+import javafx.scene.shape.QuadCurveTo;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -58,7 +69,6 @@ public class BuilderUtils {
       if (text == null) {
          return null;
       }
-      text = text.trim();
       return text.replace("\n", "").replaceAll("\t", "");
    }
 
@@ -123,7 +133,7 @@ public class BuilderUtils {
     *
     * @param node the text or TextHBox
     * @return the x position
-    */   
+    */
    public static double getTextX(Node node) {
       double x;
       if (node instanceof Text) {
@@ -142,7 +152,7 @@ public class BuilderUtils {
     *
     * @param node the text or TextHBox
     * @return the y position
-    */     
+    */
    public static double getTextY(Node node) {
       double y;
       if (node instanceof Text) {
@@ -153,5 +163,106 @@ public class BuilderUtils {
          y = 0d;
       }
       return y;
+   }
+
+   /**
+    * Computes the angle (in degrees) of the vector from {@code p1} to {@code p2}. The angle will be in the range
+    * {@code 0} (inclusive) to {@code 360} (exclusive) as measured counterclockwise from the positive x-axis.
+    *
+    * @param p1 the start point
+    * @param p2 the end point
+    * @return the angle, in degrees
+    */
+   public static double computeAngle(Point2D p1, Point2D p2) {
+      Point2D vector = new Point2D(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+      double angle = vector.angle(1.0, 0.0);
+      if (vector.getY() > 0) {
+         return 360.0 - angle;
+      }
+      return angle;
+   }
+
+   /**
+    * Computes the angle (in degrees) of a Line.
+    *
+    * @param line the line
+    * @return the angle, in degrees
+    */
+   public static double computeAngle(Line line) {
+      Point2D p1 = new Point2D(line.getStartX(), line.getStartY());
+      Point2D p2 = new Point2D(line.getEndX(), line.getEndY());
+      return computeAngle(p1, p2);
+   }
+
+   /**
+    * Computes the angle (in degrees) of the last segment of a polyline.
+    *
+    * @param polyline the polyline
+    * @return the angle, in degrees
+    */
+   public static double computeAngle(Polyline polyline) {
+      ObservableList<Double> points = polyline.getPoints();
+      int size = points.size();
+      if (size < 4) {
+         return 0;
+      }
+      Point2D p1 = new Point2D(size - 2, size - 1);
+      Point2D p2 = new Point2D(size - 4, size - 3);
+      return computeAngle(p1, p2);
+   }
+
+   /**
+    * Computes the angle (in degrees) of the last path element of a Path.
+    *
+    * @param path the Path
+    * @return the angle, in degrees
+    */
+   public static double computeAngle(Path path) {
+      ObservableList<PathElement> list = path.getElements();
+      if (list.isEmpty()) {
+         return 0;
+      }
+      int lastIndex = list.size() - 1;
+      PathElement lastElement = list.get(lastIndex);
+      Point2D p1 = null;
+      Point2D p2 = null;
+      if (lastElement instanceof ClosePath) {
+         lastIndex--;
+         lastElement = list.get(lastIndex);
+      }
+      while (true) {
+         if (lastElement instanceof CubicCurveTo) {
+            lastIndex--;
+            lastElement = list.get(lastIndex);
+         } else if (lastElement instanceof QuadCurveTo) {
+            lastIndex--;
+            lastElement = list.get(lastIndex);
+         } else {
+            break;
+         }
+      }
+      if (lastElement instanceof LineTo) {
+         LineTo lineTo = (LineTo) lastElement;
+         p2 = new Point2D(lineTo.getX(), lineTo.getY());
+         PathElement previousElement = list.get(lastIndex - 1);
+         if (previousElement instanceof MoveTo) {
+            MoveTo moveTo = (MoveTo) previousElement;
+            p1 = new Point2D(moveTo.getX(), moveTo.getY());
+         } else if (previousElement instanceof LineTo) {
+            LineTo lineTo1 = (LineTo) previousElement;
+            p1 = new Point2D(lineTo1.getX(), lineTo1.getY());
+         } else if (previousElement instanceof CubicCurveTo) {
+            CubicCurveTo curveTo = (CubicCurveTo) previousElement;
+            p1 = new Point2D(curveTo.getX(), curveTo.getY());   
+         } else if (previousElement instanceof QuadCurveTo) {
+            QuadCurveTo curveTo = (QuadCurveTo) previousElement;
+            p1 = new Point2D(curveTo.getX(), curveTo.getY());             
+         }
+      }
+      if (p1 != null && p2 != null) {
+         return computeAngle(p1, p2);
+      } else {
+         return 0;
+      }
    }
 }

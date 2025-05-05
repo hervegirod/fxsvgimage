@@ -46,7 +46,7 @@ import org.girod.javafx.svgimage.xml.specs.GradientSpec;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 
 /**
  * The context of a {@link SVGLoader}.

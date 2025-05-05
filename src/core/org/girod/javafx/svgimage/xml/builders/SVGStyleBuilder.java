@@ -37,7 +37,7 @@ import org.girod.javafx.svgimage.xml.specs.MarkerContext;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.ExtendedFontPosture;
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import org.girod.javafx.svgimage.xml.parsers.LengthParser;
 import java.util.Iterator;
@@ -66,6 +66,7 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * This class parse a style declaration.
@@ -209,6 +210,14 @@ public class SVGStyleBuilder implements SVGTags {
       }
       return styles;
    }
+   
+   public static MarkerContext setNodeStyle(Node node, ElementNode elementNode, LoaderContext context, Viewport viewport) {
+      if (elementNode instanceof XMLNode) {
+         return setNodeStyle(null, node, (XMLNode)elementNode, context, viewport);
+      } else  {
+         return null;
+      }
+   }   
 
    public static MarkerContext setNodeStyle(Node node, XMLNode xmlNode, LoaderContext context, Viewport viewport) {
       return setNodeStyle(null, node, xmlNode, context, viewport);

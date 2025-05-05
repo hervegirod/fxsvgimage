@@ -32,11 +32,12 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.specs;
 
-import org.girod.javafx.svgimage.xml.parsers.XMLNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * Represents spans elements under a text element.
@@ -58,19 +59,41 @@ public class SpanGroup {
    public List<TSpan> getSpans() {
       return tspans;
    }
-
-   public void addTSpan(XMLNode xmlNode, Node node) {
-      TSpan tspan = new TSpan(xmlNode, node);
+   
+   public void addTSpan(ElementNode elementNode, Node node) {
+      TSpan tspan = new TSpan(elementNode, node);
       tspans.add(tspan);
-   }
+   }   
 
    public class TSpan {
-      public final XMLNode xmlNode;
+      public final ElementNode elementNode;
       public final Node node;
 
-      private TSpan(XMLNode xmlNode, Node node) {
-         this.xmlNode = xmlNode;
+      private TSpan(ElementNode theNode, Node node) {
+         this.elementNode = theNode;
          this.node = node;
       }
+      
+      public void addAttribute(String name, String value) {
+         if (elementNode instanceof XMLNode) {
+            ((XMLNode)elementNode).addAttribute(name, value);
+         }
+      }
+      
+      public String getAttributeValue(String name) {
+         if (elementNode instanceof XMLNode) {
+            return ((XMLNode)elementNode).getAttributeValue(name);
+         } else {
+            return null;
+         }
+      }      
+      
+      public boolean hasAttribute(String name) {
+         if (elementNode instanceof XMLNode) {
+            return ((XMLNode)elementNode).hasAttribute(name);
+         } else {
+            return false;
+         }
+      }      
    }
 }

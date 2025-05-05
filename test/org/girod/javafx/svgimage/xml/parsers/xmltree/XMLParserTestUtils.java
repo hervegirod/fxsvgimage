@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2025 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,39 +30,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.xml.specs;
+package org.girod.javafx.svgimage.xml.parsers.xmltree;
 
-import org.girod.javafx.svgimage.Viewbox;
-import org.girod.javafx.svgimage.xml.parsers.SVGTags;
-import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
+import java.net.URL;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
- * Represents a symbol specifiation.
+ * Parser utilities for Unit tests.
  *
- * @version 1.0
+ * @since 1.3
  */
-public class SymbolSpec implements SVGTags {
-   private Viewbox viewbox = null;
-   private final XMLNode node;
-
-   public SymbolSpec(XMLNode node) {
-      this.node = node;
+public class XMLParserTestUtils {
+   private XMLParserTestUtils() {
    }
 
-   public void setViewbox(Viewbox viewbox) {
-      this.viewbox = viewbox;
+   public static XMLRoot parse(URL url) {
+      SAXParserFactory saxfactory = SAXParserFactory.newInstance();
+      try {
+         saxfactory.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
+         saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+         saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+         SAXParser parser = saxfactory.newSAXParser();
+         XMLTreeHandler handler = new XMLTreeHandler();
+         parser.parse(url.openStream(), handler);
+         return handler.getRoot();
+      } catch (Exception e) {
+         return null;
+      }
    }
-
-   public boolean hasViewbox() {
-      return viewbox != null;
-   }
-
-   public Viewbox getViewbox() {
-      return viewbox;
-   }
-
-   public XMLNode getXMLNode() {
-      return node;
-   }
-
 }

@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.parsers;
 
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.Bounds;
