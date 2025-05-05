@@ -8,11 +8,16 @@
    The browser allows to:
    <ul>
       <li>Open a SVG file using the library</li>
-      <li>Save the opened SVG file as a png of jpeg image</li>      
+      <li>Save the opened SVG file as a png of jpeg image</li> 
+      <li>Refresh the currently selected image</li>     
    </ul>
    
    <title title="zooming" />   
    You can zoom or dezoom the image by using the mouse wheel or the zoom commands.
+   
+   <title title="Refresh the currently selected image" />   
+   You can refresh the currently selected image by right clicking on the selected tab and select "Refresh". It can be useful if you have modified the 
+   associated SVG file externally.
 
    <cat id="browser" />
 </article>
