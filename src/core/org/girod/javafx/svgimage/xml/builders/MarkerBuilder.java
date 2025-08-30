@@ -32,6 +32,8 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.xml.builders;
 
+import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
+import static org.girod.javafx.svgimage.xml.parsers.SVGPathParser.MarkerType;
 import org.girod.javafx.svgimage.xml.specs.MarkerContext;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
@@ -39,6 +41,7 @@ import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import java.util.Iterator;
 import java.util.List;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.ArcTo;
@@ -241,33 +244,64 @@ public class MarkerBuilder implements SVGTags {
       Path path = getPath(svgPath);
       if (markerContext.hasMarkerStart()) {
          MarkerSpec spec = markerContext.getMarkerStart();
-         Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
-         if (markerNode != null) {
-            MoveTo start = getStart(path);
-            markerNode.setLayoutX(start.getX() + getLength(spec, spec.getRefX(), true));
-            markerNode.setLayoutY(start.getY() + getLength(spec, spec.getRefY(), false));
-            if (transforms != null) {
+         getMarkerList(MarkerType.START, svgPath).forEach(point -> {
+           Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
+           if (markerNode != null)
+           {
+             markerNode.setLayoutX(point.getX() + getLength(spec, spec.getRefX(), true));
+             markerNode.setLayoutY(point.getY() + getLength(spec, spec.getRefY(), false));
+             if (transforms != null)
+             {
                markerNode.getTransforms().addAll(transforms);
-            }
-         }
+             }
+           }
+        });
       }
+
       if (markerContext.hasMarkerEnd()) {
          MarkerSpec spec = markerContext.getMarkerEnd();
-         Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
-         if (markerNode != null) {
-            MoveTo end = getEnd(path);
-            markerNode.setLayoutX(end.getX() + getLength(spec, spec.getRefX(), true));
-            markerNode.setLayoutY(end.getY() + getLength(spec, spec.getRefY(), false));
-            if (transforms != null) {
-               markerNode.getTransforms().addAll(transforms);
-            }
-            if (spec.hasOrientation()) {
+         getMarkerList(MarkerType.START, svgPath).forEach(point -> {
+           Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
+        if (markerNode != null) {
+          markerNode.setLayoutX(point.getX() + getLength(spec, spec.getRefX(), true));
+          markerNode.setLayoutY(point.getY() + getLength(spec, spec.getRefY(), false));
+          if (transforms != null) {
+            markerNode.getTransforms().addAll(transforms);
+          }
+          if (spec.hasOrientation()) {
+            double angle = getOrientationAngle(spec, path);
+            markerNode.getTransforms().add(Transform.rotate(angle, 0, 0));
+          }
+        }
+      });
+    }
+
+    if (markerContext.hasMarkerMid()) {
+      MarkerSpec spec = markerContext.getMarkerMid();
+
+      getMarkerList(MarkerType.MID, svgPath).forEach(point -> {
+        Node markerNode = createMarker(parent, spec, markerContext, context, viewport);
+        if (markerNode != null) {
+          markerNode.setLayoutX(point.getX() + getLength(spec, spec.getRefX(), true));
+          markerNode.setLayoutY(point.getY() + getLength(spec, spec.getRefY(), false));
+          if (transforms != null) {
+            markerNode.getTransforms().addAll(transforms);
+          }
+          if (spec.hasOrientation()) {
                double angle = getOrientationAngle(spec, path);
                markerNode.getTransforms().add(Transform.rotate(angle, 0, 0));
-            }
-         }
-      }
-   }
+          }
+        }
+      });
+    }
+  }
+
+  private static List<Point2D> getMarkerList(MarkerType markerType, SVGPath svgPath) {
+    SVGPathParser parser;
+    parser = (SVGPathParser) svgPath.getProperties().get("PathParser");
+    return parser.getMarkerList(markerType);
+  }
+
 
    private static MoveTo getEnd(Path path) {
       double x = 0;
