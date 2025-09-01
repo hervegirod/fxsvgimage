@@ -258,13 +258,18 @@ public class TransformUtils implements SVGTags {
          } else if (transformTxt.startsWith("skewX")) {
             List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               Transform transform = Transform.shear(Math.tan(Math.toRadians(args.get(0))), 0);
+               // see https://stackoverflow.com/questions/75765350/svg-transformations-skew-to-matrix
+               double arg = Math.toRadians(args.get(0));
+               Transform transform = Transform.affine(1d, Math.tan(arg), 0, 0, 1, 0);
+               //Transform transform = Transform.shear(Math.tan(Math.toRadians(args.get(0))), 0);
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("skewY")) {
             List<Double> args = getSkewTransformArguments(transformTxt, viewport);
             if (args.size() == 1) {
-               Transform transform = Transform.shear(0, Math.tan(Math.toRadians(args.get(0))));
+               double arg = Math.toRadians(args.get(0));
+               Transform transform = Transform.affine(1d, 0, 0, Math.tan(arg), 1, 0);
+               //Transform transform = Transform.shear(0, Math.tan(Math.toRadians(args.get(0))));
                transformList.add(transform);
             }
          } else if (transformTxt.startsWith("matrix")) {
@@ -275,7 +280,6 @@ public class TransformUtils implements SVGTags {
             }
          }
       }
-
       return transformList;
    }
 }

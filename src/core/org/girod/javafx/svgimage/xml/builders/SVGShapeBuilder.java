@@ -67,9 +67,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -300,7 +298,7 @@ public class SVGShapeBuilder implements SVGTags {
       return weight;
    }
 
-   public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
+   public static RadialGradientSpec buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          String href = null;
@@ -313,7 +311,11 @@ public class SVGShapeBuilder implements SVGTags {
             }
          }
          RadialGradientSpec spec = new RadialGradientSpec(xmlNode, href);
+         spec.setID(id);
          gradientSpecs.put(id, spec);
+         return spec;
+      } else {
+         return null;
       }
    }
 
@@ -325,7 +327,7 @@ public class SVGShapeBuilder implements SVGTags {
       return ParserUtils.parseDoubleProtected(attrvalue) / 100;
    }
 
-   public static void buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
+   public static LinearGradientSpec buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          String href = null;
@@ -338,7 +340,11 @@ public class SVGShapeBuilder implements SVGTags {
             }
          }
          LinearGradientSpec spec = new LinearGradientSpec(xmlNode, href);
+         spec.setID(id);
          gradientSpecs.put(id, spec);
+         return spec;
+      } else {
+         return null;
       }
    }
 

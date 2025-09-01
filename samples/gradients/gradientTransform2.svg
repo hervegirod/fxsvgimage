@@ -1,0 +1,21 @@
+<svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg">
+  <radialGradient
+    id="gradient"
+    gradientUnits="userSpaceOnUse"
+    cx="100"
+    cy="100"
+    r="100"
+    gradientTransform="skewX(20) translate(-35, 0)">
+    <stop offset="0%" stop-color="red" />
+    <stop offset="100%" stop-color="blue" />
+  </radialGradient>
+
+  <rect
+    x="0"
+    y="0"
+    width="200"
+    height="200"
+    fill="url(#gradient)" />
+</svg>
+
+

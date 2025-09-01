@@ -51,10 +51,11 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 /**
  * Contains the specification for a radial or linear gradient.
  *
- * @version 1.0
+ * @version 1.4
  */
 public abstract class GradientSpec implements SVGTags {
    protected String href = null;
+   protected String id = null;
    protected XMLNode xmlNode = null;
    protected boolean isResolved = false;
    protected List<StopSpec> specStops = new ArrayList<>();
@@ -68,6 +69,14 @@ public abstract class GradientSpec implements SVGTags {
       this.xmlNode = node;
       this.href = href;
    }
+   
+   public void setID(String id) {
+      this.id = id;
+   }
+   
+   public String getID() {
+      return id;
+   }   
 
    public XMLNode getNode() {
       return xmlNode;
@@ -100,12 +109,13 @@ public abstract class GradientSpec implements SVGTags {
    }
 
    protected CycleMethod getCycleMethod(String value) {
-      if (value.equals(SPREAD_REFLECT)) {
-         return CycleMethod.REFLECT;
-      } else if (value.equals(SPREAD_REPEAT)) {
-         return CycleMethod.REPEAT;
-      } else {
-         return CycleMethod.NO_CYCLE;
+      switch (value) {
+         case SPREAD_REFLECT:
+            return CycleMethod.REFLECT;
+         case SPREAD_REPEAT:
+            return CycleMethod.REPEAT;
+         default:
+            return CycleMethod.NO_CYCLE;
       }
    }
 
