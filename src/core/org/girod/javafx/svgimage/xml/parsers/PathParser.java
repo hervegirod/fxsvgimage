@@ -102,7 +102,12 @@ public class PathParser {
       StringBuilder buf = new StringBuilder();
       List<String> list = new ArrayList<>();
       StringTokenizer tok = new StringTokenizer(content, " ,");
-      while (tok.hasMoreTokens()) {
+      SVGPathParser parser;
+      parser = new SVGPathParser();
+      parser.parse(content, viewport);
+
+      while (tok.hasMoreTokens())
+      {
          String tk = tok.nextToken();
          Matcher m = LETTER.matcher(tk);
          int offset = 0;
@@ -348,6 +353,9 @@ public class PathParser {
       }
       SVGPath path = new SVGPath();
       path.setContent(buf.toString());
+
+      path.getProperties().put("PathParser", parser);
+      path.setContent(parser.getContent());
       listPath.add(path);
       return listPath;
    }
