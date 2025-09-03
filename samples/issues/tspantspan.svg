@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .st-1 {
+      font-size:16px;
+      font-style:italic;
+      fill:pink;
+     }
+  </style>
+
+  <text font-size="20" y="40" fill="orange">            True 
+    ease in
+    <tspan font-size="30" font-style="italic" dx="10" dy="-5" fill="purple">
+      writing
+    </tspan>
+    <tspan dx="10" dy="5" fill="grey">
+      comes   
+      <tspan x="0" y="80" dx="10" class="st-1">
+        from
+        
+      </tspan>
+      <tspan dx="60">
+        <tspan dy="10" font-size="20" fill="red">A</tspan><tspan font-size="30" fill="green">R</tspan><tspan font-size="40" fill="blue">T</tspan>
+      </tspan>
+      not      
+
+    </tspan>
+          
+    chance        
+       
+       
+  </text>
+</svg>

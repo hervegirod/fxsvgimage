@@ -40,7 +40,6 @@ import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.ExtendedFontPosture;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
-import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,9 +66,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -83,12 +80,13 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * The shape builder.
  *
- * @version 1.3
+ * @version 1.
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -300,7 +298,7 @@ public class SVGShapeBuilder implements SVGTags {
       return weight;
    }
 
-   public static void buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
+   public static RadialGradientSpec buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          String href = null;
@@ -313,7 +311,11 @@ public class SVGShapeBuilder implements SVGTags {
             }
          }
          RadialGradientSpec spec = new RadialGradientSpec(xmlNode, href);
+         spec.setID(id);
          gradientSpecs.put(id, spec);
+         return spec;
+      } else {
+         return null;
       }
    }
 
@@ -325,7 +327,7 @@ public class SVGShapeBuilder implements SVGTags {
       return ParserUtils.parseDoubleProtected(attrvalue) / 100;
    }
 
-   public static void buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
+   public static LinearGradientSpec buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
          String href = null;
@@ -338,7 +340,11 @@ public class SVGShapeBuilder implements SVGTags {
             }
          }
          LinearGradientSpec spec = new LinearGradientSpec(xmlNode, href);
+         spec.setID(id);
          gradientSpecs.put(id, spec);
+         return spec;
+      } else {
+         return null;
       }
    }
 
@@ -654,7 +660,7 @@ public class SVGShapeBuilder implements SVGTags {
       FillRule rule = ParserUtils.getFillRule(xmlNode);
 
       content = content.replace('−', '-');
-      PathParser pathParser = new PathParser();
+      SVGPathParser pathParser = new SVGPathParser();
       List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       if (list != null) {
          Iterator<SVGPath> it = list.iterator();

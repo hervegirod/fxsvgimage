@@ -1,5 +1,9 @@
 # History
 
+# 1.4
+ - Fix #61: The gradients which are not defined in a defs node are not taken into account
+ - Fix #62, #63: Marker marker-mid attribute of svg <path> element is not taken into account
+
 # 1.3
  - Fix #10: Loader params work on some SVG but another, it doesn't. The problem was due to paths which were not scaled correctly
  - Fix #53: Implement a drag gesture in the browser

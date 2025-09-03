@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 1.3
+ * @version 1.4
  */
 public class SVGLoader implements SVGTags {
    private final SVGContent content;
@@ -741,16 +741,26 @@ public class SVGLoader implements SVGTags {
             case MASK:
                buildClipPath(childNode);
                break;
-            case LINEAR_GRADIENT:
-               if (acceptDefs) {
-                  SVGShapeBuilder.buildLinearGradient(context.gradientSpecs, context.gradients, childNode, viewport);
-                  break;
+            case LINEAR_GRADIENT: {
+               GradientSpec spec = SVGShapeBuilder.buildLinearGradient(context.gradientSpecs, context.gradients, childNode, viewport);
+               if (spec != null) {
+                  if (!acceptDefs) {
+                     spec.resolve(context.gradientSpecs, viewport);
+                  }
+                  context.gradients.put(spec.getID(), spec.getPaint());
                }
-            case RADIAL_GRADIENT:
-               if (acceptDefs) {
-                  SVGShapeBuilder.buildRadialGradient(context.gradientSpecs, context.gradients, childNode, viewport);
-                  break;
+               break;
+            }
+            case RADIAL_GRADIENT: {
+               GradientSpec spec = SVGShapeBuilder.buildRadialGradient(context.gradientSpecs, context.gradients, childNode, viewport);
+               if (spec != null) {
+                  if (!acceptDefs) {
+                     spec.resolve(context.gradientSpecs, viewport);
+                  }
+                  context.gradients.put(spec.getID(), spec.getPaint());
                }
+               break;
+            }
             case FILTER:
                buildFilter(childNode);
                break;
