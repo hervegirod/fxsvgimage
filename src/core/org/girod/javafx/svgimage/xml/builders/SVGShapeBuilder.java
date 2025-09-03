@@ -40,7 +40,6 @@ import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.ExtendedFontPosture;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
-import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -81,12 +80,13 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * The shape builder.
  *
- * @version 1.3
+ * @version 1.
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -660,7 +660,7 @@ public class SVGShapeBuilder implements SVGTags {
       FillRule rule = ParserUtils.getFillRule(xmlNode);
 
       content = content.replace('−', '-');
-      PathParser pathParser = new PathParser();
+      SVGPathParser pathParser = new SVGPathParser();
       List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       if (list != null) {
          Iterator<SVGPath> it = list.iterator();

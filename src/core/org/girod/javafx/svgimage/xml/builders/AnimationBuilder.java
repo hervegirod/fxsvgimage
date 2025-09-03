@@ -65,16 +65,16 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
-import org.girod.javafx.svgimage.xml.parsers.PathParser;
 import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
 
 /**
  * The animation builder.
  *
- * @version 1.3
+ * @version 1.
  */
 public class AnimationBuilder implements SVGTags {
    private static final short TYPE_TRANSLATE = 0;
@@ -479,7 +479,7 @@ public class AnimationBuilder implements SVGTags {
       }
       String content = xmlAnim.getAttributeValue(PATH);
       content = content.replace('−', '-');
-      PathParser pathParser = new PathParser();
+      SVGPathParser pathParser = new SVGPathParser();
       List<SVGPath> list = pathParser.parsePathContent(content, viewport);
       Duration duration = Duration.ZERO;
       if (xmlAnim.hasAttribute(DUR)) {
