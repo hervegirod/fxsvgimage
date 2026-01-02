@@ -22,11 +22,20 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
 ```
-See https://jitpack.io/ for info on the syntax for other build systems such as gradle, svt etc.
-
+For gradle it would be
+```groovy
+repositories {
+  mavenCentral()
+  maven { url 'https://jitpack.io' }
+}
+dependencies {
+  implementation 'com.github.hervegirod:fxsvgimage:1.4'
+}
+```
+See https://jitpack.io/ for info on the syntax for other build systems such as sbt, leiningen etc.
 
 # History
 See [HISTORY.md](HISTORY.md)
