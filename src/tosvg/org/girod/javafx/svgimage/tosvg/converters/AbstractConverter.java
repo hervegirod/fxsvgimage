@@ -67,6 +67,9 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
     */
    protected ConverterDelegate delegate = null;
    private final Node node;
+   /**
+    * Parent XML node used as the output container.
+    */
    protected final XMLNode xmlParent;
    /**
     * The CSS Properties of the Node to convert, including all the properties.
@@ -153,6 +156,12 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Append a clip-path style if a clip id is provided.
+    *
+    * @param buf the style buffer
+    * @param clipID the clip id to reference
+    */
    protected void setClip(StringBuilder buf, String clipID) {
       if (clipID != null) {
          buf.append("clip-path: url(#").append(clipID).append(");");
@@ -352,10 +361,20 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Return true if a visibility property is explicitly set.
+    *
+    * @return true if visibility is defined
+    */
    public boolean hasVisibility() {
       return properties.containsKey(VISIBILITY);
    }
 
+   /**
+    * Return true if the node should be visible based on its visibility property.
+    *
+    * @return true if visible
+    */
    public boolean isVisible() {
       if (properties.containsKey(VISIBILITY)) {
          boolean visibility = (Boolean) properties.get(VISIBILITY);
@@ -379,6 +398,12 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Append stroke style information based on the provided paint.
+    *
+    * @param paint the stroke paint
+    * @param buf the style buffer
+    */
    protected void addStroke(Paint paint, StringBuilder buf) {
       if (paint instanceof Color) {
          Color color = (Color) paint;
@@ -389,6 +414,12 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Append fill style information based on the provided paint.
+    *
+    * @param paint the fill paint
+    * @param buf the style buffer
+    */
    protected void addFill(Paint paint, StringBuilder buf) {
       if (paint instanceof Color) {
          Color color = (Color) paint;
@@ -399,6 +430,12 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Set the stroke opacity attribute on the SVG node when applicable.
+    *
+    * @param paint the stroke paint
+    * @param node the SVG node to update
+    */
    protected void setStrokeOpacity(Paint paint, XMLNode node) {
       if (paint instanceof Color) {
          Color color = (Color) paint;
@@ -408,6 +445,12 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
       }
    }
 
+   /**
+    * Set the fill opacity attribute on the SVG node when applicable.
+    *
+    * @param paint the fill paint
+    * @param node the SVG node to update
+    */
    protected void setFillOpacity(Paint paint, XMLNode node) {
       if (paint instanceof Color) {
          Color color = (Color) paint;

@@ -31,19 +31,34 @@ import javafx.scene.shape.VLineTo;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 
 /**
+ * Builds SVG clip elements from JavaFX clip nodes.
  *
  * @since 1.0
  */
 public class ClipConstructor {
    private int clipID = 0;
    
+   /**
+    * Create a clip constructor.
+    */
    public ClipConstructor() {
    }
    
+   /**
+    * Return the next clip id.
+    *
+    * @return the clip id
+    */
    public String getClipID() {
       return "clip_" + clipID;
    }
 
+   /**
+    * Create an SVG clip element for the provided clip node.
+    *
+    * @param clip the clip node
+    * @return the SVG clip element, or null if unsupported
+    */
    public XMLNode createClip(Node clip) {
       XMLNode xmlClip = null;
       if (clip instanceof Polygon) {

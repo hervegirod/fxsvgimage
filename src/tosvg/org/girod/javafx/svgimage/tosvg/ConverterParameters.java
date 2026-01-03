@@ -60,4 +60,10 @@ public class ConverterParameters {
     * The background Color.
     */
    public Color background = null;
+
+   /**
+    * Create parameters with default values.
+    */
+   public ConverterParameters() {
+   }
 }

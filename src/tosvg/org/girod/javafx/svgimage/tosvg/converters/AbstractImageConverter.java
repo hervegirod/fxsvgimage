@@ -57,6 +57,7 @@ import org.girod.javafx.svgimage.tosvg.xml.SVGConstants;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 
 /**
+ * Base converter for JavaFX nodes that render images.
  *
  * @since 1.0
  */
@@ -126,6 +127,13 @@ public abstract class AbstractImageConverter extends AbstractConverter {
       xmlNode.addAttribute("xlink:href", content);
    }
 
+   /**
+    * Convert an AWT image to a {@link BufferedImage} of the requested type.
+    *
+    * @param image the source image
+    * @param type the buffered image type
+    * @return the resulting buffered image
+    */
    public BufferedImage toBufferedImage(java.awt.Image image, int type) {
       if (image instanceof BufferedImage) {
          return (BufferedImage) image;
@@ -168,6 +176,12 @@ public abstract class AbstractImageConverter extends AbstractConverter {
       }
    }
 
+   /**
+    * Encode a rendered image as a base64 PNG string.
+    *
+    * @param img the rendered image
+    * @return the base64-encoded PNG string, or null on error
+    */
    public static String imgToBase64String(final RenderedImage img) {
       ByteArrayOutputStream os = new ByteArrayOutputStream();
       try (final OutputStream b64os = Base64.getEncoder().wrap(os)) {

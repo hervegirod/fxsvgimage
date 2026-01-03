@@ -40,14 +40,30 @@ import javafx.scene.text.FontPosture;
  * @version 1.0
  */
 public class ExtendedFontPosture {
+   /**
+    * Base JavaFX font posture.
+    */
    public final FontPosture posture;
+   /**
+    * True when the posture represents an oblique style.
+    */
    public final boolean isOblique;
 
+   /**
+    * Create an extended posture from a JavaFX posture.
+    *
+    * @param posture the JavaFX posture
+    */
    public ExtendedFontPosture(FontPosture posture) {
       this.posture = posture;
       this.isOblique = false;
    }
 
+   /**
+    * Create an extended posture with an oblique flag.
+    *
+    * @param isOblique true to mark the posture as oblique
+    */
    public ExtendedFontPosture(boolean isOblique) {
       this.posture = FontPosture.REGULAR;
       this.isOblique = isOblique;

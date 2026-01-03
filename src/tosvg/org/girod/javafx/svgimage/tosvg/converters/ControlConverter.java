@@ -41,10 +41,17 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
  * A converter which convert Controls.
  *
  * @since 1.0
- */
+   */
 public class ControlConverter extends RegionConverter {
    private Control control = null;
 
+   /**
+    * Constructor.
+    *
+    * @param delegate the converter delegate
+    * @param control the control to convert
+    * @param xmlParent the parent xml node
+    */
    public ControlConverter(ConverterDelegate delegate, Control control, XMLNode xmlParent) {
       super(delegate, control, xmlParent);
       this.control = control;

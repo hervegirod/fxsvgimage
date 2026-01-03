@@ -57,16 +57,37 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
  * @version 1.0
  */
 public class FilterSpec implements SVGTags {
+   /**
+    * Input type indicating the previous effect output.
+    */
    public static final short PREVIOUS_EFFECT = 0;
+   /**
+    * Input type indicating a named effect reference.
+    */
    public static final short NAMED_EFFECT = 1;
+   /**
+    * Input type indicating the source graphic.
+    */
    public static final short SOURCE_GRAPHIC_EFFECT = 2;
+   /**
+    * Input type indicating the source alpha.
+    */
    public static final short SOURCE_ALPHA_EFFECT = 3;
    private final List<FilterEffect> effects = new ArrayList<>();
    private final Map<String, FilterEffect> namedEffects = new HashMap<>();
 
+   /**
+    * Create an empty filter specification.
+    */
    public FilterSpec() {
    }
 
+   /**
+    * Add a filter effect and optionally register it by result id.
+    *
+    * @param resultId the result id, or null if not referenced
+    * @param effect the effect to add
+    */
    public void addEffect(String resultId, FilterEffect effect) {
       effects.add(effect);
       if (resultId != null) {
@@ -74,10 +95,18 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Return the list of filter effects in order.
+    *
+    * @return the effects
+    */
    public List<FilterEffect> getEffects() {
       return effects;
    }
 
+   /**
+    * Defines a filter effect specification that can produce a JavaFX effect.
+    */
    public interface FilterEffect {
       /**
        * Return the filter result Id.
@@ -86,8 +115,18 @@ public class FilterSpec implements SVGTags {
        */
       public String getResultId();
 
+      /**
+       * Return the input type for this effect.
+       *
+       * @return the input type
+       */
       public short getInputType();
 
+      /**
+       * Set the input reference for the effect.
+       *
+       * @param in the input id or keyword
+       */
       public void setIn(String in);
 
       /**
@@ -98,15 +137,40 @@ public class FilterSpec implements SVGTags {
        */
       public Effect getEffect(Node node);
 
+      /**
+       * Resolve the effect inputs once all effects are created.
+       *
+       * @param effect the JavaFX effect instance
+       * @param sourceAlpha the source alpha effect
+       * @param previousEffect the previous effect in the chain
+       * @param namedEffects the map of named effects by id
+       */
       public default void resolveEffect(Effect effect, Effect sourceAlpha, Effect previousEffect, Map<String, Effect> namedEffects) {
       }
    }
 
+   /**
+    * Base implementation for filter effects with common input handling.
+    */
    public static abstract class AbstractFilterEffect implements FilterEffect {
+      /**
+       * Effect result id.
+       */
       protected final String resultId;
+      /**
+       * Input reference for the effect.
+       */
       protected String in = null;
+      /**
+       * Input type for the effect.
+       */
       protected short inputType = PREVIOUS_EFFECT;
 
+      /**
+       * Create a filter effect with the given result id.
+       *
+       * @param resultId the result id
+       */
       public AbstractFilterEffect(String resultId) {
          this.resultId = resultId;
       }
@@ -137,13 +201,26 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for merging multiple inputs.
+    */
    public static class FEMerge extends AbstractFilterEffect {
       private final List<String> mergeNodes = new ArrayList<>();
 
+      /**
+       * Create a merge effect.
+       *
+       * @param resultId the result id
+       */
       public FEMerge(String resultId) {
          super(resultId);
       }
 
+      /**
+       * Add a merge node input reference.
+       *
+       * @param in the input reference
+       */
       public void addMergeNode(String in) {
          mergeNodes.add(in);
       }
@@ -193,12 +270,36 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for drop shadows.
+    */
    public static class FEDropShadow extends AbstractFilterEffect {
+      /**
+       * Horizontal offset.
+       */
       public final double dx;
+      /**
+       * Vertical offset.
+       */
       public final double dy;
+      /**
+       * Standard deviation for the blur radius.
+       */
       public final double stdDeviation;
+      /**
+       * Shadow color.
+       */
       public final Color floodColor;
 
+      /**
+       * Create a drop shadow effect.
+       *
+       * @param resultId the result id
+       * @param dx the horizontal offset
+       * @param dy the vertical offset
+       * @param stdDeviation the blur standard deviation
+       * @param floodColor the shadow color
+       */
       public FEDropShadow(String resultId, double dx, double dy, double stdDeviation, Color floodColor) {
          super(resultId);
          this.dx = dx;
@@ -226,9 +327,21 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for Gaussian blur.
+    */
    public static class FEGaussianBlur extends AbstractFilterEffect {
+      /**
+       * Standard deviation for the blur radius.
+       */
       public final double stdDeviation;
 
+      /**
+       * Create a Gaussian blur effect.
+       *
+       * @param resultId the result id
+       * @param stdDeviation the blur standard deviation
+       */
       public FEGaussianBlur(String resultId, double stdDeviation) {
          super(resultId);
          // don't know why, but it's better to multiply the stdDeviation by 2 to get the radius
@@ -254,13 +367,41 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for a solid color fill.
+    */
    public static class FEFlood extends AbstractFilterEffect {
+      /**
+       * X coordinate of the flood region.
+       */
       public final double x;
+      /**
+       * Y coordinate of the flood region.
+       */
       public final double y;
+      /**
+       * Width of the flood region.
+       */
       public final double width;
+      /**
+       * Height of the flood region.
+       */
       public final double height;
+      /**
+       * Flood color.
+       */
       public final Color color;
 
+      /**
+       * Create a flood effect.
+       *
+       * @param resultId the result id
+       * @param x the x coordinate
+       * @param y the y coordinate
+       * @param width the width
+       * @param height the height
+       * @param color the flood color
+       */
       public FEFlood(String resultId, double x, double y, double width, double height, Color color) {
          super(resultId);
          this.x = x;
@@ -277,11 +418,31 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for an image input.
+    */
    public static class FEImage extends AbstractFilterEffect {
+      /**
+       * X coordinate of the image.
+       */
       public final double x;
+      /**
+       * Y coordinate of the image.
+       */
       public final double y;
+      /**
+       * Image source.
+       */
       public final Image source;
 
+      /**
+       * Create an image input effect.
+       *
+       * @param resultId the result id
+       * @param x the x coordinate
+       * @param y the y coordinate
+       * @param source the source image
+       */
       public FEImage(String resultId, double x, double y, Image source) {
          super(resultId);
          this.x = x;
@@ -296,10 +457,26 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for offsetting content.
+    */
    public static class FEOffset extends AbstractFilterEffect {
+      /**
+       * Horizontal offset.
+       */
       public final double dx;
+      /**
+       * Vertical offset.
+       */
       public final double dy;
 
+      /**
+       * Create an offset effect.
+       *
+       * @param resultId the result id
+       * @param dx the horizontal offset
+       * @param dy the vertical offset
+       */
       public FEOffset(String resultId, double dx, double dy) {
          super(resultId);
          this.dx = dx;
@@ -333,12 +510,36 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for specular lighting.
+    */
    public static class FESpecularLighting extends AbstractFilterEffect {
+      /**
+       * Specular constant.
+       */
       public final double specularConstant;
+      /**
+       * Specular exponent.
+       */
       public final double specularExponent;
+      /**
+       * Surface scale.
+       */
       public final double surfaceScale;
+      /**
+       * Light source.
+       */
       public final Light light;
 
+      /**
+       * Create a specular lighting effect.
+       *
+       * @param resultId the result id
+       * @param specularConstant the specular constant
+       * @param specularExponent the specular exponent
+       * @param surfaceScale the surface scale
+       * @param light the light source
+       */
       public FESpecularLighting(String resultId, double specularConstant, double specularExponent, double surfaceScale, Light light) {
          super(resultId);
          this.specularConstant = specularConstant;
@@ -369,10 +570,26 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Filter effect for diffuse lighting.
+    */
    public static class FEDiffuseLighting extends AbstractFilterEffect {
+      /**
+       * Diffuse constant.
+       */
       public final double diffuseConstant;
+      /**
+       * Light source.
+       */
       public final Light light;
 
+      /**
+       * Create a diffuse lighting effect.
+       *
+       * @param resultId the result id
+       * @param diffuseConstant the diffuse constant
+       * @param light the light source
+       */
       public FEDiffuseLighting(String resultId, double diffuseConstant, Light light) {
          super(resultId);
          this.diffuseConstant = diffuseConstant;
@@ -402,39 +619,92 @@ public class FilterSpec implements SVGTags {
       }
    }
 
+   /**
+    * Stores an applied effect together with its specification.
+    */
    public static class AppliedEffect {
       private final FilterEffect effectSpec;
       private final Effect effect;
 
+      /**
+       * Create an applied effect wrapper.
+       *
+       * @param effectSpec the effect specification
+       * @param effect the JavaFX effect
+       */
       public AppliedEffect(FilterEffect effectSpec, Effect effect) {
          this.effectSpec = effectSpec;
          this.effect = effect;
       }
 
+      /**
+       * Return the effect specification.
+       *
+       * @return the effect specification
+       */
       public FilterEffect getEffectSpec() {
          return effectSpec;
       }
 
+      /**
+       * Return the result id for the effect specification.
+       *
+       * @return the result id
+       */
       public String getResultId() {
          return effectSpec.getResultId();
       }
 
+      /**
+       * Return the JavaFX effect instance.
+       *
+       * @return the effect
+       */
       public Effect getEffect() {
          return effect;
       }
    }
 
+   /**
+    * Filter effect for compositing two inputs.
+    */
    public static class FEComposite extends AbstractFilterEffect {
+      /**
+       * Composite operator: over.
+       */
       public static final short OPERATOR_OVER = 0;
+      /**
+       * Composite operator: in.
+       */
       public static final short OPERATOR_IN = 1;
+      /**
+       * Composite operator: out.
+       */
       public static final short OPERATOR_OUT = 2;
+      /**
+       * Composite operator: atop.
+       */
       public static final short OPERATOR_ATOP = 3;
+      /**
+       * Composite operator: xor.
+       */
       public static final short OPERATOR_XOR = 4;
+      /**
+       * Composite operator: arithmetic.
+       */
       public static final short OPERATOR_ARITHMETIC = 5;
       private short type = OPERATOR_OVER;
       private final String compIn;
       private final String compIn2;
 
+      /**
+       * Create a composite effect.
+       *
+       * @param resultId the result id
+       * @param type the composite operator
+       * @param in the first input reference
+       * @param in2 the second input reference
+       */
       public FEComposite(String resultId, short type, String in, String in2) {
          super(resultId);
          this.type = type;
@@ -442,6 +712,13 @@ public class FilterSpec implements SVGTags {
          this.compIn2 = in2;
       }
 
+      /**
+       * Return true if the composite should apply at the given index.
+       *
+       * @param appliedEffects the applied effects list
+       * @param index the current index
+       * @return true if the composite should apply
+       */
       public boolean shouldApply(List<FilterSpec.AppliedEffect> appliedEffects, int index) {
          boolean compInIsSourceGraphics = compIn != null && compIn.equals(SOURCE_GRAPHIC);
          if (!compInIsSourceGraphics) {
@@ -454,6 +731,11 @@ public class FilterSpec implements SVGTags {
          return !compIn2.equals(previousEffect.getResultId());
       }
 
+      /**
+       * Return true if the composite takes the source graphic as the first input.
+       *
+       * @return true if the first input is the source graphic
+       */
       public boolean isSecondLast() {
          return compIn != null && compIn.equals(SOURCE_GRAPHIC);
       }
