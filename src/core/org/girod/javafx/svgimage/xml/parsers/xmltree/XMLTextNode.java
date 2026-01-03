@@ -41,6 +41,12 @@ public class XMLTextNode implements ElementNode {
    private final String text;
    private XMLNode nodeParent = null;
 
+   /**
+    * Create a text node with a parent and text content.
+    *
+    * @param parent the parent node
+    * @param text the text content
+    */
    public XMLTextNode(XMLNode parent, String text) {
       this.text = text;
       this.nodeParent = parent;

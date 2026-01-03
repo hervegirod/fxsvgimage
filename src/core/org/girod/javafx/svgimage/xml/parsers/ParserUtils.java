@@ -310,6 +310,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a visibility value.
+    *
+    * @param value the visibility value
+    * @return true if visible
+    */
    public static boolean parseVisibility(String value) {
       if (value.equals(HIDDEN)) {
          return false;
@@ -342,6 +348,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Apply a fill opacity override on a node.
+    *
+    * @param node the node to update
+    * @param fillOpacity the fill opacity
+    */
    public static void setFillOpacity(Node node, double fillOpacity) {
       if (node instanceof Shape && fillOpacity < 1d) {
          Shape shape = (Shape) node;
@@ -567,6 +579,12 @@ public class ParserUtils implements SVGTags {
       return lastEffect;
    }
 
+   /**
+    * Apply a baseline shift to a node or its text children.
+    *
+    * @param node the node to update
+    * @param value the baseline-shift value
+    */
    public static void setBaselineShift(Node node, String value) {
       if (node instanceof Text) {
          setBaselineShift((Text) node, value);
@@ -579,6 +597,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Apply a baseline shift to a text node.
+    *
+    * @param text the text node
+    * @param value the baseline-shift value
+    */
    public static void setBaselineShift(Text text, String value) {
       // http://www.svgbasics.com/font_effects_italic.html
       // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
@@ -687,6 +711,12 @@ public class ParserUtils implements SVGTags {
       return buf.toString();
    }
 
+   /**
+    * Propagate style attributes from a parent to a child node.
+    *
+    * @param parentNode the parent node
+    * @param childNode the child node
+    */
    public static void propagateStyleAttributes(XMLNode parentNode, XMLNode childNode) {
       if (childNode.getName().equals(TSPAN)) {
          return;
@@ -707,6 +737,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Apply visibility from an element node to a JavaFX node.
+    *
+    * @param node the JavaFX node
+    * @param elementNode the element node
+    * @return true if the node should remain visible
+    */
    public static boolean setVisibility(Node node, ElementNode elementNode) {
       if (elementNode instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) elementNode;
@@ -723,6 +760,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Apply opacity and fill opacity attributes to a node.
+    *
+    * @param node the JavaFX node
+    * @param elementNode the element node
+    */
    public static void setOpacity(Node node, ElementNode elementNode) {
       if (elementNode instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) elementNode;

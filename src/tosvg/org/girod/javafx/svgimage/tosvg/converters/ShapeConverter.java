@@ -75,6 +75,13 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 public class ShapeConverter extends AbstractConverter implements DefaultStrokeValues {
    private Shape shape = null;
 
+   /**
+    * Constructor.
+    *
+    * @param delegate the converter delegate
+    * @param shape the shape to convert
+    * @param xmlParent the parent xml node
+    */
    public ShapeConverter(ConverterDelegate delegate, Shape shape, XMLNode xmlParent) {
       super(delegate, shape, xmlParent);
       this.shape = shape;

@@ -38,14 +38,30 @@ package org.girod.javafx.svgimage.xml.parsers;
  * @version 1.0
  */
 public class SVGLibraryException extends RuntimeException {
+   /**
+    * Create an exception with a message.
+    *
+    * @param message the message
+    */
    public SVGLibraryException(String message) {
       super(message);
    }
 
+   /**
+    * Create an exception with a message and cause.
+    *
+    * @param message the message
+    * @param cause the cause
+    */
    public SVGLibraryException(String message, Throwable cause) {
       super(message, cause);
    }
 
+   /**
+    * Create an exception with a cause.
+    *
+    * @param cause the cause
+    */
    public SVGLibraryException(Throwable cause) {
       super(cause);
    }

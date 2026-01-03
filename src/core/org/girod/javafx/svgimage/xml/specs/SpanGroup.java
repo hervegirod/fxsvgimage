@@ -48,38 +48,86 @@ public class SpanGroup {
    private final Group textGroup;
    private final List<TSpan> tspans = new ArrayList<>();
 
+   /**
+    * Create a span group for a text group.
+    *
+    * @param textGroup the text group
+    */
    public SpanGroup(Group textGroup) {
       this.textGroup = textGroup;
    }
 
+   /**
+    * Return the underlying text group.
+    *
+    * @return the text group
+    */
    public Group getTextGroup() {
       return textGroup;
    }
 
+   /**
+    * Return the list of tspan wrappers.
+    *
+    * @return the tspan list
+    */
    public List<TSpan> getSpans() {
       return tspans;
    }
    
+   /**
+    * Add a tspan element wrapper.
+    *
+    * @param elementNode the tspan element node
+    * @param node the JavaFX node
+    */
    public void addTSpan(ElementNode elementNode, Node node) {
       TSpan tspan = new TSpan(elementNode, node);
       tspans.add(tspan);
    }   
 
+   /**
+    * Wrapper for a tspan element and its rendered node.
+    */
    public class TSpan {
+      /**
+       * The tspan element node.
+       */
       public final ElementNode elementNode;
+      /**
+       * The rendered JavaFX node.
+       */
       public final Node node;
 
+      /**
+       * Create a tspan wrapper.
+       *
+       * @param theNode the tspan element node
+       * @param node the JavaFX node
+       */
       private TSpan(ElementNode theNode, Node node) {
          this.elementNode = theNode;
          this.node = node;
       }
       
+      /**
+       * Add an attribute to the underlying XML node.
+       *
+       * @param name the attribute name
+       * @param value the attribute value
+       */
       public void addAttribute(String name, String value) {
          if (elementNode instanceof XMLNode) {
             ((XMLNode)elementNode).addAttribute(name, value);
          }
       }
       
+      /**
+       * Return the value of an attribute from the underlying XML node.
+       *
+       * @param name the attribute name
+       * @return the attribute value, or null if absent
+       */
       public String getAttributeValue(String name) {
          if (elementNode instanceof XMLNode) {
             return ((XMLNode)elementNode).getAttributeValue(name);
@@ -88,6 +136,12 @@ public class SpanGroup {
          }
       }      
       
+      /**
+       * Return true if the underlying XML node has the attribute.
+       *
+       * @param name the attribute name
+       * @return true if present
+       */
       public boolean hasAttribute(String name) {
          if (elementNode instanceof XMLNode) {
             return ((XMLNode)elementNode).hasAttribute(name);

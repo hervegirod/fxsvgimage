@@ -30,8 +30,17 @@ public class SVGPathParser {
     * Enum representing the types of SVG path markers.
     */
    public enum MarkerType {
+      /**
+       * Marker at the start of the path.
+       */
       START,
+      /**
+       * Markers at intermediate vertices.
+       */
       MID,
+      /**
+       * Marker at the end of the path.
+       */
       END
    }
 
@@ -112,6 +121,9 @@ public class SVGPathParser {
    private List<PathCommand> commandList = new ArrayList<>();
    private String content;
 
+   /**
+    * Create a path parser.
+    */
    public SVGPathParser() {
    }
    

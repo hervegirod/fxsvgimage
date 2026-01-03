@@ -137,6 +137,11 @@ public class TextHBox extends HBox {
       }
    }
 
+   /**
+    * Set the fill paint for all text nodes.
+    *
+    * @param fill the fill paint
+    */
    public void setFill(Paint fill) {
       Iterator<Text> it = textNodes.iterator();
       while (it.hasNext()) {
@@ -145,6 +150,11 @@ public class TextHBox extends HBox {
       }
    }
    
+   /**
+    * Apply text decoration to all text nodes.
+    *
+    * @param value the text-decoration value
+    */
    public void setTextDecoration(String value) {
       Iterator<Text> it = textNodes.iterator();
       while (it.hasNext()) {
@@ -153,6 +163,11 @@ public class TextHBox extends HBox {
       }
    }   
    
+   /**
+    * Apply text anchor alignment to all text nodes.
+    *
+    * @param value the text-anchor value
+    */
    public void setTextAnchor(String value) {
       Iterator<Text> it = textNodes.iterator();
       while (it.hasNext()) {

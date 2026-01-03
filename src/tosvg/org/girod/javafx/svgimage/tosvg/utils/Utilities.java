@@ -82,6 +82,12 @@ public class Utilities implements CSSProperties {
    private Utilities() {
    }
 
+   /**
+    * Convert a JavaFX color to an rgb() string.
+    *
+    * @param color the color
+    * @return the rgb() string
+    */
    public static String convertColor(Color color) {
       int red = (int) (255 * color.getRed());
       int green = (int) (255 * color.getGreen());
@@ -327,10 +333,23 @@ public class Utilities implements CSSProperties {
       }
    }
 
+   /**
+    * Return the SVG scale() string for a JavaFX scale.
+    *
+    * @param scale the scale transform
+    * @return the scale() string
+    */
    public static String getScale(Scale scale) {
       return "scale(" + scale.getX() + "," + scale.getY() + ")";
    }
 
+   /**
+    * Split a string into fixed-size parts.
+    *
+    * @param string the string to split
+    * @param partitionSize the max size of each part
+    * @return the list of parts
+    */
    public static List<String> splitString(String string, int partitionSize) {
       List<String> parts = new ArrayList<>();
       int len = string.length();

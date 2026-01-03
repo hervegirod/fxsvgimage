@@ -73,6 +73,12 @@ public class Viewbox {
     */
    protected boolean preserveAspectRatio = true;
 
+   /**
+    * Create a viewbox with explicit width and height.
+    *
+    * @param width the width
+    * @param height the height
+    */
    public Viewbox(double width, double height) {
       this.width = width;
       this.height = height;

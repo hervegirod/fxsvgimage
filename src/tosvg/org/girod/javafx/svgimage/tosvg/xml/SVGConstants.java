@@ -38,6 +38,18 @@ package org.girod.javafx.svgimage.tosvg.xml;
  * @since 1.0
  */
 public class SVGConstants {
+   /**
+    * SVG namespace URI.
+    */
    public static String XMNLS_SVG = "http://www.w3.org/2000/svg";
+   /**
+    * XLink namespace URI.
+    */
    public static String XLINK = "http://www.w3.org/1999/xlink";
+
+   /**
+    * Utility class.
+    */
+   private SVGConstants() {
+   }
 }

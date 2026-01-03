@@ -161,6 +161,11 @@ public class SVGShapeBuilder implements SVGTags {
       return circle;
    }
 
+   /**
+    * Apply an oblique font style to a text node.
+    *
+    * @param text the text node
+    */
    public static void applyFontOblique(Text text) {
       String style = text.getStyle();
       String addStyle = "-fx-font-style: oblique;";
@@ -172,6 +177,12 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Apply text-anchor alignment to a text node.
+    *
+    * @param text the text node
+    * @param value the text-anchor value
+    */
    public static void applyTextAnchor(Text text, String value) {
       switch (value) {
          case START:
@@ -194,6 +205,12 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Apply text-decoration styles to a text node.
+    *
+    * @param text the text node
+    * @param value the text-decoration value
+    */
    public static void applyTextDecoration(Text text, String value) {
       String style = text.getStyle();
       String addStyle = null;
@@ -228,6 +245,13 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Apply font posture to a text node and return the JavaFX posture.
+    *
+    * @param text the text node
+    * @param value the font-style value
+    * @return the font posture
+    */
    public static FontPosture applyFontPosture(Text text, String value) {
       if (value == null) {
          return FontPosture.REGULAR;
@@ -247,6 +271,12 @@ public class SVGShapeBuilder implements SVGTags {
       return posture;
    }
 
+   /**
+    * Resolve an extended font posture from a font-style value.
+    *
+    * @param value the font-style value
+    * @return the extended font posture
+    */
    public static ExtendedFontPosture getExtendedFontPosture(String value) {
       if (value == null) {
          return new ExtendedFontPosture(FontPosture.REGULAR);
@@ -260,6 +290,12 @@ public class SVGShapeBuilder implements SVGTags {
       return new ExtendedFontPosture(FontPosture.REGULAR);
    }
 
+   /**
+    * Resolve a JavaFX font posture from a font-style value.
+    *
+    * @param value the font-style value
+    * @return the font posture
+    */
    public static FontPosture getFontPosture(String value) {
       FontPosture posture = FontPosture.REGULAR;
       if (value == null) {
@@ -271,6 +307,12 @@ public class SVGShapeBuilder implements SVGTags {
       return posture;
    }
 
+   /**
+    * Resolve a JavaFX font weight from a font-weight value.
+    *
+    * @param value the font-weight value
+    * @return the font weight
+    */
    public static FontWeight getFontWeight(String value) {
       FontWeight weight = FontWeight.NORMAL;
       if (value == null) {
@@ -298,6 +340,15 @@ public class SVGShapeBuilder implements SVGTags {
       return weight;
    }
 
+   /**
+    * Build and register a radial gradient specification.
+    *
+    * @param gradientSpecs the gradient spec map
+    * @param gradients the resolved gradients map
+    * @param xmlNode the gradient XML node
+    * @param viewport the viewport
+    * @return the radial gradient spec, or null if no id is present
+    */
    public static RadialGradientSpec buildRadialGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
@@ -327,6 +378,15 @@ public class SVGShapeBuilder implements SVGTags {
       return ParserUtils.parseDoubleProtected(attrvalue) / 100;
    }
 
+   /**
+    * Build and register a linear gradient specification.
+    *
+    * @param gradientSpecs the gradient spec map
+    * @param gradients the resolved gradients map
+    * @param xmlNode the gradient XML node
+    * @param viewport the viewport
+    * @return the linear gradient spec, or null if no id is present
+    */
    public static LinearGradientSpec buildLinearGradient(Map<String, GradientSpec> gradientSpecs, Map<String, Paint> gradients, XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(ID)) {
          String id = xmlNode.getAttributeValue(ID);
@@ -361,6 +421,7 @@ public class SVGShapeBuilder implements SVGTags {
     * @param context the context
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
     * @param viewport the viewport
+    * @param minTextSize the minimum text size for text primitives
     * @return the shape
     */
    public static List<? extends Node> buildUse(XMLNode xmlNode, LoaderContext context, Bounds bounds, Viewport viewport, double minTextSize) {
@@ -794,6 +855,12 @@ public class SVGShapeBuilder implements SVGTags {
       return polyline;
    }
 
+   /**
+    * Build a Gaussian blur filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    */
    public static void buildFEGaussianBlur(FilterSpec spec, XMLNode node) {
       double stdDeviation = 0d;
 
@@ -810,6 +877,13 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build a drop shadow filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFEDropShadow(FilterSpec spec, XMLNode node, Viewport viewport) {
       double dx = node.getLengthValue(DX, true, viewport);
       double dy = node.getLengthValue(DY, true, viewport);
@@ -837,6 +911,13 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build a flood filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFEFlood(FilterSpec spec, XMLNode node, Viewport viewport) {
       double x = node.getLengthValue(X, true, viewport);
       double y = node.getLengthValue(Y, true, viewport);
@@ -860,6 +941,13 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build an offset filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFEOffset(FilterSpec spec, XMLNode node, Viewport viewport) {
       double dx = node.getLengthValue(DX, true, viewport);
       double dy = node.getLengthValue(DY, true, viewport);
@@ -872,6 +960,14 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build an image filter effect.
+    *
+    * @param spec the filter spec
+    * @param url the base URL
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFEImage(FilterSpec spec, URL url, XMLNode node, Viewport viewport) {
       double x = node.getLengthValue(X, true, viewport);
       double y = node.getLengthValue(Y, true, viewport);
@@ -898,6 +994,13 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build a specular lighting filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFESpecularLighting(FilterSpec spec, XMLNode node, Viewport viewport) {
       XMLNode child = node.getFirstChild();
       if (child != null) {
@@ -974,6 +1077,13 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Build a diffuse lighting filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    * @param viewport the viewport
+    */
    public static void buildFEDiffuseLighting(FilterSpec spec, XMLNode node, Viewport viewport) {
       XMLNode child = node.getFirstChild();
       if (child != null) {
@@ -1045,6 +1155,12 @@ public class SVGShapeBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Build a composite filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    */
    public static void buildFEComposite(FilterSpec spec, XMLNode node) {
       String resultId = node.getAttributeValue(RESULT);
       String in = node.getAttributeValue(IN);
@@ -1075,6 +1191,12 @@ public class SVGShapeBuilder implements SVGTags {
       spec.addEffect(resultId, effect);
    }
 
+   /**
+    * Build a merge filter effect.
+    *
+    * @param spec the filter spec
+    * @param node the effect XML node
+    */
    public static void buildFEMerge(FilterSpec spec, XMLNode node) {
       String resultId = node.getAttributeValue(RESULT);
       FilterSpec.FEMerge effect = new FilterSpec.FEMerge(resultId);

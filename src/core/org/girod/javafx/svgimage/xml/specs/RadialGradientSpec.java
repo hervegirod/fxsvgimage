@@ -54,14 +54,30 @@ import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 public class RadialGradientSpec extends GradientSpec {
    private RadialGradient gradient = null;
 
+   /**
+    * Create a radial gradient spec from an XML node.
+    *
+    * @param node the gradient XML node
+    */
    public RadialGradientSpec(XMLNode node) {
       super(node);
    }
 
+   /**
+    * Create a radial gradient spec from an XML node with a reference href.
+    *
+    * @param node the gradient XML node
+    * @param href the referenced gradient id
+    */
    public RadialGradientSpec(XMLNode node, String href) {
       super(node, href);
    }
 
+   /**
+    * Set the resolved JavaFX radial gradient.
+    *
+    * @param gradient the radial gradient
+    */
    public void setRadialGradient(RadialGradient gradient) {
       this.gradient = gradient;
    }
@@ -201,6 +217,11 @@ public class RadialGradientSpec extends GradientSpec {
       }
    }
 
+   /**
+    * Return the resolved JavaFX radial gradient.
+    *
+    * @return the radial gradient
+    */
    public RadialGradient getRadialGradient() {
       return gradient;
    }

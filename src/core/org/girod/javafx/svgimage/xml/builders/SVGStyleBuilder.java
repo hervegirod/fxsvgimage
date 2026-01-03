@@ -88,6 +88,14 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Parse a CSS-like style content and populate the styles collection.
+    *
+    * @param styles the styles collection
+    * @param content the style content
+    * @param viewport the viewport
+    * @return the updated styles collection
+    */
    public static Styles parseStyle(Styles styles, String content, Viewport viewport) {
       Matcher m = STYLES.matcher(content);
       while (m.find()) {
@@ -211,6 +219,15 @@ public class SVGStyleBuilder implements SVGTags {
       return styles;
    }
    
+   /**
+    * Apply styling from an element node to a JavaFX node.
+    *
+    * @param node the JavaFX node
+    * @param elementNode the element node
+    * @param context the loader context
+    * @param viewport the viewport
+    * @return the marker context if markers are configured
+    */
    public static MarkerContext setNodeStyle(Node node, ElementNode elementNode, LoaderContext context, Viewport viewport) {
       if (elementNode instanceof XMLNode) {
          return setNodeStyle(null, node, (XMLNode)elementNode, context, viewport);
@@ -219,10 +236,25 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }   
 
+   /**
+    * Apply styling from an XML node to a JavaFX node.
+    *
+    * @param node the JavaFX node
+    * @param xmlNode the XML node
+    * @param context the loader context
+    * @param viewport the viewport
+    * @return the marker context if markers are configured
+    */
    public static MarkerContext setNodeStyle(Node node, XMLNode xmlNode, LoaderContext context, Viewport viewport) {
       return setNodeStyle(null, node, xmlNode, context, viewport);
    }
 
+   /**
+    * Return true if the XML node defines a fill (directly or via style).
+    *
+    * @param xmlNode the XML node
+    * @return true if a fill is specified
+    */
    public static boolean hasFill(XMLNode xmlNode) {
       if (xmlNode.hasAttribute(FILL)) {
          return true;
@@ -257,6 +289,16 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Apply styling from an XML node to a JavaFX node using an existing marker context.
+    *
+    * @param markerContext the existing marker context
+    * @param node the JavaFX node
+    * @param xmlNode the XML node
+    * @param context the loader context
+    * @param viewport the viewport
+    * @return the marker context created or updated by the call
+    */
    public static MarkerContext setNodeStyle(MarkerContext markerContext, Node node, XMLNode xmlNode, LoaderContext context, Viewport viewport) {
       MarkerContext markerContextR = null;
       Node contextNode = null;
@@ -550,6 +592,14 @@ public class SVGStyleBuilder implements SVGTags {
       }
    }
 
+   /**
+    * Apply a clip path to a node.
+    *
+    * @param node the JavaFX node
+    * @param spec the clip-path spec string
+    * @param clippingFactory the clipping factory
+    * @param viewport the viewport
+    */
    public static void setClipPath(Node node, String spec, ClippingFactory clippingFactory, Viewport viewport) {
       if (spec.startsWith("url(#")) {
          String clipID = ParserUtils.getURL(spec);
