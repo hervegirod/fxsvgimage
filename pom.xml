@@ -71,7 +71,7 @@
                      <target>
                         <copy toDir="${project.build.testOutputDirectory}">
                            <fileset dir="${project.build.testSourceDirectory}"
-                                             includes="org/girod/javafx/svgimage/*.svg"/>
+                                             includes="org/girod/javafx/svgimage/**/*.svg"/>
                         </copy>
                      </target>
                   </configuration>
