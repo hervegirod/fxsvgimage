@@ -40,10 +40,17 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
  * A converter which convert Groups.
  *
  * @since 1.0
- */
+   */
 public class GroupConverter extends AbstractConverter {
    private Group group = null;
 
+   /**
+    * Constructor.
+    *
+    * @param delegate the converter delegate
+    * @param group the group to convert
+    * @param xmlParent the parent xml node
+    */
    public GroupConverter(ConverterDelegate delegate, Group group, XMLNode xmlParent) {
       super(delegate, group, xmlParent);
       this.group = group;

@@ -82,6 +82,12 @@ public class LoaderParameters implements Cloneable {
    public double minTextSize = DEFAULT_MIN_TEXT_SIZE;      
 
    /**
+    * Create loader parameters with default values.
+    */
+   public LoaderParameters() {
+   }
+
+   /**
     * Create a clone of the parameters.
     *
     * @return the cloned parameters

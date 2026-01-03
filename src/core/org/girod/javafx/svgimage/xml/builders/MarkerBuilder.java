@@ -83,6 +83,18 @@ public class MarkerBuilder implements SVGTags {
    private MarkerBuilder() {
    }
 
+   /**
+    * Build and attach markers for the given element when applicable.
+    *
+    * @param parent the parent group
+    * @param node the target node
+    * @param transforms the inherited transforms
+    * @param elementNode the SVG element node
+    * @param markerContext the marker context
+    * @param context the loader context
+    * @param viewport the viewport
+    * @param visible true if the target is visible
+    */
    public static void buildMarkers(Group parent, Node node, List<Transform> transforms, ElementNode elementNode, MarkerContext markerContext, LoaderContext context, Viewport viewport, boolean visible) {
       if (elementNode instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) elementNode;
@@ -416,6 +428,13 @@ public class MarkerBuilder implements SVGTags {
       return group;
    }
 
+   /**
+    * Create a marker context for the given XML node if markers apply.
+    *
+    * @param xmlNode the XML node
+    * @param context the loader context
+    * @return the marker context, or null if not applicable
+    */
    public static MarkerContext createMarkerContext(XMLNode xmlNode, LoaderContext context) {
       if (!context.hasMarkers()) {
          return null;

@@ -132,6 +132,15 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Load an image from a URL or a data URI.
+    *
+    * @param url the base URL
+    * @param href the href value
+    * @param width the target width
+    * @param height the target height
+    * @return the loaded image, or null on error
+    */
    public static Image getImage(URL url, String href, double width, double height) {
       Matcher m = IMG_URL.matcher(href);
       if (m.matches()) {
@@ -180,6 +189,14 @@ public class ParserUtils implements SVGTags {
       return value;
    }
 
+   /**
+    * Resolve a paint value, handling context and gradients.
+    *
+    * @param contextNode the context node for context-* paints
+    * @param gradients the gradients map
+    * @param value the paint value
+    * @return the resolved paint, or null for none
+    */
    public static Paint expressPaint(Node contextNode, Map<String, Paint> gradients, String value) {
       Paint paint = null;
       if (value.equals(CONTEXT_STROKE)) {
@@ -204,10 +221,23 @@ public class ParserUtils implements SVGTags {
       return paint;
    }
 
+   /**
+    * Resolve a paint value without a context node.
+    *
+    * @param gradients the gradients map
+    * @param value the paint value
+    * @return the resolved paint, or null for none
+    */
    public static Paint expressPaint(Map<String, Paint> gradients, String value) {
       return expressPaint(null, gradients, value);
    }
 
+   /**
+    * Return the clip rule defined on a node.
+    *
+    * @param node the XML node
+    * @return the clip rule, or null if not defined
+    */
    public static FillRule getClipRule(XMLNode node) {
       if (node.hasAttribute(CLIP_RULE)) {
          String value = node.getAttributeValue(CLIP_RULE);
@@ -223,6 +253,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Return the fill rule defined on a node.
+    *
+    * @param node the XML node
+    * @return the fill rule, or null if not defined
+    */
    public static FillRule getFillRule(XMLNode node) {
       if (node.hasAttribute(FILL_RULE)) {
          String value = node.getAttributeValue(FILL_RULE);
@@ -238,6 +274,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a stroke-dasharray attribute into a list of lengths.
+    *
+    * @param value the dash array string
+    * @param viewport the viewport
+    * @return the list of dash lengths, or null if none
+    */
    public static List<Double> parseDashArray(String value, Viewport viewport) {
       if (value == null || value.equals(NONE)) {
          return null;
@@ -251,6 +294,13 @@ public class ParserUtils implements SVGTags {
       return list;
    }
 
+   /**
+    * Return the color for a value with explicit opacity.
+    *
+    * @param value the color value
+    * @param opacity the opacity
+    * @return the color, or null on error
+    */
    public static Color getColor(String value, double opacity) {
       try {
          return Color.web(value, opacity);
@@ -268,6 +318,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse an opacity value, supporting percent values.
+    *
+    * @param value the opacity value
+    * @return the opacity value, or -1 on error
+    */
    public static double parseOpacity(String value) {
       boolean isPercent = false;
       if (value.endsWith("%")) {
@@ -298,11 +354,23 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Return the first token in a space-separated argument list.
+    *
+    * @param value the argument string
+    * @return the first token
+    */
    public static String parseFirstArgument(String value) {
       StringTokenizer tok = new StringTokenizer(value, " ");
       return tok.nextToken().trim();
    }
 
+   /**
+    * Parse an integer value with error handling.
+    *
+    * @param valueS the string value
+    * @return the parsed integer, or 0 on error
+    */
    public static int parseIntProtected(String valueS) {
       Matcher m = ZERO.matcher(valueS);
       if (m.matches()) {
@@ -318,6 +386,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a double value with error handling.
+    *
+    * @param valueS the string value
+    * @return the parsed double, or 0 on error
+    */
    public static double parseDoubleProtected(String valueS) {
       valueS = valueS.replace('−', '-');
       Matcher m = ZERO.matcher(valueS);
@@ -334,6 +408,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a font size value with optional unit conversion.
+    *
+    * @param valueS the font size string
+    * @return the font size in pixels
+    */
    public static double parseFontSize(String valueS) {
       Matcher m = FONT_SIZE_PAT.matcher(valueS);
       if (m.matches()) {
@@ -396,12 +476,28 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a length value and append it to the list.
+    *
+    * @param args the list to append to
+    * @param value the length string
+    * @param isWidth true if the value represents a width
+    * @param bounds the optional bounds
+    * @param viewport the viewport
+    */
    public static void parseLengthValue(List<Double> args, String value, boolean isWidth, Bounds bounds, Viewport viewport) {
       value = value.replace('−', '-');
       double d = LengthParser.parseLength(value, isWidth, bounds, viewport);
       args.add(d);
    }
 
+   /**
+    * Parse a line width value.
+    *
+    * @param value the line width string
+    * @param viewport the viewport
+    * @return the line width
+    */
    public static double parseLineWidth(String value, Viewport viewport) {
       value = value.replace('−', '-');
       double d = LengthParser.parseLineWidth(value, viewport);
@@ -508,6 +604,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Return true if the node specifies an x position.
+    *
+    * @param node the element node
+    * @return true if x or dx is defined
+    */
    public static boolean hasXPosition(ElementNode node) {
       if (node instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) node;
@@ -517,6 +619,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Extract the style map from a style attribute.
+    *
+    * @param node the XML node
+    * @return the style map
+    */
    public static Map<String, String> getStyles(XMLNode node) {
       Map<String, String> styles = new HashMap<>();
       if (node.hasAttribute(STYLE)) {
@@ -540,6 +648,13 @@ public class ParserUtils implements SVGTags {
       return styles;
    }
 
+   /**
+    * Merge a style map with styles from the node and return a style string.
+    *
+    * @param styles the base styles
+    * @param node the element node
+    * @return the merged style string
+    */
    public static String mergeStyles(Map<String, String> styles, ElementNode node) {
       if (node instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) node;
@@ -628,6 +743,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse the viewport from the root SVG node.
+    *
+    * @param xmlNode the SVG root node
+    * @return the viewport
+    */
    public static Viewport parseViewport(XMLNode xmlNode) {
       // note: this is slightly incorrect. see http://tutorials.jenkov.com/svg/svg-viewport-view-box.html
       double viewboxX = 0;
@@ -687,6 +808,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a viewbox from width/height and viewBox attributes.
+    *
+    * @param xmlNode the XML node
+    * @param viewport the viewport
+    * @return the viewbox, or null if not available
+    */
    public static Viewbox parseViewbox(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
          double width = xmlNode.getLengthValue(WIDTH, viewport, 0);
@@ -713,6 +841,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Parse a marker viewbox from marker attributes.
+    *
+    * @param xmlNode the XML node
+    * @param viewport the viewport
+    * @return the marker viewbox, or null if not available
+    */
    public static Viewbox parseMarkerViewbox(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(MARKER_WIDTH) && xmlNode.hasAttribute(MARKER_HEIGHT)) {
          double width = xmlNode.getLengthValue(MARKER_WIDTH, viewport, 0);
@@ -739,6 +874,13 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Return true if the attribute value is expressed as a percent.
+    *
+    * @param xmlNode the XML node
+    * @param attrname the attribute name
+    * @return true if a percent value is defined
+    */
    public static boolean isPercent(XMLNode xmlNode, String attrname) {
       if (xmlNode.hasAttribute(attrname)) {
          String value = xmlNode.getAttributeValue(attrname);
@@ -748,6 +890,12 @@ public class ParserUtils implements SVGTags {
       }
    }
 
+   /**
+    * Wrap a node into a list when non-null.
+    *
+    * @param node the node
+    * @return a list containing the node, or null if node is null
+    */
    public static List<Node> createNodeList(Node node) {
       if (node == null) {
          return null;

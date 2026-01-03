@@ -42,6 +42,17 @@ import java.util.PropertyResourceBundle;
  * @since 0.3
  */
 public class Main {
+   /**
+    * Create the entry-point class.
+    */
+   public Main() {
+   }
+
+   /**
+    * Print the library version and build date.
+    *
+    * @param args command-line arguments
+    */
    public static void main(String[] args) {
       URL url = Thread.currentThread().getContextClassLoader().getResource("org/girod/javafx/svgimage/fxsvgimage.properties");
       try {

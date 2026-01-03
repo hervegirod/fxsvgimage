@@ -44,9 +44,21 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
  * @version 1.3
  */
 public class MarkerSpec implements SVGTags {
+   /**
+    * Orientation type: none specified.
+    */
    public final static short SPEC_ORIENT_NONE = 0;
+   /**
+    * Orientation type: explicit angle.
+    */
    public final static short SPEC_ORIENT_ANGLE = 1;
+   /**
+    * Orientation type: auto.
+    */
    public final static short SPEC_ORIENT_AUTO = 2;
+   /**
+    * Orientation type: auto-reverse.
+    */
    public final static short SPEC_ORIENT_AUTO_REVERSE = 3;
    private Viewbox viewbox = null;
    private final XMLNode node;
@@ -57,19 +69,39 @@ public class MarkerSpec implements SVGTags {
    private short orient = SPEC_ORIENT_NONE;
    private double orientAngle = 0;
 
+   /**
+    * Create a marker specification.
+    *
+    * @param node the marker XML node
+    */
    public MarkerSpec(XMLNode node) {
       this.node = node;
       computeOrientation();
    }
    
+   /**
+    * Return the orientation type.
+    *
+    * @return the orientation type
+    */
    public short getOrientType() {
       return orient;
    }
    
+   /**
+    * Return true if the marker has an explicit orientation.
+    *
+    * @return true if orientation is set
+    */
    public boolean hasOrientation() {
       return orient != SPEC_ORIENT_NONE;
    }
    
+   /**
+    * Return the orientation angle in degrees.
+    *
+    * @return the orientation angle
+    */
    public double getOrientationAngle() {
       return orientAngle;
    }   
@@ -90,6 +122,11 @@ public class MarkerSpec implements SVGTags {
       }
    }
 
+   /**
+    * Compute reference positions and marker size from the XML node.
+    *
+    * @param viewport the viewport
+    */
    public void computeRefPosition(Viewport viewport) {
       if (node.hasAttribute(REFX)) {
          refX = -node.getLengthValue(REFX, viewport);
@@ -105,22 +142,47 @@ public class MarkerSpec implements SVGTags {
       }
    }
 
+   /**
+    * Return the marker width.
+    *
+    * @return the width
+    */
    public double getWidth() {
       return width;
    }
 
+   /**
+    * Return the marker height.
+    *
+    * @return the height
+    */
    public double getHeight() {
       return height;
    }
 
+   /**
+    * Return the x reference position.
+    *
+    * @return the reference x
+    */
    public double getRefX() {
       return refX;
    }
 
+   /**
+    * Return the y reference position.
+    *
+    * @return the reference y
+    */
    public double getRefY() {
       return refY;
    }
 
+   /**
+    * Set the marker viewbox.
+    *
+    * @param viewbox the viewbox
+    */
    public void setViewbox(Viewbox viewbox) {
       this.viewbox = viewbox;
       if (node.hasAttribute(PRESERVE_ASPECT_RATIO)) {
@@ -130,22 +192,49 @@ public class MarkerSpec implements SVGTags {
       }
    }
 
+   /**
+    * Return true if a viewbox is defined.
+    *
+    * @return true if viewbox is available
+    */
    public boolean hasViewbox() {
       return viewbox != null;
    }
 
+   /**
+    * Return the viewbox.
+    *
+    * @return the viewbox
+    */
    public Viewbox getViewbox() {
       return viewbox;
    }
 
+   /**
+    * Return the XML node backing this spec.
+    *
+    * @return the XML node
+    */
    public XMLNode getXMLNode() {
       return node;
    }
 
+   /**
+    * Scale a width coordinate, if applicable.
+    *
+    * @param coord the coordinate
+    * @return the scaled coordinate
+    */
    public double scaleWidth(double coord) {
       return coord * 1;
    }
 
+   /**
+    * Scale a height coordinate, if applicable.
+    *
+    * @param coord the coordinate
+    * @return the scaled coordinate
+    */
    public double scaleHeight(double coord) {
       return coord * 1;
    }
