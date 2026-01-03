@@ -105,7 +105,7 @@ public class XMLNodeUtilities {
    }
 
    /**
-    * Save in n URL the content of an XML file under a root Node.
+    * Save the content of an XML file under a root Node to a URL.
     *
     * @param node the root node
     * @param tab the tabulation for the XML file for each child node
