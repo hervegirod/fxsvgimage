@@ -542,6 +542,21 @@ public class SVGLoader implements SVGTags {
       }
    }
 
+   private void preparseClipping(XMLNode xmlNode) {
+      Iterator<XMLNode> it = xmlNode.getChildren().iterator();
+      while (it.hasNext()) {
+         XMLNode childNode = it.next();
+         String name = childNode.getName();
+         switch (name) {
+            case CLIP_PATH_SPEC:
+            case MASK:
+               buildClipPath(childNode);
+               break;
+         }
+         preparseClipping(childNode);
+      }
+   }
+
    private SVGImage walk(XMLRoot xmlRoot) {
       String name = xmlRoot.getName();
       if (name.equals(SVG)) {
@@ -556,6 +571,7 @@ public class SVGLoader implements SVGTags {
          }
       }
       preparseStyles(xmlRoot);
+      preparseClipping(xmlRoot);
       buildNode(xmlRoot, root);
       return root;
    }
