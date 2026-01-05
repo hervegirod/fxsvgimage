@@ -54,6 +54,9 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
  * @since 1.0
  */
 public class RegionConverter extends AbstractConverter {
+   /**
+    * The region being converted.
+    */
    protected Region region = null;
 
    /**

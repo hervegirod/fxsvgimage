@@ -53,14 +53,30 @@ import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 public class LinearGradientSpec extends GradientSpec {
    private LinearGradient gradient = null;
 
+   /**
+    * Create a linear gradient spec from an XML node.
+    *
+    * @param node the gradient XML node
+    */
    public LinearGradientSpec(XMLNode node) {
       super(node);
    }
 
+   /**
+    * Create a linear gradient spec from an XML node with a reference href.
+    *
+    * @param node the gradient XML node
+    * @param href the referenced gradient id
+    */
    public LinearGradientSpec(XMLNode node, String href) {
       super(node, href);
    }
 
+   /**
+    * Set the resolved JavaFX linear gradient.
+    *
+    * @param gradient the linear gradient
+    */
    public void setLinearGradient(LinearGradient gradient) {
       this.gradient = gradient;
    }
@@ -179,6 +195,11 @@ public class LinearGradientSpec extends GradientSpec {
       isResolved = true;
    }
 
+   /**
+    * Return the resolved JavaFX linear gradient.
+    *
+    * @return the linear gradient
+    */
    public LinearGradient getLinearGradient() {
       return gradient;
    }

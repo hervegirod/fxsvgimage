@@ -90,6 +90,9 @@ public class LoaderContext {
     * The gradients.
     */
    public final Map<String, Paint> gradients = new HashMap<>();
+   /**
+    * The markers specifications.
+    */
    public final Map<String, MarkerSpec> markers = new HashMap<>();
    private final Map<String, XMLNode> namedNodes = new HashMap<>();
    private final Map<String, SymbolSpec> symbols = new HashMap<>();
@@ -103,6 +106,13 @@ public class LoaderContext {
     */
    public boolean effectsSupported = false;
 
+   /**
+    * Create a loader context.
+    *
+    * @param root the root image
+    * @param params the loader parameters
+    * @param url the SVG URL
+    */
    public LoaderContext(SVGImage root, LoaderParameters params, URL url) {
       this.root = root;
       this.params = params;

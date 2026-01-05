@@ -56,6 +56,13 @@ public class TransformUtils implements SVGTags {
    private TransformUtils() {
    }
 
+   /**
+    * Parse transform arguments for animation values.
+    *
+    * @param content the transform argument string
+    * @param viewport the viewport
+    * @return the list of parsed arguments
+    */
    public static List<Double> getTransformArgumentsForAnimation(String content, Viewport viewport) {
       List<Double> args = new ArrayList<>();
       StringTokenizer tok = new StringTokenizer(content, ", ");

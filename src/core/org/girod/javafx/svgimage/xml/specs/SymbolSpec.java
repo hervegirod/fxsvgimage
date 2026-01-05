@@ -45,22 +45,47 @@ public class SymbolSpec implements SVGTags {
    private Viewbox viewbox = null;
    private final XMLNode node;
 
+   /**
+    * Create a symbol specification from an XML node.
+    *
+    * @param node the symbol XML node
+    */
    public SymbolSpec(XMLNode node) {
       this.node = node;
    }
 
+   /**
+    * Set the symbol viewbox.
+    *
+    * @param viewbox the viewbox
+    */
    public void setViewbox(Viewbox viewbox) {
       this.viewbox = viewbox;
    }
 
+   /**
+    * Return true if the symbol has a viewbox.
+    *
+    * @return true if a viewbox is set
+    */
    public boolean hasViewbox() {
       return viewbox != null;
    }
 
+   /**
+    * Return the symbol viewbox.
+    *
+    * @return the viewbox
+    */
    public Viewbox getViewbox() {
       return viewbox;
    }
 
+   /**
+    * Return the XML node backing this symbol.
+    *
+    * @return the XML node
+    */
    public XMLNode getXMLNode() {
       return node;
    }

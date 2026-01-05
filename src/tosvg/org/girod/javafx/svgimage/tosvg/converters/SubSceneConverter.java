@@ -44,6 +44,13 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 public class SubSceneConverter extends AbstractConverter {
    private SubScene subScene = null;
 
+   /**
+    * Constructor.
+    *
+    * @param delegate the converter delegate
+    * @param subScene the subScene to convert
+    * @param xmlParent the parent xml node
+    */
    public SubSceneConverter(ConverterDelegate delegate, SubScene subScene, XMLNode xmlParent) {
       super(delegate, subScene, xmlParent);
       this.subScene = subScene;

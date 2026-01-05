@@ -45,6 +45,7 @@ import javafx.scene.transform.Translate;
 import javax.swing.GrayFilter;
 
 /**
+ * Utilities for converting JavaFX transforms and images to AWT equivalents.
  *
  * @since 1.0
  */

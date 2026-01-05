@@ -42,20 +42,71 @@ import java.util.regex.Pattern;
  * @version 1.1
  */
 public abstract class AbstractPathParser {
+   /**
+    * Path command type when no command has been parsed.
+    */
    public static final short PATH_NONE = -1;
+   /**
+    * Path command type for move-to.
+    */
    public static final short MOVE_TO = 0;
+   /**
+    * Path command type for close-path.
+    */
    public static final short CLOSE_PATH = 1;
+   /**
+    * Path command type for line-to.
+    */
    public static final short LINE_TO = 2;
+   /**
+    * Path command type for horizontal line-to.
+    */
    public static final short HORIZONTAL_LINE_TO = 3;
+   /**
+    * Path command type for vertical line-to.
+    */
    public static final short VERTICAL_LINE_TO = 4;
+   /**
+    * Path command type for cubic curve.
+    */
    public static final short CUBIC_CURVE = 5;
+   /**
+    * Path command type for smooth cubic curve.
+    */
    public static final short SMOOTH_CUBIC_CURVE = 6;
+   /**
+    * Path command type for quadratic curve.
+    */
    public static final short QUADRATIC_CURVE = 7;
+   /**
+    * Path command type for smooth quadratic curve.
+    */
    public static final short SMOOTH_QUADRATIC_CURVE = 8;
+   /**
+    * Path command type for elliptical arc.
+    */
    public static final short ELLIPTICAL_CURVE = 9;
+   /**
+    * Pattern matching path command letters.
+    */
    public static final Pattern LETTER = Pattern.compile("[sSlLhHvVmMcCqQtTaAzZ]");
+   /**
+    * Pattern matching signed numeric tokens with optional exponent.
+    */
    public static final Pattern PLUSMINUS = Pattern.compile("[+-]?\\d*([eE][+-]\\d+)?(\\.\\d+)?");
 
+   /**
+    * Protected constructor for subclass initialization.
+    */
+   protected AbstractPathParser() {
+   }
+
+   /**
+    * Split a token into number parts and add them to the target list.
+    *
+    * @param list the list to add parsed parts to
+    * @param token the token to split
+    */
    protected void decomposePart(List<String> list, String token) {
       int offset = 0;
       Matcher m = PLUSMINUS.matcher(token);

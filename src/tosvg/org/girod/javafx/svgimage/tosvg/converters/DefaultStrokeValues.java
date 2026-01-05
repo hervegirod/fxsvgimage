@@ -41,9 +41,24 @@ import javafx.scene.shape.StrokeLineJoin;
  * @since 1.0
  */
 public interface DefaultStrokeValues {
+   /**
+    * Default stroke miter limit.
+    */
    public static double DEFAULT_STROKE_MITER_LIMIT = 10d;
+   /**
+    * Default stroke line cap.
+    */
    public static StrokeLineCap DEFAULT_STROKE_LINE_CAP = StrokeLineCap.SQUARE;
+   /**
+    * Default stroke line join.
+    */
    public static StrokeLineJoin DEFAULT_STROKE_LINE_JOIN = StrokeLineJoin.MITER;
+   /**
+    * Default stroke dash offset.
+    */
    public double DEFAULT_STROKE_DASH_OFFSET = 0;
+   /**
+    * Default stroke width.
+    */
    public double DEFAULT_STROKE_WIDTH = 1;
 }

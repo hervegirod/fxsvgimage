@@ -38,14 +38,30 @@ package org.girod.javafx.svgimage.xml.parsers;
  * @version 1.0
  */
 public class SVGParsingException extends SVGLibraryException {
+   /**
+    * Create a parsing exception with a message.
+    *
+    * @param message the message
+    */
    public SVGParsingException(String message) {
       super(message);
    }
 
+   /**
+    * Create a parsing exception with a message and cause.
+    *
+    * @param message the message
+    * @param cause the cause
+    */
    public SVGParsingException(String message, Throwable cause) {
       super(message, cause);
    }
 
+   /**
+    * Create a parsing exception with a cause.
+    *
+    * @param cause the cause
+    */
    public SVGParsingException(Throwable cause) {
       super(cause);
    }

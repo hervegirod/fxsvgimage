@@ -58,6 +58,9 @@ public class ConverterDelegate {
    private final ClipConstructor clipConstructor = new ClipConstructor();
    private XMLNode defsNode = null;
 
+   /**
+    * Create a converter delegate.
+    */
    public ConverterDelegate() {
    }
 

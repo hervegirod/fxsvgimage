@@ -51,6 +51,9 @@ public class SVGConverter {
    private ConverterDelegate delegate = null;
    private ConverterParameters params = null;
 
+   /**
+    * Create a SVG converter.
+    */
    public SVGConverter() {
       delegate = new ConverterDelegate();
    }
@@ -69,6 +72,7 @@ public class SVGConverter {
     *
     * @param root the root Node
     * @param file the file
+    * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, File file) throws IOException {
       convert(root, file, new ConverterParameters());
@@ -118,6 +122,7 @@ public class SVGConverter {
     * @param root the root Node
     * @param file the file
     * @param params the conversion parameters
+    * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, File file, ConverterParameters params) throws IOException {
       delegate.setSVGFile(file);
@@ -134,6 +139,7 @@ public class SVGConverter {
     *
     * @param root the root Node
     * @param url the url
+    * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, URL url) throws IOException {
       convert(root, url, new ConverterParameters());
@@ -145,6 +151,7 @@ public class SVGConverter {
     * @param root the root Node
     * @param url the url
     * @param params the conversion parameters
+    * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, URL url, ConverterParameters params) throws IOException {
       delegate.setSVGFile(new File(url.getFile()));

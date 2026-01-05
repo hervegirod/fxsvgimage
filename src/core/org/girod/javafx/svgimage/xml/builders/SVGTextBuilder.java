@@ -468,6 +468,9 @@ public class SVGTextBuilder {
       }
    }
 
+   /**
+    * Tracks cumulative x offsets while parsing text positions.
+    */
    public static class OffsetX {
       private boolean isFirst;
       private double offsetX;
@@ -482,6 +485,12 @@ public class SVGTextBuilder {
          this.isFirst = true;
       }
 
+      /**
+       * Add a delta to the current offset and return the updated value.
+       *
+       * @param dx the delta to add
+       * @return the updated offset
+       */
       public double offset(double dx) {
          this.offsetX += dx;
          this.isFirst = false;

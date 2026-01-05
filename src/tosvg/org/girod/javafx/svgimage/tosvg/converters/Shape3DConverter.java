@@ -46,6 +46,13 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 public class Shape3DConverter extends AbstractImageConverter {
    private Shape3D shape = null;
 
+   /**
+    * Constructor.
+    *
+    * @param delegate the converter delegate
+    * @param shape the 3D shape
+    * @param xmlParent the parent xml node
+    */
    public Shape3DConverter(ConverterDelegate delegate, Shape3D shape, XMLNode xmlParent) {
       super(delegate, shape, xmlParent);
       this.shape = shape;

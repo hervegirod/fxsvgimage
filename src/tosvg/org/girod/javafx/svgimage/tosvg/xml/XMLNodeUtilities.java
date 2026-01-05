@@ -71,6 +71,7 @@ public class XMLNodeUtilities {
     * @param node the root node
     * @param tab the tabulation for the XML file for each child node
     * @param outputFile the output file
+    * @throws IOException if writing fails
     */
    public static void print(XMLNode node, int tab, File outputFile) throws IOException {
       print(node, tab, outputFile, null);
@@ -83,6 +84,7 @@ public class XMLNodeUtilities {
     * @param tab the tabulation for the XML file for each child node
     * @param outputFile the output file
     * @param encoding the encoding (can be null)
+    * @throws IOException if writing fails
     */
    public static void print(XMLNode node, int tab, File outputFile, String encoding) throws IOException {
       char[] chars = new char[tab];
@@ -103,11 +105,12 @@ public class XMLNodeUtilities {
    }
 
    /**
-    * Save in n URL the content of an XML file under a root Node.
+    * Save the content of an XML file under a root Node to a URL.
     *
     * @param node the root node
     * @param tab the tabulation for the XML file for each child node
     * @param outputURL the output URL
+    * @throws IOException if writing fails
     */
    public static void print(XMLNode node, int tab, URL outputURL) throws IOException {
       File file = new File(outputURL.getFile());

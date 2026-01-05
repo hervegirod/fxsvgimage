@@ -45,6 +45,9 @@ import org.girod.javafx.svgimage.Viewport;
  */
 public class MarkerContextPathParser extends AbstractPathParser {
 
+   /**
+    * Create a marker context path parser.
+    */
    public MarkerContextPathParser() {
    }
 

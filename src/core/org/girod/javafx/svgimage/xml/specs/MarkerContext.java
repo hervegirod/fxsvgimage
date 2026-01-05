@@ -48,69 +48,152 @@ public class MarkerContext {
    private Paint contextFill = null;
    private Paint contextStroke = null;
 
+   /**
+    * Create an empty marker context.
+    */
    public MarkerContext() {
    }
 
+   /**
+    * Return true if no markers are configured.
+    *
+    * @return true if empty
+    */
    public boolean isEmpty() {
       return markerStart == null && markerMid == null && markerEnd == null;
    }
 
+   /**
+    * Set the start marker.
+    *
+    * @param markerStart the start marker
+    */
    public void setMarkerStart(MarkerSpec markerStart) {
       this.markerStart = markerStart;
    }
 
+   /**
+    * Return true if a start marker is set.
+    *
+    * @return true if a start marker exists
+    */
    public boolean hasMarkerStart() {
       return markerStart != null;
    }
 
+   /**
+    * Return the start marker.
+    *
+    * @return the start marker
+    */
    public MarkerSpec getMarkerStart() {
       return markerStart;
    }
 
+   /**
+    * Set the mid marker.
+    *
+    * @param markerMid the mid marker
+    */
    public void setMarkerMid(MarkerSpec markerMid) {
       this.markerMid = markerMid;
    }
 
+   /**
+    * Return true if a mid marker is set.
+    *
+    * @return true if a mid marker exists
+    */
    public boolean hasMarkerMid() {
       return markerMid != null;
    }
 
+   /**
+    * Return the mid marker.
+    *
+    * @return the mid marker
+    */
    public MarkerSpec getMarkerMid() {
       return markerMid;
    }
 
+   /**
+    * Return true if an end marker is set.
+    *
+    * @return true if an end marker exists
+    */
    public boolean hasMarkerEnd() {
       return markerEnd != null;
    }
 
+   /**
+    * Return the end marker.
+    *
+    * @return the end marker
+    */
    public MarkerSpec getMarkerEnd() {
       return markerEnd;
    }
 
+   /**
+    * Set the end marker.
+    *
+    * @param markerEnd the end marker
+    */
    public void setMarkerEnd(MarkerSpec markerEnd) {
       this.markerEnd = markerEnd;
    }
 
+   /**
+    * Set the context fill used by markers.
+    *
+    * @param fill the fill paint
+    */
    public void setContextFill(Paint fill) {
       this.contextFill = fill;
    }
 
+   /**
+    * Return the context fill used by markers.
+    *
+    * @return the fill paint
+    */
    public Paint getContextFill() {
       return contextFill;
    }
 
+   /**
+    * Set the context node used for marker evaluation.
+    *
+    * @param node the context node
+    */
    public void setContextNode(Node node) {
       this.contextNode = node;
    }
 
+   /**
+    * Return the context node used for marker evaluation.
+    *
+    * @return the context node
+    */
    public Node getContextNode() {
       return contextNode;
    }
 
+   /**
+    * Set the context stroke used by markers.
+    *
+    * @param stroke the stroke paint
+    */
    public void setContextStroke(Paint stroke) {
       this.contextStroke = stroke;
    }
 
+   /**
+    * Return the context stroke used by markers.
+    *
+    * @return the stroke paint
+    */
    public Paint getContextStroke() {
       return contextStroke;
    }

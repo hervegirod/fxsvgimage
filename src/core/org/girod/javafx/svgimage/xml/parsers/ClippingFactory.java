@@ -54,13 +54,28 @@ import org.girod.javafx.svgimage.xml.builders.SVGTextBuilder;
 public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
 
+   /**
+    * Create a factory for clipping paths.
+    */
    public ClippingFactory() {
    }
 
+   /**
+    * Register a clip specification by id.
+    *
+    * @param id the clip id
+    * @param node the clip definition node
+    */
    public void addClipSpec(String id, XMLNode node) {
       clipSpecs.put(id, node);
    }
 
+   /**
+    * Return true if a clip spec is registered for the id.
+    *
+    * @param id the clip id
+    * @return true if the clip spec exists
+    */
    public boolean hasClip(String id) {
       return clipSpecs.containsKey(id);
    }

@@ -54,50 +54,127 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
  * @version 1.4
  */
 public abstract class GradientSpec implements SVGTags {
+   /**
+    * Optional reference to another gradient spec.
+    */
    protected String href = null;
+   /**
+    * Gradient identifier.
+    */
    protected String id = null;
+   /**
+    * Source XML node for this gradient.
+    */
    protected XMLNode xmlNode = null;
+   /**
+    * True once the gradient has been resolved.
+    */
    protected boolean isResolved = false;
+   /**
+    * List of stops defined for this gradient.
+    */
    protected List<StopSpec> specStops = new ArrayList<>();
+   /**
+    * Optional list of transforms applied to the gradient.
+    */
    protected List<Transform> transformList = null;
 
+   /**
+    * Create a gradient spec from an XML node.
+    *
+    * @param node the gradient XML node
+    */
    public GradientSpec(XMLNode node) {
       this.xmlNode = node;
    }
 
+   /**
+    * Create a gradient spec from an XML node with a reference href.
+    *
+    * @param node the gradient XML node
+    * @param href the referenced gradient id
+    */
    public GradientSpec(XMLNode node, String href) {
       this.xmlNode = node;
       this.href = href;
    }
    
+   /**
+    * Set the gradient id.
+    *
+    * @param id the gradient id
+    */
    public void setID(String id) {
       this.id = id;
    }
    
+   /**
+    * Return the gradient id.
+    *
+    * @return the gradient id
+    */
    public String getID() {
       return id;
    }   
 
+   /**
+    * Return the backing XML node.
+    *
+    * @return the XML node
+    */
    public XMLNode getNode() {
       return xmlNode;
    }
 
+   /**
+    * Return true if the gradient has been resolved.
+    *
+    * @return true if resolved
+    */
    public boolean isResolved() {
       return isResolved;
    }
 
+   /**
+    * Return the resolved JavaFX paint.
+    *
+    * @return the paint
+    */
    public abstract Paint getPaint();
 
+   /**
+    * Resolve the gradient using referenced gradients and viewport.
+    *
+    * @param gradients the gradient map by id
+    * @param viewport the viewport
+    */
    public abstract void resolve(Map<String, GradientSpec> gradients, Viewport viewport);
 
+   /**
+    * Set the gradient transform list.
+    *
+    * @param transformList the transform list
+    */
    public void setTransformList(List<Transform> transformList) {
       this.transformList = transformList;
    }
 
+   /**
+    * Return the gradient transform list.
+    *
+    * @return the transform list
+    */
    public List<Transform> getTransformList() {
       return transformList;
    }
 
+   /**
+    * Parse a gradient position attribute value.
+    *
+    * @param xmlNode the gradient node
+    * @param id the attribute name
+    * @return the parsed position
+    */
    protected double getGradientPos(XMLNode xmlNode, String id) {
       String attrvalue = xmlNode.getAttributeValue(id);
       if (attrvalue.endsWith("%") && attrvalue.length() > 1) {
@@ -108,6 +185,12 @@ public abstract class GradientSpec implements SVGTags {
       }
    }
 
+   /**
+    * Map a spread method string to a JavaFX cycle method.
+    *
+    * @param value the spread method value
+    * @return the cycle method
+    */
    protected CycleMethod getCycleMethod(String value) {
       switch (value) {
          case SPREAD_REFLECT:
@@ -119,16 +202,35 @@ public abstract class GradientSpec implements SVGTags {
       }
    }
 
+   /**
+    * Add a stop to this gradient.
+    *
+    * @param offset the stop offset
+    * @param opacity the stop opacity
+    * @param color the stop color
+    * @return the created stop spec
+    */
    public StopSpec addStop(double offset, double opacity, Color color) {
       StopSpec stop = new StopSpec(offset, opacity, color);
       specStops.add(stop);
       return stop;
    }
 
+   /**
+    * Return the list of stop specifications.
+    *
+    * @return the stop specs
+    */
    public List<StopSpec> getStops() {
       return specStops;
    }
 
+   /**
+    * Convert stop specs to JavaFX stops.
+    *
+    * @param specstops the stop specs
+    * @return the JavaFX stops
+    */
    protected List<Stop> convertStops(List<GradientSpec.StopSpec> specstops) {
       List<Stop> stops = new ArrayList<>();
       Iterator<GradientSpec.StopSpec> it = specstops.iterator();
@@ -140,6 +242,14 @@ public abstract class GradientSpec implements SVGTags {
       return stops;
    }
 
+   /**
+    * Build stop specs from XML stop children.
+    *
+    * @param spec the gradient spec to populate
+    * @param xmlNode the gradient XML node
+    * @param kindOfGradient the gradient element name
+    * @return the stop specs
+    */
    protected List<GradientSpec.StopSpec> buildStops(GradientSpec spec, XMLNode xmlNode, String kindOfGradient) {
       List<GradientSpec.StopSpec> stops = new ArrayList<>();
       Iterator<XMLNode> it = xmlNode.getChildren().iterator();
@@ -194,11 +304,30 @@ public abstract class GradientSpec implements SVGTags {
       return stops;
    }
 
+   /**
+    * Stop specification for a gradient.
+    */
    public static class StopSpec {
+      /**
+       * Stop offset.
+       */
       public final double offset;
+      /**
+       * Stop opacity.
+       */
       public final double opacity;
+      /**
+       * Stop color.
+       */
       public final Color color;
 
+      /**
+       * Create a stop specification.
+       *
+       * @param offset the stop offset
+       * @param opacity the stop opacity
+       * @param color the stop color
+       */
       private StopSpec(double offset, double opacity, Color color) {
          this.offset = offset;
          this.opacity = opacity;
@@ -206,15 +335,35 @@ public abstract class GradientSpec implements SVGTags {
       }
    }
 
+   /**
+    * Coordinate value with optional proportional flag.
+    */
    protected static class Coord {
+      /**
+       * Coordinate value.
+       */
       protected final double value;
+      /**
+       * True if the value is proportional.
+       */
       protected final boolean isProportional;
 
+      /**
+       * Create a non-proportional coordinate.
+       *
+       * @param value the coordinate value
+       */
       private Coord(double value) {
          this.value = value;
          this.isProportional = false;
       }
 
+      /**
+       * Create a coordinate with an explicit proportional flag.
+       *
+       * @param value the coordinate value
+       * @param isProportional true if proportional
+       */
       private Coord(double value, boolean isProportional) {
          this.value = value;
          this.isProportional = true;

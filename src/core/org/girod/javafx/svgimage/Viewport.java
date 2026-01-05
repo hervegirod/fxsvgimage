@@ -44,11 +44,20 @@ public class Viewport extends Viewbox {
    private boolean isScaled = false;
    private boolean scaleLineWidth = true;
 
+   /**
+    * Create a viewport with explicit width and height.
+    *
+    * @param width the width
+    * @param height the height
+    */
    public Viewport(double width, double height) {
       super(width, height);
       this.hasWidthAndHeight = true;
    }
 
+   /**
+    * Create a viewport without explicit width or height.
+    */
    public Viewport() {
       super(0, 0);
       this.hasWidthAndHeight = false;
