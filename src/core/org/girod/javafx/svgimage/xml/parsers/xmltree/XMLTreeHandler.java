@@ -46,7 +46,7 @@ import org.xml.sax.ext.DefaultHandler2;
 /**
  * Parse an XML File and return the associated tree of Nodes.
  *
- * @version 1.5
+ * @version 1.6
  */
 public class XMLTreeHandler extends DefaultHandler2 {
    private static final String STYLESHEET_TARGET = "xml-stylesheet";
@@ -91,23 +91,23 @@ public class XMLTreeHandler extends DefaultHandler2 {
    public XMLRoot getRoot() {
       return root;
    }
-   
+
    /**
     * Return the stylesheets.
     *
     * @return the stylesheets
-    */   
+    */
    public List<URL> getStylesheets() {
       return stylesheets;
    }
 
    @Override
    public void processingInstruction(String target, String data) throws SAXException {
-      if (target.equals(STYLESHEET_TARGET)) {
+      if (target.equals(STYLESHEET_TARGET) && parentURL != null) {
          Matcher m = STYLESHEET_PAT.matcher(data);
          if (m.matches()) {
             String href = m.group("href");
-            URL cssURL = FileUtils.getChildURL(parentURL, href);
+                        URL cssURL = FileUtils.getChildURL(parentURL, href);
             if (FileUtils.exists(cssURL)) {
                stylesheets.add(cssURL);
             }

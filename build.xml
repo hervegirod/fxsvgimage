@@ -16,7 +16,7 @@
 
    <target name="-post-init">
       <!-- JDK definition -->
-      <property name="jdk" value="C:\Program Files\Java\jdk-1.8"/>   
+      <property name="jdk" value="L:\WRK\Java\Tools\jdk1.8.0_202"/>  
       <!-- To set with your location of Java 8 JDK -->
       <property name="javadocDir" value="${jdk}/docs/api"/>
       <property name="javadocEXE" value="${jdk}/bin/javadoc.exe"/>
@@ -127,6 +127,7 @@
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
             <include name="fxsvgConverter.jar"/>
+            <include name="cssParser.jar"/>
          </fileset>
       </zip>
       <!-- zip source files  -->
@@ -147,6 +148,7 @@
             <include name="fxsvgImage.jar"/>
             <include name="fxsvgBrowser.jar"/>
             <include name="fxsvgConverter.jar"/>
+            <include name="cssParser.jar"/>
          </fileset>
          <fileset description="testlib" dir=".">
             <include name="testlib/**/*.*"/>
@@ -223,7 +225,7 @@
          </group>                            
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
          <bottom>
-            <![CDATA[<i>Copyright &#169; 2021, 2022, 2025 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
+            <![CDATA[<i>Copyright &#169; 2021, 2022, 2025, 2026 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>
          </bottom>         
       </javadoc>
    </target>                     
@@ -263,6 +265,13 @@
             <include name="org/girod/javafx/svgimage/tosvg/**/*.class"/>         
          </fileset>
       </jar>      
+      <!-- CSS Parser Jar construction -->
+      <jar description="CSS parser jar binary file" compress="true" jarfile="${dist.dir}/cssParser.jar"  >
+         <fileset defaultexcludes="yes" dir="${build.classes.dir}">
+            <include name="org/w3c/**/*.class"/>        
+            <include name="com/**/*.class"/>    
+         </fileset>
+      </jar>          
    </target>   
    
    <!-- =================================================================== -->

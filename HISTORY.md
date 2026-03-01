@@ -1,5 +1,8 @@
 # History
 
+# 1.6
+ - Add a css library, using SAC and cssParser
+
 # 1.5
  - Fix #68: Implicit line-to commands in SVG paths are not parsed correctly since version 1.4
  - Fix #75: Unable to load Material Symbols icons

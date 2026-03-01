@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: org.girod.javafx.svgimage.Main
+Class-Path: cssParser.jar
 Automatic-Module-Name: org.girod.javafx.svgimage

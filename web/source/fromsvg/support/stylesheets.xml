@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="Stylesheets handling">
+   <altTitle desc="Stylesheets" />
+   <meta desc="This article explains how Stylesheets used in SVG files are handled in the SVG to JavaFX conversion" />
+            
+   <see id="SVGLoader" />
+   <cat id="fromsvg" />
+</article>

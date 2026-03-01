@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="CSSParser2" default="default" basedir=".">
+   <description>Builds, tests, and runs the project CSSParser2.</description>
+   <import file="nbproject/build-impl.xml"/>
+   <!-- general properties definition -->   
+   <target name="-post-init" depends="-init-project" >
+      <!-- JDK definition -->
+      <property name="jdk" value="C:\Program Files\Java\jdk1.8.0_202"/>      
+      <!-- general properties definition -->
+      <property name="archiveName" value="CSSParser2"/>
+      <property name="libs.dir" value="lib" />
+      <property name="javacc.dir" value="javacc"/>
+      <property name="javacc.home" value="${javacc.dir}"/>
+      <property name="javacc.build" value="${src.dir}/com/steadystate/css/parser"/>
+      <condition property="javadoc.exists">
+         <available file="${dist.javadoc.dir}" type="dir"/>
+      </condition>
+   </target>
+   
+   <!-- =================================================================== -->
+   <!-- Non NB targets -->
+   <!-- =================================================================== -->
+   <target description="fetch version" depends="-post-init" name="version">
+      <loadproperties srcFile="${src.dir}/com/steadystate/css/resources/cssparser.properties">
+         <filterchain>
+            <linecontains>
+               <contains value="version"/>
+            </linecontains>
+         </filterchain>
+      </loadproperties>
+   </target>   
+   
+   <!-- =================================================================== -->
+   <!-- zip files -->
+   <!-- =================================================================== -->
+   <!-- zip javadocs -->
+   <target depends="version, -post-init" name="-zipjavadoc" if="javadoc.exists">
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-docs-${version}.zip">
+         <fileset description="documentation" dir="${dist.javadoc.dir}">
+            <include name="**/*"/>
+         </fileset>
+      </zip>
+   </target>
+
+   <target depends="version, -post-init" name="-zipbinaries" >
+      <!-- zip binary files -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-bin-${version}.zip">
+         <fileset description="dist" dir="./dist">
+            <include name="CSSParser2.jar"/>
+         </fileset>
+         <fileset description="libs" dir=".">
+            <include name="${libs.dir}/*.jar"/>
+         </fileset>
+         <fileset description="miscellanous" dir=".">
+            <include name="LICENSE.txt"/>
+         </fileset>         
+      </zip>
+   </target>
+
+   <!-- zip sources -->
+   <target depends="version, -post-init" name="-zipsources">
+      <!-- zip source files -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-src-${version}.zip">
+         <fileset description="source directory" dir="${src.dir}/..">
+            <include name="src/**/*.java"/>
+            <include name="src/**/*.html"/>
+            <include name="src/**/*.properties"/>
+            <include name="src/**/*.mf"/>
+            <include name="src/**/*.css"/>
+         </fileset>
+         <fileset description="dist" dir="./dist">
+            <include name="CSSParser2.jar"/>
+         </fileset>
+         <fileset description="libs" dir=".">
+            <include name="${libs.dir}/*.jar"/>
+         </fileset>
+         <fileset description="javacc" dir=".">
+            <include name="javacc/*.jar"/>
+            <include name="javacc/*.jj"/>
+         </fileset>         
+         <fileset description="miscellanous" dir=".">
+            <include name="LICENSE.txt"/>
+            <include name="nbproject/**/*.*"/>
+            <include name="build.xml"/>
+         </fileset>
+      </zip>
+   </target>
+
+   <!-- zip tests sources -->
+   <target depends="version, -post-init" name="-ziptestsources">
+      <!-- zip tests sources -->
+      <zip compress="true" defaultexcludes="true" zipfile="${dist.dir}/${archiveName}-tests-${version}.zip">
+         <fileset description="test source files" dir="${test.src.dir}/..">
+            <include name="test/**/*"/>
+         </fileset>
+      </zip>
+   </target>
+   <target depends="version, -post-init, -ziptestsources, -zipsources, -zipbinaries"
+           description="create zip files" name="zip">
+   </target>   
+   
+   <!-- =================================================================== -->
+   <!-- JavaCC build                                                        -->
+   <!-- =================================================================== -->
+   <target name="javacc clean" description="clean" depends="init, -post-init">
+      <delete>
+         <fileset dir="${javacc.build}">
+            <include name="CharStream.java"/>
+            <include name="ParserException.java"/>
+            <include name="SACParserCSS3*.java"/>
+            <include name="SACParserCSS21*.java"/>
+            <include name="Token.java"/>
+            <include name="TokenMgrError.java"/>
+         </fileset>
+      </delete>
+   </target>
+   
+   <target name="javacc" description="javacc" depends="init, -post-init">
+      <java classname="org.javacc.parser.Main" classpath="${javacc.home}/javacc-7.0.13.jar"
+            dir="${javacc.build}" failonerror="true" fork="true">
+         <arg line="-OUTPUT_DIRECTORY=."/>
+         <arg file="${javacc.home}/SACParserCSSmobileOKBasic1.jj"/>
+      </java>        
+      <java classname="org.javacc.parser.Main" classpath="${javacc.home}/javacc-7.0.13.jar"
+            dir="${javacc.build}" failonerror="true" fork="true">
+         <arg line="-OUTPUT_DIRECTORY=."/>
+         <arg file="${javacc.home}/SACParserCSS1.jj"/>
+      </java>         
+      <java classname="org.javacc.parser.Main" classpath="${javacc.home}/javacc-7.0.13.jar"
+            dir="${javacc.build}" failonerror="true" fork="true">
+         <arg line="-OUTPUT_DIRECTORY=."/>
+         <arg file="${javacc.home}/SACParserCSS2.jj"/>
+      </java>         
+      <java classname="org.javacc.parser.Main" classpath="${javacc.home}/javacc-7.0.13.jar"
+            dir="${javacc.build}" failonerror="true" fork="true">
+         <arg line="-OUTPUT_DIRECTORY=."/>
+         <arg file="${javacc.home}/SACParserCSS21.jj"/>
+      </java>      
+      <java classname="org.javacc.parser.Main" classpath="${javacc.home}/javacc-7.0.13.jar"
+            dir="${javacc.build}" failonerror="true" fork="true">
+         <arg line="-OUTPUT_DIRECTORY=."/>
+         <arg file="${javacc.home}/SACParserCSS3.jj"/>
+      </java>
+   </target>
+   <target name="all" depends="init, -post-init">
+      <antcall target="clean"/>
+      <antcall target="javacc"/>
+   </target>   
+</project>

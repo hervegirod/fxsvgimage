@@ -51,11 +51,15 @@
    The SVG nodes which have an <code>id</code> attribute can be accessed through the <source syntax="java">getNode(id)</source>
    method in the <ref id="SVGImage" /> result.
    
+   <title title="Stylesheets handling"/>
+   <moreInfo id="Stylesheets handling"/>
+   
    <title title="threading usage"/>
    You can use the library in the JavaFX Platform Thread or in any other Thread. The library will make sure that
    the conversion will be performed in the JavaFX Platform Thread, and will return the result in the calling Thread.      
             
    <see id="SVGLoader" />
    <see id="SVGImage" />
+   <see id="Stylesheets" />
    <cat id="fromsvg" />
 </article>

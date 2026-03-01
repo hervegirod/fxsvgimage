@@ -1,0 +1,18 @@
+@import "properties3.css";
+
+h2.yellow {
+   color: #FFFF00; 
+}
+
+h2.blue {
+   color: var(--color-blue); 
+}
+
+h2.grey {
+    color: #505355;
+}
+
+.red {
+    color: var(--color-red);
+}
+
