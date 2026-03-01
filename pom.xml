@@ -79,7 +79,21 @@
                <exclude>**/*.java</exclude>
             </excludes>
          </testResource>
-      </testResources>        
+      </testResources>
+      <resources>
+         <resource>
+            <directory>${project.basedir}/src/cssparser</directory>
+            <includes>
+               <include>**/*.properties</include>
+            </includes>
+         </resource>
+         <resource>
+            <directory>${project.basedir}/src/sac</directory>
+            <includes>
+               <include>**/*.properties</include>
+            </includes>
+         </resource>
+      </resources>
       <plugins>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -94,6 +108,8 @@
                   <configuration>
                      <sources>
                         <source>src/tosvg</source>
+                        <source>src/cssparser</source>
+                        <source>src/sac</source>
                      </sources>
                   </configuration>
                </execution>
@@ -116,16 +132,66 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
             <version>3.5.0</version>
-            <configuration>
-               <archive>
-                  <manifestFile>${project.basedir}/src/core/manifest.mf</manifestFile>
-               </archive>
-            </configuration>
+            <executions>
+               <execution>
+                  <id>default-jar</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+                  <configuration>
+                     <archive>
+                        <manifestFile>${project.basedir}/src/core/manifest.mf</manifestFile>
+                     </archive>
+                     <excludes>
+                        <exclude>com/steadystate/**</exclude>
+                        <exclude>org/w3c/**</exclude>
+                     </excludes>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>cssparser-jar</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+                  <configuration>
+                     <classifier>cssparser</classifier>
+                     <includes>
+                        <include>com/steadystate/**</include>
+                        <include>org/w3c/**</include>
+                     </includes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>3.2.0</version>
+            <executions>
+               <execution>
+                  <id>rename-cssparser-jar</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <target>
+                        <copy file="${project.build.directory}/${project.build.finalName}-cssparser.jar"
+                              tofile="${project.build.directory}/cssParser.jar" />
+                     </target>
+                  </configuration>
+               </execution>
+            </executions>
          </plugin>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>3.12.0</version>
+            <configuration>
+               <doclint>none</doclint>
+            </configuration>
             <executions>
                <execution>
                   <id>attach-javadocs</id>

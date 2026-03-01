@@ -17,22 +17,44 @@ For maven do the following:
       <url>https://jitpack.io</url>
     </repository>
 ```
-2. add the latest release of fxsvimage just as you would add a normal dependency e.g:
+2. add the latest release of fxsvgimage just as you would add a normal dependency e.g:
+
+**Core only** (SVG loading/conversion, no CSS stylesheet support):
 ```xml
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.5</version>
+      <version>1.6</version>
     </dependency>
 ```
-For gradle it would be
+
+**Core + CSS parser** (adds CSS stylesheet handling):
+```xml
+    <dependency>
+      <groupId>com.github.hervegirod</groupId>
+      <artifactId>fxsvgimage</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.hervegirod</groupId>
+      <artifactId>fxsvgimage</artifactId>
+      <version>1.6</version>
+      <classifier>cssparser</classifier>
+    </dependency>
+```
+
+For gradle it would be:
 ```groovy
 repositories {
   mavenCentral()
   maven { url 'https://jitpack.io' }
 }
 dependencies {
-  implementation 'com.github.hervegirod:fxsvgimage:1.5'
+  // Core only
+  implementation 'com.github.hervegirod:fxsvgimage:1.6'
+
+  // Add this for CSS stylesheet support
+  implementation 'com.github.hervegirod:fxsvgimage:1.6:cssparser'
 }
 ```
 See https://jitpack.io/ for info on the syntax for other build systems such as sbt, leiningen etc.
