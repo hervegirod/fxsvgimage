@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.svgimage.units;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -42,18 +42,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import java.net.URL;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
 
 /**
- * Unit tests for a line.
+ * Unit tests for a rect with cm and mm units.
  *
- * @version 1.6
+ * @since 1.6
  */
-public class SVGLoaderLineTest {
-   private static double DELTA = 0.001d;
+public class SVGLoaderRectUnitsTest {
 
-   public SVGLoaderLineTest() {
+   public SVGLoaderRectUnitsTest() {
    }
 
    @BeforeClass
@@ -73,23 +75,27 @@ public class SVGLoaderLineTest {
    }
 
    /**
-    * Test of load method, of class SVGLoader. Test with a line.
+    * Test of load method, of class SVGLoader. Test with a rect.
     */
    @Test
-   public void testLoadLine() throws Exception {
-      System.out.println("SVGLoaderLineTest : testLoadLine");
-      URL url = this.getClass().getResource("line-default.svg");
+   public void testLoadRect() throws Exception {
+      System.out.println("SVGLoaderRectUnitsTest : testLoadRect");
+      DPITestUtils dpiUtils = new DPITestUtils();
+      
+      URL url = this.getClass().getResource("rect_cm.svg");
       SVGImage result = SVGLoader.load(url);
       assertNotNull("SVGImage should not be null", result);
 
       ObservableList<Node> children = result.getChildren();
       assertEquals("Must have one child", 1, children.size());
       Node child = children.get(0);
-      assertTrue("Child must be a Line", child instanceof Line);
-      Line line = (Line) child;
-      assertEquals("x1", 0, line.getStartX(), DELTA);
-      assertEquals("y1", 0, line.getStartY(), DELTA);
-      assertEquals("x2", 32, line.getEndX(), DELTA);;
-      assertEquals("y2", 32, line.getEndY(), DELTA);
+      assertTrue("Child must be a Group", child instanceof Group);
+      Group group = (Group) child;
+      assertEquals("Must have one child", 1, group.getChildren().size());
+      child = group.getChildren().get(0);
+      assertTrue("Child must be a Rectangle", child instanceof Rectangle);
+      Rectangle rect = (Rectangle)child;
+      assertEquals("width", dpiUtils.cmToPixels(4), rect.getWidth(), 0.05d);
+      assertEquals("height", dpiUtils.cmToPixels(2), rect.getHeight(), 0.05d);      
    }
 }

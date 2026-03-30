@@ -5,15 +5,36 @@
    <img id="browser" />
    
    <title title="menu" />
-   The browser allows to:
+   The browser has two menus:
+   <ul>
+      <li>The file menu allows to open or save a SVG image</li>
+      <li>The tools menu allows to manage the settings of the browser</li>      
+   </ul>   
+   
+   <title level="2" title="file menu" />
+   The file menu allows to:
    <ul>
       <li>Open a SVG file using the library</li>
-      <li>Save the opened SVG file as a png of jpeg image</li> 
-      <li>Refresh the currently selected image</li>     
+      <li>Save the opened SVG file as a png of jpeg image</li>      
    </ul>
    
+   <title level="2" title="tools menu" />
+   The tools menu allows to manage the settings of the browser.
+   <img id="browserSettings" />
+   The settings has two parameters:
+   <ul>
+      <li>The "Background" checkbox allows to add a background to images opened in the browser</li>
+      <li>The "Background Color" color picker allows to specify the background color if the "Background" checkbox has been set</li>      
+   </ul>
+   <img id="browserSettings2" />
+   Adding a background to the images opened in the browser will allow to see the cotnent of the SVG file in the case where the color of the elements
+   in the image are white (which is the default color of the tab in the brwoser panel).
+   
+   For example, when setting a black color for the backtround, you will have:
+   <img id="browserSettings3" />
+   
    <title title="zooming" />   
-   You can zoom or dezoom the image by using the mouse wheel or the zoom commands.
+   You can zoom or dezoom the image by using the mouse wheel or the zoom commands on the toolbar.
    
    <title title="Refresh the currently selected image" />   
    You can refresh the currently selected image by right clicking on the selected tab and select "Refresh". It can be useful if you have modified the 

@@ -2,6 +2,9 @@
 
 # 1.6
  - Add a css library, using SAC and cssParser
+ - Fix #85: Add support for units in shapes lengths and positions
+ - Fix #86: Add support for defining a background for the images in the SVG Browser
+ - Fix #88: Support xml:space specification
 
 # 1.5
  - Fix #68: Implicit line-to commands in SVG paths are not parsed correctly since version 1.4

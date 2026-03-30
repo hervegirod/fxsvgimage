@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,64 +32,22 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import java.net.URL;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.shape.Line;
-
 /**
- * Unit tests for a line.
+ * The enumeration specifyng how size values are processed.
  *
- * @version 1.6
+ * @since 1.6
  */
-public class SVGLoaderLineTest {
-   private static double DELTA = 0.001d;
-
-   public SVGLoaderLineTest() {
-   }
-
-   @BeforeClass
-   public static void setUpClass() {
-   }
-
-   @AfterClass
-   public static void tearDownClass() {
-   }
-
-   @Before
-   public void setUp() {
-   }
-
-   @After
-   public void tearDown() {
-   }
-
+public interface SizeType {
    /**
-    * Test of load method, of class SVGLoader. Test with a line.
+    * {@value}: the default way units are processed in the CSS standard. The screen DPI is considered as 96 DPI.
     */
-   @Test
-   public void testLoadLine() throws Exception {
-      System.out.println("SVGLoaderLineTest : testLoadLine");
-      URL url = this.getClass().getResource("line-default.svg");
-      SVGImage result = SVGLoader.load(url);
-      assertNotNull("SVGImage should not be null", result);
-
-      ObservableList<Node> children = result.getChildren();
-      assertEquals("Must have one child", 1, children.size());
-      Node child = children.get(0);
-      assertTrue("Child must be a Line", child instanceof Line);
-      Line line = (Line) child;
-      assertEquals("x1", 0, line.getStartX(), DELTA);
-      assertEquals("y1", 0, line.getStartY(), DELTA);
-      assertEquals("x2", 32, line.getEndX(), DELTA);;
-      assertEquals("y2", 32, line.getEndY(), DELTA);
-   }
+   public static char CSS_DEFAULT = 0;
+   /**
+    * {@value}: The actual screen DPI is used.
+    */
+   public static char SCREEN_DPI = 1;
+   /**
+    * {@value}: The screen DPI is specified independently from the screen DPI.
+    */
+   public static char FORCED_DPI = 2;
 }

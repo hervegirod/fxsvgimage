@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import javafx.scene.Node;
 /**
  * Represents a viewbox.
  *
- * @version 1.2
+ * @version 1.6
  */
 public class Viewbox {
    /**
@@ -72,6 +72,7 @@ public class Viewbox {
     * True if the "preserveAspectRatio" attribute has a value different from "none".
     */
    protected boolean preserveAspectRatio = true;
+   protected double dpi = 96;
 
    /**
     * Create a viewbox with explicit width and height.
@@ -80,9 +81,30 @@ public class Viewbox {
     * @param height the height
     */
    public Viewbox(double width, double height) {
+      this(96, width, height);
+   }
+   
+   /**
+    * Create a viewbox with explicit width and height.
+    *
+    * @param dpi the dpi
+    * @param width the width
+    * @param height the height
+    */
+   public Viewbox(double dpi, double width, double height) {
+      this.dpi = dpi;      
       this.width = width;
       this.height = height;
       this.hasWidthAndHeight = true;
+   }   
+   
+   /**
+    * Return the screen dpi.
+    *
+    * @return the dpi
+    */
+   public double getDPI() {
+      return dpi;
    }
    
    /**

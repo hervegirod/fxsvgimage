@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<svg width="10cm" height="3cm" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <text x="4cm" y="5cm" font-size="12mm" fill="blue" >
+      Inline character data
+   </text>
+</svg>

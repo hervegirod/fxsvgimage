@@ -15,8 +15,7 @@
    
    <title title="parameters"/>
    <moreInfo id="LoaderParameters" />
-   By default the result has the same size as the input SVG image. However several parameters allow to 
-   configure the result:
+   By default the result has the same size as the input SVG image. However several parameters allow to configure the result:
    <ul>
       <li>It is possible to specify the width of the result (the resulting JavaFX result will have the same
          form factor as the SVG input</li>

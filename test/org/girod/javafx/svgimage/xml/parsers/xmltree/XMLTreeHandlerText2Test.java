@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025 Hervé Girod
+Copyright (c) 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
 /**
  * Node parsing tests for texts.
  *
- * @since 1.3
+ * @version 1.6
  */
 public class XMLTreeHandlerText2Test {
 
@@ -89,7 +89,7 @@ public class XMLTreeHandlerText2Test {
       assertEquals("node name", "text", textNode.getName());
       String cdata = textNode.getCDATA();
       assertNotNull("Node cdata must not be null", cdata);
-      assertEquals("node cdata", "I Love ", cdata);  
+      assertEquals("node cdata", "I Love", cdata);  
       
       List<ElementNode> allChildren = textNode.getAllChildren();
       assertNotNull("All children must not be null", allChildren);
@@ -97,7 +97,7 @@ public class XMLTreeHandlerText2Test {
       
       ElementNode theNode = allChildren.get(0);
       assertTrue("Must be an XMLTextNode", theNode instanceof XMLTextNode);
-      assertEquals("Text content", "I Love ", theNode.getText());  
+      assertEquals("Text content", "I Love", theNode.getText());  
       
       theNode = allChildren.get(1);
       assertTrue("Must be an XMLNode", theNode instanceof XMLNode);

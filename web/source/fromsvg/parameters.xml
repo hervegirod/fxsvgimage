@@ -2,7 +2,7 @@
 <article desc="LoaderParameters">
    <altTitle desc="SVGLoader parameters" />
    <meta desc="This article presents the usage of the SVGLoader parameters" />
-   The<javadoc api="api" path="org.girod.javafx.svgimage.LoaderParameters" /> class allows to specify how you want to load the SVG content by the 
+   The <javadoc api="api" path="org.girod.javafx.svgimage.LoaderParameters" /> class allows to specify how you want to load the SVG content by the 
    <ref id="SVGLoader" />.
    
    <title title="parameters" />
@@ -86,8 +86,7 @@
    </pre> 
    
    <title level="2" title="applyViewportPosition" keepCase="true"/>
-   The <code>applyViewportPosition</code> parameter specifies if the x and x coordinates of the viewPort position must
-   be taken into account in the result.
+   The <code>applyViewportPosition</code> parameter specifies if the x and x coordinates of the viewPort position must be taken into account in the result.
 
    By default the SVG viewPort position will be taken into account.    
    
@@ -106,6 +105,16 @@
       JavaFX does not position correctly the characters of very small texts (smaller that 1 pt). A solution to fix this problem is to draw each character
       separately and for example put them on a HBox.
    </messageBox>      
+   
+   <title level="2" title="sizeType" keepCase="true"/>
+   <moreInfo id="units support" />
+   The <code>sizeType</code> parameter specifies how sizes and dimensions which are not defined in pixels will be managed by the loader:
+   <ul>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="CSS_DEFAULT"/> will use the default value for the CSS and SVG standards, which is: 96
+         dpi regardless of the dpi of the screen. It is the default value of this parameter</li> 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="SCREEN_DPI"/> will use the dpi of the screen</li>     
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="FORCED_DPI"/> will force the dpi</li>   
+   </ul>
                
    <see id="SVGLoader" />               
    <cat id="fromsvg" />

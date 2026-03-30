@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.svgimage.implicit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +44,9 @@ import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
+import org.girod.javafx.svgimage.Viewport;
 import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
 
 /**

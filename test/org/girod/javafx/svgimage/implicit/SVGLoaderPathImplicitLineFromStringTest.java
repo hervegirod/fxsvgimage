@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,30 +30,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.svgimage.implicit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.shape.SVGPath;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import java.net.URL;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.shape.Line;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Unit tests for a line.
+ * Unit tests for several a paht with an horizontal line.
  *
- * @version 1.6
+ * @since 1.6
  */
-public class SVGLoaderLineTest {
-   private static double DELTA = 0.001d;
+public class SVGLoaderPathImplicitLineFromStringTest {
 
-   public SVGLoaderLineTest() {
+   public SVGLoaderPathImplicitLineFromStringTest() {
    }
 
    @BeforeClass
@@ -73,23 +73,25 @@ public class SVGLoaderLineTest {
    }
 
    /**
-    * Test of load method, of class SVGLoader. Test with a line.
+    * Test loading the same SVG from a string.
     */
    @Test
-   public void testLoadLine() throws Exception {
-      System.out.println("SVGLoaderLineTest : testLoadLine");
-      URL url = this.getClass().getResource("line-default.svg");
-      SVGImage result = SVGLoader.load(url);
+   public void testImplicitLineToFromString() throws Exception {
+      System.out.println("SVGLoaderPathImplicitLineFromStringTest : testImplicitLineToFromString");
+      String svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\" width=\"24px\" fill=\"#1f1f1f\">"
+              + "<path d=\"M784-120 532-372T380-840q0 44-14 83 Z\"/>"
+              + "</svg>";
+
+      SVGImage result = SVGLoader.load(svg);
       assertNotNull("SVGImage should not be null", result);
 
       ObservableList<Node> children = result.getChildren();
       assertEquals("Must have one child", 1, children.size());
       Node child = children.get(0);
-      assertTrue("Child must be a Line", child instanceof Line);
-      Line line = (Line) child;
-      assertEquals("x1", 0, line.getStartX(), DELTA);
-      assertEquals("y1", 0, line.getStartY(), DELTA);
-      assertEquals("x2", 32, line.getEndX(), DELTA);;
-      assertEquals("y2", 32, line.getEndY(), DELTA);
+      assertTrue("Child must be an SVGPath", child instanceof SVGPath);
+
+      String content = ((SVGPath) child).getContent();
+      assertNotNull("SVGPath content should not be null", content);
+      assertTrue("Content should contain implicit L command from M's extra pair", content.contains("L "));
    }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import javafx.animation.Animation;
 import javafx.scene.paint.Paint;
+import javafx.stage.Screen;
 import org.girod.javafx.svgimage.xml.parsers.ClippingFactory;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.GradientSpec;
@@ -51,7 +52,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 1.3
+ * @version 1.6
  */
 public class LoaderContext {
    /**
@@ -96,6 +97,8 @@ public class LoaderContext {
    public final Map<String, MarkerSpec> markers = new HashMap<>();
    private final Map<String, XMLNode> namedNodes = new HashMap<>();
    private final Map<String, SymbolSpec> symbols = new HashMap<>();
+   private double dpi = 96;
+   private static double SCREEN_DPI = -1;
    /**
     * The animations.
     */
@@ -117,6 +120,44 @@ public class LoaderContext {
       this.root = root;
       this.params = params;
       this.url = url;
+      applySizeType();
+   }
+
+   private void applySizeType() {
+      switch (params.sizeType) {
+         case SizeType.CSS_DEFAULT:
+            this.dpi = 96;
+            break;
+         case SizeType.FORCED_DPI:
+            this.dpi = params.dpi;
+            if (this.dpi <= 0) {
+               this.dpi = 96;
+            }
+            break;
+         case SizeType.SCREEN_DPI:
+            if (SCREEN_DPI == -1) {
+               try {
+                  SCREEN_DPI = Screen.getPrimary().getDpi();
+               } catch (Exception e) {
+                  SCREEN_DPI = 96;
+               }
+            }
+            this.dpi = SCREEN_DPI;
+
+            break;
+         default:
+            this.dpi = 96;
+            break;
+      }
+   }
+
+   /**
+    * Return the screen dpi.
+    *
+    * @return the dpi
+    */
+   public double getDPI() {
+      return dpi;
    }
 
    /**
@@ -127,7 +168,7 @@ public class LoaderContext {
     */
    public void addNamedNode(String id, XMLNode xmlNode) {
       namedNodes.put(id, xmlNode);
-   }  
+   }
 
    /**
     * Add a marker node.
@@ -240,8 +281,8 @@ public class LoaderContext {
     */
    public SymbolSpec getSymbol(String id) {
       return symbols.get(id);
-   }   
-   
+   }
+
    /**
     * Return true if there are animations.
     *
@@ -249,8 +290,8 @@ public class LoaderContext {
     */
    public boolean hasAnimations() {
       return !animations.isEmpty();
-   }   
-   
+   }
+
    /**
     * Return the animations.
     *
@@ -258,7 +299,7 @@ public class LoaderContext {
     */
    public List<Animation> getAnimations() {
       return animations;
-   }      
+   }
 
    /**
     * Add an animation.

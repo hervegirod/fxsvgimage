@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025 Hervé Girod
+Copyright (c) 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 /**
  * The text builder.
  *
- * @since 1.3
+ * @version 1.6
  */
 public class SVGTextBuilder {
    private SVGTextBuilder() {
@@ -179,7 +179,7 @@ public class SVGTextBuilder {
       }
       double size = 12d;
       if (hasSize) {
-         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
+         size = ParserUtils.parseFontSize(viewport.getDPI(), xmlNode.getAttributeValue(FONT_SIZE));
       }
       size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
@@ -233,7 +233,7 @@ public class SVGTextBuilder {
       }
       double size = 12d;
       if (hasSize) {
-         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
+         size = ParserUtils.parseFontSize(viewport.getDPI(), xmlNode.getAttributeValue(FONT_SIZE));
       }
       size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
@@ -380,7 +380,7 @@ public class SVGTextBuilder {
       }
       double size = 12d;
       if (hasSize) {
-         size = ParserUtils.parseFontSize(xmlNode.getAttributeValue(FONT_SIZE));
+         size = ParserUtils.parseFontSize(viewport.getDPI(), xmlNode.getAttributeValue(FONT_SIZE));
       }
       size = viewport.scaleLength(size);
       FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));

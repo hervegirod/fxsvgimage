@@ -45,14 +45,14 @@ import org.girod.javafx.svgimage.xml.parsers.LengthParser;
 /**
  * An XML Node in an XML File.
  *
- * @version 1.3
+ * @version 1.5
  */
 public class XMLNode implements ElementNode {
    /**
     * The node name.
     */
    protected String name = null;
-   
+
    /**
     * The node parent.
     */
@@ -68,7 +68,7 @@ public class XMLNode implements ElementNode {
    /**
     * All the children nodes.
     */
-   private final List<ElementNode> allChildren = new ArrayList<>();   
+   private final List<ElementNode> allChildren = new ArrayList<>();
    /**
     * The attributes.
     */
@@ -78,6 +78,10 @@ public class XMLNode implements ElementNode {
     * The CDATA content.
     */
    private String cData = null;
+   /**
+    * The xml.space type.
+    */
+   protected char xmlSpaceType = XMLSpaceType.DEFAULT;
 
    /**
     * Create the Node.
@@ -107,6 +111,7 @@ public class XMLNode implements ElementNode {
          this.name = nodeName;
       }
       this.nodeParent = parent;
+      this.xmlSpaceType = parent.xmlSpaceType;
       constructDefaultAttributes();
    }
 
@@ -152,6 +157,25 @@ public class XMLNode implements ElementNode {
    void setParent(XMLNode parent, int index) {
       this.nodeParent = parent;
       this.index = index;
+      this.xmlSpaceType = parent.getXMLSpaceType();
+   }
+   
+   /**
+    * Set the xml.space type.
+    *
+    * @param xmlSpaceType the xml.space type
+    */
+   public void setXMLSpaceType(char xmlSpaceType) {
+      this.xmlSpaceType = xmlSpaceType;
+   }   
+
+   /**
+    * Return the xml.space type.
+    *
+    * @return the xml.space type
+    */
+   public char getXMLSpaceType() {
+      return xmlSpaceType;
    }
 
    /**
@@ -171,7 +195,7 @@ public class XMLNode implements ElementNode {
    public List<XMLNode> getChildren() {
       return children;
    }
-   
+
    /**
     * Return the ordered list of all children of this Node.
     *
@@ -179,7 +203,7 @@ public class XMLNode implements ElementNode {
     */
    public List<ElementNode> getAllChildren() {
       return allChildren;
-   }   
+   }
 
    /**
     * Return the first child of the Node.
@@ -192,7 +216,7 @@ public class XMLNode implements ElementNode {
       } else {
          return children.get(0);
       }
-   }   
+   }
 
    /**
     * Return the last child of the Node.
@@ -206,7 +230,7 @@ public class XMLNode implements ElementNode {
          return children.get(children.size() - 1);
       }
    }
-   
+
    /**
     * Return the first element node child of the Node.
     *
@@ -218,8 +242,8 @@ public class XMLNode implements ElementNode {
       } else {
          return allChildren.get(0);
       }
-   }   
-   
+   }
+
    /**
     * Return the last element node child of the Node.
     *
@@ -231,7 +255,7 @@ public class XMLNode implements ElementNode {
       } else {
          return allChildren.get(allChildren.size() - 1);
       }
-   }   
+   }
 
    /**
     * Return the next sibling of the Node.
@@ -658,7 +682,7 @@ public class XMLNode implements ElementNode {
    public String getCDATA() {
       return cData;
    }
-   
+
    /**
     * Return the text content for the node.
     *
@@ -667,7 +691,7 @@ public class XMLNode implements ElementNode {
    @Override
    public String getText() {
       return cData;
-   }    
+   }
 
    /**
     * Return true if there is a the CDATA content for the node.

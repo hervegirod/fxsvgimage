@@ -107,7 +107,7 @@ public class XMLTreeHandler extends DefaultHandler2 {
          Matcher m = STYLESHEET_PAT.matcher(data);
          if (m.matches()) {
             String href = m.group("href");
-                        URL cssURL = FileUtils.getChildURL(parentURL, href);
+            URL cssURL = FileUtils.getChildURL(parentURL, href);
             if (FileUtils.exists(cssURL)) {
                stylesheets.add(cssURL);
             }
@@ -129,7 +129,7 @@ public class XMLTreeHandler extends DefaultHandler2 {
       if (!nodes.empty() && buf != null) {
          XMLNode _node = nodes.peek();
          String cdata = buf.toString();
-         String trimmed = getTrimmedTextContent(cdata);
+         String trimmed = getTrimmedTextContent(cdata, node.getXMLSpaceType());
          if (!trimmed.isEmpty()) {
             _node.addChild(new XMLTextNode(_node, trimmed));
             if (!node.hasCDATA()) {
@@ -147,7 +147,7 @@ public class XMLTreeHandler extends DefaultHandler2 {
          node = nodes.pop();
          if (buf != null) {
             String cdata = buf.toString();
-            String trimmed = getTrimmedTextContent(cdata);
+            String trimmed = getTrimmedTextContent(cdata, node.getXMLSpaceType());
             if (!trimmed.isEmpty()) {
                node.addChild(new XMLTextNode(node, trimmed));
                if (!node.hasCDATA()) {
@@ -170,12 +170,17 @@ public class XMLTreeHandler extends DefaultHandler2 {
       }
    }
 
-   private String getTrimmedTextContent(String cdata) {
+   private String getTrimmedTextContent(String cdata, char xmlSpaceType) {
       String trimmed = cdata.trim();
       Matcher m = TRIM.matcher(cdata);
-      if (m.matches()) {
-         if (m.group("left") != null) {
-            trimmed = trimmed + " ";
+      if (xmlSpaceType == XMLSpaceType.PRESERVE) {
+         if (m.matches()) {
+            if (m.group("left") != null) {
+               trimmed = m.group("left") + trimmed;
+            }
+            if (m.group("right") != null) {
+               trimmed = m.group("right") + trimmed;
+            }            
          }
       }
       return trimmed;
@@ -191,7 +196,7 @@ public class XMLTreeHandler extends DefaultHandler2 {
       XMLNode childNode;
       if (buf != null && node != null) {
          String cdata = buf.toString();
-         String trimmed = getTrimmedTextContent(cdata);
+         String trimmed = getTrimmedTextContent(cdata, node.getXMLSpaceType());
          if (!trimmed.isEmpty()) {
             if (!node.hasCDATA()) {
                node.setCDATA(trimmed);
@@ -213,6 +218,14 @@ public class XMLTreeHandler extends DefaultHandler2 {
       for (int i = 0; i < attr.getLength(); i++) {
          String attrname = attr.getQName(i);
          String attrvalue = attr.getValue(i);
+         if (attrname.equals("xml:space")) {
+            if (attrvalue.equals("preserve")) {
+               childNode.setXMLSpaceType(XMLSpaceType.PRESERVE);
+            } else if (attrvalue.equals("default")) {
+               childNode.setXMLSpaceType(XMLSpaceType.DEFAULT);
+
+            }
+         }
          childNode.addAttribute(attrname, attrvalue);
       }
       if (node != null) {

@@ -50,6 +50,7 @@ public class XMLRoot extends XMLNode {
     */
    public XMLRoot(String nodeName) {
       super(nodeName);
+      this.xmlSpaceType = XMLSpaceType.DEFAULT;
    }
 
    /**

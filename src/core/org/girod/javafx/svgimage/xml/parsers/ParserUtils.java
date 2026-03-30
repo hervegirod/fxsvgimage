@@ -73,11 +73,13 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.3
+ * @version 1.6
  */
 public class ParserUtils implements SVGTags {
+   private static final double INCH_TO_MM = 25.4d;
    private static final Pattern ANGLE = Pattern.compile("(<value>?-?\\d+(\\.\\d+)?)(<unit>?[a-z]+)?");
    private static final Pattern ZERO = Pattern.compile("[\\-−+]?0+");
+   private static final Pattern SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
    private static final Pattern FONT_SIZE_PAT = Pattern.compile("(\\d+\\.?\\d*)([a-z]+)?");
    private static final Pattern URL_PAT = Pattern.compile("url\\('?([^']+)'?\\)");
    private static final Pattern IMG_URL = Pattern.compile("data:image/(\\w+);base64,([^ ]+)\\s*");
@@ -103,9 +105,9 @@ public class ParserUtils implements SVGTags {
       }
    }
 
-   /** 
+   /**
     * Return an angle value in degrees.
-    * 
+    *
     * @param value the angle value as a sgring
     * @return the angle value in degrees
     */
@@ -147,7 +149,7 @@ public class ParserUtils implements SVGTags {
          String content = m.group(2);
          byte[] imgarray = Base64.getDecoder().decode(content);
          Image image;
-         try (InputStream stream = new ByteArrayInputStream(imgarray)) {
+         try ( InputStream stream = new ByteArrayInputStream(imgarray)) {
             image = new Image(stream, width, height, true, true);
             return image;
          } catch (IOException e) {
@@ -241,12 +243,13 @@ public class ParserUtils implements SVGTags {
    public static FillRule getClipRule(XMLNode node) {
       if (node.hasAttribute(CLIP_RULE)) {
          String value = node.getAttributeValue(CLIP_RULE);
-         if (value.equals(NON_ZERO)) {
-            return FillRule.NON_ZERO;
-         } else if (value.equals(EVEN_ODD)) {
-            return FillRule.EVEN_ODD;
-         } else {
-            return null;
+         switch (value) {
+            case NON_ZERO:
+               return FillRule.NON_ZERO;
+            case EVEN_ODD:
+               return FillRule.EVEN_ODD;
+            default:
+               return null;
          }
       } else {
          return null;
@@ -262,12 +265,13 @@ public class ParserUtils implements SVGTags {
    public static FillRule getFillRule(XMLNode node) {
       if (node.hasAttribute(FILL_RULE)) {
          String value = node.getAttributeValue(FILL_RULE);
-         if (value.equals(NON_ZERO)) {
-            return FillRule.NON_ZERO;
-         } else if (value.equals(EVEN_ODD)) {
-            return FillRule.EVEN_ODD;
-         } else {
-            return null;
+         switch (value) {
+            case NON_ZERO:
+               return FillRule.NON_ZERO;
+            case EVEN_ODD:
+               return FillRule.EVEN_ODD;
+            default:
+               return null;
          }
       } else {
          return null;
@@ -401,6 +405,57 @@ public class ParserUtils implements SVGTags {
    /**
     * Parse a double value with error handling.
     *
+    * @param dpi the dpi
+    * @param valueS the string value
+    * @return the parsed double, or 0 on error
+    */
+   public static double parseDoubleSizeProtected(double dpi, String valueS) {
+      valueS = valueS.replace('−', '-');
+      Matcher m = ZERO.matcher(valueS);
+      if (m.matches()) {
+         return 0d;
+      } else {
+         m = SIZE_PAT.matcher(valueS);
+         if (m.matches()) {
+            int groupCount = m.groupCount();
+            if (groupCount == 1) {
+               double size = Double.parseDouble(valueS);
+               return size;
+            } else {
+               String value1 = m.group(1);
+               double size = Double.parseDouble(value1);
+               String unit = m.group(2);
+               if (unit == null) {
+                  return size;
+               } else {
+                  switch (unit) {
+                     case "px":
+                        return size;
+                     case "mm":
+                        return size / INCH_TO_MM * dpi;
+                     case "cm":
+                        return size / INCH_TO_MM * dpi / 10d;
+                     default:
+                        GlobalConfig.getInstance().handleParsingError("Unit " + unit + " not handled");
+                        return size;
+                  }
+               }
+            }
+         } else {
+            try {
+               double valueD = Double.parseDouble(valueS);
+               return valueD;
+            } catch (NumberFormatException e) {
+               GlobalConfig.getInstance().handleParsingError("Value " + valueS + " is not a number");
+               return 0d;
+            }
+         }
+      }
+   }
+
+   /**
+    * Parse a double value with error handling.
+    *
     * @param valueS the string value
     * @return the parsed double, or 0 on error
     */
@@ -423,10 +478,11 @@ public class ParserUtils implements SVGTags {
    /**
     * Parse a font size value with optional unit conversion.
     *
+    * @param dpi the dpi
     * @param valueS the font size string
     * @return the font size in pixels
     */
-   public static double parseFontSize(String valueS) {
+   public static double parseFontSize(double dpi, String valueS) {
       Matcher m = FONT_SIZE_PAT.matcher(valueS);
       if (m.matches()) {
          int groupCount = m.groupCount();
@@ -437,10 +493,19 @@ public class ParserUtils implements SVGTags {
             String value1 = m.group(1);
             double size = Double.parseDouble(value1);
             String unit = m.group(2);
-            if (unit != null && unit.equals("px")) {
-               // see https://stackoverflow.com/questions/12788422/svg-coordinate-system-points-vs-pixels
-               size = size * 1.25d;
-               return size;
+            if (unit != null) {
+               switch (unit) {
+                  case "px":
+                     // see https://stackoverflow.com/questions/12788422/svg-coordinate-system-points-vs-pixels
+                     size = size * 1.25d;
+                     return size;
+                  case "mm":
+                     return size / INCH_TO_MM * dpi * 1.25d;
+                  case "cm":
+                     return size / INCH_TO_MM * dpi / 10d * 1.25d;
+                  default:
+                     return size;
+               }
             } else {
                return size;
             }
@@ -606,25 +671,29 @@ public class ParserUtils implements SVGTags {
    public static void setBaselineShift(Text text, String value) {
       // http://www.svgbasics.com/font_effects_italic.html
       // https://stackoverflow.com/questions/50295199/javafx-subscript-and-superscript-text-in-textflow
-      if (value.equals(BASELINE_SUB)) {
-         text.setTranslateY(text.getFont().getSize() * 0.3);
-      } else if (value.equals(BASELINE_SUPER)) {
-         text.setTranslateY(text.getFont().getSize() * -0.3);
-      } else {
-         boolean isPercent = false;
-         if (value.endsWith("%")) {
-            isPercent = true;
-            value = value.substring(0, value.length());
-         }
-         try {
-            double shift = -Double.parseDouble(value);
-            if (isPercent) {
-               shift = shift * 100d;
+      switch (value) {
+         case BASELINE_SUB:
+            text.setTranslateY(text.getFont().getSize() * 0.3);
+            break;
+         case BASELINE_SUPER:
+            text.setTranslateY(text.getFont().getSize() * -0.3);
+            break;
+         default:
+            boolean isPercent = false;
+            if (value.endsWith("%")) {
+               isPercent = true;
+               value = value.substring(0, value.length());
             }
-            text.setTranslateY(text.getFont().getSize() * shift);
-         } catch (NumberFormatException e) {
-            GlobalConfig.getInstance().handleParsingError("Value " + value + " is not a number");
-         }
+            try {
+               double shift = -Double.parseDouble(value);
+               if (isPercent) {
+                  shift = shift * 100d;
+               }
+               text.setTranslateY(text.getFont().getSize() * shift);
+            } catch (NumberFormatException e) {
+               GlobalConfig.getInstance().handleParsingError("Value " + value + " is not a number");
+            }
+            break;
       }
    }
 
@@ -789,10 +858,11 @@ public class ParserUtils implements SVGTags {
    /**
     * Parse the viewport from the root SVG node.
     *
+    * @param dpi the dpi
     * @param xmlNode the SVG root node
     * @return the viewport
     */
-   public static Viewport parseViewport(XMLNode xmlNode) {
+   public static Viewport parseViewport(double dpi, XMLNode xmlNode) {
       // note: this is slightly incorrect. see http://tutorials.jenkov.com/svg/svg-viewport-view-box.html
       double viewboxX = 0;
       double viewboxY = 0;
@@ -805,15 +875,17 @@ public class ParserUtils implements SVGTags {
          String box = xmlNode.getAttributeValue(VIEWBOX);
          StringTokenizer tok = new StringTokenizer(box, " ,");
          if (tok.countTokens() >= 4) {
-            viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
-            viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
-            viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
-            viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
+            viewboxX = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+            viewboxY = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+            viewboxWidth = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+            viewboxHeight = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
          }
       }
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
-         width = xmlNode.getDoubleValue(WIDTH, 0);
-         height = xmlNode.getDoubleValue(HEIGHT, 0);
+         String widthS = xmlNode.getAttributeValue(WIDTH);
+         width = ParserUtils.parseDoubleSizeProtected(dpi, widthS);
+         String heightS = xmlNode.getAttributeValue(HEIGHT);
+         height = ParserUtils.parseDoubleSizeProtected(dpi, heightS);
          if (ParserUtils.isPercent(xmlNode, WIDTH)) {
             width = viewboxWidth * width / 100;
          }
@@ -824,9 +896,9 @@ public class ParserUtils implements SVGTags {
       }
       Viewport theViewport;
       if (hasWidthAndHeight) {
-         theViewport = new Viewport(width, height);
+         theViewport = new Viewport(dpi, width, height);
       } else {
-         theViewport = new Viewport();
+         theViewport = new Viewport(dpi);
       }
       if (xmlNode.hasAttribute(PRESERVE_ASPECT_RATIO)) {
          boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
@@ -860,16 +932,17 @@ public class ParserUtils implements SVGTags {
     */
    public static Viewbox parseViewbox(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(WIDTH) && xmlNode.hasAttribute(HEIGHT)) {
+         double dpi = viewport.getDPI();
          double width = xmlNode.getLengthValue(WIDTH, viewport, 0);
          double height = xmlNode.getLengthValue(HEIGHT, viewport, 0);
          if (xmlNode.hasAttribute(VIEWBOX)) {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");
             if (tok.countTokens() >= 4) {
-               double viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxX = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxY = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxWidth = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxHeight = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
                Viewbox theViewbox = new Viewbox(width, height);
                theViewbox.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
                return theViewbox;
@@ -893,16 +966,17 @@ public class ParserUtils implements SVGTags {
     */
    public static Viewbox parseMarkerViewbox(XMLNode xmlNode, Viewport viewport) {
       if (xmlNode.hasAttribute(MARKER_WIDTH) && xmlNode.hasAttribute(MARKER_HEIGHT)) {
+         double dpi = viewport.getDPI();
          double width = xmlNode.getLengthValue(MARKER_WIDTH, viewport, 0);
          double height = xmlNode.getLengthValue(MARKER_HEIGHT, viewport, 0);
          if (xmlNode.hasAttribute(VIEWBOX)) {
             String box = xmlNode.getAttributeValue(VIEWBOX);
             StringTokenizer tok = new StringTokenizer(box, " ,");
             if (tok.countTokens() >= 4) {
-               double viewboxX = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxY = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxWidth = ParserUtils.parseDoubleProtected(tok.nextToken());
-               double viewboxHeight = ParserUtils.parseDoubleProtected(tok.nextToken());
+               double viewboxX = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxY = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxWidth = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
+               double viewboxHeight = ParserUtils.parseDoubleSizeProtected(dpi, tok.nextToken());
                Viewbox theViewbox = new Viewbox(width, height);
                theViewbox.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
                return theViewbox;
