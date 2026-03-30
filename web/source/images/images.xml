@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <images>
    <image id="browser" url="browser.png" />
+   <image id="browserSettings" url="browserSettings.png" />
+   <image id="browserSettings2" url="browserSettings2.png" />
+   <image id="browserSettings3" url="browserSettings3.png" />
    <image id="clippath" url="clippath.jpg" />
    <image id="use" url="use.jpg" />   
    <image id="lineargradient" url="lineargradient.jpg" />

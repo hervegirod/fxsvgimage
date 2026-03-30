@@ -11,16 +11,52 @@
    <title title="behavior for the non relative units" />
    <ul>
       <li>The computation for the <code>ex</code> unit is an approximation, considering one 1/2 of the <code>em</code> unit</li>
-      <li>The computation for the <code>em</code> unit does not take inot account for the moment the height of the fonts</li>      
+      <li>The computation for the <code>em</code> unit does not take into account for the moment the height of the fonts</li>      
    </ul>
+   
+   <title title="size Type" />
+   <moreInfo id="LoaderParameters#sizeType" desc="LoaderParameters" />
+   The <code>sizeType</code> parameter of the <javadoc api="api" path="org.girod.javafx.svgimage.LoaderParameters" /> specifies how sizes and dimensions which are not 
+   defined in pixels will be managed by the loader:
+   <ul>
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="CSS_DEFAULT"/> will use the default value for the CSS and SVG standards, which is: 96
+         dpi regardless of the dpi of the screen. It is the default value of this parameter</li> 
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="SCREEN_DPI"/> will use the dpi of the screen</li>     
+      <li>The <javadoc api="api" path="org.girod.javafx.svgimage.SizeType" member="FORCED_DPI"/> will force the dpi</li>   
+   </ul>   
+   
+   <title level="2" title="example" />
+   Consider the following SVG file:
+   <pre syntax="xml">
+      &lt;svg width="210mm" height="297mm" viewBox="0 0 5cm 5cm"&gt;
+         &lt;g id="layer1"&gt;
+            &lt;circle fill="red" cx="2cm" cy="2cm" r="2cm" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt;      
+   </pre>
+   If we define:
+   <pre syntax="java">
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
+   </pre>   
+   
+   By default the radius of the circle will be 2 centimeters, considering the dpi as 96 pixels per inch.
+   
+   If we define:
+   <pre syntax="java">
+      LoaderParameters params = new LoaderParameters();
+      params.sizeType = SizeType.FORCED_DPI;
+      params.dpi = 76;
+      SVGImage img = SVGLoader.load(&lt;my SVG file&gt;, params);
+   </pre>
+   Then the radius of the circle will be 2 centimeters, considering the dpi as 76 pixels per inch.
    
    <title title="behavior for the % unit" />
    The "%" unit specifies a length or a position relative to the viewport. The library works in the following way:
    <ul>
       <li>If the <code>with</code> and <code>height</code> attributes are present in the SVG root, they are used
-      to specify the dimensions of the viewport</li>
+         to specify the dimensions of the viewport</li>
       <li>Else if the <code>viewBox</code> attribute is present, it will be used to get the width and height of
-      the viewport</li>
+         the viewport</li>
    </ul>
    
    <title level="2" title="limitations" />
