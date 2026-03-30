@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2025 Hervé Girod
+Copyright (c) 2021, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,10 +40,11 @@ package org.girod.javafx.svgimage;
  * <li>No width setting is applied</li>
  * <li>The animations are auto started</li>
  * <li>The resulting image is not centered</li>
- * <li>Ther viewPort position is taken into account</li>
+ * <li>The viewPort position is taken into account</li>
+ * <li>The dimension units consider the screen DPI as 96 DPI, as per the CSS standard</li>
  * </ul>
  *
- * @version 1.3
+ * @version 1.6
  */
 public class LoaderParameters implements Cloneable {
    private static final double DEFAULT_MIN_TEXT_SIZE = 1d;
@@ -79,7 +80,15 @@ public class LoaderParameters implements Cloneable {
     * The minimum font size to create complete texts. The default is {@link #DEFAULT_MIN_TEXT_SIZE}. If the font of a text is smaller than this value, then
     * the text will be crrated by concatenating a text primitive for each letter in the text.
     */
-   public double minTextSize = DEFAULT_MIN_TEXT_SIZE;      
+   public double minTextSize = DEFAULT_MIN_TEXT_SIZE;  
+   /**
+    * The size type. The default is {@link SizeType#CSS_DEFAULT}, which is 96 DPI.
+    */
+   public char sizeType = SizeType.CSS_DEFAULT;   
+   /**
+    * The forced DPI. The default is 96 DPI.
+    */
+   public double dpi = 96;      
 
    /**
     * Create loader parameters with default values.

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * This class parse a style declaration.
  *
- * @version 1.3
+ * @version 1.6
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("[^{]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -184,7 +184,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                }
                case FONT_SIZE: {
-                  double size = ParserUtils.parseFontSize(value);
+                  double size = ParserUtils.parseFontSize(viewport.getDPI(), value);
                   addProperty(styleRules, key, Styles.FONT_SIZE, size);
                   break;
                }
@@ -422,7 +422,7 @@ public class SVGStyleBuilder implements SVGTags {
                   break;
                case FONT_SIZE:
                   if (node instanceof Text) {
-                     fontSize = ParserUtils.parseFontSize(styleValue);
+                     fontSize = ParserUtils.parseFontSize(viewport.getDPI(), styleValue);
                      fontSize = viewport.scaleLength(fontSize);
                   }
                   break;

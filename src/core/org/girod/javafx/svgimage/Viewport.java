@@ -38,7 +38,7 @@ import javafx.scene.shape.Shape;
 /**
  * Represents the viewport.
  *
- * @version 1.5
+ * @version 1.6
  */
 public class Viewport extends Viewbox {
    private double scale = -1;
@@ -54,6 +54,28 @@ public class Viewport extends Viewbox {
    public Viewport(double width, double height) {
       super(width, height);
       this.hasWidthAndHeight = true;
+   }
+
+   /**
+    * Create a viewport with explicit width and height.
+    *
+    * @param dpi the dpi
+    * @param width the width
+    * @param height the height
+    */
+   public Viewport(double dpi, double width, double height) {
+      super(dpi, width, height);
+      this.hasWidthAndHeight = true;
+   }
+
+   /**
+    * Create a viewport without explicit width or height.
+    *
+    * @param dpi the dpi
+    */
+   public Viewport(double dpi) {
+      super(dpi, 0, 0);
+      this.hasWidthAndHeight = false;
    }
 
    /**

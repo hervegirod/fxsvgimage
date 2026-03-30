@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage;
+package org.girod.javafx.svgimage.units;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,16 +44,17 @@ import java.net.URL;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Line;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
 
 /**
- * Unit tests for a line.
+ * Unit tests for a line with cm and mm units.
  *
- * @version 1.6
+ * @since 1.6
  */
-public class SVGLoaderLineTest {
-   private static double DELTA = 0.001d;
+public class SVGLoaderLineUnitsTest {
 
-   public SVGLoaderLineTest() {
+   public SVGLoaderLineUnitsTest() {
    }
 
    @BeforeClass
@@ -77,8 +78,10 @@ public class SVGLoaderLineTest {
     */
    @Test
    public void testLoadLine() throws Exception {
-      System.out.println("SVGLoaderLineTest : testLoadLine");
-      URL url = this.getClass().getResource("line-default.svg");
+      System.out.println("SVGLoaderLineUnitsTest : testLoadLine");
+      DPITestUtils dpiUtils = new DPITestUtils();
+      
+      URL url = this.getClass().getResource("line_cm.svg");
       SVGImage result = SVGLoader.load(url);
       assertNotNull("SVGImage should not be null", result);
 
@@ -86,10 +89,11 @@ public class SVGLoaderLineTest {
       assertEquals("Must have one child", 1, children.size());
       Node child = children.get(0);
       assertTrue("Child must be a Line", child instanceof Line);
-      Line line = (Line) child;
-      assertEquals("x1", 0, line.getStartX(), DELTA);
-      assertEquals("y1", 0, line.getStartY(), DELTA);
-      assertEquals("x2", 32, line.getEndX(), DELTA);;
-      assertEquals("y2", 32, line.getEndY(), DELTA);
+      Line line = (Line)child;
+      assertEquals("x1", dpiUtils.cmToPixels(1), line.getStartX(), 0.05d);
+      assertEquals("y1", dpiUtils.cmToPixels(2), line.getStartY(), 0.05d); 
+      assertEquals("x2", dpiUtils.cmToPixels(3), line.getEndX(), 0.05d);
+      assertEquals("y2", dpiUtils.cmToPixels(1), line.getEndY(), 0.05d);    
+      assertEquals("stroke width", dpiUtils.mmToPixels(5), line.getStrokeWidth(), 0.05d); 
    }
 }

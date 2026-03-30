@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 1.5
+ * @version 1.6
  */
 public class SVGLoader implements SVGTags {
    private final SVGContent content;
@@ -561,7 +561,7 @@ public class SVGLoader implements SVGTags {
       String name = xmlRoot.getName();
       if (name.equals(SVG)) {
          if (viewport == null) {
-            viewport = ParserUtils.parseViewport(xmlRoot);
+            viewport = ParserUtils.parseViewport(context.getDPI(), xmlRoot);
             setViewportScaleImpl(viewport, context.params);
             context.viewport = viewport;
             if (viewport != null) {
@@ -731,7 +731,7 @@ public class SVGLoader implements SVGTags {
                break;
             case SVG:
                if (viewport == null) {
-                  viewport = ParserUtils.parseViewport(childNode);
+                  viewport = ParserUtils.parseViewport(context.getDPI(), childNode);
                   context.viewport = viewport;
                }
                node = buildGroup(childNode);

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -38,11 +38,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -51,7 +54,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -62,12 +68,19 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
@@ -75,19 +88,21 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * A sample browser.
  *
- * @version 1.3
+ * @version 1.6
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
    private final MenuBar menuBar = new MenuBar();
    private final TabPane tabPane = new TabPane();
    private double scale = 1d;
+   private boolean hasBackground = false;
+   private Color background = null;
    private final Map<Integer, SVGImage> imagesByIndex = new HashMap<>();
-
+   
    public static void main(String[] args) {
       launch(args);
    }
-
+   
    @Override
    public void start(Stage stage) {
       this.stage = stage;
@@ -100,9 +115,10 @@ public class SVGBrowser extends Application {
          }
       });
 
+      // file menu
       Menu fileMenu = new Menu("File");
       menuBar.getMenus().add(fileMenu);
-
+      
       MenuItem openItem = new MenuItem("Open");
       fileMenu.getItems().add(openItem);
       MenuItem saveItem = new MenuItem("Save Image");
@@ -113,7 +129,7 @@ public class SVGBrowser extends Application {
             save();
          }
       });
-
+      
       MenuItem exitItem = new MenuItem("Exit");
       fileMenu.getItems().add(exitItem);
       exitItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,7 +139,7 @@ public class SVGBrowser extends Application {
             System.exit(0);
          }
       });
-
+      
       openItem.setOnAction(new EventHandler<ActionEvent>() {
          @Override
          public void handle(ActionEvent t) {
@@ -131,31 +147,45 @@ public class SVGBrowser extends Application {
          }
       });
 
+      // tools menu     
+      Menu optionsMenu = new Menu("Tools");
+      menuBar.getMenus().add(optionsMenu);
+      
+      MenuItem optionsItem = new MenuItem("Settings");
+      optionsMenu.getItems().add(optionsItem);
+      optionsItem.setOnAction(new EventHandler<ActionEvent>() {
+         @Override
+         public void handle(ActionEvent t) {
+            openSettings();
+         }
+      });
+
+      // toolbar
       ToolBar toolBar = new ToolBar();
       URL url = this.getClass().getResource("zoomIn.png");
       Image img = new Image(url.toString());
       Button zoomIn = new Button("", new ImageView(img));
       toolBar.getItems().add(zoomIn);
-
+      
       zoomIn.setOnAction(new EventHandler<ActionEvent>() {
          @Override
          public void handle(ActionEvent t) {
             zoomIn();
          }
       });
-
+      
       url = this.getClass().getResource("zoomOut.png");
       img = new Image(url.toString());
       Button zoomOut = new Button("", new ImageView(img));
       toolBar.getItems().add(zoomOut);
-
+      
       zoomOut.setOnAction(new EventHandler<ActionEvent>() {
          @Override
          public void handle(ActionEvent t) {
             zoomOut();
          }
       });
-
+      
       ContextMenu contextMenu = new ContextMenu();
       MenuItem refreshItem = new MenuItem("Refresh");
       contextMenu.getItems().add(refreshItem);
@@ -165,23 +195,23 @@ public class SVGBrowser extends Application {
             refresh();
          }
       });
-
+      
       VBox vBox = new VBox();
       vBox.getChildren().add(menuBar);
       vBox.getChildren().add(toolBar);
       vBox.getChildren().add(tabPane);
-
+      
       stage.setScene(new Scene(vBox, 600, 600));
       stage.show();
    }
-
+   
    private void refresh() {
       SVGImage image = getSelectedImage();
       if (image != null) {
          this.open(image.getFile(), true);
       }
    }
-
+   
    private void zoomIn() {
       SVGImage image = getSelectedImage();
       if (image != null) {
@@ -190,7 +220,7 @@ public class SVGBrowser extends Application {
          image.setScaleY(scale);
       }
    }
-
+   
    private void zoomOut() {
       SVGImage image = getSelectedImage();
       if (image != null) {
@@ -199,22 +229,22 @@ public class SVGBrowser extends Application {
          image.setScaleY(scale);
       }
    }
-
+   
    private Node outerNode(Node node) {
       Node outerNode = centeredNode(node);
       return outerNode;
    }
-
+   
    private Node centeredNode(Node node) {
       VBox vBox = new VBox(node);
       vBox.setAlignment(Pos.CENTER);
       return vBox;
    }
-
+   
    public boolean isEmpty() {
       return tabPane.getTabs().isEmpty();
    }
-
+   
    public SVGImage getSelectedImage() {
       if (isEmpty()) {
          return null;
@@ -226,7 +256,7 @@ public class SVGBrowser extends Application {
          return null;
       }
    }
-
+   
    private void save() {
       SVGImage svgImage = getSelectedImage();
       if (svgImage == null) {
@@ -234,7 +264,7 @@ public class SVGBrowser extends Application {
       }
       FileChooser fileChooser = new FileChooser();
       fileChooser.getExtensionFilters().addAll(new ExtensionFilter("PNG Files", "*.png"),
-              new ExtensionFilter("JPEG Files", "*.jpg", ".jpeg"));
+         new ExtensionFilter("JPEG Files", "*.jpg", ".jpeg"));
       fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
       fileChooser.setTitle("Save as Image");
       File file = fileChooser.showSaveDialog(stage);
@@ -266,7 +296,70 @@ public class SVGBrowser extends Application {
       }
       svgImage.snapshot(ext, file);
    }
+   
+   private AnchorPane createLabelBox(String label) {
+      Label _label = new Label(label);
+      _label.setAlignment(Pos.CENTER);
+      AnchorPane vbox = new AnchorPane();
+      vbox.getChildren().add(_label);
+      AnchorPane.setTopAnchor(_label, 0d);
+      AnchorPane.setBottomAnchor(_label, 0d);
+      return vbox;
+   }
+   
+   private void openSettings() {
+      VBox settings = new VBox();
 
+      // has backround
+      HBox hasBackgroundLine = new HBox();
+      Insets insets = new Insets(0, 0, 0, 10);
+      hasBackgroundLine.setPadding(insets);
+      hasBackgroundLine.setAlignment(Pos.CENTER_LEFT);
+      hasBackgroundLine.setSpacing(10);
+      AnchorPane label = createLabelBox("Background");
+      hasBackgroundLine.getChildren().add(label);
+      CheckBox checkBox = new CheckBox("");
+      hasBackgroundLine.getChildren().add(checkBox);
+      settings.getChildren().add(hasBackgroundLine);
+
+      // background color
+      HBox backgroundColorLine = new HBox();
+      backgroundColorLine.setPadding(insets);
+      backgroundColorLine.setAlignment(Pos.CENTER_LEFT);
+      backgroundColorLine.setSpacing(10);
+      label = createLabelBox("Background Color");
+      backgroundColorLine.getChildren().add(label);
+      ColorPicker colorChooser = new ColorPicker(hasBackground ? background : Color.WHITE);
+      colorChooser.setDisable(true);
+      backgroundColorLine.getChildren().add(colorChooser);
+      settings.getChildren().add(backgroundColorLine);
+      
+      colorChooser.valueProperty().addListener(new ChangeListener<Color>() {
+         @Override
+         public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+            background = newValue;
+         }
+      });      
+      
+      checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+         @Override
+         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            colorChooser.setDisable(!newValue);
+            hasBackground = newValue;
+         }
+      });
+      
+      Scene settingsScene = new Scene(settings, 300, 200);
+      Stage settingsStage = new Stage();
+      settingsStage.setTitle("Settings");
+      settingsStage.setScene(settingsScene);
+      settingsStage.initStyle(StageStyle.DECORATED);
+      settingsStage.initModality(Modality.APPLICATION_MODAL);
+      settingsStage.setAlwaysOnTop(true);
+      
+      settingsStage.show();
+   }
+   
    private void open() {
       FileChooser fileChooser = new FileChooser();
       fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -277,7 +370,7 @@ public class SVGBrowser extends Application {
       }
       open(file, false);
    }
-
+   
    private void open(File file, boolean replace) {
       try {
          SVGImage image = SVGLoader.load(file.toURI().toURL());
@@ -289,19 +382,24 @@ public class SVGBrowser extends Application {
             alert.showAndWait();
             return;
          }
-
+         
          Group group = image;
          MyStackPane content = new MyStackPane(image);
+         if (hasBackground  && background != null) {
+            BackgroundFill fill = new BackgroundFill(background, CornerRadii.EMPTY, Insets.EMPTY);
+            Background _background = new Background(fill);
+            content.setBackground(_background);
+         }
          content.setPrefHeight(image.getViewportHeight());
          content.setPrefWidth(image.getViewportWidth());
-
+         
          content.setOnMouseDragged(e -> {
             double x = e.getX();
             double y = e.getY();
             content.root.setLayoutX(x);
             content.root.setLayoutY(y);
          });
-
+         
          group.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
             // keep it at least as large as the content
             content.setMinWidth(newBounds.getWidth());
@@ -334,17 +432,17 @@ public class SVGBrowser extends Application {
                   SVGImage svgImage = imagesByIndex.get(index);
                   Bounds groupBounds = svgImage.getBoundsInLocal();
                   final Bounds viewportBounds = scrollPane.getViewportBounds();
-
+                  
                   double valX = scrollPane.getHvalue() * (groupBounds.getWidth() - viewportBounds.getWidth());
                   double valY = scrollPane.getVvalue() * (groupBounds.getHeight() - viewportBounds.getHeight());
                   svgImage.setScaleX(svgImage.getScaleX() * zoomFactor);
                   svgImage.setScaleY(svgImage.getScaleY() * zoomFactor);
-
+                  
                   Point2D posInZoomTarget = svgImage.parentToLocal(new Point2D(event.getX(), event.getY()));
                   Point2D adjustment = svgImage.getLocalToParentTransform().deltaTransform(posInZoomTarget.multiply(zoomFactor - 1));
                   scrollPane.layout();
                   scrollPane.setViewportBounds(groupBounds);
-
+                  
                   groupBounds = group.getBoundsInLocal();
                   scrollPane.setHvalue((valX + adjustment.getX()) / (groupBounds.getWidth() - viewportBounds.getWidth()));
                   scrollPane.setVvalue((valY + adjustment.getY()) / (groupBounds.getHeight() - viewportBounds.getHeight()));
@@ -373,31 +471,31 @@ public class SVGBrowser extends Application {
             }
             imagesByIndex.put(tabIndex, image);
          }
-
+         
       } catch (IOException ex) {
          ex.printStackTrace();
       }
    }
-
+   
    private class MyStackPane extends StackPane {
       private boolean allowLayoutChildren = true;
       private Node root;
-
+      
       private MyStackPane(Node root) {
          super(root);
          this.root = root;
       }
-
+      
       private void allowLayoutChildren(boolean allow) {
          this.allowLayoutChildren = allow;
       }
-
+      
       @Override
       public void layoutChildren() {
          if (allowLayoutChildren) {
             super.layoutChildren();
          }
       }
-
+      
    }
 }
