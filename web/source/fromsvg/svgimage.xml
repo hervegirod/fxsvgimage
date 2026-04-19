@@ -48,6 +48,16 @@
    
    <title level="2" title="examples" />
    <pre syntax="java">
+      SVGImage image = SVGLoader.load(&lt;the SVG URL&gt;);
+      SVGImage image2 = image.scale(2d); // the new image is the same object. image2 = image
+      SVGImage image3 = image.scale(2d, true); // the new image is another object. image3 != image
+   </pre>
+   
+   <title title="cloning a SVGImage" />
+   The <javadoc api="api" path="org.girod.javafx.svgimage.SVGImage" /> clas can be cloned. The cloning is performed through a scaling with a scale of 1.
+   
+   <title level="2" title="examples" />
+   <pre syntax="java">
       SVGImage img = SVGLoader.load(&lt;my SVG file&gt;);
       
       // a new SVGImage will be created with a scale of 2

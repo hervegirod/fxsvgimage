@@ -6,12 +6,10 @@ import org.w3c.css.sac.CSSParseException;
 import org.w3c.css.sac.Condition;
 import org.w3c.css.sac.LexicalUnit;
 import org.w3c.css.sac.Locator;
-import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.Selector;
 import org.w3c.css.sac.SelectorList;
 import org.w3c.css.sac.SimpleSelector;
 
-import com.steadystate.css.parser.ParserUtils;
 
 /**
  * @author <a href="mailto:davidsch@users.sourceforge.net">David Schweinsberg</a>

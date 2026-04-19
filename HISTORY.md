@@ -1,5 +1,9 @@
 # History
 
+# 1.7
+- Fix #90: Documentation/Behavior Mismatch: scale(double) returns a new instance instead of initial object. Now the scale do not create a new image, but
+  change the scale of the initial image. To create a new image, use the scale(duvle, true), or clone the image
+
 # 1.6
  - Add a css library, using SAC and cssParser
  - Fix #85: Add support for units in shapes lengths and positions

@@ -56,12 +56,13 @@ import org.girod.javafx.svgimage.xml.parsers.SVGLibraryException;
 /**
  * The resulting SVG image. It is a JavaFX Nodes tree.
  *
- * @version 1.5
+ * @version 1.7
  */
-public class SVGImage extends Group {
+public class SVGImage extends Group implements Cloneable {
    private static SVGSnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
    private List<Animation> animations = new ArrayList<>();
+   private boolean isPlayingAnimations = false;
    private List<URL> stylesheets = new ArrayList<>();
    private final SVGContent content;
    private double currentScale = 1d;
@@ -85,38 +86,38 @@ public class SVGImage extends Group {
       this.content = content;
    }
 
-   /** 
-    * Set the image associated file (can  be null).
-    * 
+   /**
+    * Set the image associated file (can be null).
+    *
     * @param file the file
     */
    public void setFile(File file) {
       this.file = file;
    }
 
-   /** 
-    * Return the image associated file (can  be null).
-    * 
+   /**
+    * Return the image associated file (can be null).
+    *
     * @return the file
-    */   
+    */
    public File getFile() {
       return file;
    }
-   
+
    /**
     * Set the stylesheets of the SVG content.
     *
     * @param stylesheets the stylesheets
-    */   
+    */
    public void setSVGStylesheets(List<URL> stylesheets) {
       this.stylesheets = stylesheets;
-   }   
-   
+   }
+
    /**
     * Return the stylesheets of the SVG content.
     *
     * @return the stylesheets
-    */   
+    */
    public List<URL> getSVGStylesheets() {
       return stylesheets;
    }
@@ -140,8 +141,8 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Create a region containing this image. Note that the region will only be created once. This region will allow to
-    * use the image in a layout (for example a BorderPane, or a StackPane), and redimension the image accordingly.
+    * Create a region containing this image. Note that the region will only be created once. This region will allow to use the image in a layout (for
+    * example a BorderPane, or a StackPane), and redimension the image accordingly.
     *
     * @return the region
     */
@@ -163,24 +164,24 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Set the default SnapshotParameters to use when creating snapshots. The default is null, which means that a
-    * default SnapshotParameters will be created when creating a snapshot.
+    * Set the default SnapshotParameters to use when creating snapshots. The default is null, which means that a default SnapshotParameters will be
+    * created when creating a snapshot.
     *
     * @param params the default SnapshotParameters
     */
    public static void setDefaultSnapshotParameters(SnapshotParameters params) {
       SNAPSHOT_PARAMS = new SVGSnapshotParameters(params);
    }
-   
+
    /**
-    * Set the default SnapshotParameters to use when creating snapshots. The default is null, which means that a
-    * default SnapshotParameters will be created when creating a snapshot.
+    * Set the default SnapshotParameters to use when creating snapshots. The default is null, which means that a default SnapshotParameters will be
+    * created when creating a snapshot.
     *
     * @param params the default SnapshotParameters
     */
    public static void setDefaultSnapshotParameters(SVGSnapshotParameters params) {
       SNAPSHOT_PARAMS = params;
-   }   
+   }
 
    /**
     * Return the default SnapshotParameters used when creating a snapshot.
@@ -243,6 +244,7 @@ public class SVGImage extends Group {
    }
 
    private void playAnimationsImpl() {
+      this.isPlayingAnimations = true;
       if (!animations.isEmpty()) {
          Iterator<Animation> it = animations.iterator();
          while (it.hasNext()) {
@@ -250,6 +252,15 @@ public class SVGImage extends Group {
             tr.play();
          }
       }
+   }
+
+   /**
+    * Return true if the animations are playing.
+    *
+    * @return true if the animations are playing
+    */
+   public boolean isPlayingAnimations() {
+      return isPlayingAnimations;
    }
 
    /**
@@ -271,6 +282,7 @@ public class SVGImage extends Group {
    }
 
    private void stopAnimationsImpl() {
+      this.isPlayingAnimations = false;
       if (!animations.isEmpty()) {
          Iterator<Animation> it = animations.iterator();
          while (it.hasNext()) {
@@ -279,9 +291,10 @@ public class SVGImage extends Group {
          }
       }
    }
-   
+
    /**
-    * Return the width of the image viewort. It will use the viewport to get the width if the viewport exists, else it willl get the width of the content.
+    * Return the width of the image viewort. It will use the viewport to get the width if the viewport exists, else it willl get the width of the
+    * content.
     *
     * @return the width
     */
@@ -291,7 +304,7 @@ public class SVGImage extends Group {
       } else {
          return getContentWidth();
       }
-   }   
+   }
 
    /**
     * Return the width of the image. Defer to {@link Viewport#getBestWidth()}.
@@ -301,7 +314,7 @@ public class SVGImage extends Group {
    public double getWidth() {
       return getViewportWidth();
    }
-   
+
    /**
     * Return the width of the image content.
     *
@@ -309,7 +322,7 @@ public class SVGImage extends Group {
     */
    public double getContentWidth() {
       return this.getLayoutBounds().getWidth();
-   }   
+   }
 
    /**
     * Return the width of the image, taking into account the scaling of the svg image.
@@ -328,9 +341,10 @@ public class SVGImage extends Group {
    public double getHeight() {
       return getViewportHeight();
    }
-   
+
    /**
-    * Return the height of the image viewort. It will use the viewport to get the height if the viewport exists, else it willl get the height of the content.
+    * Return the height of the image viewort. It will use the viewport to get the height if the viewport exists, else it willl get the height of the
+    * content.
     *
     * @return the height
     */
@@ -340,7 +354,8 @@ public class SVGImage extends Group {
       } else {
          return getContentHeight();
       }
-   }   
+   }
+
    /**
     * Return the height of the image content.
     *
@@ -348,7 +363,7 @@ public class SVGImage extends Group {
     */
    public double getContentHeight() {
       return this.getLayoutBounds().getHeight();
-   }      
+   }
 
    /**
     * Return the height of the image, taking into account the scaling of the svg image.
@@ -489,7 +504,7 @@ public class SVGImage extends Group {
       WritableImage image = snapshotImpl(jfxParams);
       return image;
    }
-   
+
    /**
     * Convert the Node tree to an image.
     *
@@ -501,7 +516,7 @@ public class SVGImage extends Group {
       params.applyViewportType(this);
       WritableImage image = snapshotImpl(jfxParams);
       return image;
-   }   
+   }
 
    /**
     * Convert the Node tree to an image.
@@ -516,6 +531,18 @@ public class SVGImage extends Group {
 
    private WritableImage snapshotImplInJFX(SnapshotParameters params) {
       WritableImage image = this.snapshot(params, null);
+      return image;
+   }
+
+   /**
+    * Clone the SVGImage. Will call {@link #scale(double, boolean)} with a scale of 1 and crrte a new image.
+    *
+    * @return the cloned SVGImage
+    */
+   @Override
+   public SVGImage clone() {
+      // don't use super.clone bevause we will create a new image group directly
+      SVGImage image = scale(1d, true);
       return image;
    }
 
@@ -563,10 +590,24 @@ public class SVGImage extends Group {
             }
          }
          if (!createNew) {
+            boolean _isPlayingAnimations = isPlayingAnimations;
+            if (isPlayingAnimations) {
+               this.stopAnimations();
+            }
             this.nodes.clear();
             this.nodes.putAll(image.nodes);
             this.animations.clear();
             this.animations.addAll(image.animations);
+            this.getChildren().clear();
+            this.getChildren().addAll(image.getChildren());
+            this.setTranslateX(image.getTranslateX());
+            this.setTranslateY(image.getTranslateY());
+            this.getTransforms().clear();
+            this.getTransforms().addAll(image.getTransforms());
+            if (_isPlayingAnimations) {
+               this.playAnimations();
+            }
+            return this;
          }
          return image;
       }
@@ -583,8 +624,7 @@ public class SVGImage extends Group {
    }
 
    /**
-    * Scale the image to a specified width. If <code>createNew</code> is <code>true</code>, then return the initial
-    * SVGImage.
+    * Scale the image to a specified width. If <code>createNew</code> is <code>true</code>, then return the initial SVGImage.
     *
     * @param width the width of the scaled image
     * @param createNew true to creata a new image
@@ -601,13 +641,11 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot
-    * generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
-    * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the method will simply return false if it
-    * could not save the snapshot.
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot generation generated an exception
+    * <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the
+    * method will simply return false if it could not save the snapshot.
     *
-    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not
-    * available.
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not available.
     *
     * @param params the parameters
     * @param format the format
@@ -633,13 +671,11 @@ public class SVGImage extends Group {
    /**
     * Saves a snapshot of the image.
     *
-    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot
-    * generation generated an exception <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to
-    * {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the method will simply return false if it
-    * could not save the snapshot.
+    * This method will throw a {@link org.girod.javafx.svgimage.xml.parsers.SVGLibraryException} if the snapshot generation generated an exception
+    * <b>and</b> {@link GlobalConfig#getExceptionsHandling()} is set to {@link ExceptionsHandling#RETROW_EXCEPTION}. It means that by default the
+    * method will simply return false if it could not save the snapshot.
     *
-    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not
-    * available.
+    * Reasons for the save to not being able to generate the snapshot are the directory being read-only, or swing not available.
     *
     * @param format the format
     * @param file the file

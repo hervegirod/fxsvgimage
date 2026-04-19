@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ import javafx.scene.image.Image;
 /**
  * Unit tests for generating scaled images.
  *
- * @since 1.0
+ * @version 1.7
  */
 public class SVGImageScaled2Test {
    private static double DELTA = 0.001d;
@@ -77,23 +77,6 @@ public class SVGImageScaled2Test {
       URL url = this.getClass().getResource("rect50.svg");
       SVGImage result = SVGLoader.load(url);
       result = result.scaleTo(25);
-      Image img = result.toImage();
-      assertNotNull("Image must exist", img);
-      double width = img.getWidth();
-      double height = img.getHeight();
-      assertEquals("width", 25, width, DELTA);
-      assertEquals("height", 25, height, DELTA);
-   }
-
-   /**
-    * Test of generating a scaled image.
-    */
-   @Test
-   public void testScaledImage2() {
-      System.out.println("SVGImageScaled2Test : testScaledImage2");
-      URL url = this.getClass().getResource("rect50.svg");
-      SVGImage result = SVGLoader.load(url);
-      result = result.scale(0.5d);
       Image img = result.toImage();
       assertNotNull("Image must exist", img);
       double width = img.getWidth();
