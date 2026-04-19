@@ -62,6 +62,7 @@ public class SVGImage extends Group implements Cloneable {
    private static SVGSnapshotParameters SNAPSHOT_PARAMS = null;
    private final Map<String, Node> nodes = new HashMap<>();
    private List<Animation> animations = new ArrayList<>();
+   private boolean isPlayingAnimations = false;
    private List<URL> stylesheets = new ArrayList<>();
    private final SVGContent content;
    private double currentScale = 1d;
@@ -243,6 +244,7 @@ public class SVGImage extends Group implements Cloneable {
    }
 
    private void playAnimationsImpl() {
+      this.isPlayingAnimations = true;
       if (!animations.isEmpty()) {
          Iterator<Animation> it = animations.iterator();
          while (it.hasNext()) {
@@ -250,6 +252,15 @@ public class SVGImage extends Group implements Cloneable {
             tr.play();
          }
       }
+   }
+
+   /**
+    * Return true if the animations are playing.
+    *
+    * @return true if the animations are playing
+    */
+   public boolean isPlayingAnimations() {
+      return isPlayingAnimations;
    }
 
    /**
@@ -271,6 +282,7 @@ public class SVGImage extends Group implements Cloneable {
    }
 
    private void stopAnimationsImpl() {
+      this.isPlayingAnimations = false;
       if (!animations.isEmpty()) {
          Iterator<Animation> it = animations.iterator();
          while (it.hasNext()) {
@@ -578,6 +590,10 @@ public class SVGImage extends Group implements Cloneable {
             }
          }
          if (!createNew) {
+            boolean _isPlayingAnimations = isPlayingAnimations;
+            if (isPlayingAnimations) {
+               this.stopAnimations();
+            }
             this.nodes.clear();
             this.nodes.putAll(image.nodes);
             this.animations.clear();
@@ -588,6 +604,9 @@ public class SVGImage extends Group implements Cloneable {
             this.setTranslateY(image.getTranslateY());
             this.getTransforms().clear();
             this.getTransforms().addAll(image.getTransforms());
+            if (_isPlayingAnimations) {
+               this.playAnimations();
+            }
             return this;
          }
          return image;
