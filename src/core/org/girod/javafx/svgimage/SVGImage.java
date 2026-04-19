@@ -582,7 +582,7 @@ public class SVGImage extends Group implements Cloneable {
             this.nodes.putAll(image.nodes);
             this.animations.clear();
             this.animations.addAll(image.animations);
-            this.getChildren().removeAll();
+            this.getChildren().clear();
             this.getChildren().addAll(image.getChildren());
             this.setTranslateX(image.getTranslateX());
             this.setTranslateY(image.getTranslateY());

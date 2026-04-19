@@ -115,7 +115,7 @@ public class SVGImageScaled3Test {
       width = img.getWidth();
       height = img.getHeight();
       assertEquals("width", 100, width, DELTA);
-      assertEquals("height", 100, height, DELTA);      
+      assertEquals("height", 100, height, DELTA);    
    }   
    
    /**
@@ -142,4 +142,21 @@ public class SVGImageScaled3Test {
       assertEquals("width", 100, width, DELTA);
       assertEquals("height", 100, height, DELTA);      
    }    
+   
+   /**
+    * Test of generating a scaled image.
+    */
+   @Test
+   public void testScaledExistingImage3() {
+      System.out.println("SVGImageScaledTest : testScaledExistingImage3");
+      URL url = this.getClass().getResource("rect50.svg");
+      SVGImage result = SVGLoader.load(url);
+      result = result.scale(0.5d);
+      Image img = result.toImage();
+      assertNotNull("Image must exist", img);
+      double width = img.getWidth();
+      double height = img.getHeight();
+      assertEquals("width", 25, width, DELTA);
+      assertEquals("height", 25, height, DELTA);
+   }   
 }
