@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,22 @@ package org.girod.javafx.svgimage.xml.parsers;
 /**
  * The list of svg tags handled by the library.
  *
- * @version 1.2
+ * @version 1.7.1
  */
 public interface SVGTags {
+   /**
+    * The link element tag.
+    */
+   public static String LINK = "link";   
+   /**
+    * The rel attribute tag (used in link).
+    */
+   public static String LINK_REL = "rel";      
+   /**
+    * The type attribute tag (used in link).
+    */
+   public static String LINK_TYPE = "type";   
+   
    /**
     * SVG constant for VIEWBOX.
     */

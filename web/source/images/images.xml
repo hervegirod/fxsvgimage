@@ -8,4 +8,5 @@
    <image id="use" url="use.jpg" />   
    <image id="lineargradient" url="lineargradient.jpg" />
    <image id="radialgradient" url="radialgradient.jpg" />   
+   <image id="nestedSVG" url="nestedSVG.png" />
 </images>

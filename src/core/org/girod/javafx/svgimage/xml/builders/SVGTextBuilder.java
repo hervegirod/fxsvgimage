@@ -70,7 +70,7 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 /**
  * The text builder.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class SVGTextBuilder {
    private SVGTextBuilder() {
@@ -276,7 +276,7 @@ public class SVGTextBuilder {
                box.setTextDecoration(xmlNode.getAttributeValue(TEXT_DECORATION));
             }
             if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
-               box.setTextAnchor(xmlNode.getAttributeValue(TEXT_DECORATION));
+               box.setTextAnchor(xmlNode.getAttributeValue(TEXT_ANCHOR));
             }
             box.setLayoutX(x);
             box.setLayoutY(y);

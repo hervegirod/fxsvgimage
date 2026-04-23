@@ -64,6 +64,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -88,12 +89,13 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * A sample browser.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class SVGBrowser extends Application {
    private Stage stage = null;
    private final MenuBar menuBar = new MenuBar();
    private final TabPane tabPane = new TabPane();
+   private TextField zoomFactor = new TextField("100%");
    private double scale = 1d;
    private boolean hasBackground = false;
    private Color background = null;
@@ -115,6 +117,7 @@ public class SVGBrowser extends Application {
          }
       });
 
+      zoomFactor.setEditable(false);
       // file menu
       Menu fileMenu = new Menu("File");
       menuBar.getMenus().add(fileMenu);
@@ -178,6 +181,8 @@ public class SVGBrowser extends Application {
       img = new Image(url.toString());
       Button zoomOut = new Button("", new ImageView(img));
       toolBar.getItems().add(zoomOut);
+      zoomFactor.setMaxWidth(80);
+      toolBar.getItems().add(zoomFactor);
       
       zoomOut.setOnAction(new EventHandler<ActionEvent>() {
          @Override
@@ -218,6 +223,8 @@ public class SVGBrowser extends Application {
          scale = scale * 1.2d;
          image.setScaleX(scale);
          image.setScaleY(scale);
+         String zoomText = (int)(scale * 100) + "%";
+         zoomFactor.setText(zoomText);
       }
    }
    
@@ -227,6 +234,8 @@ public class SVGBrowser extends Application {
          scale = scale * 0.8d;
          image.setScaleX(scale);
          image.setScaleY(scale);
+         String zoomText = (int)(scale * 100) + "%";
+         zoomFactor.setText(zoomText);         
       }
    }
    

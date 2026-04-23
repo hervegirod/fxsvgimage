@@ -50,7 +50,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * Unit tests for several basic shapes.
  *
- * @since 1.6
+ * @version 1.7.1
  */
 public class SVGLoaderPathImplicitTest {
 

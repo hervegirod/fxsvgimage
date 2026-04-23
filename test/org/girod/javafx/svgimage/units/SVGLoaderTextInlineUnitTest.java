@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.units;
 
+import org.girod.javafx.utils.DPITestUtils;
 import org.girod.javafx.svgimage.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,7 +50,7 @@ import javafx.scene.text.Text;
 /**
  * Unit tests for a text.
  *
- * @since 1.6
+ * @version 1.7.1
  */
 public class SVGLoaderTextInlineUnitTest {
    private static double DELTA = 0.001d;

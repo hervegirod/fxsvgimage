@@ -36,14 +36,17 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.shape.Shape;
 
 /**
- * Represents the viewport.
+ * Represents the viewport associated with a svg element. By default this is the viewport on the whole svg file.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class Viewport extends Viewbox {
    private double scale = -1;
    private boolean isScaled = false;
    private boolean scaleLineWidth = true;
+   private double x = 0;
+   private double y = 0;
+   private boolean isNested = false;
 
    /**
     * Create a viewport with explicit width and height.
@@ -110,6 +113,45 @@ public class Viewport extends Viewbox {
       } else {
          return viewboxHeight;
       }
+   }
+
+   /**
+    * Return true if the svg element on which the viexwpiort is defined is nested.
+    *
+    * @return true if the svg element on which the viexwpiort is defined is nested
+    */
+   public boolean isNested() {
+      return isNested;
+   }
+
+   /**
+    * Return the x position.
+    *
+    * @return the x position
+    */
+   public double getX() {
+      return x;
+   }
+
+   /**
+    * Return the y position.
+    *
+    * @return the y position
+    */
+   public double getY() {
+      return y;
+   }
+
+   /**
+    * Set the viewport position.
+    *
+    * @param x the x position
+    * @param y the y position
+    */
+   public void setPosition(double x, double y) {
+      this.x = x;
+      this.y = y;
+      this.isNested = true;
    }
 
    /**

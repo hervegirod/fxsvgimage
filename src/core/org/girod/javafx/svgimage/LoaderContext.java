@@ -38,10 +38,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import javafx.animation.Animation;
 import javafx.scene.paint.Paint;
 import javafx.stage.Screen;
 import org.girod.javafx.svgimage.xml.parsers.ClippingFactory;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.FileUtils;
 import org.girod.javafx.svgimage.xml.specs.FilterSpec;
 import org.girod.javafx.svgimage.xml.specs.GradientSpec;
 import org.girod.javafx.svgimage.xml.specs.MarkerSpec;
@@ -52,7 +54,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class LoaderContext {
    /**
@@ -66,7 +68,7 @@ public class LoaderContext {
    /**
     * The viewport.
     */
-   public Viewport viewport = null;
+   public Stack<Viewport> viewports = null;
    /**
     * The overall "styles" elements if it exists.
     */
@@ -121,6 +123,75 @@ public class LoaderContext {
       this.params = params;
       this.url = url;
       applySizeType();
+   }
+
+   /**
+    * Return the SVG file URL.
+    *
+    * @return the SVG file URL
+    */
+   public URL getURL() {
+      return url;
+   }
+
+   /**
+    * Return the SVG file parent URL.
+    *
+    * @return the SVG file parent URL
+    */
+   public URL getParentURL() {
+      if (url == null) {
+         return null;
+      } else {
+         return FileUtils.getParentURL(url);
+      }
+   }
+
+   /**
+    * Return true if there are viewports.
+    *
+    * @return true if there are viewports
+    */
+   public boolean hasViewports() {
+      return viewports != null;
+   }
+
+   /**
+    * Push a viewport on the viewports stack.
+    *
+    * @param viewport the viewport
+    */
+   public void pushViewport(Viewport viewport) {
+      if (viewports == null) {
+         viewports = new Stack<>();
+      }
+      viewports.push(viewport);
+   }
+
+   /**
+    * Rerurn the current viewport.
+    *
+    * @return the current viewport
+    */
+   public Viewport getCurrentViewport() {
+      if (viewports != null && !viewports.empty()) {
+         return viewports.peek();
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Pop the viewport stack.
+    *
+    * @return the new current viewport
+    */
+   public Viewport popViewport() {
+      if (viewports != null && !viewports.empty()) {
+         return viewports.pop();
+      } else {
+         return null;
+      }
    }
 
    private void applySizeType() {

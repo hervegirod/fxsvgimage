@@ -32,6 +32,7 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
  */
 package org.girod.javafx.svgimage.units;
 
+import org.girod.javafx.utils.DPITestUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +51,7 @@ import org.girod.javafx.svgimage.SVGLoader;
 /**
  * Unit tests for a line with cm and mm units.
  *
- * @since 1.6
+ * @version 1.7.1
  */
 public class SVGLoaderLineUnitsTest {
 

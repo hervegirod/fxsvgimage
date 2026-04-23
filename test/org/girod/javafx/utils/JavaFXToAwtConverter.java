@@ -8,16 +8,22 @@ package org.girod.javafx.utils;
 
 import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritablePixelFormat;
 
 /**
  * This class convert a JavaFX image to a BufferedImage.
  *
- * @since 1.5
+ * @version 1.7.1
  */
 public class JavaFXToAwtConverter {
    private JavaFXToAwtConverter() {
+   }
+   
+   public static BufferedImage toAwt2(Image image) {
+      BufferedImage bi = SwingFXUtils.fromFXImage(image, null);
+      return bi;
    }
 
    public static BufferedImage toAwt(Image image) {

@@ -5,7 +5,7 @@
    <title title="SVG to JavaFX conversion usage" />
    <moreInfo>
       <info id="SVG to JavaFX conversion Usage"/>
-      <info id="Stylesheets handling"/>
+      <info id="External Stylesheets"/>
    </moreInfo>
    The <code>fxsvgImage.jar</code> jar file contains the code to convert a svg file to a JavaFX Node tree. This jar file uses the  <code>cssParser.jar</code> jar file
    which contain code to handle the Stylesheets used in the SVG file.

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2023, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2023, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class ParserUtils implements SVGTags {
    private static final double INCH_TO_MM = 25.4d;
@@ -860,9 +860,10 @@ public class ParserUtils implements SVGTags {
     *
     * @param dpi the dpi
     * @param xmlNode the SVG root node
+    * @param isNested true if the viewport is nested
     * @return the viewport
     */
-   public static Viewport parseViewport(double dpi, XMLNode xmlNode) {
+   public static Viewport parseViewport(double dpi, XMLNode xmlNode, boolean isNested) {
       // note: this is slightly incorrect. see http://tutorials.jenkov.com/svg/svg-viewport-view-box.html
       double viewboxX = 0;
       double viewboxY = 0;
@@ -903,6 +904,19 @@ public class ParserUtils implements SVGTags {
       if (xmlNode.hasAttribute(PRESERVE_ASPECT_RATIO)) {
          boolean preserve = ParserUtils.getPreserveAspectRatio(xmlNode.getAttributeValue(PRESERVE_ASPECT_RATIO));
          theViewport.setPreserveAspectRatio(preserve);
+      }
+      if (xmlNode.hasAttribute(X) || xmlNode.hasAttribute(Y)) {
+         double x = 0;
+         double y = 0;
+         if (xmlNode.hasAttribute(X)) {
+            String xS = xmlNode.getAttributeValue(X);
+            x = ParserUtils.parseDoubleSizeProtected(dpi, xS);
+         }
+         if (xmlNode.hasAttribute(Y)) {
+            String yS = xmlNode.getAttributeValue(Y);
+            y = ParserUtils.parseDoubleSizeProtected(dpi, yS);
+         }
+         theViewport.setPosition(x, y);
       }
       theViewport.setViewbox(viewboxX, viewboxY, viewboxWidth, viewboxHeight);
       return theViewport;

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="64" width="128">
+  <circle cx="16" cy="16" r="16" fill="green"/>
+  <circle cx="48" cy="16" r="0.42cm" fill="green"/>
+  <circle cx="80" cy="16" r="1.0em" fill="green"/>
+  <circle cx="112" cy="16" r="1.7ex" fill="green"/>
+  <circle cx="16" cy="48" r="0.165in" fill="green"/>
+  <circle cx="48" cy="48" r="4.2mm" fill="green"/>
+  <circle cx="80" cy="48" r="16px" fill="green"/>
+  <circle cx="112" cy="48" r="12pt" fill="green"/>
+</svg>
