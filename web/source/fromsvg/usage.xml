@@ -50,8 +50,15 @@
    The SVG nodes which have an <code>id</code> attribute can be accessed through the <source syntax="java">getNode(id)</source>
    method in the <ref id="SVGImage" /> result.
    
-   <title title="Stylesheets handling"/>
-   <moreInfo id="Stylesheets handling"/>
+   <title title="External Stylesheets"/>
+   <moreInfo id="External Stylesheets"/>
+   As specified in the SVG standard, external Stylesheets can be used for <ref id="svg styling" />. 
+   
+   You can either declare the css file:
+   <ul>
+      <li>In an xml processing instruction</li>
+      <li>In a <code>link</code> element</li>      
+   </ul>   
    
    <title title="threading usage"/>
    You can use the library in the JavaFX Platform Thread or in any other Thread. The library will make sure that

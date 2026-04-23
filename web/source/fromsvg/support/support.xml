@@ -9,9 +9,7 @@
       <li>clip paths and masks. See also <ref id="clipPath support" /></li>
       <li>linear and radial gradients. See also <ref id="Gradients support" /></li>    
       <li>the <code>style</code> element. See also <ref id="svg styling support#support for styles specified in the style element" desc="support for styles specified in the style element" /></li>      
-      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. 
-         See also <ref id="SVG shapes support" />
-      </li>     
+      <li>rect, circle, ellipse, path, polygon, polyline, line, image, text, tspan elements. See also <ref id="SVG shapes support" /></li>     
       <li>the <code>symbol</code> element. See also <ref id="symbol element support" /></li> 
       <li>the <code>use</code> element. See also <ref id="use element support" /></li>
       <li>fill, stroke, style, class attributes. See also <ref id="svg styling support" /></li>

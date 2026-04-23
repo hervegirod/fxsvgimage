@@ -4,7 +4,7 @@
 
    <groupId>org.girod</groupId>
    <artifactId>fxsvgimage</artifactId>
-   <version>1.7</version>
+   <version>1.7.1</version>
    <name>fxsvgimage</name>
    <description>A small self-sufficient library which allows to convert a SVG file to a JavaFX Node tree or an Image (no dependencies)</description>
 

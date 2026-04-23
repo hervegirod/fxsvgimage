@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, Hervé Girod
+Copyright (c) 2021, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import java.net.URL;
 /**
  * Unit tests for the issue1 on github.
  *
- * @version 0.3.1
+ * @since 1.7.1
  */
 public class SVGLoaderTest {
 

@@ -6,6 +6,9 @@
  ------------------------------------------------------------------------------*/
 package org.girod.javafx.utils;
 
+import java.awt.Color;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +18,7 @@ import javax.imageio.ImageIO;
 /**
  * This class allows to compare two images.
  *
- * @since 1.5
+ * @version 1.7.1
  */
 public class ImagesComparator {
    private final Params params;
@@ -103,6 +106,22 @@ public class ImagesComparator {
       }
    }
 
+   private BufferedImage scale(BufferedImage bi, int width, int height, int toWidth, int toHeight) {
+      if (width == toWidth && height == toHeight) {
+         return bi;
+      } else {
+         // see https://stackoverflow.com/questions/4216123/how-to-scale-a-bufferedimage
+         BufferedImage after = new BufferedImage(toWidth, toHeight, BufferedImage.TYPE_INT_ARGB);
+         AffineTransform at = new AffineTransform();
+         double scaleX = (double) toWidth / (double) width;
+         double scaleY = (double) toHeight / (double) height;
+         at.scale(scaleX, scaleY);
+         AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+         after = scaleOp.filter(bi, after);
+         return after;
+      }
+   }
+
    /**
     * Compare two images.
     *
@@ -111,6 +130,7 @@ public class ImagesComparator {
     * @return the comparison result
     */
    public Result compareImages(BufferedImage biA, BufferedImage biB) {
+      double maxOutsidedeltaELimits = 0;
       int countDiffPixels = 0;
       int widthA = biA.getWidth(null);
       int heightA = biA.getHeight(null);
@@ -118,28 +138,40 @@ public class ImagesComparator {
       int heightB = biB.getHeight(null);
       int width = widthA < widthB ? widthA : widthB;
       int height = heightA < heightB ? heightA : heightB;
+      if (params.sizeType == Params.SIZE_SCALED && (widthA != widthB || heightA != heightB)) {
+         biA = scale(biA, widthA, heightA, width, height);
+         biB = scale(biB, widthB, heightB, width, height);
+         widthA = width;
+         heightA = height;
+         widthB = width;
+         heightB = height;
+      }
       for (int i = 0; i < width; i++) {
          for (int j = 0; j < height; j++) {
             int rgbA = biA.getRGB(i, j);
+            Color colA = new Color(rgbA, true);
             int rgbB = biB.getRGB(i, j);
-            int deltaRGB = rgbB - rgbA;
-            if (deltaRGB < 0) {
-               deltaRGB = -deltaRGB;
-            }
-            if (deltaRGB > params.deltaRGB) {
+            Color colB = new Color(rgbB, true);
+            // we use https://en.wikipedia.org/wiki/Color_difference#CIELAB_%CE%94E* to compute the colors distance
+            double deltaRGB = DeltaEDistance.deltaE(colA, colB);
+            if (deltaRGB > params.deltaERGB) {
                countDiffPixels++;
+               if (deltaRGB > maxOutsidedeltaELimits) {
+                  maxOutsidedeltaELimits = deltaRGB;
+               }
             }
          }
       }
-      if (!params.crop) {
-         int deltaWidth = widthB - widthA;
-         if (deltaWidth < 0) {
-            deltaWidth = -deltaWidth;
-         }
-         int deltaHeight = heightB - heightA;
-         if (deltaHeight < 0) {
-            deltaHeight = -deltaHeight;
-         }
+      int deltaWidth = widthB - widthA;
+      if (deltaWidth < 0) {
+         deltaWidth = -deltaWidth;
+      }
+      int deltaHeight = heightB - heightA;
+      if (deltaHeight < 0) {
+         deltaHeight = -deltaHeight;
+      }
+
+      if (params.sizeType == Params.SIZE_UNCHANGED) {
          if (deltaWidth == 0 && deltaHeight != 0) {
             countDiffPixels += deltaHeight;
          } else if (deltaWidth != 0 && deltaHeight == 0) {
@@ -156,7 +188,9 @@ public class ImagesComparator {
          isNotEquals = countDiffPixels > params.deltaPixels;
       }
       short state = isNotEquals ? Result.NO_EQUALS : Result.EQUALS;
-      return new Result(state, countDiffPixels, percentDiffPixels);
+      Result result = new Result(state, countDiffPixels, percentDiffPixels);
+      result.maxOutsidedeltaELimits = maxOutsidedeltaELimits;
+      return result;
    }
 
    /**
@@ -165,18 +199,25 @@ public class ImagesComparator {
     * @since 1.3.21
     */
    public static class Params {
+      public static final short SIZE_UNCHANGED = 0;
+      public static final short SIZE_CROPPED = 1;
+      public static final short SIZE_SCALED = 2;
       /**
-       * True if the images are cropped to compare the same size.
+       * Specified how the size difference is taken into account.
        */
-      public boolean crop = false;
+      public short sizeType = SIZE_UNCHANGED;
       /**
-       * True the maximum difference in rgb value for which two pixels will be considered equal.
-       */      
-      public int deltaRGB = 0;
+       * Set the pixels spread to compute the color.
+       */
+      public int colorSpread = 0;      
       /**
-       * True the maximum difference in tne number of different pixels or percentage for the images to be considered equal.
-       */           
-      public float deltaPixels = 0;
+       * True the maximum difference in rgb value using the deltaE formula for which two pixels will be considered equal.
+       */
+      public double deltaERGB = 0;
+      /**
+       * True the maximum difference in the number of different pixels or percentage for the images to be considered equal.
+       */
+      public double deltaPixels = 0;
       /**
        * True if the check for equality is in percentage of different pixels.
        */
@@ -189,7 +230,7 @@ public class ImagesComparator {
    /**
     * The comparison result.
     *
-    * @since 1.3.21
+    * @since 1.7.1
     */
    public static class Result {
       /**
@@ -207,6 +248,7 @@ public class ImagesComparator {
       private final short state;
       private int diffPixels = 0;
       private float percentDiffPixels = 0;
+      private double maxOutsidedeltaELimits = 0;
 
       private Result(short state) {
          this.state = state;
@@ -217,7 +259,7 @@ public class ImagesComparator {
          this.diffPixels = diffPixels;
          this.percentDiffPixels = percentDiffPixels;
       }
-
+      
       /**
        * Return the number of pixels which are different between the images.
        *
@@ -225,6 +267,15 @@ public class ImagesComparator {
        */
       public int countDiffPixels() {
          return diffPixels;
+      }      
+
+      /**
+       * Return the maximum distance of the two images pixels when outside the fixed deltaE limits.
+       *
+       * @return the maximum distance of the two images pixels when outside the fixed deltaE limits
+       */
+      public double getMaximumOutsideDeltaELimits() {
+         return maxOutsidedeltaELimits;
       }
 
       /**
@@ -232,7 +283,7 @@ public class ImagesComparator {
        *
        * @return the number of pixels
        */
-      public float gePercentDiffPixels() {
+      public float getPercentDiffPixels() {
          return percentDiffPixels;
       }
 
@@ -244,7 +295,7 @@ public class ImagesComparator {
       public boolean isEquals() {
          return state == EQUALS;
       }
-      
+
       /**
        * Return the comparison state.
        *
@@ -252,6 +303,6 @@ public class ImagesComparator {
        */
       public short getState() {
          return state;
-      }      
+      }
    }
 }

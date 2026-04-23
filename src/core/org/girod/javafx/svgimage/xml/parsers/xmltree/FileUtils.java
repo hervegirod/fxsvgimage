@@ -41,9 +41,9 @@ import java.util.regex.Pattern;
 /**
  * A File utilities class.
  *
- * @since 1.5
+ * @version 1.7.1
  */
-class FileUtils {
+public class FileUtils {
    private static final Pattern PAT_SUBPROTOCOL = Pattern.compile("(\\w+):.*");
 
    /**
@@ -54,7 +54,7 @@ class FileUtils {
     *
     * @return the child URL
     */
-   static URL getChildURL(URL parentURL, String path) {
+   public static URL getChildURL(URL parentURL, String path) {
       try {
          path = replaceEscapedSequences(path);
          File pathFile = new File(path);
@@ -117,7 +117,7 @@ class FileUtils {
     * @param path the path
     * @return the path after replacing spaces characters by their percent encoding equivalent
     */
-   private static String encodeURL(String path) {
+   public static String encodeURL(String path) {
       if (!path.contains(" ")) {
          return path;
       } else {
@@ -173,7 +173,7 @@ class FileUtils {
     *
     * @return the parent URL
     */
-   static URL getParentURL(URL url) {
+   public static URL getParentURL(URL url) {
       if (url == null) {
          return null;
       }
@@ -205,7 +205,7 @@ class FileUtils {
       }
    }   
 
-   static boolean exists(URL url) {
+   public static boolean exists(URL url) {
       String path = url.getFile();
       File file = new File(path);
       return file.exists() && file.isFile();

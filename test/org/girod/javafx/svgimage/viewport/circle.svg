@@ -1,0 +1,4 @@
+<?xml version="1.0" standalone="no"?>
+<svg width="1000" height="1000" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" version="1.1">
+   <circle cx="4" cy="4" r="2" fill="red" stroke="blue"  />
+</svg>

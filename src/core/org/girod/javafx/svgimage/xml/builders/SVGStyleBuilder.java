@@ -71,7 +71,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * This class parse a style declaration.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("[^{]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -135,7 +135,13 @@ public class SVGStyleBuilder implements SVGTags {
             }
          }
          boolean isEmpty = true;
-         String ruleContent = theRule.substring(parIndex + 1, theRule.length() - 2).trim();
+         // handle the case where the line syntax is incorrect (no ; at the end of the line)
+         String ruleContent = theRule.trim();
+         if (ruleContent.endsWith(";")) {
+            ruleContent = theRule.substring(parIndex + 1, theRule.length() - 2).trim();
+         } else {
+            ruleContent = theRule.substring(parIndex + 1, theRule.length() - 1).trim();
+         }
          Matcher m2 = RULE_CONTENT.matcher(ruleContent);
          while (m2.find()) {
             if (isEmpty) {

@@ -44,7 +44,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Unit tests for several a paht with an horizontal line.
  *
- * @since 1.6
+ * @version 1.7.1
  */
 public class SVGLoaderPathImplicitHorizLineTest {
 

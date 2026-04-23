@@ -1,0 +1,9 @@
+.symbolBox {-fx-stroke:black;-fx-stroke-width:0.32;}  /* show the cover of the symbol graphics */
+.svgBox {-fx-stroke:blue;-fx-stroke-width:0.32;}  /* show the entire SVG cover */
+.pivotPoint {-fx-stroke:red;-fx-stroke-width:0.64;}  /* show the pivot/anchor point, 0,0 */
+.sl {-fx-stroke-line-cap:round;-fx-stroke-linejoin:round} /* default line style elements */
+.f0 {-fx-fill:none}  /* no fill */
+.fCHRED {-fx-fill:#EA5471}
+.sCHGRN {-fx-stroke:#52E83B}
+.sOUTLW {-fx-stroke:#000000}
+.fOUTLW {-fx-fill:#000000}

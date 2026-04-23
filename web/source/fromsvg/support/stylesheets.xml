@@ -1,8 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<article desc="Stylesheets handling">
+<article desc="External Stylesheets handling">
    <altTitle desc="Stylesheets" />
-   <meta desc="This article explains how Stylesheets used in SVG files are handled in the SVG to JavaFX conversion" />
+   <altTitle desc="External Stylesheets" />
+   <altTitle desc="External Stylesheets handling" />
+   <meta desc="This article explains how excernal Stylesheets used in SVG files are handled in the SVG to JavaFX conversion" />
+   As specified in the SVG standard, external Stylesheets can be used for <ref id="svg styling" />. 
+   
+   You can either declare the css file:
+   <ul>
+      <li>In an xml processing instruction</li>
+      <li>In a <code>link</code> element</li>      
+   </ul>
+   
+   For example:
+   <pre syntax="xml">
+      &lt;svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      width="210mm" height="297mm" viewBox="0 0 744.09448819 1052.3622047" version="1.1"&gt;
+         &lt;link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="style.css" type="text/css" /&gt;  
+         &lt;g&gt;
+            &lt;circle class="circle" cx="86.428566" cy="84.505058" r="70.714287" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt;
+   </pre> 
+   With the following css file:
+   <pre syntax="css">
+      .circle {
+      _  -fx-fill: Green;
+      _  -fx-stroke: Red;
+      }
+   </pre>
+   
+   <title title="limitations" />
+   The names of the css properties in the css file must be those which are defined in the 
+   <a href="https://docs.oracle.com/javafx/2/api/javafx/scene/doc-files/cssref.html" >JavaFX CSS specification</a>.
+   
+   For example:
+   <ul>
+      <li>Rather than <code>fill</code>, you must use the <code>-fx-fill</code> property name</li>
+      <li>Rather than <code>stroke</code>, you must use the <code>-fx-stroke</code> property name</li>      
+   </ul>
+   
+   <title title="examples"/>
+   The following examples use this css:
+   <pre syntax="css">
+      .circle {
+      _  -fx-fill: Green;
+      _  -fx-stroke: Red;
+      }
+   </pre>   
+   
+   <title level="2" title="example declaring the stylesheet as a processing instruction"/>
+   <pre syntax="xml">
+      &lt;?xml-stylesheet href="style.css" type="text/css"?&gt;
+      &lt;svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      width="210mm" height="297mm" viewBox="0 0 744.09448819 1052.3622047" version="1.1"&gt; 
+         &lt;g&gt;
+            &lt;circle class="circle" cx="86.428566" cy="84.505058" r="70.714287" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt;
+   </pre>    
+   
+   <title level="2" title="example using an html link element"/>   
+   <pre syntax="xml">
+      &lt;svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+      width="210mm" height="297mm" viewBox="0 0 744.09448819 1052.3622047" version="1.1"&gt;
+         &lt;link xmlns="http://www.w3.org/1999/xhtml" rel="stylesheet" href="style.css" type="text/css" /&gt;  
+         &lt;g&gt;
+            &lt;circle class="circle" cx="86.428566" cy="84.505058" r="70.714287" /&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt;
+   </pre>    
             
-   <see id="SVGLoader" />
+   <see id="svg styling" />
    <cat id="fromsvg" />
 </article>

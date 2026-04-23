@@ -222,7 +222,8 @@
             <package name="org.girod.javafx.svgimage.tosvg.utils" />
             <package name="org.girod.javafx.svgimage.tosvg.wrappers" />
             <package name="org.girod.javafx.svgimage.tosvg.xml" />
-         </group>                            
+         </group>       
+         <group title="CSS API" packages="org.girod.javafx.svgimage.css" />                      
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
          <bottom>
             <![CDATA[<i>Copyright &#169; 2021, 2022, 2025, 2026 Herve Girod. All Rights Reserved. Documentation and source under the BSD 3-Clause licence</i>]]>

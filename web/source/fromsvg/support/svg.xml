@@ -7,6 +7,21 @@
       <li>The <code>viewBox</code> attribute</li>  
       <li>The <code>preserveAspectRatio</code> attribute</li>         
    </ul>      
+   
+   <title title="nesting svgt elements" />
+   Nesting svg elements is supported. For example the following example:
+   <pre syntax="xml">
+      &lt;svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"&gt;
+         &lt;svg x="10"&gt;
+            &lt;rect x="10" y="10" height="100" width="100" style="stroke:#ff0000; fill: #0000ff"/&gt;
+         &lt;/svg&gt;
+         &lt;svg x="200"&gt;
+            &lt;rect x="10" y="10" height="100" width="100" style="stroke:#009900; fill: #00cc00"/&gt;
+         &lt;/svg&gt;
+      &lt;/svg&gt;
+   </pre>
+   will have this result:
+   <img id="nestedSVG" />
 
    <cat id="fromsvgsupport" />
 </article>

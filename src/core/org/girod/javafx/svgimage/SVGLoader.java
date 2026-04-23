@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,6 +50,7 @@ import java.util.concurrent.FutureTask;
 import javafx.animation.Animation;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -75,6 +77,7 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.specs.SymbolSpec;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.FileUtils;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLRoot;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLTreeHandler;
@@ -84,7 +87,7 @@ import org.xml.sax.SAXException;
 /**
  * This class allows to load a svg file and convert it to an Image or a JavaFX tree.
  *
- * @version 1.6
+ * @version 1.7.1
  */
 public class SVGLoader implements SVGTags {
    private final SVGContent content;
@@ -131,7 +134,9 @@ public class SVGLoader implements SVGTags {
       SVGLoader loader = new SVGLoader(url, new LoaderParameters());
       SVGImage img = loader.loadImpl();
       File file = new File(url.getFile());
-      img.setFile(file);
+      if (img != null) {
+         img.setFile(file);
+      }
       return img;
    }
 
@@ -561,20 +566,52 @@ public class SVGLoader implements SVGTags {
       String name = xmlRoot.getName();
       if (name.equals(SVG)) {
          if (viewport == null) {
-            viewport = ParserUtils.parseViewport(context.getDPI(), xmlRoot);
+            viewport = ParserUtils.parseViewport(context.getDPI(), xmlRoot, false);
             setViewportScaleImpl(viewport, context.params);
-            context.viewport = viewport;
+            context.pushViewport(viewport);
             if (viewport != null) {
                viewport.scaleNode(root);
             }
             root.setViewport(viewport);
          }
       }
-      root.setSVGStylesheets(styleSheets);
+      setStyleSheets(styleSheets);
       preparseStyles(xmlRoot);
       preparseClipping(xmlRoot);
       buildNode(xmlRoot, root);
       return root;
+   }
+
+   private void addStyleSheet(URL url) {
+      if (FileUtils.exists(url)) {
+         try {
+            ObservableList<String> list = root.getStylesheets();
+            String extForm = url.toURI().toURL().toExternalForm();
+            list.add(extForm);
+            root.getSVGStylesheets().add(url);
+         } catch (URISyntaxException | MalformedURLException ex) {
+         }
+      }
+   }
+
+   private void setStyleSheets(List<URL> styleSheets) {
+      List<URL> effectiveCSS = new ArrayList<>();
+      if (!styleSheets.isEmpty()) {
+         ObservableList<String> list = root.getStylesheets();
+         Iterator<URL> it = styleSheets.iterator();
+         while (it.hasNext()) {
+            URL url = it.next();
+            if (FileUtils.exists(url)) {
+               try {
+                  String extForm = url.toURI().toURL().toExternalForm();
+                  list.add(extForm);
+                  effectiveCSS.add(url);
+               } catch (URISyntaxException | MalformedURLException ex) {
+               }
+            }
+         }
+         root.setSVGStylesheets(effectiveCSS);
+      }
    }
 
    private void buildNode(XMLNode xmlNode, Group group) {
@@ -634,6 +671,20 @@ public class SVGLoader implements SVGTags {
       return animations;
    }
 
+   private void handlePossibleCSSDeclaration(XMLNode node) {
+      if (node.hasAttribute(LINK_REL) && node.hasAttribute(LINK_TYPE) && node.hasAttribute(HREF)) {
+         String type = node.getAttributeValue(LINK_TYPE);
+         String rel = node.getAttributeValue(LINK_REL);
+         if (type.equals("text/css") || rel.equals("stylesheet")) {
+            String relPath = node.getAttributeValue(HREF);
+            URL cssURL = FileUtils.getChildURL(context.getParentURL(), relPath);
+            if (cssURL != null && FileUtils.exists(cssURL)) {
+               addStyleSheet(cssURL);
+            }
+         }
+      }
+   }
+
    private void buildNode(XMLNode xmlNode, Group group, boolean acceptDefs) {
       double minTextSize = this.content.params.minTextSize;
       if (group == null) {
@@ -647,6 +698,9 @@ public class SVGLoader implements SVGTags {
          SpanGroup spanGroup = null;
          String name = childNode.getName();
          switch (name) {
+            case LINK:
+               handlePossibleCSSDeclaration(childNode);
+               break;
             case RECT:
                Node node = SVGShapeBuilder.buildRect(childNode, null, null, viewport);
                addNamedNode(childNode, node);
@@ -730,12 +784,16 @@ public class SVGLoader implements SVGTags {
                nodes = ParserUtils.createNodeList(node);
                break;
             case SVG:
-               if (viewport == null) {
-                  viewport = ParserUtils.parseViewport(context.getDPI(), childNode);
-                  context.viewport = viewport;
-               }
+               viewport = ParserUtils.parseViewport(context.getDPI(), childNode, true);
+               context.pushViewport(viewport);
                node = buildGroup(childNode);
+               if (viewport != null) {
+                  viewport.scaleNode(node);
+               }
+               node.setLayoutX(viewport.getX());
+               node.setLayoutY(viewport.getY());
                nodes = ParserUtils.createNodeList(node);
+               viewport = context.popViewport();
                break;
             case G:
                node = buildGroup(childNode);

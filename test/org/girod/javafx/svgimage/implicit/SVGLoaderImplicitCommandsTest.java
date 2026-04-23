@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2025, Hervé Girod
+Copyright (c) 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
  * In SVG path data, extra coordinate pairs after a command are treated as
  * implicit repeated commands (e.g., extra pairs after M become implicit L).
  *
- * @since 1.4
+ * @version 1.7.1
  */
 public class SVGLoaderImplicitCommandsTest {
 
