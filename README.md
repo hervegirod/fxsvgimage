@@ -33,12 +33,12 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.7</version>
+      <version>1.7.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.7</version>
+      <version>1.7.1</version>
       <classifier>cssparser</classifier>
     </dependency>
 ```

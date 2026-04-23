@@ -1,5 +1,13 @@
 # History
 
+# 1.7.1
+- Fix #94: SVGStyleBuilder cuts off last character of value when semicolon is missing
+- Fix #95: Stylesheets specified by a link element are not taken into account
+- Fix #96: The text-anchor attribute is handled incorrectly, which could possibly lead to a NPE
+- Fix #97: Nested svg are not handled
+- Fix #56: Large SVG which fails
+- Fix #98: Add the value of the zoom factor in the browser
+
 # 1.7
 - Fix #90: Documentation/Behavior Mismatch: scale(double) returns a new instance instead of initial object. Now the scale do not create a new image, but
   change the scale of the initial image. To create a new image, use the scale(duvle, true), or clone the image
