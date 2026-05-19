@@ -1,5 +1,11 @@
 # History
 
+# 1.7.2
+- Fix #100: Polygone fill error when Converting back to SVG
+- Fix #101: Allow to add a stylesheet for the returned Node in the groovy framework used in the toSVG tests
+- Fix #102: Allow to use default parameters for the JavaFX to SVG conversion
+- Fix #103: Fix the width and height of the output SVG for the JavaFX to SVG conversion in some cases suchs as Circles or Ellipses 
+
 # 1.7.1
 - Fix #94: SVGStyleBuilder cuts off last character of value when semicolon is missing
 - Fix #95: Stylesheets specified by a link element are not taken into account
