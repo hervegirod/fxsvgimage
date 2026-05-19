@@ -10,6 +10,9 @@
       SVGConverter converter = new SVGConverter();
       converter.convert(&lt;my JavaFX root&gt;, &lt;my SVG file&gt;);
    </pre>   
+   <messageBox type="info">
+      You can reuse the same <code>SVGConverter</code> for more than one JavaFX <code>Node</code> conversion.
+   </messageBox>
    
    <title title="parameters"/>
    <moreInfo id="ConverterParameters" />

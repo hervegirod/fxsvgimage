@@ -25,6 +25,10 @@
    The <code>background</code> parameter allows to set the background color of the resulting svg document. The converter will generate a rectangle with the width and height of
    the svg document as the first child.
    
+   <title title="default parameters" />
+   The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.SVGConverter" membeer="setDefaultParameters(org.girod.javafx.svgimage.tosvg.ConverterParameters)"/>
+   method allow to set the parameters for all the subsequent calls of the converter.
+   
    <title title="example" />
    For example:
    <pre syntax="java">
