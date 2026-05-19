@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ import javax.swing.filechooser.FileFilter;
 /**
  * A simple application which allows to convert using a Script file.
  *
- * @since 1.0
+ * @version  1.7.2
  */
 public class SVGConverterApp extends JFrame {
    private JTextField titleTf = null;
@@ -193,7 +193,7 @@ public class SVGConverterApp extends JFrame {
                if (wrapper != null) {
                   Node node = wrapper.executeScript();
                   if (node != null) {
-                     convertToSVG(node, file, title);
+                     convertToSVG(node, file, wrapper.getStyleSheet(), title);
                   }
                }
             } catch (Exception ex) {
@@ -203,9 +203,9 @@ public class SVGConverterApp extends JFrame {
       });
    }
 
-   private void convertToSVG(Node node, File file, String title) throws Exception {
+   private void convertToSVG(Node node, File file, String styleSheet, String title) throws Exception {
       SVGDriverAppUtils utils = new SVGDriverAppUtils();
-      utils.convert(node, file, title);
+      utils.convert(node, file, styleSheet, title);
    }
 
    public static void main(String[] args) {

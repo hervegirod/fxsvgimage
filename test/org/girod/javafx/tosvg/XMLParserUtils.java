@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,55 +30,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.tosvg.converters;
+package org.girod.javafx.tosvg;
 
-import javafx.scene.Node;
-import javafx.scene.control.Control;
-import javafx.scene.control.Labeled;
-import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLRoot;
+import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLTreeHandler;
 
 /**
- * A converter which convert Controls.
+ * Parser utilities for Unit tests.
  *
- * @since 1.0
-   */
-public class ControlConverter extends RegionConverter {
-   private Control control = null;
-
-   /**
-    * Constructor.
-    *
-    * @param delegate the converter delegate
-    * @param control the control to convert
-    * @param xmlParent the parent xml node
-    */
-   public ControlConverter(ConverterDelegate delegate, Control control, XMLNode xmlParent) {
-      super(delegate, control, xmlParent);
-      this.control = control;
+ * @since  1.7.2
+ */
+public class XMLParserUtils {
+   private XMLParserUtils() {
+   }
+   
+   public static XMLRoot parse(File file)  {
+      try {
+         URL url = file.toURI().toURL();
+         return parse(url);
+      } catch (MalformedURLException ex) {
+         return null;
+      }
+      
    }
 
-   /**
-    * Convert the Control.
-    *
-    * @return the xml node
-    */
-   @Override
-   public XMLNode convert() {
-      XMLNode xmlNode = super.convert();
-      return xmlNode;
-   }
-
-   /**
-    * Return the additional child Node on this Node.
-    * Will return null, except for a {@link javafx.scene.control.Labeled}, where it will return {@link javafx.scene.control.Labeled#getGraphic()}.
-    *
-    * @return the additional child Node on this Node
-    */
-   @Override
-   public Node getAdditionalNode() {
-      if (control instanceof Labeled) {
-         return ((Labeled) control).getGraphic();
-      } else {
+   public static XMLRoot parse(URL url) {
+      SAXParserFactory saxfactory = SAXParserFactory.newInstance();
+      try {
+         saxfactory.setFeature("http://xml.org/sax/features/resolve-dtd-uris", false);
+         saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+         saxfactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+         SAXParser parser = saxfactory.newSAXParser();
+         XMLTreeHandler handler = new XMLTreeHandler(url);
+         parser.parse(url.openStream(), handler);
+         return handler.getRoot();
+      } catch (Exception e) {
          return null;
       }
    }

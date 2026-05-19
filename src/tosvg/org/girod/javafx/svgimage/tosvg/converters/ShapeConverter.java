@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 /**
  * A converter which convert Shapes.
  *
- * @since 1.0
+ * @version 1.7.1
  */
 public class ShapeConverter extends AbstractConverter implements DefaultStrokeValues {
    private Shape shape = null;
@@ -295,6 +295,7 @@ public class ShapeConverter extends AbstractConverter implements DefaultStrokeVa
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         node.addAttribute("fill", "none");
          setLineStroke(shape, buf);
          setOpacity(paint, node);
          String style = buf.toString();

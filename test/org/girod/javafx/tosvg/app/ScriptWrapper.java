@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -55,12 +55,12 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 /**
  * The ScriptWrapper class.
  *
- * @since 1.0
+ * @version 1.7.2
  */
 public class ScriptWrapper {
    /**
-    * We use this Pattern for Groovy compile-time errors, because it seems that it is not possible "easily" to
-    * get the line which originates the groovy compilation error without parsing the error message itself.
+    * We use this Pattern for Groovy compile-time errors, because it seems that it is not possible "easily" to get the line which originates the
+    * groovy compilation error without parsing the error message itself.
     */
    private final Pattern exCompileError = Pattern.compile(".*script\\d+\\.groovy:\\s*(\\d+)\\s*:(.*)@.*");
    private GroovyObject groovyObject = null;
@@ -70,19 +70,30 @@ public class ScriptWrapper {
    private int offset = 0;
    private File file = null;
    private static final String DEFAULTCONTENT
-      = "class GroovyClass implements Script {\n"
-      + "    ScriptContext context;\n";
+           = "class GroovyClass implements Script {\n"
+           + "    ScriptContext context;\n";
    public static final String DEFAULTCONTENT1
-      = "    public void init(ScriptContext ctx) {\n"
-      + "       context = ctx;\n" + "    }\n";
+           = "    public void init(ScriptContext ctx) {\n"
+           + "       context = ctx;\n" + "    }\n";
    public static final String BEGIN
-      = "import org.girod.javafx.tosvg.app.Script;\n"
-      + "import org.girod.javafx.tosvg.app.ScriptContext;\n";
+           = "import org.girod.javafx.tosvg.app.Script;\n"
+           + "import org.girod.javafx.tosvg.app.ScriptContext;\n";
    private static final Pattern IMPORT_PAT = Pattern.compile("\\s*import .*");
    private static final Pattern COMMENT_PAT = Pattern.compile("\\s*//.*");
+   private String styleSheet = null;
 
    public ScriptWrapper(File file) {
       this.file = file;
+   }
+
+   /**
+    * Return the styleSheet to use for the generated JavaFX content. Return null by default. It will not be null if the grovvy script performed
+    * {@link ScriptContext#setStyleSheet(java.lang.String)}.
+    *
+    * @return the URL of the styleSheet as a String
+    */
+   public String getStyleSheet() {
+      return styleSheet;
    }
 
    /**
@@ -91,11 +102,16 @@ public class ScriptWrapper {
     * @return the node
     */
    public Node executeScript() {
+      styleSheet = null;
       if (script != null) {
          try {
             ScriptContext context = new ScriptContext(file);
             script.init(context);
-            return script.getContent();
+            Node node = script.getContent();
+            if (context.getStylesheet() != null) {
+               this.styleSheet = context.getStylesheet();
+            }
+            return node;
          } catch (Exception e) {
             logScriptException(e);
             return null;
@@ -146,8 +162,7 @@ public class ScriptWrapper {
    }
 
    /**
-    * Called when an Exception is encountered in a Script to manage the Error logging, and detect the lline number for which the error
-    * originates.
+    * Called when an Exception is encountered in a Script to manage the Error logging, and detect the lline number for which the error originates.
     *
     * @param e the Exception
     * @return true if the Script processing can continue, false if it should be aborted
@@ -218,8 +233,8 @@ public class ScriptWrapper {
    }
 
    /**
-    * Compute the offset of the first line of Script content in the groovy file relative to the first line of the Script including the
-    * content added automatically. It is useful to crrectly identify the line for an Exception thrown by the Script.
+    * Compute the offset of the first line of Script content in the groovy file relative to the first line of the Script including the content added
+    * automatically. It is useful to crrectly identify the line for an Exception thrown by the Script.
     *
     * @param text the text
     */
@@ -231,9 +246,8 @@ public class ScriptWrapper {
    }
 
    /**
-    * Set the line offset for the Script, useful if the Script associated with the File which contain it is not positioned
-    * at the beginning of the File.
-    * This can happen if the Script is streamed with a header before the content of the File, or even if it is just part of a larger File.
+    * Set the line offset for the Script, useful if the Script associated with the File which contain it is not positioned at the beginning of the
+    * File. This can happen if the Script is streamed with a header before the content of the File, or even if it is just part of a larger File.
     *
     * @param offset the line offset for the Script
     */

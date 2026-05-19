@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,56 +30,73 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.svgimage.tosvg.converters;
+package org.girod.javafx.tosvg;
 
+import java.io.File;
+import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.control.Control;
-import javafx.scene.control.Labeled;
-import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import org.junit.After;
+import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * A converter which convert Controls.
+ * Test for a SVG converter to convert a circle.
  *
- * @since 1.0
-   */
-public class ControlConverter extends RegionConverter {
-   private Control control = null;
+ * @since 1.7.2
+ */
+public class SVGConverterCircleTest {
 
-   /**
-    * Constructor.
-    *
-    * @param delegate the converter delegate
-    * @param control the control to convert
-    * @param xmlParent the parent xml node
-    */
-   public ControlConverter(ConverterDelegate delegate, Control control, XMLNode xmlParent) {
-      super(delegate, control, xmlParent);
-      this.control = control;
+   public SVGConverterCircleTest() {
+   }
+
+   @BeforeClass
+   public static void setUpClass() {
+   }
+
+   @AfterClass
+   public static void tearDownClass() {
+   }
+
+   @Before
+   public void setUp() {
+   }
+
+   @After
+   public void tearDown() {
    }
 
    /**
-    * Convert the Control.
-    *
-    * @return the xml node
+    * Test of generating a svg from a circle.
     */
-   @Override
-   public XMLNode convert() {
-      XMLNode xmlNode = super.convert();
-      return xmlNode;
+   @Test
+   public void testConvertCircle() throws Exception {
+      System.out.println("SVGConverterCircleTest : testConvertCircle");
+      TextConverterUtils utils = new TextConverterUtils();
+      File file = File.createTempFile("tosvg", ".svg");
+      utils.convert(file);
+      URL url = SVGConverterCircleTest.class.getResource("circle.svg");
+
+      XMLComparator comp = new XMLComparator(url, file);
+      assertTrue("Converted circle svg must be equal", comp.compare());
+      file.delete();
    }
 
-   /**
-    * Return the additional child Node on this Node.
-    * Will return null, except for a {@link javafx.scene.control.Labeled}, where it will return {@link javafx.scene.control.Labeled#getGraphic()}.
-    *
-    * @return the additional child Node on this Node
-    */
-   @Override
-   public Node getAdditionalNode() {
-      if (control instanceof Labeled) {
-         return ((Labeled) control).getGraphic();
-      } else {
-         return null;
+   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+      @Override
+      protected Node getContent() {
+         Circle circle = new Circle();
+         circle.setCenterX(100.0f);
+         circle.setCenterY(100.0f);
+         circle.setRadius(50.0f);
+         circle.setStroke(Color.RED);
+         circle.setFill(Color.GREEN);
+         return circle;
       }
+
    }
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,71 +30,55 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg.app;
+package org.girod.javafx.tosvg;
 
-import java.awt.Color;
 import java.io.File;
-import javafx.application.Application;
+import java.io.IOException;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.girod.javafx.svgimage.tosvg.SVGConverter;
-import org.girod.javafx.tosvg.JFXInvoker;
 
 /**
- * An utility class to convert Nodes to SVG content.
  *
- * @version 1.7.2
+ * @since  1.7.2
  */
-public class SVGDriverAppUtils extends Application {
+public abstract class AbstractSVGConverterUtils {
    private Node node = null;
    private File file = null;
-   private Color background = null;
    private StackPane root = null;
-   private String title = null;
    private String styleSheet = null;
 
-   protected Dimension2D getDimension() {
-      return new Dimension2D(300, 250);
+   protected abstract Node getContent();
+   
+   public void convert(File file) throws Exception {
+      convert(file, null);
    }
 
-   /**
-    * Set the background color used for the conversion.
-    *
-    * @param background the background
-    */
-   public void setBackground(Color background) {
-      this.background = background;
-   }
-
-   /**
-    * Convert the JavaFX content to a SVG content.
-    *
-    * @param node the JavaFX node
-    * @param file the output svg file to generate
-    * @param styleSheet the associated styleSheet (can be null)
-    * @param title the title of the output SVG file
-    */
-   public void convert(Node node, File file, String styleSheet, String title) throws Exception {
-      this.node = node;
+   public void convert(File file, String styleSheet) throws Exception {
       this.file = file;
-      this.title = title;
       this.styleSheet = styleSheet;
-
       JFXInvoker invoker = JFXInvoker.getInstance();
       invoker.invokeBlocking(new Runnable() {
          @Override
          public void run() {
-            showStage();
+            try {
+               convertImpl();
+            } catch (IOException ex) {
+               ex.printStackTrace();
+            }
          }
       });
-      SVGConverter converter = new SVGConverter();
-      converter.convert(node, file);
    }
 
-   private void showStage() {
+   private Dimension2D getDimension() {
+      return new Dimension2D(300, 250);
+   }
+
+   private void convertImpl() throws IOException {
+      node = getContent();
       root = new StackPane();
       Dimension2D dim = getDimension();
       Scene scene = new Scene(root, dim.getWidth(), dim.getHeight());
@@ -102,14 +86,10 @@ public class SVGDriverAppUtils extends Application {
          scene.getStylesheets().add(styleSheet);
       }
       Stage stage = new Stage();
-      stage.setTitle(title);
+      stage.setTitle("JavaFX Content");
       stage.setScene(scene);
-      start(stage);
-   }
 
-   @Override
-   public void start(Stage primaryStage) {
-      root.getChildren().add(node);
-      primaryStage.show();
+      SVGConverter converter = new SVGConverter();
+      converter.convert(node, file);
    }
 }

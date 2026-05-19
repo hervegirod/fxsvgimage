@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,11 +37,12 @@ import java.io.File;
 /**
  * The script context.
  *
- * @since 1.0
+ * @version 1.7.2
  */
 public class ScriptContext {
    private final File scriptFile;
    private final File scriptDir;
+   private String styleSheet = null;
 
    /**
     * Constructor.
@@ -83,12 +84,30 @@ public class ScriptContext {
    }
 
    /**
+    * Return the styleSheet to use for the generated JavaFX content.
+    *
+    * @return the URL of the styleSheet as a String
+    */   
+   public String getStylesheet() {
+      return styleSheet;
+   }
+
+   /**
+    * Set the styleSheet to use for the generated JavaFX content.
+    *
+    * @param path the path of the styleSheet css file, relative to the script
+    */
+   public void setStyleSheet(String path) {
+      this.styleSheet = getURL(path);
+   }
+
+   /**
     * Return the absolute path of a file defined relative to the script file.
     *
     * @param path the relative path
     * @return the absolute path
     */
-   public String getCSS(String path) {
+   public String getURL(String path) {
       File file = new File(scriptDir, path);
       String ref = "file:///" + file.getAbsolutePath().replace("\\", "/");
       return ref;

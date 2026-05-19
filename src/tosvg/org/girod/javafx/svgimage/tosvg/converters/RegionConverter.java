@@ -104,8 +104,7 @@ public class RegionConverter extends AbstractConverter {
    }
 
    /**
-    * Return the Region Background associated with the Region (may be null). Correspond to the "-fx-region-background"
-    * CSS property.
+    * Return the Region Background associated with the Region (may be null). Correspond to the "-fx-region-background" CSS property.
     *
     * @return the Region Background associated with the Region
     * @see org.jfxconverter.utils.CSSProperties#REGION_BACKGROUND
@@ -125,8 +124,7 @@ public class RegionConverter extends AbstractConverter {
    }
 
    /**
-    * Return the Region Border associated with the Region (may be null). Correspond to the "-fx-region-border" CSS
-    * property.
+    * Return the Region Border associated with the Region (may be null). Correspond to the "-fx-region-border" CSS property.
     *
     * @return the Region Border associated with ther Region
     * @see org.jfxconverter.utils.CSSProperties#REGION_BORDER
@@ -269,7 +267,6 @@ public class RegionConverter extends AbstractConverter {
 
    private void fillRect(XMLNode gNode, BackgroundWrapper wrapper, double x, double y, double width, double height) {
       if (wrapper.isTexture()) {
-
       } else {
          double arcWidth = wrapper.getMeanRadiiWidth();
          double arcHeight = wrapper.getMeanRadiiHeight();
