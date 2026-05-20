@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2025 Hervé Girod
+Copyright (c) 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import javafx.scene.paint.Color;
 /**
  * The parameters used for saving a node hierarchy.
  *
- * @version 1.2
+ * @version 1.7.3
  */
 public class ConverterParameters {
    /**

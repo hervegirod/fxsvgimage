@@ -46,17 +46,28 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLRoot;
 /**
  * The JavaFX to SVg converter.
  *
- * @version 1.7.1
+ * @version 1.7.3
  */
 public class SVGConverter {
    private ConverterDelegate delegate = null;
-   private ConverterParameters defaultParams = new ConverterParameters();
+   private ConverterParameters defaultParams;
 
    /**
     * Create a SVG converter.
     */
    public SVGConverter() {
-      delegate = new ConverterDelegate();
+      this.delegate = new ConverterDelegate();
+      this.defaultParams = new ConverterParameters();
+   }
+
+   /**
+    * Create a SVG converter.
+    *
+    * @param defaultParams the default parameters
+    */
+   public SVGConverter(ConverterParameters defaultParams) {
+      this.delegate = new ConverterDelegate();
+      this.defaultParams = defaultParams;
    }
 
    /**
@@ -89,7 +100,7 @@ public class SVGConverter {
     * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, File file) throws IOException {
-      convert(root, file, new ConverterParameters());
+      convert(root, file, defaultParams);
    }
 
    private String encodeBackground(Color color) {
@@ -163,7 +174,7 @@ public class SVGConverter {
     * @throws IOException if writing the SVG fails
     */
    public void convert(Node root, URL url) throws IOException {
-      convert(root, url, new ConverterParameters());
+      convert(root, url, defaultParams);
    }
 
    /**
