@@ -9,4 +9,6 @@
    <image id="lineargradient" url="lineargradient.jpg" />
    <image id="radialgradient" url="radialgradient.jpg" />   
    <image id="nestedSVG" url="nestedSVG.png" />
+   <image id="tosvgInsets" url="tosvgInsets.png" />
+   <image id="tosvgNoinsets" url="tosvgNoinsets.png" />
 </images>

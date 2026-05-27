@@ -16,8 +16,30 @@
    
    <title level="2" title="hasViewbox" keepCase="true"/>
    The <code>hasViewbox</code> parameter allows to set the viewbox of the resulting svg document. The viewbox will have the width and height of the svg document It is 
-   <code>false</code> by default.   
+   <code>false</code> by default.
    
+   <title level="2" title="title" keepCase="true"/>
+   The <code>title</code> parameter allows to add a <code>title</code> for the svg result. For example:
+   <pre syntax="xml">
+      &lt;svg height="105.0" transform="translate(100.0 75.0)" width="105.0" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"&gt;
+         &lt;title&gt;Default Title&lt;/title&gt;
+         &lt;defs/&gt;
+         &lt;polyline fill="none" points="0.0,0.0 0.0,100.0 100.0,100.0 " style="stroke:rgb(255,0,0);"/&gt;
+      &lt;/svg&gt;
+   </pre>
+          
+   <title level="2" title="insets" keepCase="true"/>
+   <moreInfo id="tosvg converter insets parameter" />
+   The <code>insets</code> parameter allows to add an <code>insets</code> around the svg result. For example with an <code>insets</code> of 2:
+   <pre syntax="xml">
+      &lt;svg height="105.0" transform="translate(100.0 75.0)" width="105.0" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"&gt;
+         &lt;defs/&gt;
+         &lt;g transform="translate(2.0 2.0)"&gt;
+            &lt;polyline fill="none" points="0.0,0.0 0.0,100.0 100.0,100.0 " style="stroke:rgb(255,0,0);"/&gt;
+         &lt;/g&gt;
+      &lt;/svg&gt;
+   </pre>
+           
    <title level="2" title="allowTransformForRoot" keepCase="true"/>
    The <code>allowTransformForRoot</code> parameter allows to allow transformations on the root of the svg document. It is <code>true</code> by default.   
    
