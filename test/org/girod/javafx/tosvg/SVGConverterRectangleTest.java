@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a rectangle.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterRectangleTest {
 
@@ -76,17 +76,17 @@ public class SVGConverterRectangleTest {
    @Test
    public void testConvertRectangle() throws Exception {
       System.out.println("SVGConverterRectangleTest : testConvertRectangle");
-      TextConverterUtils utils = new TextConverterUtils();
+      RectangleConverterUtils utils = new RectangleConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterRectangleTest.class.getResource("rectangle.svg");
 
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted polyline svg must be equal", comp.compare());
+      assertTrue("Converted rectangle svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class RectangleConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Rectangle rect = new Rectangle(50, 50, 200, 100);

@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a circle.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterCircleTest {
 
@@ -76,7 +76,7 @@ public class SVGConverterCircleTest {
    @Test
    public void testConvertCircle() throws Exception {
       System.out.println("SVGConverterCircleTest : testConvertCircle");
-      TextConverterUtils utils = new TextConverterUtils();
+      CircleConverterUtils utils = new CircleConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterCircleTest.class.getResource("circle.svg");
@@ -86,7 +86,7 @@ public class SVGConverterCircleTest {
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class CircleConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Circle circle = new Circle();

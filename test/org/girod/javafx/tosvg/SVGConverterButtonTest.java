@@ -35,7 +35,7 @@ package org.girod.javafx.tosvg;
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
+import javafx.scene.control.Button;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -44,13 +44,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a text.
+ * Test for a SVG converter to convert a button.
  *
  * @version 1.7.3
  */
-public class SVGConverterTextTest {
+public class SVGConverterButtonTest {
 
-   public SVGConverterTextTest() {
+   public SVGConverterButtonTest() {
    }
 
    @BeforeClass
@@ -70,26 +70,26 @@ public class SVGConverterTextTest {
    }
 
    /**
-    * Test of generating a svg from a text.
+    * Test of generating a svg from a button.
     */
    @Test
-   public void testConvertText() throws Exception {
-      System.out.println("SVGConverterTextTest : testConvertText");
-      TextConverterUtils utils = new TextConverterUtils();
+   public void testConvertButton() throws Exception {
+      System.out.println("SVGConverterButtonTest : testConvertButton");
+      ButtonConverterUtils utils = new ButtonConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
-      URL url = SVGConverterTextTest.class.getResource("text.svg");
-      
+      URL url = SVGConverterButtonTest.class.getResource("button.svg");
+
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted text svg must be equal", comp.compare());
+      assertTrue("Converted button svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class ButtonConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
-         Text text = new Text("Hello World!");
-         return text;
+         Button button = new Button("Hello World!");
+         return button;
       }
 
    }

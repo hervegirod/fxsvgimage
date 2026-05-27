@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a polyline.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterPolylineTest {
 
@@ -76,7 +76,7 @@ public class SVGConverterPolylineTest {
    @Test
    public void testConvertPolyline() throws Exception {
       System.out.println("SVGConverterPolylineTest : testConvertPolyline");
-      TextConverterUtils utils = new TextConverterUtils();
+      PolylineConverterUtils utils = new PolylineConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterPolylineTest.class.getResource("polyline.svg");
@@ -86,7 +86,7 @@ public class SVGConverterPolylineTest {
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class PolylineConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Polyline polyline = new Polyline();

@@ -49,7 +49,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a path.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterPathTest {
 
@@ -78,7 +78,7 @@ public class SVGConverterPathTest {
    @Test
    public void testConvertPath() throws Exception {
       System.out.println("SVGConverterPathTest : testConvertPath");
-      TextConverterUtils utils = new TextConverterUtils();
+      PathConverterUtils utils = new PathConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterPathTest.class.getResource("path.svg");
@@ -88,7 +88,7 @@ public class SVGConverterPathTest {
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class PathConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Path path = new Path();

@@ -42,20 +42,28 @@ import javafx.scene.Node;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileFilter;
 
 /**
  * A simple application which allows to convert using a Script file.
  *
- * @version  1.7.2
+ * @version  1.7.3
  */
 public class SVGConverterApp extends JFrame {
    private JTextField titleTf = null;
+   private JCheckBox cbTitle = null;
+   private final SpinnerNumberModel insetsModel = new SpinnerNumberModel(0, 0, 10, 1);
+   private JSpinner insetsSpinner = null;
+   private int insets = -1;   
    private JButton convertButton = null;
    private JButton selectContentButton = null;
    private ScriptWrapper wrapper = null;
@@ -71,21 +79,56 @@ public class SVGConverterApp extends JFrame {
       Container pane = this.getContentPane();
       pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
-      // options panel
-      JPanel optionsPanel = new JPanel();
-      optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.X_AXIS));
-      optionsPanel.add(Box.createHorizontalStrut(5));
+      // title panel
+      JPanel titlePanel = new JPanel();
+      titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+      titlePanel.add(Box.createHorizontalStrut(5));
       JLabel label = new JLabel("Title");
-      optionsPanel.add(label);
-      optionsPanel.add(Box.createHorizontalStrut(10));
+      titlePanel.add(label);
+      titlePanel.add(Box.createHorizontalStrut(10));
       titleTf = new JTextField(10);
       titleTf.setText("Default Title");
-      optionsPanel.add(titleTf);
-      optionsPanel.add(Box.createHorizontalStrut(5));
-      optionsPanel.add(Box.createHorizontalGlue());
+      titlePanel.add(titleTf);
+      titlePanel.add(Box.createHorizontalStrut(5));
+      titlePanel.add(Box.createHorizontalGlue());
 
-      pane.add(optionsPanel);
+      pane.add(titlePanel);
       pane.add(Box.createVerticalStrut(5));
+      
+      // parameters panel
+      JPanel params = new JPanel();
+      params.setLayout(new BoxLayout(params, BoxLayout.X_AXIS));
+      params.add(Box.createHorizontalStrut(5));
+      label = new JLabel("Add Title");
+      params.add(label);
+      params.add(Box.createHorizontalStrut(10));
+      cbTitle = new JCheckBox();
+      params.add(cbTitle);
+      params.add(Box.createHorizontalStrut(5));
+
+      label = new JLabel("Insets");
+      params.add(label);
+      params.add(Box.createHorizontalStrut(10));
+      insetsSpinner = new JSpinner(insetsModel);
+      insetsSpinner.setEditor(new JSpinner.NumberEditor(insetsSpinner, "##"));
+      insetsSpinner.setMaximumSize(insetsSpinner.getPreferredSize());
+      // spinner modification
+      insetsSpinner.addChangeListener((ChangeEvent e) -> {
+         try {
+            insets = (Integer) ((JSpinner) e.getSource()).getValue();
+            if (insets > 10) {
+               insets = 10;
+            }
+         } catch (ArithmeticException ex) {
+         }
+      });
+      params.add(insetsSpinner);
+      params.add(Box.createHorizontalStrut(5));
+      
+      params.add(Box.createHorizontalGlue());
+
+      pane.add(params);
+      pane.add(Box.createVerticalStrut(5));      
 
       // conversion panel
       JPanel conversionPanel = new JPanel();
@@ -115,6 +158,7 @@ public class SVGConverterApp extends JFrame {
       pane.add(conversionPanel);
       pane.add(Box.createVerticalStrut(5));
       pane.add(Box.createVerticalGlue());
+      this.pack();
    }
 
    private void selectContent() {
@@ -173,7 +217,7 @@ public class SVGConverterApp extends JFrame {
                name = name + ".svg";
                file = new File(file.getParentFile(), name);
             }
-            convert(file, titleTf.getText());
+            convert(file, titleTf.getText(), cbTitle.isSelected(), insets);
          }
       }
    }
@@ -184,7 +228,7 @@ public class SVGConverterApp extends JFrame {
       return wrapper;
    }
 
-   private void convert(File file, String title) {
+   private void convert(File file, String title, boolean addTitle, int insets) {
       new JFXPanel();
       Platform.runLater(new Runnable() {
          @Override
@@ -193,7 +237,7 @@ public class SVGConverterApp extends JFrame {
                if (wrapper != null) {
                   Node node = wrapper.executeScript();
                   if (node != null) {
-                     convertToSVG(node, file, wrapper.getStyleSheet(), title);
+                     convertToSVG(node, file, wrapper.getStyleSheet(), title, addTitle, insets);
                   }
                }
             } catch (Exception ex) {
@@ -203,9 +247,9 @@ public class SVGConverterApp extends JFrame {
       });
    }
 
-   private void convertToSVG(Node node, File file, String styleSheet, String title) throws Exception {
+   private void convertToSVG(Node node, File file, String styleSheet, String title, boolean addTitle, int insets) throws Exception {
       SVGDriverAppUtils utils = new SVGDriverAppUtils();
-      utils.convert(node, file, styleSheet, title);
+      utils.convert(node, file, styleSheet, title, addTitle, insets);
    }
 
    public static void main(String[] args) {

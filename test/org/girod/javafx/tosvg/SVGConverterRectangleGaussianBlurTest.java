@@ -35,7 +35,9 @@ package org.girod.javafx.tosvg;
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -44,13 +46,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a text.
+ * Test for a SVG converter to convert a rectangle with a gaussian blur effect.
  *
- * @version 1.7.3
+ * @since 1.7.3
  */
-public class SVGConverterTextTest {
+public class SVGConverterRectangleGaussianBlurTest {
 
-   public SVGConverterTextTest() {
+   public SVGConverterRectangleGaussianBlurTest() {
    }
 
    @BeforeClass
@@ -70,26 +72,30 @@ public class SVGConverterTextTest {
    }
 
    /**
-    * Test of generating a svg from a text.
+    * Test of generating a svg from a rectangle.
     */
    @Test
-   public void testConvertText() throws Exception {
-      System.out.println("SVGConverterTextTest : testConvertText");
-      TextConverterUtils utils = new TextConverterUtils();
+   public void testConvertRectangle() throws Exception {
+      System.out.println("SVGConverterRectangleGaussianBlurTest : testConvertRectangle");
+      RectangleConverterUtils utils = new RectangleConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
-      URL url = SVGConverterTextTest.class.getResource("text.svg");
-      
+      URL url = SVGConverterRectangleGaussianBlurTest.class.getResource("rectangleGaussianBlur.svg");
+
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted text svg must be equal", comp.compare());
+      assertTrue("Converted rectangle svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class RectangleConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
-         Text text = new Text("Hello World!");
-         return text;
+         Rectangle rect = new Rectangle(50, 50, 200, 100);
+         rect.setFill(Color.GREEN);
+         GaussianBlur blur = new GaussianBlur();
+         blur.setRadius(5.0);
+         rect.setEffect(blur);
+         return rect;
       }
 
    }

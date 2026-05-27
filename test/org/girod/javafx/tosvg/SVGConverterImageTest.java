@@ -35,7 +35,8 @@ package org.girod.javafx.tosvg;
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -44,13 +45,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a text.
+ * Test for a SVG converter to convert an image.
  *
- * @version 1.7.3
+ * @since 1.7.3
  */
-public class SVGConverterTextTest {
+public class SVGConverterImageTest {
 
-   public SVGConverterTextTest() {
+   public SVGConverterImageTest() {
    }
 
    @BeforeClass
@@ -70,26 +71,28 @@ public class SVGConverterTextTest {
    }
 
    /**
-    * Test of generating a svg from a text.
+    * Test of generating a svg from an image.
     */
    @Test
-   public void testConvertText() throws Exception {
-      System.out.println("SVGConverterTextTest : testConvertText");
-      TextConverterUtils utils = new TextConverterUtils();
+   public void testConvertImage() throws Exception {
+      System.out.println("SVGConverterImageTest : testConvertImage");
+      ImageConverterUtils utils = new ImageConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
-      URL url = SVGConverterTextTest.class.getResource("text.svg");
-      
+      URL url = SVGConverterImageTest.class.getResource("image.svg");
+
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted text svg must be equal", comp.compare());
+      assertTrue("Converted image svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class ImageConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
-         Text text = new Text("Hello World!");
-         return text;
+         URL url = SVGConverterImageTest.class.getResource("converge.jpg");
+         Image image = new Image(url.toExternalForm());
+         ImageView imageView = new ImageView(image);
+         return imageView;
       }
 
    }

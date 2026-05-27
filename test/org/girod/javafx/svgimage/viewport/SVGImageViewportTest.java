@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2026 Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,27 +30,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg;
+package org.girod.javafx.svgimage.viewport;
 
-import java.io.File;
-import java.net.URL;
-import javafx.scene.Node;
-import javafx.scene.text.Text;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import java.net.URL;
+import org.girod.javafx.svgimage.LoaderParameters;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
 
 /**
- * Test for a SVG converter to convert a text.
+ * Unit tests for checking the width and height of the generated image. Check with and height defined in cm.
  *
- * @version 1.7.3
+ * @since 1.7.3
  */
-public class SVGConverterTextTest {
+public class SVGImageViewportTest {
+   private static double DELTA = 0.001d;
 
-   public SVGConverterTextTest() {
+   public SVGImageViewportTest() {
    }
 
    @BeforeClass
@@ -70,27 +71,19 @@ public class SVGConverterTextTest {
    }
 
    /**
-    * Test of generating a svg from a text.
+    * Test of generating an image with the content viewport option.
     */
    @Test
-   public void testConvertText() throws Exception {
-      System.out.println("SVGConverterTextTest : testConvertText");
-      TextConverterUtils utils = new TextConverterUtils();
-      File file = File.createTempFile("tosvg", ".svg");
-      utils.convert(file);
-      URL url = SVGConverterTextTest.class.getResource("text.svg");
-      
-      XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted text svg must be equal", comp.compare());
-      file.delete();
-   }
+   public void testImageWidthAndHeight() {
+      System.out.println("SVGImageViewportTest : testImageWidthAndHeight");
+      URL url = this.getClass().getResource("viewportinCM.svg");
+      LoaderParameters params = new LoaderParameters();
+      params.dpi = 96;
+      SVGImage result = SVGLoader.load(url, params);
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
-      @Override
-      protected Node getContent() {
-         Text text = new Text("Hello World!");
-         return text;
-      }
-
+      double _width = result.getViewport().getBestWidth();
+      assertEquals("width", 302.36220472, _width, DELTA);
+      double _height = result.getViewport().getBestHeight();
+      assertEquals("height", 151.1811023, _height, DELTA);
    }
 }

@@ -1,0 +1,9 @@
+<svg height="150.0" width="250.0" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" id="gradient_1" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+      <stop offset="0%" stop-color="rgb(0,128,0)"/>
+      <stop offset="100%" stop-color="rgb(0,0,255)"/>
+    </linearGradient>
+  </defs>
+  <rect fill="url(#gradient_1)" height="100.0" style="stroke:none;" width="200.0" x="50.0" y="50.0"/>
+</svg>

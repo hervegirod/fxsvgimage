@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a polygon.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterPolygonTest {
 
@@ -76,7 +76,7 @@ public class SVGConverterPolygonTest {
    @Test
    public void testConvertPolygon() throws Exception {
       System.out.println("SVGConverterPolygonTest : testConvertPolygon");
-      TextConverterUtils utils = new TextConverterUtils();
+      PolygonConverterUtils utils = new PolygonConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterPolygonTest.class.getResource("polygon.svg");
@@ -86,7 +86,7 @@ public class SVGConverterPolygonTest {
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class PolygonConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Polygon polygon = new Polygon();

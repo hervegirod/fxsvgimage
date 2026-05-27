@@ -47,7 +47,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert an ellipse.
  *
- * @since 1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterEllipseTest {
 
@@ -76,7 +76,7 @@ public class SVGConverterEllipseTest {
    @Test
    public void testConvertEllipse() throws Exception {
       System.out.println("SVGConverterEllipseTest : testConvertEllipse");
-      TextConverterUtils utils = new TextConverterUtils();
+      EllipseConverterUtils utils = new EllipseConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
       utils.convert(file);
       URL url = SVGConverterEllipseTest.class.getResource("ellipse.svg");
@@ -86,7 +86,7 @@ public class SVGConverterEllipseTest {
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class EllipseConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
          Ellipse ellipse = new Ellipse();

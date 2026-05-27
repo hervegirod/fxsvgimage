@@ -35,7 +35,9 @@ package org.girod.javafx.tosvg;
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polyline;
+import org.girod.javafx.svgimage.tosvg.ConverterParameters;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -44,13 +46,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a text.
+ * Test for a SVG converter to convert a polyline with insets.
  *
- * @version 1.7.3
+ * @since 1.7.3
  */
-public class SVGConverterTextTest {
+public class SVGConverterPolylineInsetsTest {
 
-   public SVGConverterTextTest() {
+   public SVGConverterPolylineInsetsTest() {
    }
 
    @BeforeClass
@@ -70,26 +72,31 @@ public class SVGConverterTextTest {
    }
 
    /**
-    * Test of generating a svg from a text.
+    * Test of generating a svg from a polyline.
     */
    @Test
-   public void testConvertText() throws Exception {
-      System.out.println("SVGConverterTextTest : testConvertText");
-      TextConverterUtils utils = new TextConverterUtils();
+   public void testConvertPolyline() throws Exception {
+      System.out.println("SVGConverterPolylineInsetsTest : testConvertPolyline");
+      PolylineConverterUtils utils = new PolylineConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
-      utils.convert(file);
-      URL url = SVGConverterTextTest.class.getResource("text.svg");
-      
+      ConverterParameters params = new ConverterParameters();
+      params.insets = 2;     
+      params.allowTransformForRoot = false;
+      utils.convert(file, params);
+      URL url = SVGConverterPolylineTest.class.getResource("polylineInsets.svg");
+
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted text svg must be equal", comp.compare());
+      assertTrue("Converted polyline svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class TextConverterUtils extends AbstractSVGConverterUtils {
+   public static class PolylineConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
-         Text text = new Text("Hello World!");
-         return text;
+         Polyline polyline = new Polyline();
+         polyline.getPoints().addAll(new Double[]{0.0, 0.0, 0.0, 100.0, 100.0, 100.0});
+         polyline.setStroke(Color.RED);
+         return polyline;
       }
 
    }

@@ -39,27 +39,44 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.girod.javafx.svgimage.tosvg.ConverterParameters;
 import org.girod.javafx.svgimage.tosvg.SVGConverter;
 
 /**
+ * The abstract converter class.
  *
- * @since  1.7.2
+ * @version 1.7.3
  */
 public abstract class AbstractSVGConverterUtils {
    private Node node = null;
    private File file = null;
    private StackPane root = null;
+   private ConverterParameters params = null;
    private String styleSheet = null;
+   private static ConverterParameters PARAMS = new ConverterParameters();
 
-   protected abstract Node getContent();
-   
-   public void convert(File file) throws Exception {
-      convert(file, null);
+   static {
+      PARAMS.allowTransformForRoot = false;
    }
 
+   protected abstract Node getContent();
+
+   public void convert(File file) throws Exception {
+      convert(file, null, null);
+   }
+   
+   public void convert(File file, ConverterParameters params) throws Exception {
+      convert(file, params, null);
+   } 
+   
    public void convert(File file, String styleSheet) throws Exception {
+      convert(file, null, styleSheet);
+   }
+
+   public void convert(File file, ConverterParameters params, String styleSheet) throws Exception {
       this.file = file;
       this.styleSheet = styleSheet;
+      this.params = params;
       JFXInvoker invoker = JFXInvoker.getInstance();
       invoker.invokeBlocking(new Runnable() {
          @Override
@@ -88,8 +105,18 @@ public abstract class AbstractSVGConverterUtils {
       Stage stage = new Stage();
       stage.setTitle("JavaFX Content");
       stage.setScene(scene);
+      root.getChildren().add(node);
+      stage.show();
+      root.applyCss();
 
-      SVGConverter converter = new SVGConverter();
+      ConverterParameters _params;
+      if (params != null) {
+         _params = params;
+      } else {
+         _params = PARAMS;
+      }
+      SVGConverter converter = new SVGConverter(_params);
       converter.convert(node, file);
+      stage.close();
    }
 }
