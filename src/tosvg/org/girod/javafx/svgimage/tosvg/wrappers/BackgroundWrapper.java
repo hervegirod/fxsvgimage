@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import javafx.scene.paint.Paint;
 /**
  * Wraps the definition for an element in the list associated with a JavaFX Background.
  *
- * @since 1.0
+ * @version 1.7.3
  */
 public class BackgroundWrapper {
    private Paint paint = null;
@@ -219,4 +219,17 @@ public class BackgroundWrapper {
    public Paint getPaint() {
       return paint;
    }
+   
+   /**
+    * Return the ImagePattern of the wrapper. Will return null if it is not a texture.
+    *
+    * @return the ImagePattern of the wrapper
+    */
+   public ImagePattern asTexture() {
+      if (isTexture) {
+         return (ImagePattern)paint;
+      } else {
+         return null;
+      }
+   }   
 }
