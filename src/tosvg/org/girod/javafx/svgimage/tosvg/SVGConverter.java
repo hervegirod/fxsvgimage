@@ -120,6 +120,9 @@ public class SVGConverter {
       } else {
          bounds = root.getBoundsInLocal();
          width = bounds.getMaxX();
+         if (params.insets > 0) {
+            width += params.insets * 2;
+         }
          xmlRoot.addAttribute("width", width);
       }
       if (params.height > 0) {
@@ -130,6 +133,9 @@ public class SVGConverter {
             bounds = root.getBoundsInLocal();
          }
          height = bounds.getMaxY();
+         if (params.insets > 0) {
+            height += params.insets * 2;
+         }         
          xmlRoot.addAttribute("height", height);
       }
       if (params.hasViewbox) {
