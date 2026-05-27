@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2026, Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,83 +33,74 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.svgimage.tosvg.converters;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import static java.awt.image.ImageObserver.ALLBITS;
-import java.awt.image.RenderedImage;
 import java.awt.image.VolatileImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
-import javafx.scene.transform.Transform;
-import javax.imageio.ImageIO;
-import org.girod.javafx.svgimage.tosvg.utils.AwtImageUtilities;
-import org.girod.javafx.svgimage.tosvg.utils.CSSProperties;
+import javafx.scene.paint.ImagePattern;
+import static org.girod.javafx.svgimage.tosvg.converters.AbstractImageConverter.imgToBase64String;
 import org.girod.javafx.svgimage.tosvg.utils.Utilities;
 import org.girod.javafx.svgimage.tosvg.xml.SVGConstants;
 import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 
 /**
- * Base converter for JavaFX nodes that render images.
+ * Builds SVG image pattern elements.
  *
- * @since 1.0
+ * @since 1.7.3
  */
-public abstract class AbstractImageConverter extends AbstractConverter {
+public class ImagePatternConstructor {
+   private int imagePatternID = 0;
+
    /**
     * Constructor.
-    *
-    * @param delegate the ConverterDelegate
-    * @param node the Node
-    * @param xmlParent the parent xml node
     */
-   public AbstractImageConverter(ConverterDelegate delegate, Node node, XMLNode xmlParent) {
-      super(delegate, node, xmlParent);
-   } 
-   
+   public ImagePatternConstructor() {
+   }
+
    /**
-    * Writes an image.
-    * @param theNode the node
-    * @param xmlNode the xml node
-    * @param image the image
-    * @param dstWidth the width
-    * @param dstHeight the height
+    * Return the next image pattern id.
+    *
+    * @return the image pattern id
     */
-   protected void writeImage(Node theNode, XMLNode xmlNode, Image image, double dstWidth, double dstHeight) {
-      BufferedImage awtImage = new BufferedImage((int) dstWidth, (int) dstHeight, BufferedImage.TYPE_INT_ARGB);
+   public String getImagePatternID() {
+      return "imagePattern_" + imagePatternID;
+   }
+
+   /**
+    * Create an SVG pattern element for the provided ImagePattern paint.
+    *
+    * @param paint the ImagePattern paint
+    * @param dstWidth the destination width
+    * @param dstHeight the destination height
+    * @return the SVG pattern element
+    */
+   public XMLNode createImagePattern(ImagePattern paint, int dstWidth, int dstHeight) {
+      XMLNode patternNode = new XMLNode("pattern");
+      patternNode.addAttribute("width", "100%");
+      patternNode.addAttribute("height", "100%");
+      XMLNode imageNode = new XMLNode("image");
+      Image image = paint.getImage();
+      int imageWidth = (int)image.getWidth();
+      int imageHeight = (int)image.getHeight();
+      imageNode.addAttribute("width", dstWidth);
+      imageNode.addAttribute("height", dstHeight);
+      imageNode.addAttribute("preserveAspectRatio", "xMaxYMax slice");
+      patternNode.addChild(imageNode);
+      writeImage(imageNode, paint, imageWidth, imageHeight);
+
+      imagePatternID++;
+      return patternNode;
+   }
+
+   private void writeImage(XMLNode xmlNode, ImagePattern paint, int dstWidth, int dstHeight) {
+      Image image = paint.getImage();
+      BufferedImage awtImage = new BufferedImage(dstWidth, dstHeight, BufferedImage.TYPE_INT_ARGB);
       java.awt.Image awtimage2 = SwingFXUtils.fromFXImage(image, awtImage);
-      if (theNode.isDisabled()) {
-         awtimage2 = AwtImageUtilities.createDisabledImage(awtimage2);
-      }
-      awtimage2 = awtimage2.getScaledInstance((int) dstWidth, (int) dstHeight, java.awt.Image.SCALE_SMOOTH);
-
-      Transform fromAncestorTransform = this.getTransformFromAncestor(theNode);
-      AffineTransform awtTransform = AwtImageUtilities.getTransform(fromAncestorTransform);
-      double angle = AwtImageUtilities.getRotationAngle(awtTransform);
-      if (angle != 0) {
-         BufferedImage awtImage3 = new BufferedImage((int) dstWidth, (int) dstHeight, BufferedImage.TYPE_INT_ARGB);
-         Graphics2D g2d = awtImage3.createGraphics();
-
-         AffineTransform at = new AffineTransform();
-         at.translate(dstWidth / 2, dstHeight / 2);
-         at.rotate(angle);
-         at.scale(0.5, 0.5);
-         at.translate(-dstWidth / 2, -dstHeight / 2);
-         g2d.drawImage(awtimage2, at, null);
-         awtimage2 = awtImage3;
-      }
-      if (allProperties.containsKey(CSSProperties.OPACITY)) {
-         double opacity = (Double) allProperties.get(CSSProperties.OPACITY);
-         if (opacity < 1d) {
-            awtimage2 = AwtImageUtilities.createOpacifiedImage(awtimage2, opacity, false);
-         }
-      }
+      awtimage2 = awtimage2.getScaledInstance( dstWidth, dstHeight, java.awt.Image.SCALE_SMOOTH);
       BufferedImage bimg = toBufferedImage(awtimage2, BufferedImage.TYPE_INT_ARGB);
       String content = imgToBase64String(bimg);
       List<String> parts = Utilities.splitString(content, 100);
@@ -134,7 +125,7 @@ public abstract class AbstractImageConverter extends AbstractConverter {
     * @param type the buffered image type
     * @return the resulting buffered image
     */
-   public BufferedImage toBufferedImage(java.awt.Image image, int type) {
+   private BufferedImage toBufferedImage(java.awt.Image image, int type) {
       if (image instanceof BufferedImage) {
          return (BufferedImage) image;
       } else if (image instanceof VolatileImage) {
@@ -151,6 +142,7 @@ public abstract class AbstractImageConverter extends AbstractConverter {
    private void loadImage(java.awt.Image image) {
       class StatusObserver implements ImageObserver {
          boolean imageLoaded = false;
+
          @Override
          public boolean imageUpdate(java.awt.Image img, final int infoflags, final int x, final int y, final int width, final int height) {
             if (infoflags == ALLBITS) {
@@ -175,20 +167,4 @@ public abstract class AbstractImageConverter extends AbstractConverter {
          }
       }
    }
-
-   /**
-    * Encode a rendered image as a base64 PNG string.
-    *
-    * @param img the rendered image
-    * @return the base64-encoded PNG string, or null on error
-    */
-   public static String imgToBase64String(final RenderedImage img) {
-      ByteArrayOutputStream os = new ByteArrayOutputStream();
-      try (final OutputStream b64os = Base64.getEncoder().wrap(os)) {
-         ImageIO.write(img, "png", b64os);
-      } catch (IOException ioe) {
-         return null;
-      }
-      return os.toString();
-   }   
 }

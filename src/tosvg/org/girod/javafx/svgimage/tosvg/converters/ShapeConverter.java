@@ -34,6 +34,7 @@ package org.girod.javafx.svgimage.tosvg.converters;
 
 import java.util.Iterator;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Arc;
@@ -70,7 +71,7 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 /**
  * A converter which convert Shapes.
  *
- * @version 1.7.1
+ * @version 1.7.3
  */
 public class ShapeConverter extends AbstractConverter implements DefaultStrokeValues {
    private Shape shape = null;
@@ -148,9 +149,9 @@ public class ShapeConverter extends AbstractConverter implements DefaultStrokeVa
    }
 
    /**
-    * Return the opacity of the Node Fill. The way it work for a Shape is slightly different from a Region, because
-    * contrary to a Region, a Shape can set its own Stroke and Fill. Hence foe example if the Fill of the Shape is
-    * transparent or null, the opacity will be considered 0 even if the opacity value in the CSS is not 0.
+    * Return the opacity of the Node Fill. The way it work for a Shape is slightly different from a Region, because contrary to a Region, a Shape can
+    * set its own Stroke and Fill. Hence foe example if the Fill of the Shape is transparent or null, the opacity will be considered 0 even if the
+    * opacity value in the CSS is not 0.
     *
     * @return the opacity
     */
@@ -200,9 +201,9 @@ public class ShapeConverter extends AbstractConverter implements DefaultStrokeVa
    }
 
    /**
-    * Return the Awt Paint corresponing to the JavaFX fill.
+    * Return the Paint corresponing to the JavaFX fill.
     *
-    * @return the Awt Paint
+    * @return the Paint
     */
    private Paint getFillPaint() {
       double opacity = this.getOpacityFill();
@@ -219,9 +220,9 @@ public class ShapeConverter extends AbstractConverter implements DefaultStrokeVa
    }
 
    /**
-    * Return the Awt Paint corresponing to the JavaFX Stroke.
+    * Return the Paint corresponing to the JavaFX Stroke.
     *
-    * @return the Awt Paint
+    * @return the Paint
     * @see CSSProperties#STROKE_PAINT
     */
    private Paint getStrokePaint() {
@@ -254,105 +255,143 @@ public class ShapeConverter extends AbstractConverter implements DefaultStrokeVa
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Rectangle) {
+         Rectangle rect = (Rectangle) shape;
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         addFill(node, rect.getWidth(), rect.getHeight(), paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Circle) {
+         Circle circle = (Circle) shape;
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         addFill(node, circle.getRadius() * 2, circle.getRadius() * 2, paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Ellipse) {
+         Ellipse ellipse = (Ellipse) shape;
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         addFill(node, ellipse.getRadiusX() * 2, ellipse.getRadiusY() * 2, paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Polyline) {
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          node.addAttribute("fill", "none");
          setLineStroke(shape, buf);
          setOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Polygon) {
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         Bounds bounds = shape.getBoundsInLocal();
+         addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof SVGPath) {
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         Bounds bounds = shape.getBoundsInLocal();
+         addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Path) {
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         Bounds bounds = shape.getBoundsInLocal();
+         addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Arc) {
          Paint paint = getStrokePaint();
          setClip(buf, clipID);
          addStroke(paint, buf);
+         addFilter(node, shape);
          setLineStroke(shape, buf);
          setStrokeOpacity(paint, node);
          paint = getFillPaint();
-         addFill(paint, buf);
+         Bounds bounds = shape.getBoundsInLocal();
+         addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
          setFillOpacity(paint, node);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       } else if (shape instanceof Text) {
          Paint paint = getFillPaint();
          setClip(buf, clipID);
-         addFill(paint, buf);
+         Bounds bounds = shape.getBoundsInLocal();
+         addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
+         addFilter(node, shape);
          setOpacity(paint, node);
          Text text = (Text) shape;
          addFontStyle(text, buf);
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       }
    }
 

@@ -111,6 +111,7 @@ public class ImageViewConverter extends AbstractImageConverter {
          double imageHeight = getImageHeight();
          node.addAttribute("width", imageWidth);
          node.addAttribute("height", imageHeight);
+         addFilter(node, view);
          if (url != null) {
             File theFile = new File(url.getFile());
             File parentDir = delegate.getSVGFile().getParentFile();

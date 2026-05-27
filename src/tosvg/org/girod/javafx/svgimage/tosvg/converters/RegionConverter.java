@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,11 @@ import java.util.Iterator;
 import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
@@ -51,7 +53,7 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 /**
  * A converter which converts Regions.
  *
- * @since 1.0
+ * @version 1.7.3
  */
 public class RegionConverter extends AbstractConverter {
    /**
@@ -86,7 +88,9 @@ public class RegionConverter extends AbstractConverter {
       if (clipID != null) {
          StringBuilder buf = new StringBuilder();
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       }
    }
 
@@ -157,8 +161,7 @@ public class RegionConverter extends AbstractConverter {
    }
 
    /**
-    * Return the Background Paint of the Region. Correspond to the "-fx-background-color" and "-fx-background-image" CSS
-    * properties.
+    * Return the Background Paint of the Region. Correspond to the "-fx-background-color" and "-fx-background-image" CSS properties.
     *
     * @return the Background Paint of the Region
     * @see org.jfxconverter.utils.CSSProperties#BACKGROUND_COLOR
@@ -172,7 +175,9 @@ public class RegionConverter extends AbstractConverter {
       }
       if (allProperties.containsKey(BACKGROUND_IMAGE)) {
          URL url = (URL) allProperties.get(BACKGROUND_IMAGE);
-         return null;
+         Image image = new Image(url.toExternalForm());
+         ImagePattern pattern = new ImagePattern(image);
+         return pattern;
       } else {
          return null;
       }
@@ -243,52 +248,52 @@ public class RegionConverter extends AbstractConverter {
    }
 
    private void fillPath(XMLNode gNode, SVGPath path, BackgroundWrapper wrapper, Scale scale) {
-      if (wrapper.isTexture()) {
-
-      } else {
-         XMLNode node = new XMLNode("path");
-         double x = path.getLayoutX();
-         double y = path.getLayoutY();
-         node.addAttribute("x", x);
-         node.addAttribute("y", y);
-         node.addAttribute("d", path.getContent());
-         StringBuilder buf = new StringBuilder();
-         Paint paint = wrapper.getPaint();
-         addFill(paint, buf);
-         setFillOpacity(paint, node);
-         String style = buf.toString();
+      XMLNode node = new XMLNode("path");
+      double x = path.getLayoutX();
+      double y = path.getLayoutY();
+      node.addAttribute("x", x);
+      node.addAttribute("y", y);
+      node.addAttribute("d", path.getContent());
+      StringBuilder buf = new StringBuilder();
+      Paint paint = wrapper.getPaint();
+      Bounds bounds = path.getBoundsInLocal();
+      addFill(node, bounds.getWidth(), bounds.getHeight(), paint, buf);
+      addFilter(node, path);
+      setFillOpacity(paint, node);
+      String style = buf.toString();
+      if (!style.isEmpty()) {
          node.addAttribute("style", style);
-         if (scale != null) {
-            node.addAttribute("transform", Utilities.getScale(scale));
-         }
-         gNode.addChild(node);
       }
+      if (scale != null) {
+         node.addAttribute("transform", Utilities.getScale(scale));
+      }
+      gNode.addChild(node);
    }
 
    private void fillRect(XMLNode gNode, BackgroundWrapper wrapper, double x, double y, double width, double height) {
-      if (wrapper.isTexture()) {
-      } else {
-         double arcWidth = wrapper.getMeanRadiiWidth();
-         double arcHeight = wrapper.getMeanRadiiHeight();
-         XMLNode node = new XMLNode("rect");
-         node.addAttribute("width", width);
-         node.addAttribute("height", height);
-         node.addAttribute("x", x);
-         node.addAttribute("y", y);
-         if (arcWidth != 0) {
-            node.addAttribute("rx", arcWidth / 2);
-         }
-         if (arcHeight != 0) {
-            node.addAttribute("ry", arcHeight / 2);
-         }
-         StringBuilder buf = new StringBuilder();
-         Paint paint = wrapper.getPaint();
-         addFill(paint, buf);
-         setFillOpacity(paint, node);
-         String style = buf.toString();
-         node.addAttribute("style", style);
-         gNode.addChild(node);
+      double arcWidth = wrapper.getMeanRadiiWidth();
+      double arcHeight = wrapper.getMeanRadiiHeight();
+      XMLNode node = new XMLNode("rect");
+      node.addAttribute("width", width);
+      node.addAttribute("height", height);
+      node.addAttribute("x", x);
+      node.addAttribute("y", y);
+      if (arcWidth != 0) {
+         node.addAttribute("rx", arcWidth / 2);
       }
+      if (arcHeight != 0) {
+         node.addAttribute("ry", arcHeight / 2);
+      }
+      StringBuilder buf = new StringBuilder();
+      Paint paint = wrapper.getPaint();
+      addFill(node, width, height, paint, buf);
+      addFilter(node, region);
+      setFillOpacity(paint, node);
+      String style = buf.toString();
+      if (!style.isEmpty()) {
+         node.addAttribute("style", style);
+      }
+      gNode.addChild(node);
    }
 
    /**
@@ -344,7 +349,9 @@ public class RegionConverter extends AbstractConverter {
       addStroke(paint, buf);
       setStrokeOpacity(paint, node);
       String style = buf.toString();
-      node.addAttribute("style", style);
+      if (!style.isEmpty()) {
+         node.addAttribute("style", style);
+      }
       gNode.addChild(node);
    }
 
@@ -356,7 +363,9 @@ public class RegionConverter extends AbstractConverter {
       addStroke(paint, buf);
       setStrokeOpacity(paint, node);
       String style = buf.toString();
-      node.addAttribute("style", style);
+      if (!style.isEmpty()) {
+         node.addAttribute("style", style);
+      }
       if (scale != null) {
          node.addAttribute("transform", Utilities.getScale(scale));
       }

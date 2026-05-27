@@ -80,7 +80,9 @@ public class SubSceneConverter extends AbstractConverter {
       if (clipID != null) {
          StringBuilder buf = new StringBuilder();
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       }      
    }
 
