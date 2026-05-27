@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 /**
  * Contains the specification for a linear gradient.
  *
- * @version 1.0
+ * @version 1.7.3
  */
 public class LinearGradientSpec extends GradientSpec {
    private LinearGradient gradient = null;
@@ -152,17 +152,29 @@ public class LinearGradientSpec extends GradientSpec {
       if (transformList == null && linearSpec != null) {
          transformList = linearSpec.getTransformList();
       }
-      if (!hasPos && linearSpec != null) {
-         LinearGradient refGradient = linearSpec.gradient;
-         x1 = refGradient.getStartX();
-         y1 = refGradient.getStartY();
-         x2 = refGradient.getEndX();
-         y2 = refGradient.getEndY();
-         isProportional = refGradient.isProportional();
+      if (!hasPos) {
+         if (linearSpec != null) {
+            LinearGradient refGradient = linearSpec.gradient;
+            x1 = refGradient.getStartX();
+            y1 = refGradient.getStartY();
+            x2 = refGradient.getEndX();
+            y2 = refGradient.getEndY();
+            isProportional = refGradient.isProportional();
+         } else {
+            x1 = 0d;
+            y1 = 0d;
+            x2 = 1d;
+            y2 = 1d;
+            isProportional = true;
+         }
       }
-      if (!hasSpread && linearSpec != null) {
-         LinearGradient refGradient = linearSpec.gradient;
-         cycleMethod = refGradient.getCycleMethod();
+      if (!hasSpread) {
+         if (linearSpec != null) {
+            LinearGradient refGradient = linearSpec.gradient;
+            cycleMethod = refGradient.getCycleMethod();
+         } else {
+            cycleMethod = CycleMethod.NO_CYCLE;
+         }
       }
       if (!(x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)) {
          if (transformList != null && !transformList.isEmpty()) {

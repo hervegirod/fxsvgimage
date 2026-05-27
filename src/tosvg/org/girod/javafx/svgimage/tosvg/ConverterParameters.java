@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2025 Hervé Girod
+Copyright (c) 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import javafx.scene.paint.Color;
 /**
  * The parameters used for saving a node hierarchy.
  *
- * @version 1.2
+ * @version 1.7.3
  */
 public class ConverterParameters {
    /**
@@ -45,9 +45,18 @@ public class ConverterParameters {
     */
    public double width = -1;
    /**
+    * The title.
+    */
+   public String title = null;   
+   /**
     * The height.
     */
    public double height = -1; 
+   /**
+    * The insets of the svg content. It will be used to increse the width and height of the resulting svg. By default it is -1 which means that the
+    * width and height of the resulting svg will be the width and height of the content.
+    */
+   public double insets = -1;    
    /** 
     * Checked to add a viewBox.
     */

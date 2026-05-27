@@ -47,7 +47,7 @@ import org.girod.javafx.svgimage.SVGSnapshotParameters;
 /**
  * Unit tests for checking the width and height of the generated image.
  *
- * @version 1.7.1
+ * @version 1.7.3
  */
 public class SVGImageIssue78Test {
    private static double DELTA = 0.001d;
@@ -106,7 +106,7 @@ public class SVGImageIssue78Test {
       double _width = result.getViewport().getBestWidth();
       assertEquals("width", 24, _width, DELTA);
       double _height = result.getViewport().getBestHeight();
-      assertEquals("width", 24, _height, DELTA);
+      assertEquals("height", 24, _height, DELTA);
 
       SVGSnapshotParameters params = new SVGSnapshotParameters();
       params.setViewportType(SVGSnapshotParameters.USE_BEST_VIEWPORT_SIZE);

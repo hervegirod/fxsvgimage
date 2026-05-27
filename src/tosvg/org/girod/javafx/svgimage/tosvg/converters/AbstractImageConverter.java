@@ -79,7 +79,7 @@ public abstract class AbstractImageConverter extends AbstractConverter {
     * @param xmlNode the xml node
     * @param image the image
     * @param dstWidth the width
-    * @param dstHeight  the height
+    * @param dstHeight the height
     */
    protected void writeImage(Node theNode, XMLNode xmlNode, Image image, double dstWidth, double dstHeight) {
       BufferedImage awtImage = new BufferedImage((int) dstWidth, (int) dstHeight, BufferedImage.TYPE_INT_ARGB);

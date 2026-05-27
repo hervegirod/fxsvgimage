@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -40,9 +40,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
+import javafx.scene.paint.RadialGradient;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Rotate;
@@ -59,7 +62,7 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 /**
  * The abstract Converter class.
  *
- * @since 1.0
+ * @version 1.7.3
  */
 public abstract class AbstractConverter implements CSSProperties, NodeConverter {
    /**
@@ -76,13 +79,13 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
     */
    protected Map<String, CSSProperty> cssProperties = new HashMap<>();
    /**
-    * The CSS Properties of the Node to convert, including only those which have a not null StyleOrigin. These propeties
-    * only include those set by the CSS user file or inline for the widget.
+    * The CSS Properties of the Node to convert, including only those which have a not null StyleOrigin. These propeties only include those
+    * set by the CSS user file or inline for the widget.
     */
    protected Map<String, Object> properties = new HashMap<>();
    /**
-    * The CSS Properties of the Node to convert, including only those which have a not null StyleOrigin. These propeties
-    * only include those set by the CSS user file or inline for the widget.
+    * The CSS Properties of the Node to convert, including only those which have a not null StyleOrigin. These propeties only include those
+    * set by the CSS user file or inline for the widget.
     */
    protected Map<String, Object> allProperties = new HashMap<>();
 
@@ -169,8 +172,7 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
    }
 
    /**
-    * Return the CSS properties Map of the Node. These properties include those which are set by default (null
-    * StyleOrigin).
+    * Return the CSS properties Map of the Node. These properties include those which are set by default (null StyleOrigin).
     *
     * @return the CSS properties Map
     */
@@ -190,8 +192,7 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
    }
 
    /**
-    * Return the CSS properties Map of the Node. These propeties only include those set by the CSS user file or inline
-    * for the widget.
+    * Return the CSS properties Map of the Node. These propeties only include those set by the CSS user file or inline for the widget.
     *
     * @return the CSS properties Map
     */
@@ -201,8 +202,8 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
    }
 
    /**
-    * Return true if the Transform should be applied. The algorithm will allow to not apply any transform which is
-    * equivalent to an identity Transform (such as a Rotation with an angle equals to 0).
+    * Return true if the Transform should be applied. The algorithm will allow to not apply any transform which is equivalent to an identity
+    * Transform (such as a Rotation with an angle equals to 0).
     *
     * @param tr the Transform
     * @return true if the Transform should be applied
@@ -417,17 +418,36 @@ public abstract class AbstractConverter implements CSSProperties, NodeConverter 
    /**
     * Append fill style information based on the provided paint.
     *
+    * @param node the node
+    * @param dstWidth the node width
+    * @param dstHeight the node height
     * @param paint the fill paint
     * @param buf the style buffer
     */
-   protected void addFill(Paint paint, StringBuilder buf) {
+   protected void addFill(XMLNode node, double dstWidth, double dstHeight, Paint paint, StringBuilder buf) {
       if (paint instanceof Color) {
          Color color = (Color) paint;
          String colS = Utilities.convertColor(color);
          buf.append("fill:").append(colS).append(";");
+      } else if (paint instanceof LinearGradient) {
+         delegate.applyFillGradient(node, (LinearGradient) paint);
+      } else if (paint instanceof RadialGradient) {
+         delegate.applyFillGradient(node, (RadialGradient) paint);
+      } else if (paint instanceof ImagePattern) {
+         delegate.applyImagePattern(node, (int)dstWidth, (int)dstHeight, (ImagePattern) paint);         
       } else {
          buf.append("fill:none;");
       }
+   }
+
+   /**
+    * Add a filter to a node.
+    *
+    * @param xmlNode the XML node
+    * @param node the node
+    */
+   protected void addFilter(XMLNode xmlNode, Node node) {
+      delegate.applyFilter(xmlNode, node.getEffect());
    }
 
    /**

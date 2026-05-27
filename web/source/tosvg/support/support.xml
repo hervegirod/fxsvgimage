@@ -10,11 +10,19 @@
       <li>Group nodes</li>                  
       <li>Shape3D nodes (by converting them to images)</li>                        
    </ul>
-   Clips are supported.
-   
+   The following elements are also supported:
+   <ul>
+      <li>Clips are supported</li>
+      <li>LinearGradients are supported</li>
+      <li>ImagePatterns are supported</li>      
+      <li>The following effects are supported: DropShadow, GaussianBlur</li>  
+   </ul>
+
    <title title="limitations"/>
    <ul>
-      <li>Gradients are not supported for the moment</li>
+      <li>RadialGradients support is incomplete</li>      
+      <li>Lighting support is incomplete</li>     
+      <li>Many effects are not supported</li>    
       <li>Animations are not supported for the moment</li>      
    </ul>
             

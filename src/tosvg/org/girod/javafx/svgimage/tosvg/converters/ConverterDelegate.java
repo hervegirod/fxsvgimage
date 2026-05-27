@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2025 Hervé Girod
+Copyright (c) 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -39,8 +39,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.SubScene;
 import javafx.scene.control.Control;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.RadialGradient;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.Shape3D;
 import org.girod.javafx.svgimage.tosvg.ConverterParameters;
@@ -48,14 +52,17 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 import org.girod.javafx.svgimage.tosvg.xml.XMLRoot;
 
 /**
- * The ConverterDelegate class allows handle the effective conversion.
+ * The ConverterDelegate class allows to handle the effective conversion.
  *
- * @version 1.2
+ * @version 1.7.3
  */
 public class ConverterDelegate {
    private File file = null;
    private Node root = null;
    private final ClipConstructor clipConstructor = new ClipConstructor();
+   private final GradientConstructor gradientConstructor = new GradientConstructor();
+   private final ImagePatternConstructor imagePatternConstructor = new ImagePatternConstructor();
+   private final FilterConstructor filterConstructor = new FilterConstructor();
    private XMLNode defsNode = null;
 
    /**
@@ -119,6 +126,44 @@ public class ConverterDelegate {
       }
    }
 
+   public void applyImagePattern(XMLNode xmlNode, int dstWidth, int dstHeight, ImagePattern pattern) {
+      XMLNode xmlPattern = imagePatternConstructor.createImagePattern(pattern, dstWidth, dstHeight);
+      String patternID = imagePatternConstructor.getImagePatternID();
+      xmlPattern.addAttribute("id", patternID);
+      defsNode.addChild(xmlPattern);
+      xmlNode.addAttribute("fill", "url(#" + patternID + ")");
+   }
+
+   public void applyFillGradient(XMLNode xmlNode, LinearGradient gradient) {
+      XMLNode xmlGradient = gradientConstructor.createGradient(gradient);
+      String gradientID = gradientConstructor.getGradientID();
+      if (xmlGradient != null) {
+         xmlGradient.addAttribute("id", gradientID);
+         defsNode.addChild(xmlGradient);
+      }
+      xmlNode.addAttribute("fill", "url(#" + gradientID + ")");
+   }
+
+   public void applyFillGradient(XMLNode xmlNode, RadialGradient gradient) {
+      XMLNode xmlGradient = gradientConstructor.createGradient(gradient);
+      String gradientID = gradientConstructor.getGradientID();
+      if (xmlGradient != null) {
+         xmlGradient.addAttribute("id", gradientID);
+         defsNode.addChild(xmlGradient);
+      }
+      xmlNode.addAttribute("fill", "url(#" + gradientID + ")");
+   }
+
+   public void applyFilter(XMLNode xmlNode, Effect effect) {
+      XMLNode xmlFilter = filterConstructor.createFilter(effect);
+      String filterID = filterConstructor.getFilterID();
+      if (xmlFilter != null) {
+         xmlFilter.addAttribute("id", filterID);
+         defsNode.addChild(xmlFilter);
+         xmlNode.addAttribute("filter", "url(#" + filterID + ")");
+      }
+   }
+
    /**
     * Convert a JavaFX Node hierarchy to a series of {@link java.awt.Graphics2D} orders.
     *
@@ -139,11 +184,27 @@ public class ConverterDelegate {
     */
    public void convertRoot(Node root, XMLRoot xmlRoot, ConverterParameters params) {
       this.root = root;
+      if (params.title != null) {
+         XMLNode titleNode = new XMLNode("title");
+         titleNode.setCDATA(params.title);
+         xmlRoot.addChild(titleNode);
+      }
 
       defsNode = new XMLNode("defs");
       xmlRoot.addChild(defsNode);
+      XMLNode gRoot = xmlRoot;
+      if (params.insets > 0) {
+         gRoot = new XMLNode("g");
+         StringBuilder buf = new StringBuilder();
+         buf.append("translate(");
+         String insetsValue = Double.toString(params.insets);
+         buf.append(insetsValue).append(" ").append(insetsValue);
+         buf.append(")");
+         gRoot.addAttribute("transform", buf.toString());
+         xmlRoot.addChild(gRoot);
+      }
 
-      AbstractConverter conv = getConverter(root, xmlRoot);
+      AbstractConverter conv = getConverter(root, gRoot);
       if (conv != null) {
          if (params.allowTransformForRoot) {
             conv.applyTransforms(xmlRoot);

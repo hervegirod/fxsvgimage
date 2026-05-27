@@ -73,7 +73,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.7.1
+ * @version 1.7.3
  */
 public class ParserUtils implements SVGTags {
    private static final double INCH_TO_MM = 25.4d;
@@ -434,7 +434,7 @@ public class ParserUtils implements SVGTags {
                      case "mm":
                         return size / INCH_TO_MM * dpi;
                      case "cm":
-                        return size / INCH_TO_MM * dpi / 10d;
+                        return size / INCH_TO_MM * dpi * 10d;
                      default:
                         GlobalConfig.getInstance().handleParsingError("Unit " + unit + " not handled");
                         return size;
@@ -502,7 +502,7 @@ public class ParserUtils implements SVGTags {
                   case "mm":
                      return size / INCH_TO_MM * dpi * 1.25d;
                   case "cm":
-                     return size / INCH_TO_MM * dpi / 10d * 1.25d;
+                     return size / INCH_TO_MM * dpi * 10d * 1.25d;
                   default:
                      return size;
                }

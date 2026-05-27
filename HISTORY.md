@@ -1,7 +1,18 @@
 # History
 
+# 1.7.3
+- Fix #105: Support the LinearGradient for the toSVG conversion
+- Fix #106: Fix the default converter parameters specified for the SVGConverter in the toSVG conversion not taken into account in all use cases
+- Fix #107: Fix the toSVG conversion for the ImageView elements leading to an exception when converting the image
+- Fix #108: Support the DropShadow and GaussianBlur effects for the toSVG conversion
+- Fix #110: Support the ImagePattern paint for the toSVG conversion
+- Fix #111: Add a title converter parameter for the SVGConverter in the toSVG conversion to allow to add the title in the svg result
+- Fix #112: Add an insets converter parameter for the SVGConverter in the toSVG conversion to allow to add insets around the svg result
+- Fix #113: Support radialGradient with unspecified values 
+- Fix #114: Fix the width and height of the viewport defined in cm not correctly parsed 
+
 # 1.7.2
-- Fix #100: Polygone fill error when Converting back to SVG
+- Fix #100: Polygon fill error when Converting back to SVG
 - Fix #101: Allow to add a stylesheet for the returned Node in the groovy framework used in the toSVG tests
 - Fix #102: Allow to use default parameters for the JavaFX to SVG conversion
 - Fix #103: Fix the width and height of the output SVG for the JavaFX to SVG conversion in some cases suchs as Circles or Ellipses 

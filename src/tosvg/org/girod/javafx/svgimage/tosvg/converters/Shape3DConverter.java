@@ -72,7 +72,9 @@ public class Shape3DConverter extends AbstractImageConverter {
       if (clipID != null) {
          StringBuilder buf = new StringBuilder();
          String style = buf.toString();
-         node.addAttribute("style", style);
+         if (!style.isEmpty()) {
+            node.addAttribute("style", style);
+         }
       }
    }
 

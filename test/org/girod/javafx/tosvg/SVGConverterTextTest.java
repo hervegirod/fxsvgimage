@@ -46,7 +46,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a text.
  *
- * @since  1.7.2
+ * @version 1.7.3
  */
 public class SVGConverterTextTest {
 

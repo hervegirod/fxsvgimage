@@ -40,6 +40,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.girod.javafx.svgimage.tosvg.ConverterParameters;
 import org.girod.javafx.svgimage.tosvg.SVGConverter;
 import org.girod.javafx.tosvg.JFXInvoker;
 
@@ -54,6 +55,8 @@ public class SVGDriverAppUtils extends Application {
    private Color background = null;
    private StackPane root = null;
    private String title = null;
+   private boolean addTitle = false;
+   private int insets = -1;
    private String styleSheet = null;
 
    protected Dimension2D getDimension() {
@@ -76,11 +79,15 @@ public class SVGDriverAppUtils extends Application {
     * @param file the output svg file to generate
     * @param styleSheet the associated styleSheet (can be null)
     * @param title the title of the output SVG file
+    * @param addTitle true if the title should be added in the SVG content
+    * @param insets the insets
     */
-   public void convert(Node node, File file, String styleSheet, String title) throws Exception {
+   public void convert(Node node, File file, String styleSheet, String title, boolean addTitle, int insets) throws Exception {
       this.node = node;
       this.file = file;
       this.title = title;
+      this.addTitle = addTitle;
+      this.insets = insets;
       this.styleSheet = styleSheet;
 
       JFXInvoker invoker = JFXInvoker.getInstance();
@@ -91,7 +98,12 @@ public class SVGDriverAppUtils extends Application {
          }
       });
       SVGConverter converter = new SVGConverter();
-      converter.convert(node, file);
+      ConverterParameters params = new ConverterParameters();
+      params.insets = insets;
+      if (! title.trim().isEmpty() && addTitle) {
+         params.title = title.trim();
+      }
+      converter.convert(node, file, params);
    }
 
    private void showStage() {

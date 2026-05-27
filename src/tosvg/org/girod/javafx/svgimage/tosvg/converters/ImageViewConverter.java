@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, Hervé Girod
+Copyright (c) 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ import org.girod.javafx.svgimage.tosvg.xml.XMLNode;
 /**
  * A converter which convert ImageViews.
  *
- * @since 1.0
+ * @version 1.7.3
  */
 public class ImageViewConverter extends AbstractImageConverter {
    private ImageView view = null;
@@ -67,6 +67,26 @@ public class ImageViewConverter extends AbstractImageConverter {
          node.addAttribute("style", style);
       }      
    }
+   
+   private double getImageWidth() {
+      double fitWidth = view.getFitWidth();
+      if (fitWidth > 0) {
+         return fitWidth;
+      } else {
+         Image image = view.getImage();
+         return image.getWidth();
+      }
+   }
+   
+   private double getImageHeight() {
+      double fitHeight = view.getFitHeight();
+      if (fitHeight > 0) {
+         return fitHeight;
+      } else {
+         Image image = view.getImage();
+         return image.getHeight();
+      }
+   }   
 
    /**
     * Convert the ImageView.
@@ -87,15 +107,18 @@ public class ImageViewConverter extends AbstractImageConverter {
          XMLNode node = new XMLNode("image");
          node.addAttribute("x", view.getX());
          node.addAttribute("y", view.getY());
-         node.addAttribute("width", view.getFitWidth());
-         node.addAttribute("height", view.getFitHeight());
+         double imageWidth = getImageWidth();
+         double imageHeight = getImageHeight();
+         node.addAttribute("width", imageWidth);
+         node.addAttribute("height", imageHeight);
+         addFilter(node, view);
          if (url != null) {
             File theFile = new File(url.getFile());
             File parentDir = delegate.getSVGFile().getParentFile();
             String path = Utilities.getRelativePath(parentDir, theFile, true);
             node.addAttribute("xlink:href", path);
          } else {
-            writeImage(view, node, image, view.getFitWidth(), view.getFitHeight());
+            writeImage(view, node, image, imageWidth, imageHeight);
          }
          xmlParent.addChild(node);
          return node;
