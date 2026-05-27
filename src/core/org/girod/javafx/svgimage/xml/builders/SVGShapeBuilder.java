@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022, 2025 Hervé Girod
+Copyright (c) 2021, 2022, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,6 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -86,7 +85,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * The shape builder.
  *
- * @version 1.
+ * @version 1.7.3
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -99,11 +98,11 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optinal bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape
+    * @return the rectangle
     */
-   public static Shape buildRect(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
+   public static Rectangle buildRect(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       double x = 0.0;
       double y = 0.0;
 
@@ -141,11 +140,11 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optinal bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the el
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape true if the shape should be scaled according to the Viewport
+    * @return the circle
     */
-   public static Shape buildCircle(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
+   public static Circle buildCircle(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       double cx = xmlNode.getPositionValue(CX, true, bounds, viewport, 0);
       double cy = xmlNode.getPositionValue(CY, false, bounds, viewport, 0);
       double r = xmlNode.getLengthValue(R, true, bounds, viewport, 0);
@@ -642,7 +641,7 @@ public class SVGShapeBuilder implements SVGTags {
     * @param xmlNode the node
     * @param url the reference url
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
     * @return the ImageView
     */
@@ -683,11 +682,11 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox o
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape
+    * @return the ellipse
     */
-   public static Shape buildEllipse(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
+   public static Ellipse buildEllipse(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       double cx = xmlNode.getPositionValue(CX, true, bounds, viewport, 0);
       double cy = xmlNode.getPositionValue(CY, false, bounds, viewport, 0);
       double rx = xmlNode.getLengthValue(RX, true, bounds, viewport, 0);
@@ -711,10 +710,10 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
     * @param hasFill true if the parsed shaped are filled
-    * @return the shape
+    * @return the list of svg paths
     */
    public static List<SVGPath> buildPath(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport, boolean hasFill) {
       String content = xmlNode.getAttributeValue(D);
@@ -743,9 +742,9 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape
+    * @return the polygon
     */
    public static Polygon buildPolygon(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       String pointsAttribute = xmlNode.getAttributeValue(POINTS);
@@ -781,9 +780,9 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape
+    * @return the line
     */
    public static Line buildLine(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       double x1 = 0;
@@ -821,9 +820,9 @@ public class SVGShapeBuilder implements SVGTags {
     *
     * @param xmlNode the node
     * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
-    * @param viewbox the viewbox of the element (may be null)
+    * @param viewbox the viewbox of the element
     * @param viewport the viewport
-    * @return the shape
+    * @return the polyline
     */
    public static Polyline buildPolyline(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
       Polyline polyline = new Polyline();

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 /**
  * Contains the specification for a radial gradient.
  *
- * @version 1.0
+ * @version 1.7.3
  */
 public class RadialGradientSpec extends GradientSpec {
    private RadialGradient gradient = null;
@@ -95,11 +95,11 @@ public class RadialGradientSpec extends GradientSpec {
             radialSpec.resolve(gradients, viewport);
          }
       }
-      Double fx = null;
-      Double fy = null;
-      Double cx = null;
-      Double cy = null;
-      Double r = null;
+      double cx = -1;
+      double cy = -1;
+      double fx = -1;
+      double fy = -1;
+      double r = 0.5d;
       CycleMethod cycleMethod = CycleMethod.NO_CYCLE;
       isResolved = true;
       boolean hasPos = false;
@@ -158,63 +158,80 @@ public class RadialGradientSpec extends GradientSpec {
       if (transformList == null && radialSpec != null) {
          transformList = radialSpec.getTransformList();
       }
-      if (!hasPos && radialSpec != null) {
-         RadialGradient refGradient = radialSpec.gradient;
-         fx = refGradient.getFocusAngle();
-         fy = refGradient.getFocusDistance();
-         cx = refGradient.getCenterX();
-         cy = refGradient.getCenterY();
-         r = refGradient.getRadius();
-         isProportional = refGradient.isProportional();
+      if (!hasPos) {
+         if (radialSpec != null) {
+            RadialGradient refGradient = radialSpec.gradient;
+            fx = refGradient.getFocusAngle();
+            fy = refGradient.getFocusDistance();
+            cx = refGradient.getCenterX();
+            cy = refGradient.getCenterY();
+            r = refGradient.getRadius();
+            isProportional = refGradient.isProportional();
+         } else {
+            cx = 0.5d;
+            cy = 0.5d;
+            fx = cx;
+            fy = cy;
+            r = 0.5d;
+            isProportional = true;
+         }
       }
-      if (!hasSpread && radialSpec != null) {
-         RadialGradient refGradient = radialSpec.gradient;
-         cycleMethod = refGradient.getCycleMethod();
+      if (!hasSpread) {
+         if (radialSpec != null) {
+            RadialGradient refGradient = radialSpec.gradient;
+            cycleMethod = refGradient.getCycleMethod();
+         } else {
+            cycleMethod = CycleMethod.NO_CYCLE;
+         }
       }
-
-      if (cx != null && cy != null && r != null) {
-         double fDistance = 0.0;
-         double fAngle = 0.0;
-
-         if (transformList != null && !transformList.isEmpty()) {
-            Transform concatTransform = null;
-            Iterator<Transform> it2 = transformList.iterator();
-            while (it2.hasNext()) {
-               Transform theTransform = it2.next();
-               if (concatTransform == null) {
-                  concatTransform = theTransform;
-               } else {
-                  concatTransform = concatTransform.createConcatenation(theTransform);
-               }
-            }
-
-            if (concatTransform != null) {
-               double tempCx = cx;
-               double tempCy = cy;
-               double tempR = r;
-               cx = tempCx * concatTransform.getMxx() + tempCy * concatTransform.getMxy() + concatTransform.getTx();
-               cy = tempCx * concatTransform.getMyx() + tempCy * concatTransform.getMyy() + concatTransform.getTy();
-
-               r = Math.sqrt(tempR * concatTransform.getMxx() * tempR * concatTransform.getMxx() + tempR * concatTransform.getMyx() * tempR * concatTransform.getMyx());
-               if (fx != null && fy != null) {
-                  double tempFx = fx;
-                  double tempFy = fy;
-                  fx = tempFx * concatTransform.getMxx() + tempFy * concatTransform.getMxy() + concatTransform.getTx();
-                  fy = tempFx * concatTransform.getMyx() + tempFy * concatTransform.getMyy() + concatTransform.getTy();
-               } else {
-                  fAngle = Math.asin(concatTransform.getMyx()) * 180.0 / Math.PI;
-                  fDistance = Math.sqrt((cx - tempCx) * (cx - tempCx) + (cy - tempCy) * (cy - tempCy));
-               }
+      if (cx < 0) {
+         cx = 0.5d; 
+         isProportional = true;
+      }
+      if (cy < 0) {
+         cy = 0.5d; 
+         isProportional = true;
+      }     
+      if (fx < 0) {
+         fx = cx; 
+      }     
+      if (fy < 0) {
+         fy = cy; 
+      }   
+      if (r < 0) {
+         r = 0.5d;
+      }          
+      if (transformList != null && !transformList.isEmpty()) {
+         Transform concatTransform = null;
+         Iterator<Transform> it2 = transformList.iterator();
+         while (it2.hasNext()) {
+            Transform theTransform = it2.next();
+            if (concatTransform == null) {
+               concatTransform = theTransform;
+            } else {
+               concatTransform = concatTransform.createConcatenation(theTransform);
             }
          }
-         if (fx != null && fy != null) {
-            fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
-            fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
+
+         if (concatTransform != null) {
+            double tempCx = cx;
+            double tempCy = cy;
+            double tempR = r;
+            cx = tempCx * concatTransform.getMxx() + tempCy * concatTransform.getMxy() + concatTransform.getTx();
+            cy = tempCx * concatTransform.getMyx() + tempCy * concatTransform.getMyy() + concatTransform.getTy();
+
+            r = Math.sqrt(tempR * concatTransform.getMxx() * tempR * concatTransform.getMxx() + tempR * concatTransform.getMyx() * tempR * concatTransform.getMyx());
+            double tempFx = fx;
+            double tempFy = fy;
+            fx = tempFx * concatTransform.getMxx() + tempFy * concatTransform.getMxy() + concatTransform.getTx();
+            fy = tempFx * concatTransform.getMyx() + tempFy * concatTransform.getMyy() + concatTransform.getTy();
          }
-         List<Stop> stops = convertStops(specStops);
-         gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, isProportional, cycleMethod, stops);
-         isResolved = true;
       }
+      double fDistance = Math.sqrt((fx - cx) * (fx - cx) + (fy - cy) * (fy - cy)) / r;
+      double fAngle = Math.atan2(cy - fy, cx - fx) * 180.0 / Math.PI;
+      List<Stop> stops = convertStops(specStops);
+      gradient = new RadialGradient(fAngle, fDistance, cx, cy, r, isProportional, cycleMethod, stops);
+      isResolved = true;
    }
 
    /**
