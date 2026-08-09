@@ -263,7 +263,7 @@
       <jar description="converter jar binary file" compress="true" jarfile="${dist.dir}/fxsvgConverter.jar" 
            manifest="${src.dir}/tosvg/manifest.mf" >
          <fileset defaultexcludes="yes" dir="${build.classes.dir}">
-            <include name="org/girod/javafx/svgimage/tosvg/**/*.class"/>         
+            <include name="org/girod/javafx/svgimage/fromjfx/**/*.class"/>         
          </fileset>
       </jar>      
       <!-- CSS Parser Jar construction -->
