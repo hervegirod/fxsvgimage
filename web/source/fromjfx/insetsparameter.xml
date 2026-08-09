@@ -3,7 +3,7 @@
    <altTitle desc="tosvg converter insets" keepCase="true"/>
    <meta desc="This article presents the usage of the SVGConverter insets parameter" />
    The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.ConverterParameters" member="insets"/> parameter allows to add an <code>insets</code> around 
-   the svg result. 
+   the svg or <code>Graphics2D</code> result. 
    
    <title title="example" />
    Suppose the following code:

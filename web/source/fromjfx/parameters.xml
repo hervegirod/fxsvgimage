@@ -2,8 +2,8 @@
 <article desc="Converter Parameters">
    <altTitle desc="ConverterParameters" />
    <meta desc="This article presents the usage of the SVGConverter parameters" />
-   The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.ConverterParameters" /> class allows to configure the exporting of the JavaFX tree to a SVG file 
-   with the <ref id="SVGConverter" />.
+   The <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.tosvg.ConverterParameters" /> class allows to configure the exporting of the JavaFX tree to a SVG file 
+   with the <ref id="SVGConverter" /> and the <ref id="Graphics2DConverter" />.
    
    <title title="parameters" />
    <title level="2" title="width" keepCase="true"/>
@@ -46,6 +46,12 @@
    <title level="2" title="background" keepCase="true"/>
    The <code>background</code> parameter allows to set the background color of the resulting svg document. The converter will generate a rectangle with the width and height of
    the svg document as the first child.
+   
+   <title level="2" title="isSupportingDisabled" keepCase="true"/>
+   The <code>isSupportingDisabled</code> parameter sets if the Disabled state for Nodes is supported. If supported, the color of the Nodes will be gray-scaled. It is <code>true</code> by default).
+   
+   <title level="2" title="grayScalePercent" keepCase="true"/>
+   The <code>grayScalePercent</code> parameter is the gray-scale parcent for the disabled Nodes if the Disabled state for Nodes is supported. It is 40 by default.
    
    <title title="default parameters" />
    The <javadoc api="api" path="org.girod.javafx.svgimage.tosvg.SVGConverter" member="setDefaultParameters(org.girod.javafx.svgimage.tosvg.ConverterParameters)"/>
