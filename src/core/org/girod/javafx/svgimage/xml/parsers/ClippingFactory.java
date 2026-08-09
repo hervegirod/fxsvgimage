@@ -110,7 +110,7 @@ public class ClippingFactory implements SVGTags {
                   break;
                case PATH:
                   List<? extends Shape> shapes = SVGShapeBuilder.buildClipPath(childNode, objectBoundingBox, null, viewport, true);
-                  if (shape != null) {
+                  if (shapes != null) {
                      shape = shapes.get(0);
                      FillRule rule = ParserUtils.getClipRule(childNode);
                      if (rule != null) {
