@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2026 Hervé Girod
+Copyright (c) 2026 Herve Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,29 +30,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg;
+package org.girod.javafx.svgimage.clip;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.net.URL;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polyline;
-import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import org.girod.javafx.svgimage.SVGImage;
+import org.girod.javafx.svgimage.SVGLoader;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a polyline with insets.
+ * Unit tests for clip-path with polygon.
  *
- * @since 1.7.3
+ * @since 1.8
  */
-public class SVGConverterPolylineInsetsTest {
+public class SVGLoaderClipPolygonTest {
+   private static double DELTA = 0.001d;
 
-   public SVGConverterPolylineInsetsTest() {
+   public SVGLoaderClipPolygonTest() {
    }
 
    @BeforeClass
@@ -72,32 +76,23 @@ public class SVGConverterPolylineInsetsTest {
    }
 
    /**
-    * Test of generating a svg from a polyline.
+    * Test of load method, of class SVGLoader. Test with clip-path on a group.
     */
    @Test
-   public void testConvertPolyline() throws Exception {
-      System.out.println("SVGConverterPolylineInsetsTest : testConvertPolyline");
-      PolylineConverterUtils utils = new PolylineConverterUtils();
-      File file = File.createTempFile("tosvg", ".svg");
-      ConverterParameters params = new ConverterParameters();
-      params.insets = 2;     
-      params.allowTransformForRoot = false;
-      utils.convert(file, params);
-      URL url = SVGConverterPolylineTest.class.getResource("polylineInsets.svg");
+   public void testClipPath() throws Exception {
+      System.out.println("SVGLoaderClipPolygonTest : testClipPath");
+      URL url = this.getClass().getResource("clipPolygon.svg");
+      SVGImage result = SVGLoader.load(url);
+      assertNotNull("SVGImage should not be null", result);
 
-      XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted polyline svg must be equal", comp.compare());
-      file.delete();
-   }
+      ObservableList<Node> children = result.getChildren();
+      assertEquals("Must have 3 children", 3, children.size());
+      Node child = children.get(1);
+      assertTrue("Child must be a Rectangle", child instanceof Rectangle);
+      Rectangle rect = (Rectangle) child;
 
-   public static class PolylineConverterUtils extends AbstractSVGConverterUtils {
-      @Override
-      protected Node getContent() {
-         Polyline polyline = new Polyline();
-         polyline.getPoints().addAll(new Double[]{0.0, 0.0, 0.0, 100.0, 100.0, 100.0});
-         polyline.setStroke(Color.RED);
-         return polyline;
-      }
-
+      Node clip = rect.getClip();
+      assertNotNull("clip should be set", clip);
+      assertTrue("Clip should be a Polygon", clip instanceof Polygon);
    }
 }

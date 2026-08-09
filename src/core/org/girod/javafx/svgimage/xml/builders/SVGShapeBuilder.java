@@ -85,7 +85,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * The shape builder.
  *
- * @version 1.7.3
+ * @version 1.8
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -703,7 +703,43 @@ public class SVGShapeBuilder implements SVGTags {
          viewbox.scaleNode(ellipse);
       }
       return ellipse;
-   } 
+   }
+
+   /**
+    * Build an "path" element for a clip.
+    *
+    * @param xmlNode the node
+    * @param bounds an optional bounds for an object to specify the coordinates of the object relative to it
+    * @param viewbox the viewbox of the element
+    * @param viewport the viewport
+    * @param hasFill true if the parsed shaped are filled
+    * @return the list of svg paths
+    */
+   public static List<SVGPath> buildClipPath(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport, boolean hasFill) {
+      String content = xmlNode.getAttributeValue(D);
+      FillRule rule = ParserUtils.getFillRule(xmlNode);
+
+      content = content.replace('−', '-');
+      SVGPathParser pathParser = new SVGPathParser();
+      List<SVGPath> list = pathParser.parseClipPathContent(content, viewport);
+      if (list != null) {
+         Iterator<SVGPath> it = list.iterator();
+         while (it.hasNext()) {
+            SVGPath path = it.next();
+            /* seems that filling the path is impotant, see https://dlemmermann.wordpress.com/2015/02/18/javafx-tip-18-path-clipping/
+             * but even then, it does not work
+             */          
+            path.setFill(Color.RED);
+            if (rule != null) {
+               path.setFillRule(rule);
+            }
+            if (viewbox != null) {
+               viewbox.scaleNode(path);
+            }
+         }
+      }
+      return list;
+   }
 
    /**
     * Build an "path" element.
@@ -773,7 +809,7 @@ public class SVGShapeBuilder implements SVGTags {
          viewbox.scaleNode(polygon);
       }
       return polygon;
-   }   
+   }
 
    /**
     * Build a "line" element.
@@ -849,7 +885,7 @@ public class SVGShapeBuilder implements SVGTags {
       }
       if (viewbox != null) {
          viewbox.scaleNode(polyline);
-      }      
+      }
 
       return polyline;
    }

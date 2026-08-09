@@ -30,14 +30,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg;
+package org.girod.javafx.tosvg.awt;
 
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Ellipse;
 import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
+import org.girod.javafx.utils.ImagesComparator;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -46,13 +47,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a polyline with insets.
+ * Test for an awt converter to convert an ellipse.
  *
- * @since 1.7.3
+ * @since 1.8
  */
-public class SVGConverterPolylineInsetsTest {
+public class AwtConverterEllipse2Test {
 
-   public SVGConverterPolylineInsetsTest() {
+   public AwtConverterEllipse2Test() {
    }
 
    @BeforeClass
@@ -72,31 +73,38 @@ public class SVGConverterPolylineInsetsTest {
    }
 
    /**
-    * Test of generating a svg from a polyline.
+    * Test of generating a png from an ellipse.
     */
    @Test
-   public void testConvertPolyline() throws Exception {
-      System.out.println("SVGConverterPolylineInsetsTest : testConvertPolyline");
-      PolylineConverterUtils utils = new PolylineConverterUtils();
-      File file = File.createTempFile("tosvg", ".svg");
+   public void testConvertEllipse() throws Exception {
+      System.out.println("AwtConverterEllipse2Test : testConvertEllipse");
+      EllipseConverterUtils utils = new EllipseConverterUtils();
+      File file = File.createTempFile("topng", ".png");
       ConverterParameters params = new ConverterParameters();
-      params.insets = 2;     
-      params.allowTransformForRoot = false;
+      params.allowTransformForRoot = true;
       utils.convert(file, params);
-      URL url = SVGConverterPolylineTest.class.getResource("polylineInsets.svg");
+      
+      URL refURL =  this.getClass().getResource("ellipse2.png");
+      ImagesComparator comp = new ImagesComparator();
+      ImagesComparator.Params iparams = comp.getParams();
+      iparams.deltaERGB = 1.5d;         
+      ImagesComparator.Result iresult = comp.compareImages(new File(refURL.getFile()), file);
+      assertTrue("Images are equal", iresult.isEquals());      
 
-      XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted polyline svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class PolylineConverterUtils extends AbstractSVGConverterUtils {
+   public static class EllipseConverterUtils extends AbstractAwtConverterUtils {
       @Override
       protected Node getContent() {
-         Polyline polyline = new Polyline();
-         polyline.getPoints().addAll(new Double[]{0.0, 0.0, 0.0, 100.0, 100.0, 100.0});
-         polyline.setStroke(Color.RED);
-         return polyline;
+         Ellipse ellipse = new Ellipse();
+         ellipse.setCenterX(100.0f);
+         ellipse.setCenterY(100.0f);
+         ellipse.setRadiusX(100.0f);
+         ellipse.setRadiusY(50.0f);
+         ellipse.setStroke(Color.RED);
+         ellipse.setFill(Color.GREEN);
+         return ellipse;
       }
 
    }

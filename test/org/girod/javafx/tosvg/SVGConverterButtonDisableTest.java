@@ -35,9 +35,7 @@ package org.girod.javafx.tosvg;
 import java.io.File;
 import java.net.URL;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polyline;
-import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
+import javafx.scene.control.Button;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -46,13 +44,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for a SVG converter to convert a polyline with insets.
+ * Test for a SVG converter to convert a disabled button.
  *
- * @since 1.7.3
+ * @since 1.58
  */
-public class SVGConverterPolylineInsetsTest {
+public class SVGConverterButtonDisableTest {
 
-   public SVGConverterPolylineInsetsTest() {
+   public SVGConverterButtonDisableTest() {
    }
 
    @BeforeClass
@@ -72,31 +70,27 @@ public class SVGConverterPolylineInsetsTest {
    }
 
    /**
-    * Test of generating a svg from a polyline.
+    * Test of generating a svg from a disabled button.
     */
    @Test
-   public void testConvertPolyline() throws Exception {
-      System.out.println("SVGConverterPolylineInsetsTest : testConvertPolyline");
-      PolylineConverterUtils utils = new PolylineConverterUtils();
+   public void testConvertButton() throws Exception {
+      System.out.println("SVGConverterButtonDisableTest : testConvertButton");
+      ButtonConverterUtils utils = new ButtonConverterUtils();
       File file = File.createTempFile("tosvg", ".svg");
-      ConverterParameters params = new ConverterParameters();
-      params.insets = 2;     
-      params.allowTransformForRoot = false;
-      utils.convert(file, params);
-      URL url = SVGConverterPolylineTest.class.getResource("polylineInsets.svg");
+      utils.convert(file);
+      URL url = SVGConverterButtonDisableTest.class.getResource("buttonDisable.svg");
 
       XMLComparator comp = new XMLComparator(url, file);
-      assertTrue("Converted polyline svg must be equal", comp.compare());
+      assertTrue("Converted button svg must be equal", comp.compare());
       file.delete();
    }
 
-   public static class PolylineConverterUtils extends AbstractSVGConverterUtils {
+   public static class ButtonConverterUtils extends AbstractSVGConverterUtils {
       @Override
       protected Node getContent() {
-         Polyline polyline = new Polyline();
-         polyline.getPoints().addAll(new Double[]{0.0, 0.0, 0.0, 100.0, 100.0, 100.0});
-         polyline.setStroke(Color.RED);
-         return polyline;
+         Button button = new Button("Hello World!");
+         button.setDisable(true);
+         return button;
       }
 
    }

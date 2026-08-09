@@ -30,24 +30,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg;
+package org.girod.javafx.tosvg.awt;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
 import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
-import org.girod.javafx.svgimage.fromjfx.JFXConverterException;
-import org.girod.javafx.svgimage.fromjfx.tosvg.SVGConverter;
+import org.girod.javafx.svgimage.fromjfx.awt.Graphics2DConverter;
+import org.girod.javafx.tosvg.JFXInvoker;
 
 /**
- * The abstract svg converter class.
+ * The abstract awt converter class.
  *
- * @version 1.8
+ * @since 1.8
  */
-public abstract class AbstractSVGConverterUtils {
+public abstract class AbstractAwtConverterUtils {
    private Node node = null;
    private File file = null;
    private StackPane root = null;
@@ -64,11 +68,11 @@ public abstract class AbstractSVGConverterUtils {
    public void convert(File file) throws Exception {
       convert(file, null, null);
    }
-   
+
    public void convert(File file, ConverterParameters params) throws Exception {
       convert(file, params, null);
-   } 
-   
+   }
+
    public void convert(File file, String styleSheet) throws Exception {
       convert(file, null, styleSheet);
    }
@@ -83,7 +87,7 @@ public abstract class AbstractSVGConverterUtils {
          public void run() {
             try {
                convertImpl();
-            } catch (JFXConverterException ex) {
+            } catch (Exception ex) {
                ex.printStackTrace();
             }
          }
@@ -94,7 +98,7 @@ public abstract class AbstractSVGConverterUtils {
       return new Dimension2D(300, 250);
    }
 
-   private void convertImpl() throws JFXConverterException {
+   private void convertImpl() throws Exception {
       node = getContent();
       root = new StackPane();
       Dimension2D dim = getDimension();
@@ -115,8 +119,23 @@ public abstract class AbstractSVGConverterUtils {
       } else {
          _params = PARAMS;
       }
-      SVGConverter converter = new SVGConverter(_params);
-      converter.convert(node, file);
+      Graphics2DConverter converter = new Graphics2DConverter(_params);
+      BufferedImage image;
+      if (_params.allowTransformForRoot) {
+         Rectangle2D rect = converter.getViewbox(node);
+         if (_params.insets != 0) {
+            int insets = (int) _params.insets;
+            image = new BufferedImage((int) rect.getWidth() + insets * 2, (int) rect.getHeight() + insets * 2, BufferedImage.TYPE_INT_ARGB);
+         } else {
+            image = new BufferedImage((int) rect.getWidth(), (int) rect.getHeight(), BufferedImage.TYPE_INT_ARGB);
+         }
+      } else {
+         image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+      }
+      Graphics2D g2d = image.createGraphics();
+      converter.setGraphics2D(g2d);
+      converter.convert(node);
       stage.close();
+      ImageIO.write(image, "png", file);
    }
 }

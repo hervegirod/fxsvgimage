@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes"?>
+<svg version="1.1" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <clipPath id="clip1">
+            <polygon points="0,0 40,0 40,160 0,160" />
+        </clipPath>
+        <clipPath id="clip2">
+            <polyline points="60,0 100,0 100,160 60,160" />
+        </clipPath>
+        <clipPath id="clip3">
+            <path d="M 120 0 L 160 0 L 160 160 L 120 160"/>
+        </clipPath>
+    </defs>
+    <rect x="0" y="0" width="160" height="160" fill="#ffffff" />
+    <rect x="0" y="0" width="160" height="160" clip-path="url(#clip1)" fill="#ff0000" />
+    <rect x="0" y="0" width="160" height="160" clip-path="url(#clip2)" fill="#00ff00" />
+    <rect x="0" y="0" width="160" height="160" clip-path="url(#clip3)" fill="#0000ff" />
+</svg>

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2022, 2026 Hervé Girod
+Copyright (c) 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Alternatively if you have any questions about this project, you can visit
 the project website at the project page on https://github.com/hervegirod/fxsvgimage
  */
-package org.girod.javafx.tosvg.app;
+package org.girod.javafx.tosvg.app.awt;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -52,24 +52,26 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileFilter;
+import org.girod.javafx.tosvg.app.ScriptWrapper;
 
 /**
- * A simple application which allows to convert using a Script file.
+ * A simple application which allows to convert JavaFX to Awt using a Script file.
  *
- * @version 1.7.3
+ * @since 1.8
  */
-public class SVGConverterApp extends JFrame {
+public class AwtConverterApp extends JFrame {
    private JTextField titleTf = null;
-   private JCheckBox cbTitle = null;
    private final SpinnerNumberModel insetsModel = new SpinnerNumberModel(0, 0, 10, 1);
    private JSpinner insetsSpinner = null;
    private int insets = -1;   
    private JButton convertButton = null;
+   private JCheckBox cbTransform = null;   
+   private JCheckBox cbBackground = null; 
    private JButton selectContentButton = null;
    private ScriptWrapper wrapper = null;
 
-   public SVGConverterApp() {
-      super("Converter Test");
+   public AwtConverterApp() {
+      super("Awt Converter Test");
       createContent();
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    }
@@ -95,15 +97,27 @@ public class SVGConverterApp extends JFrame {
       pane.add(titlePanel);
       pane.add(Box.createVerticalStrut(5));
       
+      // background panel
+      JPanel paramsBackground = new JPanel();
+      paramsBackground.setLayout(new BoxLayout(paramsBackground, BoxLayout.X_AXIS));
+      paramsBackground.add(Box.createHorizontalStrut(5));
+      label = new JLabel("Has Background");
+      paramsBackground.add(label);
+      paramsBackground.add(Box.createHorizontalStrut(10));
+      cbBackground = new JCheckBox();
+      paramsBackground.add(cbBackground);
+      paramsBackground.add(Box.createHorizontalStrut(5));   
+      paramsBackground.add(Box.createHorizontalGlue());      
+      
       // parameters panel
       JPanel params = new JPanel();
       params.setLayout(new BoxLayout(params, BoxLayout.X_AXIS));
       params.add(Box.createHorizontalStrut(5));
-      label = new JLabel("Add Title");
+      label = new JLabel("Has Transform");
       params.add(label);
       params.add(Box.createHorizontalStrut(10));
-      cbTitle = new JCheckBox();
-      params.add(cbTitle);
+      cbTransform = new JCheckBox();
+      params.add(cbTransform);
       params.add(Box.createHorizontalStrut(5));
 
       label = new JLabel("Insets");
@@ -124,8 +138,10 @@ public class SVGConverterApp extends JFrame {
       });
       params.add(insetsSpinner);
       params.add(Box.createHorizontalStrut(5));
-      
       params.add(Box.createHorizontalGlue());
+      
+      pane.add(paramsBackground);
+      pane.add(Box.createVerticalStrut(5));         
 
       pane.add(params);
       pane.add(Box.createVerticalStrut(5));      
@@ -198,12 +214,12 @@ public class SVGConverterApp extends JFrame {
          @Override
          public boolean accept(File f) {
             String name = f.getName();
-            return f.isDirectory() || name.endsWith(".svg");
+            return f.isDirectory() || name.endsWith(".png");
          }
 
          @Override
          public String getDescription() {
-            return "svg files";
+            return "png files";
          }
       });
       chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -214,10 +230,10 @@ public class SVGConverterApp extends JFrame {
             String name = file.getName();
             int index = name.lastIndexOf('.');
             if (index == -1) {
-               name = name + ".svg";
+               name = name + ".png";
                file = new File(file.getParentFile(), name);
             }
-            convert(file, titleTf.getText(), cbTitle.isSelected(), insets);
+            convert(file, titleTf.getText(), cbTransform.isSelected(), cbBackground.isSelected(), insets);
          }
       }
    }
@@ -228,7 +244,7 @@ public class SVGConverterApp extends JFrame {
       return wrapper;
    }
 
-   private void convert(File file, String title, boolean addTitle, int insets) {
+   private void convert(File file, String title, boolean hasTransform, boolean hasBackground, int insets) {
       new JFXPanel();
       Platform.runLater(new Runnable() {
          @Override
@@ -237,7 +253,7 @@ public class SVGConverterApp extends JFrame {
                if (wrapper != null) {
                   Node node = wrapper.executeScript();
                   if (node != null) {
-                     convertToSVG(node, file, wrapper.getStyleSheet(), title, addTitle, insets);
+                     convertToAwt(node, file, wrapper.getStyleSheet(), title, hasTransform, hasBackground, insets);
                   }
                }
             } catch (Exception ex) {
@@ -247,13 +263,13 @@ public class SVGConverterApp extends JFrame {
       });
    }
 
-   private void convertToSVG(Node node, File file, String styleSheet, String title, boolean addTitle, int insets) throws Exception {
-      SVGDriverAppUtils utils = new SVGDriverAppUtils();
-      utils.convert(node, file, styleSheet, title, addTitle, insets);
+   private void convertToAwt(Node node, File file, String styleSheet, String title, boolean hasTransform,  boolean hasBackground, int insets) throws Exception {
+      AwtDriverAppUtils utils = new AwtDriverAppUtils();
+      utils.convert(node, file, styleSheet, title, hasTransform, hasBackground, insets);
    }
 
    public static void main(String[] args) {
-      SVGConverterApp app = new SVGConverterApp();
+      AwtConverterApp app = new AwtConverterApp();
       app.setVisible(true);
    }
 }
