@@ -1,5 +1,8 @@
 # History
 
+# 1.8
+- Fix #120: clipPath parsing error
+
 # 1.7.3
 - Fix #105: Support the LinearGradient for the toSVG conversion
 - Fix #106: Fix the default converter parameters specified for the SVGConverter in the toSVG conversion not taken into account in all use cases
