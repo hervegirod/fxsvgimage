@@ -1,0 +1,19 @@
+<svg height="26.0" width="83.0" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" id="gradient_1" spreadMethod="pad" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="rgb(253,253,253)"/>
+      <stop offset="100%" stop-color="rgb(225,225,225)"/>
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" id="gradient_2" spreadMethod="pad" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="rgb(239,239,239)"/>
+      <stop offset="100%" stop-color="rgb(217,217,217)"/>
+    </linearGradient>
+  </defs>
+  <g opacity="0.40">
+    <rect fill-opacity="0.7" height="26.0" rx="0.5" ry="0.5" style="fill:rgba(255,255,255,0.73);" width="83.0" x="0.0" y="0.0"/>
+    <rect height="25.0" rx="0.5" ry="0.5" style="fill:rgb(181,181,181);" width="83.0" x="0.0" y="0.0"/>
+    <rect fill="url(#gradient_1)" height="24.0" rx="0.5" ry="0.5" width="82.0" x="0.0" y="0.0"/>
+    <rect fill="url(#gradient_2)" height="23.0" width="81.0" x="0.0" y="0.0"/>
+  </g>
+  <text style="fill:rgb(0,0,0);font-weight:normal;font-style:normal;font-size:12.0;font-family:Arial;" transform="translate(8.0 17.0)" x="0.0" xml:space="preserve" y="0.0">Hello World!</text>
+</svg>

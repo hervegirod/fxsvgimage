@@ -56,7 +56,7 @@ import javafx.scene.shape.SVGPath;
 /**
  * A JavaFX Path that parses and renders SVG path data. Supports M, L, H, V, C, Q, S, T, A, Z commands (absolute and relative).
  *
- * @version 1.6
+ * @version 1.8
  */
 public class SVGPathParser {
    /**
@@ -159,6 +159,27 @@ public class SVGPathParser {
     */
    public SVGPathParser() {
    }
+   
+   /**
+    * Parse a path content.
+    *
+    * @param content the path content
+    * @param viewport the viewport
+    * @return the path taking into account the viewport and the units
+    */
+   public List<SVGPath> parseClipPathContent(String content, Viewport viewport) {
+      List<SVGPath> listPath = new ArrayList<>();
+      if (! content.endsWith(" z") && ! content.endsWith(" Z")) {
+         content = content + " Z";
+      }      
+      parse(content, viewport);
+      SVGPath path = new SVGPath();
+
+      path.getProperties().put("PathParser", this);
+      path.setContent(getContent());
+      listPath.add(path);
+      return listPath;
+   }   
    
    /**
     * Parse a path content.

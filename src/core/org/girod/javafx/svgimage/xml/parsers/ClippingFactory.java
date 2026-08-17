@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2025 Hervé Girod
+Copyright (c) 2021, 2025, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import org.girod.javafx.svgimage.xml.builders.SVGTextBuilder;
 /**
  * This class handles the list of defined clipping paths.
  *
- * @version 1.3
+ * @version 1.8
  */
 public class ClippingFactory implements SVGTags {
    private final Map<String, XMLNode> clipSpecs = new HashMap<>();
@@ -89,8 +89,8 @@ public class ClippingFactory implements SVGTags {
     * @return the clip
     */
    public Shape createClip(String id, Node node, Viewport viewport) {
-      XMLNode xmlNode = clipSpecs.get(id);
       if (clipSpecs.containsKey(id)) {
+         XMLNode xmlNode = clipSpecs.get(id);
          Bounds objectBoundingBox = null;
          Shape theShape = null;
          if (xmlNode.hasAttribute(CLIP_PATH_UNITS)) {
@@ -109,8 +109,8 @@ public class ClippingFactory implements SVGTags {
                   shape = SVGShapeBuilder.buildCircle(childNode, objectBoundingBox, null, viewport);
                   break;
                case PATH:
-                  List<? extends Shape> shapes = SVGShapeBuilder.buildPath(childNode, objectBoundingBox, null, viewport, true);
-                  if (shape != null) {
+                  List<? extends Shape> shapes = SVGShapeBuilder.buildClipPath(childNode, objectBoundingBox, null, viewport, true);
+                  if (shapes != null) {
                      shape = shapes.get(0);
                      FillRule rule = ParserUtils.getClipRule(childNode);
                      if (rule != null) {
@@ -119,10 +119,10 @@ public class ClippingFactory implements SVGTags {
                   }
                   break;
                case POLYLINE:
-                  shape = SVGShapeBuilder.buildPolyline(xmlNode, objectBoundingBox, null, viewport);
+                  shape = SVGShapeBuilder.buildPolygon(childNode, objectBoundingBox, null, viewport);
                   break;
                case POLYGON:
-                  shape = SVGShapeBuilder.buildPolygon(xmlNode, objectBoundingBox, null, viewport);
+                  shape = SVGShapeBuilder.buildPolygon(childNode, objectBoundingBox, null, viewport);
                   break;
                case ELLIPSE:
                   shape = SVGShapeBuilder.buildEllipse(childNode, objectBoundingBox, null, viewport);

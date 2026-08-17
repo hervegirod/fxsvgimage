@@ -37,7 +37,7 @@ import java.net.URL;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
-import org.girod.javafx.svgimage.tosvg.ConverterParameters;
+import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;

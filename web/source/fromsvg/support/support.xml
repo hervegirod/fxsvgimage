@@ -23,6 +23,8 @@
    <ul>
       <li>Radial gradients which use absolute values for their definitions do not work correctly for the moment</li>
       <li>Some filters are not handled</li>
+      <li>
+         <code>inherit</code> is not handled</li>
    </ul>
             
    <cat id="fromsvgsupport" />

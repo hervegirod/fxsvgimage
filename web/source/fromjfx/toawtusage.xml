@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="JavaFX to Graphics2D conversion usage">
+   <altTitle desc="Graphics2DConverter" />
+   <altTitle desc="Convert to awt" />
+   <meta desc="This article presents the usage of the library which converts a JavaFX tree to a Graphics2D" />
+   You use the library to <ref id="convert to Graphics2D" /> by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.awt.Graphics2DConverter" /> 
+   class. 
+   
+   For example:
+   <pre syntax="java">
+      BuffferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g2d = image.createGraphics();
+      Graphics2DConverter converter = new Graphics2DConverter();
+      converter.convert(&lt;my JavaFX root&gt;);
+      ImageIO.write(image, "png", file);
+   </pre>   
+   
+   <title title="parameters"/>
+   <moreInfo id="ConverterParameters" />
+   Several parameters allow to configure the result. For example:
+   <pre syntax="java">
+      BuffferedImage image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D g2d = image.createGraphics();      
+      ConverterParameters params = new ConverterParameters();
+      params.insets = 10;   
+      Graphics2DConverter converter = new Graphics2DConverter(g2d, params);
+      converter.convert(&lt;my JavaFX root&gt;);
+   </pre>    
+   
+   <title title="handling the viewBox the Graphics2D result"/> 
+   It is possible to set the viewBox of the <code>Graphics2D</code> result and the alignment of the content. 
+   
+   In the following example the result will have the dimension of the root Node content with a specified 
+   <ref id="Converter Parameters#insets" desc="insets" />:
+   <pre syntax="java">
+      Graphics2DConverter converter = new Graphics2DConverter();
+      Rectangle2D rect = converter.getViewbox(&lt;my JavaFX root&gt;);
+      int insets = 10;
+      image = new BufferedImage((int) rect.getWidth() + insets * 2, (int) rect.getHeight() + insets * 2, BufferedImage.TYPE_INT_ARGB);
+      
+      Graphics2D g2d = image.createGraphics();
+      converter.setGraphics2D(g2d);
+
+      ConverterParameters params = new ConverterParameters();
+      params.insets = insets;
+      params.allowTransformForRoot = true;
+      converter.convert(node, params);
+      ImageIO.write(image, "png", file);            
+   </pre>
+   
+   <see id="convert to Graphics2D" />
+   <cat id="tosvg" />
+</article>

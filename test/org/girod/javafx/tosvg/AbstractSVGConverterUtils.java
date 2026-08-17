@@ -33,19 +33,19 @@ the project website at the project page on https://github.com/hervegirod/fxsvgim
 package org.girod.javafx.tosvg;
 
 import java.io.File;
-import java.io.IOException;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.girod.javafx.svgimage.tosvg.ConverterParameters;
-import org.girod.javafx.svgimage.tosvg.SVGConverter;
+import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
+import org.girod.javafx.svgimage.fromjfx.JFXConverterException;
+import org.girod.javafx.svgimage.fromjfx.tosvg.SVGConverter;
 
 /**
- * The abstract converter class.
+ * The abstract svg converter class.
  *
- * @version 1.7.3
+ * @version 1.8
  */
 public abstract class AbstractSVGConverterUtils {
    private Node node = null;
@@ -83,7 +83,7 @@ public abstract class AbstractSVGConverterUtils {
          public void run() {
             try {
                convertImpl();
-            } catch (IOException ex) {
+            } catch (JFXConverterException ex) {
                ex.printStackTrace();
             }
          }
@@ -94,7 +94,7 @@ public abstract class AbstractSVGConverterUtils {
       return new Dimension2D(300, 250);
    }
 
-   private void convertImpl() throws IOException {
+   private void convertImpl() throws JFXConverterException {
       node = getContent();
       root = new StackPane();
       Dimension2D dim = getDimension();

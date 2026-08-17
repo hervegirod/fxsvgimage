@@ -56,7 +56,7 @@ import javax.swing.filechooser.FileFilter;
 /**
  * A simple application which allows to convert using a Script file.
  *
- * @version  1.7.3
+ * @version 1.7.3
  */
 public class SVGConverterApp extends JFrame {
    private JTextField titleTf = null;

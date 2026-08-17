@@ -1,0 +1,275 @@
+/*
+Copyright (c) 2026 Hervé Girod
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Alternatively if you have any questions about this project, you can visit
+the project website at the project page on https://github.com/hervegirod/fxsvgimage
+ */
+package org.girod.javafx.tosvg.app.awt;
+
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Node;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.filechooser.FileFilter;
+import org.girod.javafx.tosvg.app.ScriptWrapper;
+
+/**
+ * A simple application which allows to convert JavaFX to Awt using a Script file.
+ *
+ * @since 1.8
+ */
+public class AwtConverterApp extends JFrame {
+   private JTextField titleTf = null;
+   private final SpinnerNumberModel insetsModel = new SpinnerNumberModel(0, 0, 10, 1);
+   private JSpinner insetsSpinner = null;
+   private int insets = -1;   
+   private JButton convertButton = null;
+   private JCheckBox cbTransform = null;   
+   private JCheckBox cbBackground = null; 
+   private JButton selectContentButton = null;
+   private ScriptWrapper wrapper = null;
+
+   public AwtConverterApp() {
+      super("Awt Converter Test");
+      createContent();
+      this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   }
+
+   private void createContent() {
+      this.setSize(400, 100);
+      Container pane = this.getContentPane();
+      pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+
+      // title panel
+      JPanel titlePanel = new JPanel();
+      titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+      titlePanel.add(Box.createHorizontalStrut(5));
+      JLabel label = new JLabel("Title");
+      titlePanel.add(label);
+      titlePanel.add(Box.createHorizontalStrut(10));
+      titleTf = new JTextField(10);
+      titleTf.setText("Default Title");
+      titlePanel.add(titleTf);
+      titlePanel.add(Box.createHorizontalStrut(5));
+      titlePanel.add(Box.createHorizontalGlue());
+
+      pane.add(titlePanel);
+      pane.add(Box.createVerticalStrut(5));
+      
+      // background panel
+      JPanel paramsBackground = new JPanel();
+      paramsBackground.setLayout(new BoxLayout(paramsBackground, BoxLayout.X_AXIS));
+      paramsBackground.add(Box.createHorizontalStrut(5));
+      label = new JLabel("Has Background");
+      paramsBackground.add(label);
+      paramsBackground.add(Box.createHorizontalStrut(10));
+      cbBackground = new JCheckBox();
+      paramsBackground.add(cbBackground);
+      paramsBackground.add(Box.createHorizontalStrut(5));   
+      paramsBackground.add(Box.createHorizontalGlue());      
+      
+      // parameters panel
+      JPanel params = new JPanel();
+      params.setLayout(new BoxLayout(params, BoxLayout.X_AXIS));
+      params.add(Box.createHorizontalStrut(5));
+      label = new JLabel("Has Transform");
+      params.add(label);
+      params.add(Box.createHorizontalStrut(10));
+      cbTransform = new JCheckBox();
+      params.add(cbTransform);
+      params.add(Box.createHorizontalStrut(5));
+
+      label = new JLabel("Insets");
+      params.add(label);
+      params.add(Box.createHorizontalStrut(10));
+      insetsSpinner = new JSpinner(insetsModel);
+      insetsSpinner.setEditor(new JSpinner.NumberEditor(insetsSpinner, "##"));
+      insetsSpinner.setMaximumSize(insetsSpinner.getPreferredSize());
+      // spinner modification
+      insetsSpinner.addChangeListener((ChangeEvent e) -> {
+         try {
+            insets = (Integer) ((JSpinner) e.getSource()).getValue();
+            if (insets > 10) {
+               insets = 10;
+            }
+         } catch (ArithmeticException ex) {
+         }
+      });
+      params.add(insetsSpinner);
+      params.add(Box.createHorizontalStrut(5));
+      params.add(Box.createHorizontalGlue());
+      
+      pane.add(paramsBackground);
+      pane.add(Box.createVerticalStrut(5));         
+
+      pane.add(params);
+      pane.add(Box.createVerticalStrut(5));      
+
+      // conversion panel
+      JPanel conversionPanel = new JPanel();
+      conversionPanel.setLayout(new BoxLayout(conversionPanel, BoxLayout.X_AXIS));
+      selectContentButton = new JButton("Select Script");
+      selectContentButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            selectContent();
+         }
+      });
+      conversionPanel.add(Box.createHorizontalStrut(5));
+      conversionPanel.add(selectContentButton);
+      conversionPanel.add(Box.createHorizontalStrut(40));
+
+      convertButton = new JButton("Convert");
+      convertButton.setEnabled(false);
+      convertButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            convert();
+         }
+      });
+      conversionPanel.add(convertButton);
+      conversionPanel.add(Box.createHorizontalStrut(5));
+      conversionPanel.add(Box.createHorizontalGlue());
+      pane.add(conversionPanel);
+      pane.add(Box.createVerticalStrut(5));
+      pane.add(Box.createVerticalGlue());
+      this.pack();
+   }
+
+   private void selectContent() {
+      JFileChooser chooser = new JFileChooser();
+      chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+      chooser.setDialogTitle("Select Groovy Script");
+      chooser.setFileFilter(new FileFilter() {
+         @Override
+         public boolean accept(File f) {
+            String name = f.getName();
+            return f.isDirectory() || name.endsWith(".groovy");
+         }
+
+         @Override
+         public String getDescription() {
+            return "Groovy Scripts";
+         }
+      });
+      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+      if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+         File file = chooser.getSelectedFile();
+         try {
+            getScript(file);
+            convertButton.setEnabled(true);
+         } catch (Exception ex) {
+            ex.printStackTrace();
+         }
+      }
+   }
+
+   private void convert() {
+      JFileChooser chooser = new JFileChooser();
+      chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+      chooser.setDialogTitle("Select output file");
+      chooser.setFileFilter(new FileFilter() {
+         @Override
+         public boolean accept(File f) {
+            String name = f.getName();
+            return f.isDirectory() || name.endsWith(".png");
+         }
+
+         @Override
+         public String getDescription() {
+            return "png files";
+         }
+      });
+      chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+      if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+         File file = chooser.getSelectedFile();
+         if (file != null) {
+            String name = file.getName();
+            int index = name.lastIndexOf('.');
+            if (index == -1) {
+               name = name + ".png";
+               file = new File(file.getParentFile(), name);
+            }
+            convert(file, titleTf.getText(), cbTransform.isSelected(), cbBackground.isSelected(), insets);
+         }
+      }
+   }
+
+   private ScriptWrapper getScript(File file) throws Exception {
+      wrapper = new ScriptWrapper(file);
+      wrapper.createScript(this.getClass().getClassLoader());
+      return wrapper;
+   }
+
+   private void convert(File file, String title, boolean hasTransform, boolean hasBackground, int insets) {
+      new JFXPanel();
+      Platform.runLater(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               if (wrapper != null) {
+                  Node node = wrapper.executeScript();
+                  if (node != null) {
+                     convertToAwt(node, file, wrapper.getStyleSheet(), title, hasTransform, hasBackground, insets);
+                  }
+               }
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+         }
+      });
+   }
+
+   private void convertToAwt(Node node, File file, String styleSheet, String title, boolean hasTransform,  boolean hasBackground, int insets) throws Exception {
+      AwtDriverAppUtils utils = new AwtDriverAppUtils();
+      utils.convert(node, file, styleSheet, title, hasTransform, hasBackground, insets);
+   }
+
+   public static void main(String[] args) {
+      AwtConverterApp app = new AwtConverterApp();
+      app.setVisible(true);
+   }
+}

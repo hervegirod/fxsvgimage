@@ -4,5 +4,6 @@
    <category id="fromsvg" desc="Concerns the built-in library allowing to convert a SVG file to a JavaFX tree" />   
    <category id="support" desc="Informations about the support for the SVG standard specification" />
    <category id="browser" desc="Concerns the built-in svg browser" />
-   <category id="tosvg" desc="Concerns the built-in library allowing to convert a JavaFX trre to a SVG file" />
+   <category id="tosvg" desc="Concerns the built-in library allowing to convert a JavaFX tree to a SVG file" />
+   <category id="toxt" desc="Concerns the built-in library allowing to convert a JavaFX tree to a Graphics2D" />
 </categories>

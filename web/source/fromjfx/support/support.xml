@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="SSVG converter support">
+   <meta desc="This article presents the support for the JavaFX to SVG or Graphics2D conversions" />
+
+   The library support:
+   <ul>
+      <li>Shape nodes (Line, Rectangle, Polygon, Polyline, Arc, Circle, Ellipse, QuadCruce, CubicCurcve, path, SVGPath)</li>
+      <li>Region nodes, including Controls</li>      
+      <li>ImageView nodes</li>            
+      <li>Group nodes</li>                  
+      <li>Shape3D nodes (by converting them to images)</li>                        
+   </ul>
+   The following elements are also supported:
+   <ul>
+      <li>Clips are supported</li>
+      <li>LinearGradients are supported</li>
+      <li>ImagePatterns are supported</li>      
+      <li>The following effects are supported: DropShadow, GaussianBlur</li>  
+   </ul>
+
+   <title title="limitations"/>
+   <ul>
+      <li>RadialGradients support is incomplete</li>      
+      <li>Lighting support is incomplete</li>     
+      <li>Many effects are not supported</li>    
+      <li>Animations are not supported for the moment</li>      
+   </ul>
+            
+   <cat id="fromsvgsupport" />
+</article>

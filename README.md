@@ -24,7 +24,7 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.7.3</version>
+      <version>1.8</version>
     </dependency>
 ```
 
@@ -33,12 +33,12 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.7.3</version>
+      <version>1.8</version>
     </dependency>
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.7.3</version>
+      <version>1.8</version>
       <classifier>cssparser</classifier>
     </dependency>
 ```
@@ -51,10 +51,10 @@ repositories {
 }
 dependencies {
   // Core only
-  implementation 'com.github.hervegirod:fxsvgimage:1.7.3'
+  implementation 'com.github.hervegirod:fxsvgimage:1.8'
 
   // Add this for CSS stylesheet support
-  implementation 'com.github.hervegirod:fxsvgimage:1.7.3:cssparser'
+  implementation 'com.github.hervegirod:fxsvgimage:1.8:cssparser'
 }
 ```
 See https://jitpack.io/ for info on the syntax for other build systems such as sbt, leiningen etc.

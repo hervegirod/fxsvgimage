@@ -40,8 +40,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.girod.javafx.svgimage.tosvg.ConverterParameters;
-import org.girod.javafx.svgimage.tosvg.SVGConverter;
+import org.girod.javafx.svgimage.fromjfx.ConverterParameters;
+import org.girod.javafx.svgimage.fromjfx.tosvg.SVGConverter;
 import org.girod.javafx.tosvg.JFXInvoker;
 
 /**

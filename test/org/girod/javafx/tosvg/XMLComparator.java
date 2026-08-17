@@ -62,7 +62,7 @@ public class XMLComparator {
    }
 
    public boolean compare() {
-      boolean compareAttrs = compareAttributes(root1, root2);
+      boolean compareAttrs = compareAttributes(root1, root2, true);
       if (!compareAttrs) {
          return false;
       }
@@ -84,7 +84,7 @@ public class XMLComparator {
             System.err.println("Child " + i + "of XMLNode " + getPath(node2) + " does not have the same name as child " + i + " of XMLNode " + getPath(node1));
             return false;
          }
-         boolean compareAttrs = compareAttributes(child1, child2);
+         boolean compareAttrs = compareAttributes(child1, child2, false);
          if (!compareAttrs) {
             return false;
          }
@@ -114,12 +114,25 @@ public class XMLComparator {
       return buf.toString();
    }
 
-   private boolean compareAttributes(XMLNode node1, XMLNode node2) {
+   private boolean compareAttributes(XMLNode node1, XMLNode node2, boolean acceptTransform) {
       Map<String, String> attr1 = node1.getAttributes();
       Map<String, String> attr2 = node2.getAttributes();
       if (attr1.size() != attr2.size()) {
-         System.err.println(getPath(node2) + " does not have the same number of attributes as " + getPath(node1));
-         return false;
+         if (!acceptTransform) {
+            System.err.println(getPath(node2) + " does not have the same number of attributes as " + getPath(node1));
+            return false;
+         } else {
+            int size1 = attr1.size();
+            int size2 = attr2.size();
+            if (size1 > size2 || size2 > size1 + 1) {
+               System.err.println(getPath(node2) + " does not have the same number of attributes as " + getPath(node1));
+               return false;
+            }
+            if (! (attr2.containsKey("transform") && ! attr1.containsKey("transform"))) {
+               System.err.println(getPath(node2) + " does not have the same number of attributes as " + getPath(node1));
+               return false;
+            }
+         }
       }
       Iterator<Entry<String, String>> it = attr1.entrySet().iterator();
       while (it.hasNext()) {
