@@ -205,8 +205,8 @@
          <arg line="-Xdoclint:none"/> 
          <fileset dir="${src.core.dir}/.." defaultexcludes="yes">
             <include name="core/org/girod/javafx/svgimage/**/*.java"/>
-            <include name="browser/org/girod/javafx/svgimage//browser/**/*.java"/>
-            <include name="tosvg/org/girod/javafx/svgimage//tosvg/**/*.java"/>
+            <include name="browser/org/girod/javafx/svgimage/browser/**/*.java"/>
+            <include name="tosvg/org/girod/javafx/svgimage/fromjfx/**/*.java"/>
          </fileset>                    
          <classpath>
             <path path="${javac.classpath}"/>
@@ -217,11 +217,7 @@
          </group>         
          <group title="Browser API" packages="org.girod.javafx.svgimage.browser" />   
          <group title="toSVG API">
-            <package name="org.girod.javafx.svgimage.tosvg" />
-            <package name="org.girod.javafx.svgimage.tosvg.converters" />
-            <package name="org.girod.javafx.svgimage.tosvg.utils" />
-            <package name="org.girod.javafx.svgimage.tosvg.wrappers" />
-            <package name="org.girod.javafx.svgimage.tosvg.xml" />
+            <package name="org.girod.javafx.svgimage.fromjfx*" />
          </group>       
          <group title="CSS API" packages="org.girod.javafx.svgimage.css" />                      
          <doctitle><![CDATA[<h1>fxsvgImage documentation</h1>]]></doctitle>
