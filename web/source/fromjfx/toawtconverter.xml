@@ -7,13 +7,13 @@
    <code>Graphics2D</code>.
    
    <messageBox type="info">
-      If also allows to convert a JavaFX tree to a SVG file, see <ref if="convert to SVG" /> for more information.
+      If also allows to convert a JavaFX tree to a SVG file, see <ref id="convert to SVG" /> for more information.
    </messageBox>
    
    <title title="usage" />
    <moreInfo id="Graphics2DConverter" />
    To convert a JavaFX tree to a <code>Graphics2D</code>, you can use one of the <code>convert</code> methods of the 
-   <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.toawt.Graphics2DConverter" /> class.   
+   <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.awt.Graphics2DConverter" /> class.   
 
    <see id="Graphics2DConverter"/>
    <see id="convert to SVG" />

@@ -2,7 +2,7 @@
 <article desc="JavaFX to Graphics2D conversion usage">
    <altTitle desc="Graphics2DConverter" />
    <meta desc="This article presents the usage of the library which converts a JavaFX tree to a Graphics2D" />
-   You use the library to <ref id="convert to Graphics2D" /> by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.toawt.Graphics2DConverter" /> 
+   You use the library to <ref id="convert to Graphics2D" /> by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.awt.Graphics2DConverter" /> 
    class. 
    
    For example:
