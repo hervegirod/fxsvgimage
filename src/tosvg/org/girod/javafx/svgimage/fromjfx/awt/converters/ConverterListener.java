@@ -39,7 +39,7 @@ import javafx.scene.effect.Effect;
 /**
  * An interface which listens to the start or end of each Node in the conversion.
  *
- * @version 0.20
+ * @since 1.8
  */
 public interface ConverterListener {
    /**

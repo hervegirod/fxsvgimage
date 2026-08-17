@@ -41,7 +41,7 @@ import javafx.scene.effect.Effect;
  * create a "g" Node for each Node in the tree to regroup its children.
  *
  * <h1>Usage</h1>
- * The {@link org.girod.javafx.svgimage.fromjfx.awt.AwtConverter} does not use this interface by default when converting a Node tree. However,
+ * The {@link org.girod.javafx.svgimage.fromjfx.awt.Graphics2DConverter} does not use this interface by default when converting a Node tree. However,
  * it is possible to use a {@link org.girod.javafx.svgimage.fromjfx.awt.converters.ConverterListener} to process specificaly the Groups.
  *
  * An example of usage could be:

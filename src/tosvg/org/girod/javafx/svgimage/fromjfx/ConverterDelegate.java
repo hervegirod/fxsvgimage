@@ -36,8 +36,8 @@ import javafx.scene.Node;
 /**
  * The ConverterDelegate class allows handle the effective conversion.
  *
- * Note that it is preferable to use the {@link org.jfxconverter.JFXConverter} class rather than this one. This class is called internally by the
- * {@link org.jfxconverter.JFXConverter} class.
+ * Note that it is preferable to use the {@link org.girod.javafx.svgimage.fromjfx.JFXConverter} class rather than this one. This class is called internally by the
+ * {@link org.girod.javafx.svgimage.fromjfx.JFXConverter} class.
  *
  * @since 1.8
  */

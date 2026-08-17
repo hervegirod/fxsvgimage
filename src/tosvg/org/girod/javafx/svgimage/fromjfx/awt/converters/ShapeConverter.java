@@ -38,7 +38,6 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
@@ -58,7 +57,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import org.girod.javafx.svgimage.fromjfx.awt.utils.AwtUtilities;
 import org.girod.javafx.svgimage.fromjfx.awt.utils.JFXShapeUtilities;
-import org.girod.javafx.svgimage.fromjfx.utils.Utilities;
 
 /**
  * A delegate which convert Shapes.
@@ -260,7 +258,7 @@ public class ShapeConverter extends AbstractAwtConverter {
     * considered 0 even if the opacity value in the CSS is not 0.
     *
     * @return the opacity
-    * @see org.jfxconverter.utils.CSSProperties#OPACITY
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#OPACITY
     */
    protected double getOpacityFill() {
       if (properties.containsKey(OPACITY)) {

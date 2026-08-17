@@ -42,7 +42,7 @@ import javafx.scene.paint.Paint;
  * <h2>Limitations</h2>
  * For the moment we only support Borders with Paint, and with only one Paint and width for all the Region.
  *
- * @version 0.21
+ * @since 1.8
  */
 public class BorderWrapper {
    private Paint paint = null;

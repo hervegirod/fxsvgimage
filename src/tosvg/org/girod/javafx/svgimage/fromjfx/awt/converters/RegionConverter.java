@@ -87,7 +87,7 @@ public class RegionConverter extends AbstractAwtConverter {
     * CSS property.
     *
     * @return the Region Background associated with the Region
-    * @see org.jfxconverter.utils.CSSProperties#REGION_BACKGROUND
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#REGION_BACKGROUND
     */
    protected List<AwtBackgroundWrapper> getRegionBackground() {
       double opacity = this.getOpacity();
@@ -108,7 +108,7 @@ public class RegionConverter extends AbstractAwtConverter {
     * CSS property.
     *
     * @return the Region Border associated with ther Region
-    * @see org.jfxconverter.utils.CSSProperties#REGION_BORDER
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#REGION_BORDER
     */
    protected List<AwtBorderWrapper> getRegionBorder() {
       if (allProperties.containsKey(REGION_BORDER)) {
@@ -127,7 +127,7 @@ public class RegionConverter extends AbstractAwtConverter {
     * Return the SVGPath associated with the Region (may be null). Correspond to the "-fx-shape" CSS property.
     *
     * @return the SVGPath associated with the Region
-    * @see org.jfxconverter.utils.CSSProperties#SHAPE
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#SHAPE
     */
    protected SVGPath getSVGPath() {
       if (allProperties.containsKey(SHAPE)) {
@@ -141,7 +141,7 @@ public class RegionConverter extends AbstractAwtConverter {
     * Return true if the Region associated shape is scaled. Correspond to the "-fx-scale-shape" CSS property.
     *
     * @return true if the Region associated shape is scaled
-    * @see org.jfxconverter.utils.CSSProperties#SCALE_SHAPE
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#SCALE_SHAPE
     */
    protected boolean isScaleShape() {
       if (allProperties.containsKey(SCALE_SHAPE)) {
@@ -155,8 +155,8 @@ public class RegionConverter extends AbstractAwtConverter {
     * Return the Background Paint of the Region. Correspond to the "-fx-background-color" and "-fx-background-image" CSS properties.
     *
     * @return the Background Paint of the Region
-    * @see org.jfxconverter.utils.CSSProperties#BACKGROUND_COLOR
-    * @see org.jfxconverter.utils.CSSProperties#BACKGROUND_IMAGE
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#BACKGROUND_COLOR
+    * @see org.girod.javafx.svgimage.fromjfx.utils.CSSProperties#BACKGROUND_IMAGE
     */
    protected Paint getBackground() {
       double opacity = this.getOpacity();

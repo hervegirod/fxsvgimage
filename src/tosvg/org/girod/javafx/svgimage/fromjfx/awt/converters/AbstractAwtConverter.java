@@ -230,7 +230,6 @@ public abstract class AbstractAwtConverter implements CSSProperties, NodeGraphic
     * Return the result of all the Nodes transformations for the Converter Node.
     *
     * @return the resulting AffineTransform
-    * @see #applyTransforms()
     */
    protected AffineTransform getTransform() {
       AffineTransform result = new AffineTransform();
