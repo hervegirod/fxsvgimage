@@ -11,7 +11,7 @@
    <title title="usage" />
    <moreInfo id="SVGConverter" />
    To convert a JavaFX tree to a SVG file, you can use one of the <code>convert</code> methods of the 
-   <javadoc api="api" path="org.girod.svgimage.fromjfx.tosvg.SVGConverter" /> class.
+   <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.tosvg.SVGConverter" /> class.
    
    <messageBox type="info">
       You can reuse the same <code>SVGConverter</code> for more than one JavaFX <code>Node</code> conversion.

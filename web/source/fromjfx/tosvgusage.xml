@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<article desc="JavaFX to Graphics2D conversion usage">
+<article desc="JavaFX to SVG conversion usage">
    <altTitle desc="SVGConverter" />
    <meta desc="This article presents the usage of the library which converts a JavaFX tree to a Graphics2D" />
-   You use the library to <ref id="convert to SVG" /> by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.fromjfx.tosvg.SVGConverter" /> 
+   You use the library to <ref id="convert to SVG" /> by calling one of the <code>convert</code> methods of the  <javadoc api="api" path="org.girod.javafx.svgimage.fromjfx.tosvg.SVGConverter" /> 
    class. 
    
    For example:
