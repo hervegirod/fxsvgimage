@@ -10,7 +10,7 @@
     </linearGradient>
   </defs>
   <g>
-    <rect fill-opacity="0.7" height="26.0" rx="0.5" ry="0.5" style="fill:rgb(255,255,255);" width="83.0" x="0.0" y="0.0"/>
+    <rect fill-opacity="0.7" height="26.0" rx="0.5" ry="0.5" style="fill:rgba(255,255,255,0.73);" width="83.0" x="0.0" y="0.0"/>
     <rect height="25.0" rx="0.5" ry="0.5" style="fill:rgb(181,181,181);" width="83.0" x="0.0" y="0.0"/>
     <rect fill="url(#gradient_1)" height="24.0" rx="0.5" ry="0.5" width="82.0" x="0.0" y="0.0"/>
     <rect fill="url(#gradient_2)" height="23.0" width="81.0" x="0.0" y="0.0"/>

@@ -2,6 +2,7 @@
 
 # 1.8
 - Fix #120: clipPath parsing error
+- Fix #121: clipPath parsing incorrect with a path specification
 
 # 1.7.3
 - Fix #105: Support the LinearGradient for the toSVG conversion

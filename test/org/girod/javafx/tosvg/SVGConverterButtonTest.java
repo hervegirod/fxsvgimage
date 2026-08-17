@@ -46,7 +46,7 @@ import org.junit.Test;
 /**
  * Test for a SVG converter to convert a button.
  *
- * @version 1.7.3
+ * @version 1.8
  */
 public class SVGConverterButtonTest {
 
