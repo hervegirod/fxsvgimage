@@ -66,12 +66,13 @@ import org.girod.javafx.svgimage.xml.parsers.SVGTags;
 import org.girod.javafx.svgimage.xml.specs.Styles;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.NativeInheritance;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * This class parse a style declaration.
  *
- * @version 1.7.1
+ * @version 1.9
  */
 public class SVGStyleBuilder implements SVGTags {
    private static final Pattern STYLES = Pattern.compile("[^{]*\\s*\\{[a-zA-Z0-9_\\-+\\.\\s,:\\#;]+\\}\\s*");
@@ -212,6 +213,13 @@ public class SVGStyleBuilder implements SVGTags {
                   }
                   break;
                }
+               case STROKE_OPACITY: {
+                  double opacity = ParserUtils.parseOpacity(value);
+                  if (opacity >= 0) {
+                     addProperty(styleRules, key, Styles.STROKE_OPACITY, opacity);
+                  }
+                  break;
+               }                     
                case TRANSFORM: {
                   List<Transform> transformList = TransformUtils.extractTransforms(value, viewport);
                   if (!transformList.isEmpty()) {
@@ -262,12 +270,12 @@ public class SVGStyleBuilder implements SVGTags {
     * @return true if a fill is specified
     */
    public static boolean hasFill(XMLNode xmlNode) {
-      if (xmlNode.hasAttribute(FILL)) {
+      if (NativeInheritance.hasAttribute(xmlNode, FILL)) {
          return true;
       } else if (xmlNode.hasAttribute(CLIP_PATH)) {
          return true;
-      } else if (xmlNode.hasAttribute(STYLE)) {
-         String styles = xmlNode.getAttributeValue(STYLE);
+      } else if (NativeInheritance.hasAttribute(xmlNode, STYLE)) {
+         String styles = NativeInheritance.getAttributeValue(xmlNode, STYLE);
          StringTokenizer tokenizer = new StringTokenizer(styles, ";");
          while (tokenizer.hasMoreTokens()) {
             String style = tokenizer.nextToken();
@@ -316,55 +324,57 @@ public class SVGStyleBuilder implements SVGTags {
          if (markerContext == null) {
             markerContextR = MarkerBuilder.createMarkerContext(xmlNode, context);
          }
-         if (xmlNode.hasAttribute(FILL)) {
-            Paint fill = ParserUtils.expressPaint(contextNode, context.gradients, xmlNode.getAttributeValue(FILL));
+         String fillValue = NativeInheritance.getAttributeValue(xmlNode, FILL);
+         if (fillValue != null) {            
+            Paint fill = ParserUtils.expressPaint(contextNode, context.gradients, fillValue);
             shape.setFill(fill);
             if (markerContextR != null) {
                markerContextR.setContextFill(fill);
             }
          }
 
-         if (xmlNode.hasAttribute(STROKE)) {
-            Paint stroke = ParserUtils.expressPaint(contextNode, context.gradients, xmlNode.getAttributeValue(STROKE));
+         String strokeValue = NativeInheritance.getAttributeValue(xmlNode,  STROKE);
+         if (strokeValue != null) {
+            Paint stroke = ParserUtils.expressPaint(contextNode, context.gradients, strokeValue);
             shape.setStroke(stroke);
             if (markerContextR != null) {
                markerContextR.setContextStroke(stroke);
             }
          }
 
-         if (xmlNode.hasAttribute(STROKE_WIDTH)) {
-            double strokeWidth = xmlNode.getLineWidthValue(STROKE_WIDTH, viewport, 1);
+         double strokeWidth = NativeInheritance.getLineWidthValue(xmlNode, viewport, STROKE_WIDTH);
+         if (strokeWidth != -1) {
             shape.setStrokeWidth(strokeWidth);
          }
 
-         if (xmlNode.hasAttribute(STROKE_DASHARRAY)) {
-            String dashArray = xmlNode.getAttributeValue(STROKE_DASHARRAY);
-            applyDash(shape, dashArray, viewport);
+         String strokeDashArray = NativeInheritance.getAttributeValue(xmlNode, STROKE_DASHARRAY);
+         if (strokeDashArray != null) {
+            applyDash(shape, strokeDashArray, viewport);
          }
 
-         if (xmlNode.hasAttribute(STROKE_DASHOFFSET)) {
-            String dashOffset = xmlNode.getAttributeValue(STROKE_DASHOFFSET);
-            double offset = LengthParser.parseLength(dashOffset, viewport);
+         String strokeDashOffset = NativeInheritance.getAttributeValue(xmlNode, STROKE_DASHOFFSET);
+         if (strokeDashOffset != null) {
+            double offset = LengthParser.parseLength(strokeDashOffset, viewport);
             shape.setStrokeDashOffset(offset);
          }
 
-         if (xmlNode.hasAttribute(STROKE_LINEJOIN)) {
-            String lineJoin = xmlNode.getAttributeValue(STROKE_LINEJOIN);
-            applyLineJoin(shape, lineJoin);
+         String strokeLineJoin = NativeInheritance.getAttributeValue(xmlNode, STROKE_LINEJOIN);
+         if (strokeLineJoin != null) {
+            applyLineJoin(shape, strokeLineJoin);
          } else {
             shape.setStrokeLineJoin(StrokeLineJoin.MITER);
          }
 
-         if (xmlNode.hasAttribute(STROKE_LINECAP)) {
-            String lineCap = xmlNode.getAttributeValue(STROKE_LINECAP);
-            applyLineCap(shape, lineCap);
+         String strokeLineCap = NativeInheritance.getAttributeValue(xmlNode, STROKE_LINECAP);
+         if (strokeLineCap != null) {
+            applyLineCap(shape, strokeLineCap);
          } else {
             shape.setStrokeLineCap(StrokeLineCap.BUTT);
          }
 
-         if (xmlNode.hasAttribute(STROKE_MITERLIMIT)) {
-            String miterLimit = xmlNode.getAttributeValue(STROKE_MITERLIMIT);
-            applyMiterLimit(shape, miterLimit, viewport);
+         String strokeMiterLimit = NativeInheritance.getAttributeValue(xmlNode, STROKE_MITERLIMIT);
+         if (strokeMiterLimit != null) {
+            applyMiterLimit(shape, strokeMiterLimit, viewport);
          } else {
             shape.setStrokeMiterLimit(4d);
          }
@@ -382,12 +392,12 @@ public class SVGStyleBuilder implements SVGTags {
          setClipPath(node, content, context.clippingFactory, viewport);
       }
 
-      if (xmlNode.hasAttribute(STYLE)) {
+      String styles = NativeInheritance.getStyleAttributeValue(xmlNode);
+      if (styles != null) {
          FontWeight fontWeight = FontWeight.NORMAL;
          FontPosture fontPosture = FontPosture.REGULAR;
          double fontSize = 12d;
          String fontFamily = null;
-         String styles = xmlNode.getAttributeValue(STYLE);
          StringTokenizer tokenizer = new StringTokenizer(styles, ";");
          while (tokenizer.hasMoreTokens()) {
             String style = tokenizer.nextToken();
@@ -522,6 +532,15 @@ public class SVGStyleBuilder implements SVGTags {
                   }
                   break;
                }
+               case STROKE_OPACITY: {
+                  if (node instanceof Shape) {
+                     double strokeOpacity = ParserUtils.parseOpacity(styleValue);
+                     if (strokeOpacity >= 0) {
+                        ParserUtils.setStrokeOpacity(node, strokeOpacity);
+                     }
+                  }
+                  break;
+               }               
                case TRANSFORM: {
                   List<Transform> transformList = TransformUtils.extractTransforms(styleValue, viewport);
                   if (!transformList.isEmpty()) {

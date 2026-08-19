@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2021, 2022 Hervé Girod
+Copyright (c) 2021, 2022, 2026 Hervé Girod
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ import javafx.scene.transform.Transform;
 /**
  * Represents a "style" node in the SVG content.
  *
- * @version 1.0
+ * @version 1.9
  */
 public class Styles {
    /**
@@ -99,9 +99,13 @@ public class Styles {
     */
    public static final short FILL_OPACITY = 10;
    /**
+    * Style property type for stroke opacity.
+    */
+   public static final short STROKE_OPACITY = 11;   
+   /**
     * Style property type for transform.
     */
-   public static final short TRANSFORM = 11;
+   public static final short TRANSFORM = 12;
    private final Map<String, Rule> rules = new HashMap<>();
 
    /**
@@ -264,6 +268,12 @@ public class Styles {
                      ParserUtils.setFillOpacity((Shape) node, fillOpacity);
                   }
                   break;
+               case STROKE_OPACITY:
+                  if (node instanceof Shape) {
+                     double strokeOpacity = (Double) value;
+                     ParserUtils.setStrokeOpacity((Shape) node, strokeOpacity);
+                  }
+                  break;                  
                case TRANSFORM:
                   Transform transform = (Transform) value;
                   node.getTransforms().add(transform);
