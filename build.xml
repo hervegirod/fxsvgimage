@@ -44,7 +44,7 @@
          </not>
       </condition>
       <property name="docGeneratorDirURL" value="https://downloads.sourceforge.net/project/docjgenerator/" />      
-      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.6.16/docGenerator-bin-1.6.16.zip" />
+      <property name="docGeneratorURL" value="${docGeneratorDirURL}/Version%201.6.18/docGenerator-bin-1.6.18.zip" />
       <property name="docGeneratorDir" value="web/soft/"/>       
       <condition property="docgenerator.notexists">
          <not>
