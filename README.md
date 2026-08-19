@@ -24,7 +24,7 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.9</version>
+      <version>1.9.1</version>
     </dependency>
 ```
 
@@ -33,12 +33,12 @@ For maven do the following:
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.9</version>
+      <version>1.9.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.hervegirod</groupId>
       <artifactId>fxsvgimage</artifactId>
-      <version>1.9</version>
+      <version>1.9.1</version>
       <classifier>cssparser</classifier>
     </dependency>
 ```
@@ -51,7 +51,7 @@ repositories {
 }
 dependencies {
   // Core only
-  implementation 'com.github.hervegirod:fxsvgimage:1.9'
+  implementation 'com.github.hervegirod:fxsvgimage:1.9.1'
 
   // Add this for CSS stylesheet support
   implementation 'com.github.hervegirod:fxsvgimage:1.9:cssparser'
