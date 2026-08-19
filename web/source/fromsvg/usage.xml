@@ -5,7 +5,7 @@
    <altTitle desc="SVGLoader" />
    <meta desc="This article presents the usage of the library which converts svg to a JavaFX tree" />
    The most simple way to use the library is just by calling one of the <code>load</code> static methods, such as the
-   <javadoc api="api" path="org.girod.javafx.svgimage.SVGLoader" member="load(jaja.io.File file)" /> method. 
+   <javadoc api="api" path="org.girod.javafx.svgimage.SVGLoader" member="load(java.io.file file)" /> method. 
    
    For example:
    <pre syntax="java">
