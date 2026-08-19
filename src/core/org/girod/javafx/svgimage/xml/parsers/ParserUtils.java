@@ -73,7 +73,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 /**
  * Several utilities for shape parsing.
  *
- * @version 1.7.3
+ * @version 1.9
  */
 public class ParserUtils implements SVGTags {
    private static final double INCH_TO_MM = 25.4d;
@@ -241,8 +241,8 @@ public class ParserUtils implements SVGTags {
     * @return the clip rule, or null if not defined
     */
    public static FillRule getClipRule(XMLNode node) {
-      if (node.hasAttribute(CLIP_RULE)) {
-         String value = node.getAttributeValue(CLIP_RULE);
+      if (NativeInheritance.hasAttribute(node, CLIP_RULE)) {
+         String value = NativeInheritance.getAttributeValue(node, CLIP_RULE);
          switch (value) {
             case NON_ZERO:
                return FillRule.NON_ZERO;
@@ -263,8 +263,8 @@ public class ParserUtils implements SVGTags {
     * @return the fill rule, or null if not defined
     */
    public static FillRule getFillRule(XMLNode node) {
-      if (node.hasAttribute(FILL_RULE)) {
-         String value = node.getAttributeValue(FILL_RULE);
+      if (NativeInheritance.hasAttribute(node, FILL_RULE)) {
+         String value = NativeInheritance.getAttributeValue(node, FILL_RULE);
          switch (value) {
             case NON_ZERO:
                return FillRule.NON_ZERO;
@@ -369,6 +369,24 @@ public class ParserUtils implements SVGTags {
          }
       }
    }
+   
+   /**
+    * Apply a stroke opacity override on a node.
+    *
+    * @param node the node to update
+    * @param strokeOpacity the stroke opacity
+    */
+   public static void setStrokeOpacity(Node node, double strokeOpacity) {
+      if (node instanceof Shape && strokeOpacity < 1d) {
+         Shape shape = (Shape) node;
+         Paint paint = shape.getStroke();
+         if (paint != null && paint instanceof Color) {
+            Color stroke = (Color) paint;
+            stroke = stroke.deriveColor(0, 1, 1, strokeOpacity);
+            shape.setStroke(stroke);
+         }
+      }
+   }   
 
    /**
     * Return the first token in a space-separated argument list.
@@ -816,8 +834,8 @@ public class ParserUtils implements SVGTags {
    public static boolean setVisibility(Node node, ElementNode elementNode) {
       if (elementNode instanceof XMLNode) {
          XMLNode xmlNode = (XMLNode) elementNode;
-         if (xmlNode.hasAttribute(VISIBILITY)) {
-            String visibilityS = xmlNode.getAttributeValue(VISIBILITY);
+         if (NativeInheritance.hasAttribute(xmlNode, VISIBILITY)) {
+            String visibilityS = NativeInheritance.getAttributeValue(xmlNode, VISIBILITY);
             boolean visible = ParserUtils.parseVisibility(visibilityS);
             node.setVisible(visible);
             return visible;

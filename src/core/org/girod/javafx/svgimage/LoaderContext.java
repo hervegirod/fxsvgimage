@@ -54,7 +54,7 @@ import org.girod.javafx.svgimage.xml.parsers.xmltree.XMLNode;
 /**
  * The context of a {@link SVGLoader}.
  *
- * @version 1.7.1
+ * @version 1.9
  */
 public class LoaderContext {
    /**
@@ -66,7 +66,7 @@ public class LoaderContext {
     */
    public final LoaderParameters params;
    /**
-    * The viewport.
+    * The viewports.
     */
    public Stack<Viewport> viewports = null;
    /**

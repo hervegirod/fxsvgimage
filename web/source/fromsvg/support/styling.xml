@@ -2,7 +2,7 @@
 <article desc="svg styling support">
    <altTitle desc="svg styling" />
    <meta desc="This article presents the support for SVG styling specification" />
-   Therere several ways to add styling to an element:
+   There are several ways to add styling to an element:
    <ul>
       <li>By setting explicitly the value for styling attributes for an element. For example: <source syntax="xml">fill="red"</source></li>
       <li>By setting the value for the <code>style</code> attribute for an element. For example: <source syntax="xml">style="fill: red;"</source></li>
@@ -45,7 +45,10 @@
       </li>                  
       <li>
          <code>fill-opacity</code>
-      </li>          
+      </li>      
+      <li>
+         <code>stroke-opacity</code>
+      </li>             
       <li>
          <code>style</code>
       </li>                           

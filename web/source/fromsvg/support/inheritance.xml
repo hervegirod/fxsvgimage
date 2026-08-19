@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article desc="svg inheritance support">
+   <altTitle desc="svg inheritance" />
+   <altTitle desc="inheritance" />
+   <meta desc="This article presents the support for SVG inheritance" />
+   SVG inheritance is supported:
+   <ul>
+      <li>The explicit <code>inherit</code> attribute value is supported</li>
+      <li>Implicit inheritance is supported, including on <code>style</code> rules</li>
+   </ul>
+   
+   <title title="implicit inheritance"/>
+   Implicit inheritance is supported for the following attributes elements (or style rules)<note>See <a href="https://www.w3.org/TR/2011/REC-SVG11-20110816/propidx.html">SVG11</a></note>: 
+   <ul>
+      <li>
+         <code>clip-rule</code>
+      </li>
+      <li>
+         <code>fill</code>
+      </li>    
+      <li>
+         <code>stroke</code>      
+      </li>     
+      <li>
+         <code>stop-color</code>      
+      </li>  
+      <li>
+         <code>flood-color</code>      
+      </li>             
+      <li>
+         <code>lighting-color</code>      
+      </li>      
+      <li>
+         <code>color-interpolation</code>      
+      </li>                
+      <li>
+         <code>fill-opacity</code>
+      </li>                           
+      <li>
+         <code>fillr-rule</code>
+      </li>        
+      <li>
+         <code>font-family</code>
+      </li>      
+      <li>
+         <code>font-size</code>
+      </li>        
+      <li>
+         <code>font-weight</code>
+      </li>      
+      <li>
+         <code>font-style</code>
+      </li>  
+      <li>
+         <code>marker-end</code>
+      </li>         
+      <li>
+         <code>marker-mid</code>
+      </li>    
+      <li>
+         <code>marker-start</code>
+      </li>         
+      <li>
+         <code>stroke-dasharray</code>
+      </li>      
+      <li>
+         <code>stroke-dashoffset</code>
+      </li>  
+      <li>
+         <code>stroke-linecap</code>
+      </li> 
+      <li>
+         <code>stroke-linejoin</code>
+      </li>
+      <li>
+         <code>stroke-miterlimit</code>
+      </li>               
+      <li>
+         <code>stroke-width</code>
+      </li>  
+      <li>
+         <code>text-anchor</code>
+      </li>            
+      <li>
+         <code>visibility</code>
+      </li>                                                   
+   </ul>
+            
+   <cat id="fromsvgsupport" />
+</article>

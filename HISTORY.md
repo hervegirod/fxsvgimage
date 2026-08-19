@@ -1,5 +1,9 @@
 # History
 
+# 1.9
+- Fix #119: Support for Native Inheritance
+- Fix #123: Support the stroke-opacity style
+
 # 1.8
 - Fix #120: clipPath parsing error
 - Fix #121: clipPath parsing incorrect with a path specification

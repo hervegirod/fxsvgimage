@@ -79,13 +79,14 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 import org.girod.javafx.svgimage.xml.parsers.TransformUtils;
 import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
+import org.girod.javafx.svgimage.xml.parsers.NativeInheritance;
 import org.girod.javafx.svgimage.xml.parsers.SVGPathParser;
 import org.girod.javafx.svgimage.xml.parsers.xmltree.ElementNode;
 
 /**
  * The shape builder.
  *
- * @version 1.8
+ * @version 1.9
  */
 public class SVGShapeBuilder implements SVGTags {
    private static final Pattern NUMBER = Pattern.compile("\\d+");
@@ -728,7 +729,7 @@ public class SVGShapeBuilder implements SVGTags {
             SVGPath path = it.next();
             /* seems that filling the path is impotant, see https://dlemmermann.wordpress.com/2015/02/18/javafx-tip-18-path-clipping/
              * but even then, it does not work
-             */          
+             */
             path.setFill(Color.RED);
             if (rule != null) {
                path.setFillRule(rule);
@@ -935,9 +936,9 @@ public class SVGShapeBuilder implements SVGTags {
          stdDevS = ParserUtils.parseFirstArgument(stdDevS);
          stdDeviation = ParserUtils.parseDoubleProtected(stdDevS);
       }
-      if (node.hasAttribute(FLOOD_COLOR)) {
-         String colorS = node.getAttributeValue(FLOOD_COLOR);
-         col = ParserUtils.getColor(colorS, opacity);
+      if (NativeInheritance.hasAttribute(node, FLOOD_COLOR)) {
+         String colorS = NativeInheritance.getAttributeValue(node, FLOOD_COLOR);
+         col = ParserUtils.getColor(colorS);
       }
       FilterSpec.FEDropShadow effect = new FilterSpec.FEDropShadow(resultId, dx, dy, stdDeviation, col);
       if (node.hasAttribute(IN)) {
@@ -965,9 +966,13 @@ public class SVGShapeBuilder implements SVGTags {
       if (node.hasAttribute(FLOOD_OPACITY)) {
          opacity = node.getDoubleValue(FLOOD_OPACITY, 1d);
       }
-      if (node.hasAttribute(FLOOD_COLOR)) {
-         String colorS = node.getAttributeValue(FLOOD_COLOR);
-         col = ParserUtils.getColor(colorS, opacity);
+      if (NativeInheritance.hasAttribute(node, FLOOD_OPACITY)) {
+         String colorS = NativeInheritance.getAttributeValue(node, FLOOD_COLOR);
+         col = ParserUtils.getColor(colorS);
+      }      
+      if (NativeInheritance.hasAttribute(node, FLOOD_COLOR)) {
+         String colorS = NativeInheritance.getAttributeValue(node, FLOOD_COLOR);
+         col = ParserUtils.getColor(colorS);
       }
       FilterSpec.FEFlood effect = new FilterSpec.FEFlood(resultId, x, y, width, height, col);
       if (node.hasAttribute(IN)) {
@@ -1045,8 +1050,8 @@ public class SVGShapeBuilder implements SVGTags {
                double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
                double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double azimuth = child.getDoubleValue(AZIMUTH);
@@ -1065,8 +1070,8 @@ public class SVGShapeBuilder implements SVGTags {
                double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
                double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double x = child.getLengthValue(X, true, viewport);
@@ -1086,8 +1091,8 @@ public class SVGShapeBuilder implements SVGTags {
                double specularConstant = node.getDoubleValue(SPECULAR_CONSTANT, 0.3d);
                double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double x = child.getLengthValue(X, true, viewport);
@@ -1126,8 +1131,8 @@ public class SVGShapeBuilder implements SVGTags {
             case FE_DISTANT_LIGHT: {
                double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double azimuth = child.getDoubleValue(AZIMUTH);
@@ -1144,8 +1149,8 @@ public class SVGShapeBuilder implements SVGTags {
             case FE_POINT_LIGHT: {
                double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double x = child.getLengthValue(X, true, viewport);
@@ -1164,8 +1169,8 @@ public class SVGShapeBuilder implements SVGTags {
                double diffuseConstant = node.getDoubleValue(DIFFUSE_CONSTANT, 0.3d);
                double specularExponent = node.getDoubleValue(SPECULAR_EXPONENT, 20d);
                Color col = null;
-               if (node.hasAttribute(LIGHTING_COLOR)) {
-                  String colorS = node.getAttributeValue(LIGHTING_COLOR);
+               if (NativeInheritance.hasAttribute(node, LIGHTING_COLOR)) {
+                  String colorS = NativeInheritance.getAttributeValue(node, LIGHTING_COLOR);
                   col = ParserUtils.getColor(colorS);
                }
                double x = child.getLengthValue(X, true, viewport);

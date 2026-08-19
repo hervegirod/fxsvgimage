@@ -49,6 +49,7 @@ import org.girod.javafx.svgimage.Viewbox;
 import org.girod.javafx.svgimage.Viewport;
 import static org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder.getFontPosture;
 import static org.girod.javafx.svgimage.xml.builders.SVGShapeBuilder.getFontWeight;
+import org.girod.javafx.svgimage.xml.parsers.NativeInheritance;
 import org.girod.javafx.svgimage.xml.parsers.ParserUtils;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.DX;
 import static org.girod.javafx.svgimage.xml.parsers.SVGTags.DY;
@@ -70,7 +71,7 @@ import org.girod.javafx.svgimage.xml.specs.SpanGroup;
 /**
  * The text builder.
  *
- * @version 1.7.1
+ * @version 1.9
  */
 public class SVGTextBuilder {
    private SVGTextBuilder() {
@@ -171,19 +172,23 @@ public class SVGTextBuilder {
     * @return the Text
     */
    public static Shape buildText(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport) {
-      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
-      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
+      boolean hasFamily = NativeInheritance.hasAttribute(xmlNode, FONT_FAMILY);
+      boolean hasSize = NativeInheritance.hasAttribute(xmlNode, FONT_SIZE);
       String family = null;
       if (hasFamily) {
-         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
+         String familyValue = NativeInheritance.getAttributeValue(xmlNode, FONT_FAMILY);
+         family = familyValue.replace("'", "");
       }
       double size = 12d;
       if (hasSize) {
-         size = ParserUtils.parseFontSize(viewport.getDPI(), xmlNode.getAttributeValue(FONT_SIZE));
+         String sizeValue = NativeInheritance.getAttributeValue(xmlNode, FONT_SIZE);
+         size = ParserUtils.parseFontSize(viewport.getDPI(), sizeValue);
       }
       size = viewport.scaleLength(size);
-      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
-      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
+      String weightValue = NativeInheritance.getAttributeValue(xmlNode, FONT_WEIGHT);
+      FontWeight weight = getFontWeight(weightValue);
+      String postureValue = NativeInheritance.getAttributeValue(xmlNode, FONT_STYLE);
+      FontPosture posture = getFontPosture(postureValue);
       Font font = Font.font(family, weight, posture, size);
 
       String cdata = xmlNode.getCDATA();
@@ -196,11 +201,13 @@ public class SVGTextBuilder {
             y = viewbox.scaleValue(false, y);
          }
          Text text = new Text(x, y, cdata);
-         if (xmlNode.hasAttribute(TEXT_DECORATION)) {
-            SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+         if (NativeInheritance.hasAttribute(xmlNode, TEXT_DECORATION)) {
+            String decorationValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_DECORATION);
+            SVGShapeBuilder.applyTextDecoration(text, decorationValue);
          }
-         if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
-            SVGShapeBuilder.applyTextAnchor(text, xmlNode.getAttributeValue(TEXT_ANCHOR));
+         if (NativeInheritance.hasAttribute(xmlNode, TEXT_ANCHOR)) {
+            String anchorValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_ANCHOR);
+            SVGShapeBuilder.applyTextAnchor(text, anchorValue);
          }
          if (font != null) {
             text.setFont(font);
@@ -225,19 +232,23 @@ public class SVGTextBuilder {
     * @return the Text
     */
    public static Node buildTextAsNode(XMLNode xmlNode, Bounds bounds, Viewbox viewbox, Viewport viewport, double minTextSize) {
-      boolean hasFamily = xmlNode.hasAttribute(FONT_FAMILY);
-      boolean hasSize = xmlNode.hasAttribute(FONT_SIZE);
+      boolean hasFamily = NativeInheritance.hasAttribute(xmlNode, FONT_FAMILY);
+      boolean hasSize = NativeInheritance.hasAttribute(xmlNode, FONT_SIZE);
       String family = null;
       if (hasFamily) {
-         family = xmlNode.getAttributeValue(FONT_FAMILY).replace("'", "");
+         String familyValue = NativeInheritance.getAttributeValue(xmlNode, FONT_FAMILY);
+         family = familyValue.replace("'", "");
       }
       double size = 12d;
       if (hasSize) {
-         size = ParserUtils.parseFontSize(viewport.getDPI(), xmlNode.getAttributeValue(FONT_SIZE));
+         String sizeValue = NativeInheritance.getAttributeValue(xmlNode, FONT_SIZE);
+         size = ParserUtils.parseFontSize(viewport.getDPI(), sizeValue);
       }
       size = viewport.scaleLength(size);
-      FontWeight weight = getFontWeight(xmlNode.getAttributeValue(FONT_WEIGHT));
-      FontPosture posture = getFontPosture(xmlNode.getAttributeValue(FONT_STYLE));
+      String weightValue = NativeInheritance.getAttributeValue(xmlNode, FONT_WEIGHT);
+      FontWeight weight = getFontWeight(weightValue);
+      String styleValue = NativeInheritance.getAttributeValue(xmlNode, FONT_STYLE);
+      FontPosture posture = getFontPosture(styleValue);
       Font font = Font.font(family, weight, posture, size);
 
       String cdata = xmlNode.getCDATA();
@@ -252,10 +263,12 @@ public class SVGTextBuilder {
          if (size >= minTextSize) {
             Text text = new Text(x, y, cdata);
             text.setFontSmoothingType(FontSmoothingType.LCD);
-            if (xmlNode.hasAttribute(TEXT_DECORATION)) {
-               SVGShapeBuilder.applyTextDecoration(text, xmlNode.getAttributeValue(TEXT_DECORATION));
+            if (NativeInheritance.hasAttribute(xmlNode, TEXT_DECORATION)) {
+               String decorationValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_DECORATION);
+               SVGShapeBuilder.applyTextDecoration(text, decorationValue);
             }
-            if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
+            if (NativeInheritance.hasAttribute(xmlNode, TEXT_ANCHOR)) {
+               String anchorValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_ANCHOR);
                SVGShapeBuilder.applyTextAnchor(text, xmlNode.getAttributeValue(TEXT_ANCHOR));
             }
             if (font != null) {
@@ -268,15 +281,18 @@ public class SVGTextBuilder {
          } else {
             // see https://stackoverflow.com/questions/54410475/how-to-fix-distorted-text-with-small-font-size-in-javafx/54411007
             TextHBox box = new TextHBox(cdata, font);
-            if (xmlNode.hasAttribute(STROKE)) {
-               Paint stroke = ParserUtils.getColor(xmlNode.getAttributeValue(STROKE));
+            if (NativeInheritance.hasAttribute(xmlNode, STROKE)) {
+               String strokeValue = NativeInheritance.getAttributeValue(xmlNode, STROKE);
+               Paint stroke = ParserUtils.getColor(strokeValue);
                box.setFill(stroke);
             }
-            if (xmlNode.hasAttribute(TEXT_DECORATION)) {
-               box.setTextDecoration(xmlNode.getAttributeValue(TEXT_DECORATION));
+            if (NativeInheritance.hasAttribute(xmlNode, TEXT_DECORATION)) {
+               String decorationValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_DECORATION);
+               box.setTextDecoration(decorationValue);
             }
-            if (xmlNode.hasAttribute(TEXT_ANCHOR)) {
-               box.setTextAnchor(xmlNode.getAttributeValue(TEXT_ANCHOR));
+            if (NativeInheritance.hasAttribute(xmlNode, TEXT_ANCHOR)) {
+               String anchorValue = NativeInheritance.getAttributeValue(xmlNode, TEXT_ANCHOR);
+               box.setTextAnchor(anchorValue);
             }
             box.setLayoutX(x);
             box.setLayoutY(y);
