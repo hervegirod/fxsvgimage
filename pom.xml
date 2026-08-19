@@ -4,7 +4,7 @@
 
    <groupId>org.girod</groupId>
    <artifactId>fxsvgimage</artifactId>
-   <version>1.8</version>
+   <version>1.9</version>
    <name>fxsvgimage</name>
    <description>A small self-sufficient library which allows to convert a SVG file to a JavaFX Node tree or an Image (no dependencies)</description>
 
@@ -46,8 +46,8 @@
    </scm>
 
    <properties>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
+      <maven.compiler.source>1.9</maven.compiler.source>
+      <maven.compiler.target>1.9</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
    </properties>
