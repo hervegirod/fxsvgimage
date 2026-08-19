@@ -16,6 +16,7 @@
       <li>transform attributes. See also <ref id="svg transform support" /></li>
       <li>animations. See also <ref id="svg animations support" /></li>
       <li>The viewport on the SVG root. See also <ref id="SVG root support" /></li>
+      <li>The <code>inherit</code> attribute is handled, and native inheritance is handled as well. See also <ref id="inheritance" /></li>
    </ul>
    Note that the support is mainly for SVG 1.1, but some SVG 1.2 constructs are also supported.
 
@@ -23,8 +24,6 @@
    <ul>
       <li>Radial gradients which use absolute values for their definitions do not work correctly for the moment</li>
       <li>Some filters are not handled</li>
-      <li>
-         <code>inherit</code> is not handled</li>
    </ul>
             
    <cat id="fromsvgsupport" />
