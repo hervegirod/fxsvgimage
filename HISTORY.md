@@ -1,5 +1,8 @@
 # History
 
+# 1.9.1
+- Fix #125: The Maven build does not work anymore with 1.9 version on jitpack
+
 # 1.9
 - Fix #119: Support for Native Inheritance
 - Fix #123: Support the stroke-opacity style
